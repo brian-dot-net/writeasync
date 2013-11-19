@@ -7,19 +7,47 @@ $ProjectConsole = 1;
 $ProjectLibrary = 2;
 $ProjectUnitTest = 3;
 
-Function Main($rootPath, $name, $company, $year)
+Function Main($rootPath, $name, $company, $xunitPath, $year)
 {
     $fullPath = "$rootPath\$name";
-    $exists = Test-Path $fullPath;
-    if (!$exists)
-    {
-        New-Item $fullPath -Type Directory | Out-Null;
-    }
+    MakeDir $fullPath;
 
     $projects = CreateProjects $name;
     WriteProjects $name $fullPath $company $year $projects;
     WriteStyleCopSettings "$fullPath\StyleCop.settings";
     WriteSolutionFile "$fullPath\$name.sln" $projects;
+    CopyXunit $xunitPath "$fullPath\external\xUnit.net";
+}
+
+Function MakeDir($fullPath)
+{
+    $exists = Test-Path $fullPath;
+    if (!$exists)
+    {
+        New-Item $fullPath -Type Directory | Out-Null;
+    }
+}
+
+Function CopyXunit($xunitPath, $destPath)
+{
+    Write-Host "Copying xUnit.net dependencies from '$xunitPath' to '$destPath'...";
+    MakeDir $destPath;
+    $files =
+    (
+        "HTML.xslt",
+        "license.txt",
+        "NUnitXml.xslt",
+        "xunit.console.clr4.exe",
+        "xunit.console.clr4.exe.config",
+        "xunit.dll",
+        "xunit.runner.msbuild.dll",
+        "xunit.runner.utility.dll"
+    );
+    
+    foreach ($file in $files)
+    {
+        Copy-Item "$xunitPath\$file" $destPath;
+    }
 }
 
 Function CreateProjects($name)
@@ -59,11 +87,7 @@ Function WriteProjects($solutionName, $rootPath, $company, $year, [psobject[]]$p
         $projectName = $project.Name;
         Write-Host "Preparing project '$projectName'...";
         $propertiesDir = $file.Directory.FullName + "\Properties";
-        $exists = Test-Path $propertiesDir;
-        if (!$exists)
-        {
-            New-Item $propertiesDir -Type Directory | Out-Null;
-        }
+        MakeDir $propertiesDir;
 
         $projectText = GetProjectText $solutionName $project;
         WriteAllText $file.FullName $projectText;
@@ -212,6 +236,7 @@ namespace $rootNamespace
 
 Function GetProjectText($solutionName, $project)
 {
+    $addXunit = $false;
     $id = $project.Id;
     $name = $project.Name;
     $afterHeaderText = "";
@@ -235,6 +260,7 @@ Function GetProjectText($solutionName, $project)
     else
     {
         $outputType = "Library";
+        $addXunit = $true;
     }
 
     $headerText =
@@ -245,6 +271,7 @@ Function GetProjectText($solutionName, $project)
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+
 '@;
     $headerText +=
 @"
@@ -267,6 +294,15 @@ Function GetProjectText($solutionName, $project)
 
 '@;
 
+    if ($addXunit)
+    {
+        $headerText +=
+@'
+    <XUnitPath Condition=" '$(XUnitPath)' == '' ">..\..\external\xUnit.net</XUnitPath>
+
+'@;
+    }
+
     $afterHeaderText +=
 @'
   </PropertyGroup>
@@ -284,6 +320,22 @@ Function GetProjectText($solutionName, $project)
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+
+'@;
+
+    if ($addXunit)
+    {
+        $afterHeaderText +=
+@'
+    <Reference Include="xunit">
+      <HintPath>$(XUnitPath)\xunit.dll</HintPath>
+    </Reference>
+
+'@;
+    }
+
+    $afterHeaderText +=
+@'
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -329,6 +381,23 @@ Function GetProjectText($solutionName, $project)
 @'
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\StyleCop\v4.7\StyleCop.Targets" />
+
+'@;
+
+    if ($addXunit)
+    {
+        $footerText +=
+@'
+  <UsingTask AssemblyFile="$(XUnitPath)\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
+  <Target Name="AfterBuild">
+    <xunit Assembly="$(TargetPath)" />
+  </Target>
+
+'@;
+    }
+
+    $footerText +=
+@'
 </Project>
 '@;
 
@@ -654,17 +723,18 @@ Function WriteStyleCopSettings($fullPath)
 
 Function PrintUsage()
 {
-    Write-Host "InitProjects.cmd <root-path> <project-name> <company-name>";
+    Write-Host "InitProjects.cmd <root-path> <project-name> <company-name> <xunit-path>";
     Write-Host "";
     Write-Host "Creates a simple project structure using the provided root path, project name,";
-    Write-Host "and company name (used for the copyright banner in the files).";
+    Write-Host "company name (used for the copyright banner in the files), and path to Xunit.net";
+    Write-Host "binary files (for the unit test project).";
 }
 
-if ($args.Length -ne 3)
+if ($args.Length -ne 4)
 {
     PrintUsage;
     Exit 1;
 }
 
 $currentYear = [datetime]::Now.Year;
-Main $args[0] $args[1] $args[2] $currentYear;
+Main $args[0] $args[1] $args[2] $args[3] $currentYear;
