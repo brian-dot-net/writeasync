@@ -3,12 +3,11 @@
 @@if defined POWERSHELL_BAT_ARGS set POWERSHELL_BAT_ARGS=%POWERSHELL_BAT_ARGS:"=\"%
 @@powershell.exe -Command Invoke-Expression $('$args=@(^&{$args} %POWERSHELL_BAT_ARGS%);'+[String]::Join([char]10, $((Get-Content '%~f0') -notmatch '^^@@'))) & goto :EOF
 
-
 $ProjectConsole = 1;
 $ProjectLibrary = 2;
 $ProjectUnitTest = 3;
 
-Function Main($rootPath, $name)
+Function Main($rootPath, $name, $company, $year)
 {
     $fullPath = "$rootPath\$name";
     $exists = Test-Path $fullPath;
@@ -18,16 +17,16 @@ Function Main($rootPath, $name)
     }
 
     $projects = CreateProjects $name;
-    WriteProjects $name $fullPath $projects;
+    WriteProjects $name $fullPath $company $year $projects;
     WriteStyleCopSettings "$fullPath\StyleCop.settings";
     WriteSolutionFile "$fullPath\$name.sln" $projects;
 }
 
 Function CreateProjects($name)
 {
-    $app = CreateProject "$name.App" "source" $ProjectConsole "Program.cs";
-    $core = CreateProject "$name.Core" "source" $ProjectLibrary "Class1.cs";
-    $test = CreateProject "$name.Test.Unit" "test" $ProjectUnitTest "Test1.cs";
+    $app = CreateProject "$name.App" "source" $ProjectConsole "Program.cs" $name;
+    $core = CreateProject "$name.Core" "source" $ProjectLibrary "Class1.cs" $name;
+    $test = CreateProject "$name.Test.Unit" "test" $ProjectUnitTest "Test1.cs" "$name.Test.Unit";
 
     $app.ProjectReferences += $core;
     $test.ProjectReferences += $core;
@@ -35,7 +34,7 @@ Function CreateProjects($name)
     return ($app, $core, $test);
 }
 
-Function CreateProject($name, $folderName, $type, $fileToInclude)
+Function CreateProject($name, $folderName, $type, $fileToInclude, $rootNamespace)
 {
     $path = "$folderName\$name\$name.csproj";
     $properties = 
@@ -46,25 +45,169 @@ Function CreateProject($name, $folderName, $type, $fileToInclude)
         "ProjectType" = $type;
         "ProjectReferences" = @();
         "FileToInclude" = $fileToInclude;
+        "RootNamespace" = $rootNamespace;
     };
 
     return New-Object PSObject -Property $properties;
 }
 
-Function WriteProjects($solutionName, $rootPath, [psobject[]]$projects)
+Function WriteProjects($solutionName, $rootPath, $company, $year, [psobject[]]$projects)
 {
     foreach ($project in $projects)
     {
         $file = New-Object -Type "System.IO.FileInfo" -ArgumentList ("$rootPath\" + $project.Path);
-        Write-Host "Writing project file '$file'...";
-        $parentDir = $file.Directory;
-        if (!$parentDir.Exists)
+        $projectName = $project.Name;
+        Write-Host "Preparing project '$projectName'...";
+        $propertiesDir = $file.Directory.FullName + "\Properties";
+        $exists = Test-Path $propertiesDir;
+        if (!$exists)
         {
-            $parentDir.Create();
+            New-Item $propertiesDir -Type Directory | Out-Null;
         }
 
-        GetProjectText $solutionName $project | Out-File $file.FullName -Encoding "UTF8";
+        $projectText = GetProjectText $solutionName $project;
+        WriteAllText $file.FullName $projectText;
+        WriteSourceFile $rootPath $company $project;
+        WriteAssemblyInfo $propertiesDir "AssemblyInfo.cs" $company $project $year;
     }
+}
+
+Function GetHeaderText($sourceFile, $company)
+{
+    $text =
+@"
+//-----------------------------------------------------------------------
+// <copyright file="$sourceFile" company="$company">
+// Copyright (c) $company. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+"@;
+    return $text;
+}
+
+Function WriteAssemblyInfo($directory, $sourceFile, $company, $project, $year)
+{
+    $projectName = $project.Name;
+    $assemblyGuid = [guid]::NewGuid().ToString("D");
+    $headerText = GetHeaderText $sourceFile $company;
+    $text +=
+@"
+$headerText
+
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+[assembly: AssemblyTitle("$projectName")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("$projectName")]
+[assembly: AssemblyCopyright("Copyright ©  $year")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
+[assembly: ComVisible(false)]
+
+[assembly: Guid("$assemblyGuid")]
+
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
+"@;
+
+    $fileName = $directory + "\" + $sourceFile;
+    WriteAllText $fileName $text;
+}
+
+Function WriteSourceFile($rootPath, $company, $project)
+{
+    $rootNamespace = $project.RootNamespace;
+    $sourceFile = $project.FileToInclude;
+    $headerText = GetHeaderText $sourceFile $company;
+    $text = 
+@"
+$headerText
+
+namespace $rootNamespace
+
+"@;
+    if ($sourceFile -eq "Program.cs")
+    {
+        $text +=
+@"
+{
+    using System;
+
+    internal sealed class Program
+    {
+        private static void Main(string[] args)
+        {
+            Class1 c = new Class1("world");
+            string name = c.DoAsync().Result;
+            Console.WriteLine("Hello, {0}!", name);
+        }
+    }
+}
+"@;
+    }
+    elseif ($project.FileToInclude -eq "Class1.cs")
+    {
+        $text +=
+@"
+{
+    using System;
+    using System.Threading.Tasks;
+
+    public class Class1
+    {
+        private readonly string name;
+
+        public Class1(string name)
+        {
+            this.name = name;
+        }
+
+        public Task<string> DoAsync()
+        {
+            return Task.FromResult(this.name);
+        }
+    }
+}
+"@;
+    }
+    elseif ($project.FileToInclude -eq "Test1.cs")
+    {
+        $text +=
+@"
+{
+    using System.Threading.Tasks;
+    using Xunit;
+
+    public class Test1
+    {
+        public Test1()
+        {
+        }
+
+        [Fact]
+        public void Should_return_name_after_completing_sync()
+        {
+            Class1 c = new Class1("MyName");
+            
+            Task<string> task = c.DoAsync();
+
+            Assert.True(task.IsCompleted);
+            Assert.Equal("MyName", task.Result);
+        }
+    }
+}
+"@;
+    }
+
+    $fullPath = $rootPath + "\" + $project.Path;
+    $fileInfo = New-Object -TypeName "System.IO.FileInfo" -ArgumentList $fullPath;
+    $fileName = $fileInfo.Directory.FullName + "\" + $project.FileToInclude;
+    WriteAllText $fileName $text;
 }
 
 Function GetProjectText($solutionName, $project)
@@ -74,10 +217,10 @@ Function GetProjectText($solutionName, $project)
     $afterHeaderText = "";
     $fileToInclude = $project.FileToInclude;
     $filesText = "";
+    $rootNamespace = $project.RootNamespace;
     if ($project.ProjectType -eq $ProjectConsole)
     {
         $outputType = "Exe";
-        $rootNamespace = $solutionName;
         $afterHeaderText +=
 @'
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -88,12 +231,10 @@ Function GetProjectText($solutionName, $project)
     elseif ($project.ProjectType -eq $ProjectLibrary)
     {
         $outputType = "Library";
-        $rootNamespace = $solutionName;
     }
     else
     {
         $outputType = "Library";
-        $rootNamespace = "$solutionName.Test.Unit";
     }
 
     $headerText =
@@ -241,7 +382,7 @@ Function GetIncludePath($source, $dest)
 
 Function WriteSolutionFile($fullPath, [psobject[]]$projects)
 {
-    Write-Host "Writing solution file '$fullPath'...";
+    Write-Host "Preparing solution file...";
     $headerText =
 @"
 
@@ -293,13 +434,19 @@ EndProject
     }
 
     $text = $headerText + $projectsText + $globalSectionText + $footerText;
+    WriteAllText $fullPath $text;
+}
+
+Function WriteAllText($fullPath, $text)
+{
+    Write-Host "Writing file '$fullPath'...";
     $text = $text -Replace "`n", "`r`n";
     $text | Out-File $fullPath -Encoding "UTF8";
 }
 
 Function WriteStyleCopSettings($fullPath)
 {
-    Write-Host "Writing StyleCop settings file '$fullPath'...";
+    Write-Host "Preparing StyleCop settings file...";
     $text =
 @"
 <StyleCopSettings Version="105">
@@ -502,21 +649,22 @@ Function WriteStyleCopSettings($fullPath)
   </Analyzers>
 </StyleCopSettings>
 "@;
-    $text = $text -Replace "`n", "`r`n";
-    $text | Out-File $fullPath -Encoding "UTF8";
+    WriteAllText $fullPath $text;
 }
 
 Function PrintUsage()
 {
-    Write-Host "InitProjects.cmd <root-path> <project-name>";
+    Write-Host "InitProjects.cmd <root-path> <project-name> <company-name>";
     Write-Host "";
-    Write-Host "Creates a simple project structure using the provided root path and project name.";
+    Write-Host "Creates a simple project structure using the provided root path, project name,";
+    Write-Host "and company name (used for the copyright banner in the files).";
 }
 
-if ($args.Length -ne 2)
+if ($args.Length -ne 3)
 {
     PrintUsage;
     Exit 1;
 }
 
-Main $args[0] $args[1];
+$currentYear = [datetime]::Now.Year;
+Main $args[0] $args[1] $args[2] $currentYear;
