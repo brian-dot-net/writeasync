@@ -257,6 +257,30 @@ namespace CommSample.Test.Unit
             Assert.Equal(new byte[] { 1, 2, 3, 4, 5, 6, 0 }, receiveBuffer);
         }
 
+        [Fact]
+        public void Two_sends_then_three_receives_with_equal_data_size_completes_sync()
+        {
+            MemoryChannel channel = new MemoryChannel();
+
+            byte[] sendBuffer = new byte[] { 1, 2, 3 };
+            channel.Send(sendBuffer);
+
+            byte[] sendBuffer2 = new byte[] { 4, 5, 6 };
+            channel.Send(sendBuffer2);
+
+            byte[] receiveBuffer = new byte[2];
+            AssertTaskCompleted(2, channel.ReceiveAsync(receiveBuffer));
+            Assert.Equal(new byte[] { 1, 2 }, receiveBuffer);
+
+            byte[] receiveBuffer2 = new byte[2];
+            AssertTaskCompleted(2, channel.ReceiveAsync(receiveBuffer2));
+            Assert.Equal(new byte[] { 3, 4 }, receiveBuffer2);
+
+            byte[] receiveBuffer3 = new byte[2];
+            AssertTaskCompleted(2, channel.ReceiveAsync(receiveBuffer3));
+            Assert.Equal(new byte[] { 5, 6 }, receiveBuffer3);
+        }
+
         private static Task<TResult> AssertTaskPending<TResult>(Task<TResult> task)
         {
             Assert.False(task.IsCompleted, "Task should not be completed.");
