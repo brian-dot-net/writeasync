@@ -68,18 +68,21 @@ namespace CommSample
 
         public void Send(byte[] buffer)
         {
-            this.ThrowIfDisposed();
             int bytesReceived;
-            if (this.pendingReceive != null)
+            lock (this.excessBuffers)
             {
-                bytesReceived = this.pendingReceive.AddData(buffer);
-            }
-            else
-            {
-                bytesReceived = 0;
-            }
+                this.ThrowIfDisposed();
+                if (this.pendingReceive != null)
+                {
+                    bytesReceived = this.pendingReceive.AddData(buffer);
+                }
+                else
+                {
+                    bytesReceived = 0;
+                }
 
-            this.AddExcess(buffer, bytesReceived, false);
+                this.AddExcess(buffer, bytesReceived, false);
+            }
 
             if (bytesReceived > 0)
             {
