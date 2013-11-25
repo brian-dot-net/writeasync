@@ -6,6 +6,7 @@
 
 namespace CommSample.Test.Unit
 {
+    using System;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -279,6 +280,24 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer3 = new byte[2];
             AssertTaskCompleted(2, channel.ReceiveAsync(receiveBuffer3));
             Assert.Equal(new byte[] { 5, 6 }, receiveBuffer3);
+        }
+
+        [Fact]
+        public void Pending_receive_followed_by_another_receive_throws_InvalidOperation_without_affecting_first_receive()
+        {
+            MemoryChannel channel = new MemoryChannel();
+
+            byte[] receiveBuffer = new byte[1];
+            Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
+
+            byte[] receiveBuffer2 = new byte[1];
+            Assert.Throws<InvalidOperationException>(() => channel.ReceiveAsync(receiveBuffer2));
+
+            byte[] sendBuffer = new byte[] { 1 };
+            channel.Send(sendBuffer);
+
+            AssertTaskCompleted(1, receiveTask);
+            Assert.Equal(new byte[] { 1 }, receiveBuffer);
         }
 
         private static Task<TResult> AssertTaskPending<TResult>(Task<TResult> task)

@@ -24,6 +24,11 @@ namespace CommSample
 
         public Task<int> ReceiveAsync(byte[] buffer)
         {
+            if (this.pendingReceive != null)
+            {
+                throw new InvalidOperationException("A receive operation is already in progress.");
+            }
+
             this.pendingReceive = new TaskCompletionSource<int>();
             this.pendingReceiveBuffer = buffer;
 
@@ -46,12 +51,14 @@ namespace CommSample
                 }
             }
 
+            Task<int> task = this.pendingReceive.Task;
             if (totalBytesReceived > 0)
             {
                 this.pendingReceive.SetResult(totalBytesReceived);
+                this.pendingReceive = null;
             }
 
-            return this.pendingReceive.Task;
+            return task;
         }
 
         public void Send(byte[] buffer)
@@ -78,6 +85,7 @@ namespace CommSample
             if (bytesReceived > 0)
             {
                 this.pendingReceive.SetResult(bytesReceived);
+                this.pendingReceive = null;
             }
         }
     }
