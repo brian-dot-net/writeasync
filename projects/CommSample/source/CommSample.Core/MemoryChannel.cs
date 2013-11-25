@@ -26,8 +26,9 @@ namespace CommSample
 
             if (this.excess != null)
             {
-                this.excess.CopyTo(this.pendingReceiveBuffer, 0);
-                this.pendingReceive.SetResult(this.excess.Length);
+                int bytesReceived = Math.Min(this.pendingReceiveBuffer.Length, this.excess.Length);
+                Array.Copy(this.excess, 0, this.pendingReceiveBuffer, 0, bytesReceived);
+                this.pendingReceive.SetResult(bytesReceived);
             }
 
             return this.pendingReceive.Task;
