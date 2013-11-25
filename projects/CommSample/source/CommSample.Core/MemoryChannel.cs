@@ -28,6 +28,14 @@ namespace CommSample
             {
                 int bytesReceived = Math.Min(this.pendingReceiveBuffer.Length, this.excess.Length);
                 Array.Copy(this.excess, 0, this.pendingReceiveBuffer, 0, bytesReceived);
+                int remainingBytes = this.excess.Length - bytesReceived;
+                if (remainingBytes > 0)
+                {
+                    byte[] newExcess = new byte[remainingBytes];
+                    Array.Copy(this.excess, bytesReceived, newExcess, 0, remainingBytes);
+                    this.excess = newExcess;
+                }
+
                 this.pendingReceive.SetResult(bytesReceived);
             }
 
