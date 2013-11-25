@@ -14,8 +14,7 @@ namespace CommSample
     {
         private readonly LinkedList<byte[]> excessBuffers;
 
-        private TaskCompletionSource<int> pendingReceive;
-        private byte[] pendingReceiveBuffer;
+        private ReceiveRequest pendingReceive;
 
         public MemoryChannel()
         {
@@ -29,26 +28,19 @@ namespace CommSample
                 throw new InvalidOperationException("A receive operation is already in progress.");
             }
 
-            this.pendingReceive = new TaskCompletionSource<int>();
-            this.pendingReceiveBuffer = buffer;
+            this.pendingReceive = new ReceiveRequest(buffer);
 
-            int totalBytesReceived = 0;
-            int remainingBytes = buffer.Length;
-            while ((this.excessBuffers.Count > 0) && (remainingBytes > 0))
+            while ((this.excessBuffers.Count > 0) && (this.pendingReceive.RemainingBytes > 0))
             {
                 byte[] excess = this.excessBuffers.First.Value;
                 this.excessBuffers.RemoveFirst();
-                int bytesReceived = Math.Min(remainingBytes, excess.Length);
-                remainingBytes -= bytesReceived;
-                Array.Copy(excess, 0, this.pendingReceiveBuffer, totalBytesReceived, bytesReceived);
-                totalBytesReceived += bytesReceived;
+                int bytesReceived = this.pendingReceive.AddData(excess);
                 this.AddExcess(excess, bytesReceived, true);
             }
 
             Task<int> task = this.pendingReceive.Task;
-            if (totalBytesReceived > 0)
+            if (this.pendingReceive.TryComplete())
             {
-                this.pendingReceive.SetResult(totalBytesReceived);
                 this.pendingReceive = null;
             }
 
@@ -60,8 +52,7 @@ namespace CommSample
             int bytesReceived;
             if (this.pendingReceive != null)
             {
-                bytesReceived = Math.Min(this.pendingReceiveBuffer.Length, buffer.Length);
-                Array.Copy(buffer, 0, this.pendingReceiveBuffer, 0, bytesReceived);
+                bytesReceived = this.pendingReceive.AddData(buffer);
             }
             else
             {
@@ -72,8 +63,10 @@ namespace CommSample
 
             if (bytesReceived > 0)
             {
-                this.pendingReceive.SetResult(bytesReceived);
-                this.pendingReceive = null;
+                if (this.pendingReceive.TryComplete())
+                {
+                    this.pendingReceive = null;
+                }
             }
         }
 
@@ -92,6 +85,49 @@ namespace CommSample
                 {
                     this.excessBuffers.AddLast(excess);
                 }
+            }
+        }
+
+        private sealed class ReceiveRequest
+        {
+            private readonly TaskCompletionSource<int> task;
+            private readonly byte[] buffer;
+
+            private int totalBytesReceived;
+
+            public ReceiveRequest(byte[] buffer)
+            {
+                this.buffer = buffer;
+                this.task = new TaskCompletionSource<int>();
+                this.RemainingBytes = this.buffer.Length;
+            }
+
+            public Task<int> Task
+            {
+                get { return this.task.Task; }
+            }
+
+            public int RemainingBytes { get; private set; }
+
+            public int AddData(byte[] sendBuffer)
+            {
+                int bytesReceived = Math.Min(this.RemainingBytes, sendBuffer.Length);
+                this.RemainingBytes -= bytesReceived;
+                Array.Copy(sendBuffer, 0, this.buffer, this.totalBytesReceived, bytesReceived);
+                this.totalBytesReceived += bytesReceived;
+                return bytesReceived;
+            }
+
+            public bool TryComplete()
+            {
+                bool succeeded = false;
+                if (this.totalBytesReceived > 0)
+                {
+                    succeeded = true;
+                    this.task.SetResult(this.totalBytesReceived);
+                }
+
+                return succeeded;
             }
         }
     }
