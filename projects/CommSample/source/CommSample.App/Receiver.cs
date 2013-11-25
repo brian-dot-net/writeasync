@@ -20,9 +20,12 @@ namespace CommSample
             this.logger = logger;
         }
 
-        public Task RunAsync()
+        public async Task RunAsync()
         {
-            throw new NotImplementedException();
+            this.logger.WriteLine("Receiver starting...");
+            byte[] buffer = new byte[16];
+            int bytesReceived = await this.channel.ReceiveAsync(buffer);
+            this.logger.WriteLine("Receiver completed. Received {0} bytes.", bytesReceived);
         }
     }
 }

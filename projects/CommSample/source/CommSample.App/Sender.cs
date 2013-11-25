@@ -22,7 +22,21 @@ namespace CommSample
 
         public Task RunAsync()
         {
-            throw new NotImplementedException();
+            this.logger.WriteLine("Sender starting...");
+            return Task.Factory.StartNew(this.RunInner, TaskCreationOptions.LongRunning);
+        }
+
+        private void RunInner()
+        {
+            byte[] buffer = new byte[16];
+            for (int i = 0; i < buffer.Length; ++i)
+            {
+                buffer[i] = (byte)i;
+            }
+
+            this.channel.Send(buffer);
+
+            this.logger.WriteLine("Sender completed. Sent {0} bytes.", buffer.Length);
         }
     }
 }

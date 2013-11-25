@@ -9,6 +9,7 @@ namespace CommSample
     using System;
     using System.Diagnostics;
     using System.Globalization;
+    using System.Threading;
 
     internal sealed class Logger
     {
@@ -27,7 +28,7 @@ namespace CommSample
                 message = string.Format(CultureInfo.InvariantCulture, format, args);
             }
 
-            Console.WriteLine("[{0:0000.000}] {1}", this.stopwatch.Elapsed.TotalSeconds, message);
+            Console.WriteLine("[{0:0000.000}/T{1:00}] {2}", this.stopwatch.Elapsed.TotalSeconds, Thread.CurrentThread.ManagedThreadId, message);
         }
     }
 }
