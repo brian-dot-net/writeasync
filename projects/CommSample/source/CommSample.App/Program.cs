@@ -15,7 +15,7 @@ namespace CommSample
             Logger logger = new Logger();
             MemoryChannel channel = new MemoryChannel();
 
-            Receiver receiver = new Receiver(channel, logger);
+            Receiver receiver = new Receiver(channel, logger, 16);
             Sender sender = new Sender(channel, logger);
 
             Task receiverTask = receiver.RunAsync();
