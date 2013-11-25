@@ -26,8 +26,7 @@ namespace CommSample.Test.Unit
             byte[] sendBuffer = new byte[] { 1, 2, 3 };
             channel.Send(sendBuffer);
 
-            Assert.Equal(TaskStatus.RanToCompletion, receiveTask.Status);
-            Assert.Equal(3, receiveTask.Result);
+            AssertTaskCompleted(3, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
         }
 
@@ -42,8 +41,7 @@ namespace CommSample.Test.Unit
             byte[] sendBuffer = new byte[] { 1, 2 };
             channel.Send(sendBuffer);
 
-            Assert.Equal(TaskStatus.RanToCompletion, receiveTask.Status);
-            Assert.Equal(2, receiveTask.Result);
+            AssertTaskCompleted(2, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 0 }, receiveBuffer);
         }
 
@@ -58,8 +56,7 @@ namespace CommSample.Test.Unit
             byte[] sendBuffer = new byte[] { 1, 2, 3, 4 };
             channel.Send(sendBuffer);
 
-            Assert.Equal(TaskStatus.RanToCompletion, receiveTask.Status);
-            Assert.Equal(3, receiveTask.Result);
+            AssertTaskCompleted(3, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
         }
 
@@ -68,6 +65,12 @@ namespace CommSample.Test.Unit
             Assert.False(task.IsCompleted, "Task should not be completed.");
             Assert.False(task.IsFaulted, "Task should not be faulted: " + task.Exception);
             return task;
+        }
+
+        private static void AssertTaskCompleted<TResult>(TResult expected, Task<TResult> task)
+        {
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(expected, task.Result);
         }
     }
 }
