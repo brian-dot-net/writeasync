@@ -21,9 +21,9 @@ namespace CommSample
             Task receiverTask = receiver.RunAsync();
             Task senderTask = sender.RunAsync();
 
-            Task.WaitAll(receiverTask, senderTask);
-
             channel.Dispose();
+
+            Task.WaitAll(receiverTask, senderTask);
 
             logger.WriteLine("Done.");
         }

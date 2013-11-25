@@ -69,12 +69,15 @@ namespace CommSample
         public void Send(byte[] buffer)
         {
             int bytesReceived;
+            ReceiveRequest receiveToComplete = null;
             lock (this.excessBuffers)
             {
                 this.ThrowIfDisposed();
                 if (this.pendingReceive != null)
                 {
                     bytesReceived = this.pendingReceive.AddData(buffer);
+                    receiveToComplete = this.pendingReceive;
+                    this.pendingReceive = null;
                 }
                 else
                 {
@@ -84,10 +87,9 @@ namespace CommSample
                 this.AddExcess(buffer, bytesReceived, false);
             }
 
-            if (bytesReceived > 0)
+            if (receiveToComplete != null)
             {
-                this.pendingReceive.Complete();
-                this.pendingReceive = null;
+                receiveToComplete.Complete();
             }
         }
 
