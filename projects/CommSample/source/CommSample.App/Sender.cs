@@ -41,13 +41,15 @@ namespace CommSample
                 buffer[i] = this.fill;
             }
 
+            long totalBytes = 0;
             while (!token.IsCancellationRequested)
             {
                 this.channel.Send(buffer);
+                totalBytes += buffer.Length;
                 this.delay.Next();
             }
 
-            this.logger.WriteLine("Sender B={0}/F=0x{1:x} completed. Sent {2} bytes.", this.bufferSize, this.fill, buffer.Length);
+            this.logger.WriteLine("Sender B={0}/F=0x{1:x} completed. Sent {2} bytes.", this.bufferSize, this.fill, totalBytes);
         }
     }
 }
