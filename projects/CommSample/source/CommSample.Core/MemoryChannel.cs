@@ -6,10 +6,29 @@
 
 namespace CommSample
 {
+    using System;
+    using System.Threading.Tasks;
+
     public class MemoryChannel
     {
+        private TaskCompletionSource<int> pendingReceive;
+        private byte[] pendingReceiveBuffer;
+
         public MemoryChannel()
         {
+        }
+
+        public Task<int> ReceiveAsync(byte[] buffer)
+        {
+            this.pendingReceive = new TaskCompletionSource<int>();
+            this.pendingReceiveBuffer = buffer;
+            return this.pendingReceive.Task;
+        }
+
+        public void Send(byte[] buffer)
+        {
+            buffer.CopyTo(this.pendingReceiveBuffer, 0);
+            this.pendingReceive.SetResult(buffer.Length);
         }
     }
 }

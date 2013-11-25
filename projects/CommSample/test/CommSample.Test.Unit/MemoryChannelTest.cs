@@ -6,6 +6,7 @@
 
 namespace CommSample.Test.Unit
 {
+    using System.Threading.Tasks;
     using Xunit;
 
     public class MemoryChannelTest
@@ -15,8 +16,19 @@ namespace CommSample.Test.Unit
         }
 
         [Fact]
-        public void Todo()
+        public void Pending_receive_completes_after_send_with_same_data_size()
         {
+            MemoryChannel channel = new MemoryChannel();
+
+            byte[] receiveBuffer = new byte[3];
+            Task<int> receiveTask = channel.ReceiveAsync(receiveBuffer);
+            
+            byte[] sendBuffer = new byte[] { 1, 2, 3 };
+            channel.Send(sendBuffer);
+
+            Assert.Equal(TaskStatus.RanToCompletion, receiveTask.Status);
+            Assert.Equal(3, receiveTask.Result);
+            Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
         }
     }
 }
