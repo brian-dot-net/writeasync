@@ -7,6 +7,7 @@
 namespace CommSample
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -16,27 +17,32 @@ namespace CommSample
         {
             Logger logger = new Logger();
             TimeSpan duration = TimeSpan.FromSeconds(5.0d);
-            logger.WriteLine("Receive loop with one sender, {0:0.0} sec...", duration.TotalSeconds);
-            Receive_loop_with_one_sender(logger, duration);
+            int senderCount = 2;
+            logger.WriteLine("Receive loop with {0} senders, {1:0.0} sec...", senderCount, duration.TotalSeconds);
+            Receive_loop_with_N_senders(logger, senderCount, duration);
             logger.WriteLine("Done.");
         }
 
-        private static void Receive_loop_with_one_sender(Logger logger, TimeSpan duration)
+        private static void Receive_loop_with_N_senders(Logger logger, int senderCount, TimeSpan duration)
         {
             MemoryChannel channel = new MemoryChannel();
 
             Receiver receiver = new Receiver(channel, logger, 16);
-            Sender sender = new Sender(channel, logger, 16, 1, new Delay(2, 1));
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 Task receiverTask = receiver.RunAsync();
-                Task senderTask = sender.RunAsync(cts.Token);
+                Task[] senderTasks = new Task[senderCount];
+                for (int i = 0; i < senderTasks.Length; ++i)
+                {
+                    Sender sender = new Sender(channel, logger, 16, (byte)(i + 1), new Delay(2, 1));
+                    senderTasks[i] = sender.RunAsync(cts.Token);
+                }
 
                 Thread.Sleep(duration);
 
                 cts.Cancel();
-                senderTask.Wait();
+                Task.WaitAll(senderTasks);
 
                 channel.Dispose();
                 receiverTask.Wait();
