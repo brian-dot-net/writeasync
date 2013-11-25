@@ -12,10 +12,12 @@ namespace CommSample
     internal sealed class Receiver
     {
         private readonly MemoryChannel channel;
+        private readonly Logger logger;
 
-        public Receiver(MemoryChannel channel)
+        public Receiver(MemoryChannel channel, Logger logger)
         {
             this.channel = channel;
+            this.logger = logger;
         }
 
         public Task RunAsync()

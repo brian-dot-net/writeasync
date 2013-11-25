@@ -12,10 +12,12 @@ namespace CommSample
     internal sealed class Sender
     {
         private readonly MemoryChannel channel;
+        private readonly Logger logger;
 
-        public Sender(MemoryChannel channel)
+        public Sender(MemoryChannel channel, Logger logger)
         {
             this.channel = channel;
+            this.logger = logger;
         }
 
         public Task RunAsync()
