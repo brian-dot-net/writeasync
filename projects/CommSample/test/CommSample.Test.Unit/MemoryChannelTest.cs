@@ -21,10 +21,7 @@ namespace CommSample.Test.Unit
             MemoryChannel channel = new MemoryChannel();
 
             byte[] receiveBuffer = new byte[3];
-            Task<int> receiveTask = channel.ReceiveAsync(receiveBuffer);
-
-            Assert.False(receiveTask.IsCompleted);
-            Assert.False(receiveTask.IsFaulted);
+            Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
             byte[] sendBuffer = new byte[] { 1, 2, 3 };
             channel.Send(sendBuffer);
@@ -40,10 +37,7 @@ namespace CommSample.Test.Unit
             MemoryChannel channel = new MemoryChannel();
 
             byte[] receiveBuffer = new byte[3];
-            Task<int> receiveTask = channel.ReceiveAsync(receiveBuffer);
-
-            Assert.False(receiveTask.IsCompleted);
-            Assert.False(receiveTask.IsFaulted);
+            Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
             byte[] sendBuffer = new byte[] { 1, 2 };
             channel.Send(sendBuffer);
@@ -59,10 +53,7 @@ namespace CommSample.Test.Unit
             MemoryChannel channel = new MemoryChannel();
 
             byte[] receiveBuffer = new byte[3];
-            Task<int> receiveTask = channel.ReceiveAsync(receiveBuffer);
-
-            Assert.False(receiveTask.IsCompleted);
-            Assert.False(receiveTask.IsFaulted);
+            Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
             byte[] sendBuffer = new byte[] { 1, 2, 3, 4 };
             channel.Send(sendBuffer);
@@ -70,6 +61,13 @@ namespace CommSample.Test.Unit
             Assert.Equal(TaskStatus.RanToCompletion, receiveTask.Status);
             Assert.Equal(3, receiveTask.Result);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
+        }
+
+        private static Task<TResult> AssertTaskPending<TResult>(Task<TResult> task)
+        {
+            Assert.False(task.IsCompleted, "Task should not be completed.");
+            Assert.False(task.IsFaulted, "Task should not be faulted: " + task.Exception);
+            return task;
         }
     }
 }
