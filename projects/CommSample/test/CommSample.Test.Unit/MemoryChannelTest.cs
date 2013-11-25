@@ -162,6 +162,30 @@ namespace CommSample.Test.Unit
             AssertTaskPending(channel.ReceiveAsync(receiveBuffer3));
         }
 
+        [Fact]
+        public void Pending_receive_completes_after_send_with_equal_data_size_followed_by_another_send_and_receive()
+        {
+            MemoryChannel channel = new MemoryChannel();
+
+            byte[] receiveBuffer = new byte[3];
+            Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
+
+            byte[] sendBuffer = new byte[] { 1, 2, 3 };
+            channel.Send(sendBuffer);
+
+            AssertTaskCompleted(3, receiveTask);
+            Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
+
+            byte[] receiveBuffer2 = new byte[3];
+            Task<int> receiveTask2 = AssertTaskPending(channel.ReceiveAsync(receiveBuffer2));
+
+            byte[] sendBuffer2 = new byte[] { 4, 5, 6 };
+            channel.Send(sendBuffer2);
+
+            AssertTaskCompleted(3, receiveTask2);
+            Assert.Equal(new byte[] { 4, 5, 6 }, receiveBuffer2);
+        }
+
         private static Task<TResult> AssertTaskPending<TResult>(Task<TResult> task)
         {
             Assert.False(task.IsCompleted, "Task should not be completed.");
