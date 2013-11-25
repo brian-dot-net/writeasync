@@ -27,8 +27,8 @@ namespace CommSample
 
         public void Send(byte[] buffer)
         {
-            buffer.CopyTo(this.pendingReceiveBuffer, 0);
             int bytesReceived = Math.Min(this.pendingReceiveBuffer.Length, buffer.Length);
+            Array.Copy(buffer, 0, this.pendingReceiveBuffer, 0, bytesReceived);
             this.pendingReceive.SetResult(bytesReceived);
         }
     }
