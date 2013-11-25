@@ -47,7 +47,7 @@ namespace CommSample
             }
 
             Task<int> task = this.pendingReceive.Task;
-            if (this.pendingReceive.TryComplete())
+            if (this.pendingReceive.TryComplete(false))
             {
                 this.pendingReceive = null;
             }
@@ -72,7 +72,7 @@ namespace CommSample
 
             if (bytesReceived > 0)
             {
-                if (this.pendingReceive.TryComplete())
+                if (this.pendingReceive.TryComplete(false))
                 {
                     this.pendingReceive = null;
                 }
@@ -101,7 +101,16 @@ namespace CommSample
         {
             if (disposing)
             {
-                this.disposed = true;
+                if (!this.disposed)
+                {
+                    if (this.pendingReceive != null)
+                    {
+                        this.pendingReceive.TryComplete(true);
+                        this.pendingReceive = null;
+                    }
+
+                    this.disposed = true;
+                }
             }
         }
 
@@ -143,10 +152,10 @@ namespace CommSample
                 return bytesReceived;
             }
 
-            public bool TryComplete()
+            public bool TryComplete(bool disposing)
             {
                 bool succeeded = false;
-                if (this.totalBytesReceived > 0)
+                if (disposing || (this.totalBytesReceived > 0))
                 {
                     succeeded = true;
                     this.task.SetResult(this.totalBytesReceived);
