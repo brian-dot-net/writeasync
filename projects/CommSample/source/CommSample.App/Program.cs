@@ -6,6 +6,7 @@
 
 namespace CommSample
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -14,6 +15,14 @@ namespace CommSample
         private static void Main(string[] args)
         {
             Logger logger = new Logger();
+            TimeSpan duration = TimeSpan.FromSeconds(5.0d);
+            logger.WriteLine("Receive loop with one sender, {0:0.0} sec...", duration.TotalSeconds);
+            Receive_loop_with_one_sender(logger, duration);
+            logger.WriteLine("Done.");
+        }
+
+        private static void Receive_loop_with_one_sender(Logger logger, TimeSpan duration)
+        {
             MemoryChannel channel = new MemoryChannel();
 
             Receiver receiver = new Receiver(channel, logger, 16);
@@ -24,14 +33,14 @@ namespace CommSample
                 Task receiverTask = receiver.RunAsync();
                 Task senderTask = sender.RunAsync(cts.Token);
 
+                Thread.Sleep(duration);
+
                 cts.Cancel();
                 senderTask.Wait();
 
                 channel.Dispose();
                 receiverTask.Wait();
             }
-
-            logger.WriteLine("Done.");
         }
     }
 }
