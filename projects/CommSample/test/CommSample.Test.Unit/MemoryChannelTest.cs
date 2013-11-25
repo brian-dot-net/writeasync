@@ -300,6 +300,14 @@ namespace CommSample.Test.Unit
             Assert.Equal(new byte[] { 1 }, receiveBuffer);
         }
 
+        [Fact]
+        public void Dispose_is_idempotent()
+        {
+            MemoryChannel channel = new MemoryChannel();
+            channel.Dispose();
+            channel.Dispose();
+        }
+
         private static Task<TResult> AssertTaskPending<TResult>(Task<TResult> task)
         {
             Assert.False(task.IsCompleted, "Task should not be completed.");

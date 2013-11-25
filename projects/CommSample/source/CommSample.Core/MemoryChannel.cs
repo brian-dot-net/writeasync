@@ -10,7 +10,7 @@ namespace CommSample
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public class MemoryChannel
+    public class MemoryChannel : IDisposable
     {
         private readonly LinkedList<byte[]> excessBuffers;
 
@@ -19,6 +19,12 @@ namespace CommSample
         public MemoryChannel()
         {
             this.excessBuffers = new LinkedList<byte[]>();
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public Task<int> ReceiveAsync(byte[] buffer)
@@ -85,6 +91,14 @@ namespace CommSample
                 {
                     this.excessBuffers.AddLast(excess);
                 }
+            }
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // TODO
             }
         }
 
