@@ -115,13 +115,25 @@ namespace CommSample
             {
                 if (!this.disposed)
                 {
-                    if (this.pendingReceive != null)
+                    ReceiveRequest requestToComplete = null;
+                    lock (this.excessBuffers)
                     {
-                        this.pendingReceive.Complete();
-                        this.pendingReceive = null;
+                        if (!this.disposed)
+                        {
+                            if (this.pendingReceive != null)
+                            {
+                                requestToComplete = this.pendingReceive;
+                                this.pendingReceive = null;
+                            }
+
+                            this.disposed = true;
+                        }
                     }
 
-                    this.disposed = true;
+                    if (requestToComplete != null)
+                    {
+                        requestToComplete.Complete();
+                    }
                 }
             }
         }
