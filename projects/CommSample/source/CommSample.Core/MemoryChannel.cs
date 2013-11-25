@@ -15,6 +15,7 @@ namespace CommSample
         private readonly LinkedList<byte[]> excessBuffers;
 
         private ReceiveRequest pendingReceive;
+        private bool disposed;
 
         public MemoryChannel()
         {
@@ -29,6 +30,7 @@ namespace CommSample
 
         public Task<int> ReceiveAsync(byte[] buffer)
         {
+            this.ThrowIfDisposed();
             if (this.pendingReceive != null)
             {
                 throw new InvalidOperationException("A receive operation is already in progress.");
@@ -55,6 +57,7 @@ namespace CommSample
 
         public void Send(byte[] buffer)
         {
+            this.ThrowIfDisposed();
             int bytesReceived;
             if (this.pendingReceive != null)
             {
@@ -98,7 +101,15 @@ namespace CommSample
         {
             if (disposing)
             {
-                // TODO
+                this.disposed = true;
+            }
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new ObjectDisposedException("MemoryChannel");
             }
         }
 
