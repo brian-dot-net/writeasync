@@ -42,13 +42,7 @@ namespace CommSample
                 remainingBytes -= bytesReceived;
                 Array.Copy(excess, 0, this.pendingReceiveBuffer, totalBytesReceived, bytesReceived);
                 totalBytesReceived += bytesReceived;
-                int excessBytes = excess.Length - bytesReceived;
-                if (excessBytes > 0)
-                {
-                    byte[] newExcess = new byte[excessBytes];
-                    Array.Copy(excess, bytesReceived, newExcess, 0, excessBytes);
-                    this.excessBuffers.AddFirst(newExcess);
-                }
+                this.AddExcess(excess, bytesReceived, true);
             }
 
             Task<int> task = this.pendingReceive.Task;
@@ -74,18 +68,30 @@ namespace CommSample
                 bytesReceived = 0;
             }
 
-            int remainingBytes = buffer.Length - bytesReceived;
-            if (remainingBytes > 0)
-            {
-                byte[] excess = new byte[remainingBytes];
-                Array.Copy(buffer, bytesReceived, excess, 0, remainingBytes);
-                this.excessBuffers.AddLast(excess);
-            }
+            this.AddExcess(buffer, bytesReceived, false);
 
             if (bytesReceived > 0)
             {
                 this.pendingReceive.SetResult(bytesReceived);
                 this.pendingReceive = null;
+            }
+        }
+
+        private void AddExcess(byte[] buffer, int bytesReceived, bool addFirst)
+        {
+            int remainingBytes = buffer.Length - bytesReceived;
+            if (remainingBytes > 0)
+            {
+                byte[] excess = new byte[remainingBytes];
+                Array.Copy(buffer, bytesReceived, excess, 0, remainingBytes);
+                if (addFirst)
+                {
+                    this.excessBuffers.AddFirst(excess);
+                }
+                else
+                {
+                    this.excessBuffers.AddLast(excess);
+                }
             }
         }
     }
