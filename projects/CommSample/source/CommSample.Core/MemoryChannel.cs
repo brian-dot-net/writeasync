@@ -7,16 +7,19 @@
 namespace CommSample
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public class MemoryChannel
     {
+        private readonly LinkedList<byte[]> excessBuffers;
+
         private TaskCompletionSource<int> pendingReceive;
         private byte[] pendingReceiveBuffer;
-        private byte[] excess;
 
         public MemoryChannel()
         {
+            this.excessBuffers = new LinkedList<byte[]>();
         }
 
         public Task<int> ReceiveAsync(byte[] buffer)
@@ -24,23 +27,28 @@ namespace CommSample
             this.pendingReceive = new TaskCompletionSource<int>();
             this.pendingReceiveBuffer = buffer;
 
-            if (this.excess != null)
+            int totalBytesReceived = 0;
+            int remainingBytes = buffer.Length;
+            while ((this.excessBuffers.Count > 0) && (remainingBytes > 0))
             {
-                int bytesReceived = Math.Min(this.pendingReceiveBuffer.Length, this.excess.Length);
-                Array.Copy(this.excess, 0, this.pendingReceiveBuffer, 0, bytesReceived);
-                int remainingBytes = this.excess.Length - bytesReceived;
-                if (remainingBytes > 0)
+                byte[] excess = this.excessBuffers.First.Value;
+                this.excessBuffers.RemoveFirst();
+                int bytesReceived = Math.Min(remainingBytes, excess.Length);
+                remainingBytes -= bytesReceived;
+                Array.Copy(excess, 0, this.pendingReceiveBuffer, totalBytesReceived, bytesReceived);
+                totalBytesReceived += bytesReceived;
+                int excessBytes = excess.Length - bytesReceived;
+                if (excessBytes > 0)
                 {
-                    byte[] newExcess = new byte[remainingBytes];
-                    Array.Copy(this.excess, bytesReceived, newExcess, 0, remainingBytes);
-                    this.excess = newExcess;
+                    byte[] newExcess = new byte[excessBytes];
+                    Array.Copy(excess, bytesReceived, newExcess, 0, excessBytes);
+                    this.excessBuffers.AddFirst(newExcess);
                 }
-                else
-                {
-                    this.excess = null;
-                }
+            }
 
-                this.pendingReceive.SetResult(bytesReceived);
+            if (totalBytesReceived > 0)
+            {
+                this.pendingReceive.SetResult(totalBytesReceived);
             }
 
             return this.pendingReceive.Task;
@@ -62,8 +70,9 @@ namespace CommSample
             int remainingBytes = buffer.Length - bytesReceived;
             if (remainingBytes > 0)
             {
-                this.excess = new byte[remainingBytes];
-                Array.Copy(buffer, bytesReceived, this.excess, 0, remainingBytes);
+                byte[] excess = new byte[remainingBytes];
+                Array.Copy(buffer, bytesReceived, excess, 0, remainingBytes);
+                this.excessBuffers.AddLast(excess);
             }
 
             if (bytesReceived > 0)
