@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="Logger.cs" />
     <Compile Include="Receiver.cs" />
+    <Compile Include="Delay.cs" />
     <Compile Include="Sender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

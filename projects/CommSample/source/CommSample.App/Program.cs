@@ -6,6 +6,7 @@
 
 namespace CommSample
 {
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal sealed class Program
@@ -16,14 +17,19 @@ namespace CommSample
             MemoryChannel channel = new MemoryChannel();
 
             Receiver receiver = new Receiver(channel, logger, 16);
-            Sender sender = new Sender(channel, logger, 16, 1);
+            Sender sender = new Sender(channel, logger, 16, 1, new Delay(2, 1));
 
-            Task receiverTask = receiver.RunAsync();
-            Task senderTask = sender.RunAsync();
+            using (CancellationTokenSource cts = new CancellationTokenSource())
+            {
+                Task receiverTask = receiver.RunAsync();
+                Task senderTask = sender.RunAsync(cts.Token);
 
-            channel.Dispose();
+                cts.Cancel();
+                senderTask.Wait();
 
-            Task.WaitAll(receiverTask, senderTask);
+                channel.Dispose();
+                receiverTask.Wait();
+            }
 
             logger.WriteLine("Done.");
         }
