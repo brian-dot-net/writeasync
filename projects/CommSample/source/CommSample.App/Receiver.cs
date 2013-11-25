@@ -26,8 +26,17 @@ namespace CommSample
         {
             this.logger.WriteLine("Receiver starting...");
             byte[] buffer = new byte[this.bufferSize];
-            int bytesReceived = await this.channel.ReceiveAsync(buffer);
-            this.logger.WriteLine("Receiver completed. Received {0} bytes.", bytesReceived);
+
+            long totalBytes = 0;
+            int bytesRead;
+            do
+            {
+                bytesRead = await this.channel.ReceiveAsync(buffer);
+                totalBytes += bytesRead;
+            }
+            while (bytesRead > 0);
+
+            this.logger.WriteLine("Receiver completed. Received {0} bytes.", totalBytes);
         }
     }
 }
