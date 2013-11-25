@@ -13,6 +13,7 @@ namespace CommSample
     {
         private TaskCompletionSource<int> pendingReceive;
         private byte[] pendingReceiveBuffer;
+        private byte[] excess;
 
         public MemoryChannel()
         {
@@ -22,6 +23,13 @@ namespace CommSample
         {
             this.pendingReceive = new TaskCompletionSource<int>();
             this.pendingReceiveBuffer = buffer;
+
+            if (this.excess != null)
+            {
+                this.excess.CopyTo(this.pendingReceiveBuffer, 0);
+                this.pendingReceive.SetResult(this.excess.Length);
+            }
+
             return this.pendingReceive.Task;
         }
 
@@ -29,6 +37,13 @@ namespace CommSample
         {
             int bytesReceived = Math.Min(this.pendingReceiveBuffer.Length, buffer.Length);
             Array.Copy(buffer, 0, this.pendingReceiveBuffer, 0, bytesReceived);
+            int remainingBytes = buffer.Length - bytesReceived;
+            if (remainingBytes > 0)
+            {
+                this.excess = new byte[remainingBytes];
+                Array.Copy(buffer, bytesReceived, this.excess, 0, remainingBytes);
+            }
+
             this.pendingReceive.SetResult(bytesReceived);
         }
     }
