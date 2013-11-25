@@ -35,6 +35,10 @@ namespace CommSample
                     Array.Copy(this.excess, bytesReceived, newExcess, 0, remainingBytes);
                     this.excess = newExcess;
                 }
+                else
+                {
+                    this.excess = null;
+                }
 
                 this.pendingReceive.SetResult(bytesReceived);
             }
