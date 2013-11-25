@@ -30,26 +30,37 @@ namespace CommSample
 
         public Task<int> ReceiveAsync(byte[] buffer)
         {
-            this.ThrowIfDisposed();
-            if (this.pendingReceive != null)
+            Task<int> task;
+            ReceiveRequest receiveToComplete = null;
+            lock (this.excessBuffers)
             {
-                throw new InvalidOperationException("A receive operation is already in progress.");
+                this.ThrowIfDisposed();
+                if (this.pendingReceive != null)
+                {
+                    throw new InvalidOperationException("A receive operation is already in progress.");
+                }
+
+                this.pendingReceive = new ReceiveRequest(buffer);
+                task = this.pendingReceive.Task;
+
+                while ((this.excessBuffers.Count > 0) && (this.pendingReceive.RemainingBytes > 0))
+                {
+                    receiveToComplete = this.pendingReceive;
+                    byte[] excess = this.excessBuffers.First.Value;
+                    this.excessBuffers.RemoveFirst();
+                    int bytesReceived = this.pendingReceive.AddData(excess);
+                    this.AddExcess(excess, bytesReceived, true);
+                }
+
+                if (receiveToComplete != null)
+                {
+                    this.pendingReceive = null;
+                }
             }
 
-            this.pendingReceive = new ReceiveRequest(buffer);
-
-            while ((this.excessBuffers.Count > 0) && (this.pendingReceive.RemainingBytes > 0))
+            if (receiveToComplete != null)
             {
-                byte[] excess = this.excessBuffers.First.Value;
-                this.excessBuffers.RemoveFirst();
-                int bytesReceived = this.pendingReceive.AddData(excess);
-                this.AddExcess(excess, bytesReceived, true);
-            }
-
-            Task<int> task = this.pendingReceive.Task;
-            if (this.pendingReceive.TryComplete(false))
-            {
-                this.pendingReceive = null;
+                receiveToComplete.Complete();
             }
 
             return task;
@@ -72,10 +83,8 @@ namespace CommSample
 
             if (bytesReceived > 0)
             {
-                if (this.pendingReceive.TryComplete(false))
-                {
-                    this.pendingReceive = null;
-                }
+                this.pendingReceive.Complete();
+                this.pendingReceive = null;
             }
         }
 
@@ -105,7 +114,7 @@ namespace CommSample
                 {
                     if (this.pendingReceive != null)
                     {
-                        this.pendingReceive.TryComplete(true);
+                        this.pendingReceive.Complete();
                         this.pendingReceive = null;
                     }
 
@@ -152,16 +161,9 @@ namespace CommSample
                 return bytesReceived;
             }
 
-            public bool TryComplete(bool disposing)
+            public void Complete()
             {
-                bool succeeded = false;
-                if (disposing || (this.totalBytesReceived > 0))
-                {
-                    succeeded = true;
-                    this.task.SetResult(this.totalBytesReceived);
-                }
-
-                return succeeded;
+                this.task.SetResult(this.totalBytesReceived);
             }
         }
     }
