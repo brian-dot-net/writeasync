@@ -48,8 +48,17 @@ namespace CommSample
 
         public void Send(byte[] buffer)
         {
-            int bytesReceived = Math.Min(this.pendingReceiveBuffer.Length, buffer.Length);
-            Array.Copy(buffer, 0, this.pendingReceiveBuffer, 0, bytesReceived);
+            int bytesReceived;
+            if (this.pendingReceive != null)
+            {
+                bytesReceived = Math.Min(this.pendingReceiveBuffer.Length, buffer.Length);
+                Array.Copy(buffer, 0, this.pendingReceiveBuffer, 0, bytesReceived);
+            }
+            else
+            {
+                bytesReceived = 0;
+            }
+
             int remainingBytes = buffer.Length - bytesReceived;
             if (remainingBytes > 0)
             {
@@ -57,7 +66,10 @@ namespace CommSample
                 Array.Copy(buffer, bytesReceived, this.excess, 0, remainingBytes);
             }
 
-            this.pendingReceive.SetResult(bytesReceived);
+            if (bytesReceived > 0)
+            {
+                this.pendingReceive.SetResult(bytesReceived);
+            }
         }
     }
 }
