@@ -34,14 +34,7 @@ namespace CommSample
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 DataOracle oracle = new DataOracle();
-                Sender[] senders = new Sender[this.senderCount];
-                for (int i = 0; i < senders.Length; ++i)
-                {
-                    int bufferSize = sentDataSizes[i % sentDataSizes.Length];
-                    byte fill = (byte)(i + 1);
-                    senders[i] = new Sender(channel, this.logger, bufferSize, fill, new Delay(2, 1));
-                    oracle.AddPattern(fill, bufferSize);
-                }
+                Sender[] senders = CreateSenders(channel, sentDataSizes, oracle);
 
                 ValidatingReceiver receiver = new ValidatingReceiver(channel, this.logger, 16, oracle);
 
@@ -61,23 +54,42 @@ namespace CommSample
                 channel.Dispose();
                 receiverTask.Wait();
 
-                long totalSent = 0;
-                foreach (Task<long> senderTask in senderTasks)
-                {
-                    totalSent += senderTask.Result;
-                }
-
-                if (totalSent != receiverTask.Result)
-                {
-                    throw new InvalidOperationException(string.Format(
-                        CultureInfo.InvariantCulture,
-                        "Data corruption detected; {0} bytes sent but {1} bytes received.",
-                        totalSent,
-                        receiverTask.Result));
-                }
+                ValidateTransferredByteCount(senderTasks, receiverTask);
             }
 
             this.logger.WriteLine("Done.");
+        }
+
+        private static void ValidateTransferredByteCount(Task<long>[] senderTasks, Task<long> receiverTask)
+        {
+            long totalSent = 0;
+            foreach (Task<long> senderTask in senderTasks)
+            {
+                totalSent += senderTask.Result;
+            }
+
+            if (totalSent != receiverTask.Result)
+            {
+                throw new InvalidOperationException(string.Format(
+                    CultureInfo.InvariantCulture,
+                    "Data corruption detected; {0} bytes sent but {1} bytes received.",
+                    totalSent,
+                    receiverTask.Result));
+            }
+        }
+
+        private Sender[] CreateSenders(MemoryChannel channel, int[] sentDataSizes, DataOracle oracle)
+        {
+            Sender[] senders = new Sender[this.senderCount];
+            for (int i = 0; i < senders.Length; ++i)
+            {
+                int bufferSize = sentDataSizes[i % sentDataSizes.Length];
+                byte fill = (byte)(i + 1);
+                senders[i] = new Sender(channel, this.logger, bufferSize, fill, new Delay(2, 1));
+                oracle.AddPattern(fill, bufferSize);
+            }
+
+            return senders;
         }
     }
 }
