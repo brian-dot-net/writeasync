@@ -26,20 +26,32 @@ namespace CommSample
         private static void Receive_loop_with_N_senders(Logger logger, int senderCount, TimeSpan duration)
         {
             MemoryChannel channel = new MemoryChannel();
-
-            Receiver receiver = new Receiver(channel, logger, 16);
-
             int[] sentDataSizes = new int[] { 11, 19, 29, 41, 53, 71 };
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
-                Task receiverTask = receiver.RunAsync();
-                Task[] senderTasks = new Task[senderCount];
+                DataOracle oracle = new DataOracle();
+                Sender[] senders = new Sender[senderCount];
+                for (int i = 0; i < senders.Length; ++i)
+                {
+                    int bufferSize = sentDataSizes[i % sentDataSizes.Length];
+                    byte fill = (byte)(i + 1);
+                    senders[i] = new Sender(channel, logger, bufferSize, fill, new Delay(2, 1));
+                    oracle.AddPattern(fill, bufferSize);
+                }
+
+                Receiver receiver = new Receiver(channel, logger, 16);
+                receiver.DataReceived += delegate(object sender, DataEventArgs e)
+                {
+                };
+
+                Task[] senderTasks = new Task[senders.Length];
                 for (int i = 0; i < senderTasks.Length; ++i)
                 {
-                    Sender sender = new Sender(channel, logger, sentDataSizes[i % sentDataSizes.Length], (byte)(i + 1), new Delay(2, 1));
-                    senderTasks[i] = sender.RunAsync(cts.Token);
+                    senderTasks[i] = senders[i].RunAsync(cts.Token);
                 }
+
+                Task receiverTask = receiver.RunAsync();
 
                 Thread.Sleep(duration);
 
