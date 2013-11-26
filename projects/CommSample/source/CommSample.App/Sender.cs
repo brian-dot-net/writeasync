@@ -31,19 +31,21 @@ namespace CommSample
         {
             this.logger.WriteLine("Sender B={0}/F=0x{1:x} starting...", this.bufferSize, this.fill);
             long totalBytes = 0;
-            await Task.Factory.StartNew(() => totalBytes = this.RunInner(token), TaskCreationOptions.LongRunning);
-            return totalBytes;
-        }
-
-        private long RunInner(CancellationToken token)
-        {
-            long totalBytes = 0;
             byte[] buffer = new byte[this.bufferSize];
             for (int i = 0; i < buffer.Length; ++i)
             {
                 buffer[i] = this.fill;
             }
 
+            await Task.Factory.StartNew(() => totalBytes = this.RunInner(buffer, token), TaskCreationOptions.LongRunning);
+
+            this.logger.WriteLine("Sender B={0}/F=0x{1:x} completed. Sent {2} bytes.", this.bufferSize, this.fill, totalBytes);
+            return totalBytes;
+        }
+
+        private long RunInner(byte[] buffer, CancellationToken token)
+        {
+            long totalBytes = 0;
             while (!token.IsCancellationRequested)
             {
                 this.channel.Send(buffer);
@@ -51,7 +53,6 @@ namespace CommSample
                 this.delay.Next();
             }
 
-            this.logger.WriteLine("Sender B={0}/F=0x{1:x} completed. Sent {2} bytes.", this.bufferSize, this.fill, totalBytes);
             return totalBytes;
         }
     }
