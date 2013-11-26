@@ -22,6 +22,8 @@ namespace CommSample
             this.bufferSize = bufferSize;
         }
 
+        public event EventHandler<DataEventArgs> DataReceived;
+
         public async Task RunAsync()
         {
             this.logger.WriteLine("Receiver starting...");
@@ -32,11 +34,21 @@ namespace CommSample
             do
             {
                 bytesRead = await this.channel.ReceiveAsync(buffer);
+                this.OnDataReceived(buffer);
                 totalBytes += bytesRead;
             }
             while (bytesRead > 0);
 
             this.logger.WriteLine("Receiver completed. Received {0} bytes.", totalBytes);
+        }
+
+        private void OnDataReceived(byte[] buffer)
+        {
+            EventHandler<DataEventArgs> handler = this.DataReceived;
+            if (handler != null)
+            {
+                handler(this, new DataEventArgs(buffer));
+            }
         }
     }
 }
