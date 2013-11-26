@@ -46,6 +46,11 @@ namespace CommSample
 
                 ++this.lastCount;
             }
+
+            if (e.BytesRead == 0)
+            {
+                this.oracle.VerifyLastSeen(this.lastSeen, this.lastCount);
+            }
         }
     }
 }
