@@ -7,7 +7,6 @@
 namespace CommSample
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.Threading;
     using System.Threading.Tasks;
@@ -18,10 +17,13 @@ namespace CommSample
         {
             Logger logger = new Logger();
             TimeSpan duration = TimeSpan.FromSeconds(5.0d);
-            int senderCount = 2;
-            logger.WriteLine("Receive loop with {0} senders, {1:0.0} sec...", senderCount, duration.TotalSeconds);
-            Receive_loop_with_N_senders(logger, senderCount, duration);
-            logger.WriteLine("Done.");
+            for (int i = 1; i <= 8; ++i)
+            {
+                int senderCount = i;
+                logger.WriteLine("Receive loop with {0} senders, {1:0.0} sec...", i, duration.TotalSeconds);
+                Receive_loop_with_N_senders(logger, senderCount, duration);
+                logger.WriteLine("Done.");
+            }
         }
 
         private static void Receive_loop_with_N_senders(Logger logger, int senderCount, TimeSpan duration)
