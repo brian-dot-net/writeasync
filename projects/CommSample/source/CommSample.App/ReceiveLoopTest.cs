@@ -16,17 +16,19 @@ namespace CommSample
         private readonly Logger logger;
         private readonly int senderCount;
         private readonly TimeSpan duration;
+        private readonly bool sendBeforeReceive;
 
-        public ReceiveLoopTest(Logger logger, int senderCount, TimeSpan duration)
+        public ReceiveLoopTest(Logger logger, int senderCount, TimeSpan duration, bool sendBeforeReceive)
         {
             this.logger = logger;
             this.senderCount = senderCount;
             this.duration = duration;
+            this.sendBeforeReceive = sendBeforeReceive;
         }
 
         public void Run()
         {
-            this.logger.WriteLine("Receive loop with {0} senders, {1:0.0} sec...", this.senderCount, this.duration.TotalSeconds);
+            this.logger.WriteLine("Receive loop with {0} senders, {1:0.0} sec, send before receive={2}...", this.senderCount, this.duration.TotalSeconds, this.sendBeforeReceive);
 
             MemoryChannel channel = new MemoryChannel();
             int[] sentDataSizes = new int[] { 11, 19, 29, 41, 53, 71 };
@@ -34,18 +36,12 @@ namespace CommSample
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 DataOracle oracle = new DataOracle();
-                Sender[] senders = CreateSenders(channel, sentDataSizes, oracle);
+                Sender[] senders = this.CreateSenders(channel, sentDataSizes, oracle);
 
                 ValidatingReceiver receiver = new ValidatingReceiver(channel, this.logger, 16, oracle);
 
                 Task<long>[] senderTasks = new Task<long>[senders.Length];
-                for (int i = 0; i < senderTasks.Length; ++i)
-                {
-                    senderTasks[i] = senders[i].RunAsync(cts.Token);
-                }
-
-                Task<long> receiverTask = receiver.RunAsync();
-
+                Task<long> receiverTask = this.StartSendersAndReceiver(cts.Token, senders, receiver, senderTasks);
                 Thread.Sleep(this.duration);
 
                 cts.Cancel();
@@ -58,6 +54,14 @@ namespace CommSample
             }
 
             this.logger.WriteLine("Done.");
+        }
+
+        private static void StartSenders(CancellationToken token, Sender[] senders, Task<long>[] senderTasks)
+        {
+            for (int i = 0; i < senderTasks.Length; ++i)
+            {
+                senderTasks[i] = senders[i].RunAsync(token);
+            }
         }
 
         private static void ValidateTransferredByteCount(Task<long>[] senderTasks, Task<long> receiverTask)
@@ -76,6 +80,23 @@ namespace CommSample
                     totalSent,
                     receiverTask.Result));
             }
+        }
+
+        private Task<long> StartSendersAndReceiver(CancellationToken token, Sender[] senders, ValidatingReceiver receiver, Task<long>[] senderTasks)
+        {
+            Task<long> receiverTask;
+            if (this.sendBeforeReceive)
+            {
+                StartSenders(token, senders, senderTasks);
+                receiverTask = receiver.RunAsync();
+            }
+            else
+            {
+                receiverTask = receiver.RunAsync();
+                StartSenders(token, senders, senderTasks);
+            }
+
+            return receiverTask;
         }
 
         private Sender[] CreateSenders(MemoryChannel channel, int[] sentDataSizes, DataOracle oracle)

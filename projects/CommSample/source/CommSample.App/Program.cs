@@ -17,7 +17,7 @@ namespace CommSample
             for (int i = 1; i <= 8; ++i)
             {
                 int senderCount = i;
-                ReceiveLoopTest test = new ReceiveLoopTest(logger, senderCount, duration);
+                ReceiveLoopTest test = new ReceiveLoopTest(logger, senderCount, duration, true);
                 test.Run();
             }
         }
