@@ -34,7 +34,7 @@ namespace CommSample
             do
             {
                 bytesRead = await this.channel.ReceiveAsync(buffer);
-                this.OnDataReceived(buffer);
+                this.OnDataReceived(buffer, bytesRead);
                 totalBytes += bytesRead;
             }
             while (bytesRead > 0);
@@ -42,12 +42,12 @@ namespace CommSample
             this.logger.WriteLine("Receiver completed. Received {0} bytes.", totalBytes);
         }
 
-        private void OnDataReceived(byte[] buffer)
+        private void OnDataReceived(byte[] buffer, int bytesRead)
         {
             EventHandler<DataEventArgs> handler = this.DataReceived;
             if (handler != null)
             {
-                handler(this, new DataEventArgs(buffer));
+                handler(this, new DataEventArgs(buffer, bytesRead));
             }
         }
     }
