@@ -8,6 +8,7 @@ namespace CommSample
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -62,13 +63,13 @@ namespace CommSample
                     }
                 };
 
-                Task[] senderTasks = new Task[senders.Length];
+                Task<long>[] senderTasks = new Task<long>[senders.Length];
                 for (int i = 0; i < senderTasks.Length; ++i)
                 {
                     senderTasks[i] = senders[i].RunAsync(cts.Token);
                 }
 
-                Task receiverTask = receiver.RunAsync();
+                Task<long> receiverTask = receiver.RunAsync();
 
                 Thread.Sleep(duration);
 
@@ -77,6 +78,21 @@ namespace CommSample
 
                 channel.Dispose();
                 receiverTask.Wait();
+
+                long totalSent = 0;
+                foreach (Task<long> senderTask in senderTasks)
+                {
+                    totalSent += senderTask.Result;
+                }
+
+                if (totalSent != receiverTask.Result)
+                {
+                    throw new InvalidOperationException(string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Data corruption detected; {0} bytes sent but {1} bytes received.",
+                        totalSent,
+                        receiverTask.Result));
+                }
             }
         }
     }

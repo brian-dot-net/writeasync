@@ -24,7 +24,7 @@ namespace CommSample
 
         public event EventHandler<DataEventArgs> DataReceived;
 
-        public async Task RunAsync()
+        public async Task<long> RunAsync()
         {
             this.logger.WriteLine("Receiver starting...");
             byte[] buffer = new byte[this.bufferSize];
@@ -40,6 +40,7 @@ namespace CommSample
             while (bytesRead > 0);
 
             this.logger.WriteLine("Receiver completed. Received {0} bytes.", totalBytes);
+            return totalBytes;
         }
 
         private void OnDataReceived(byte[] buffer, int bytesRead)
