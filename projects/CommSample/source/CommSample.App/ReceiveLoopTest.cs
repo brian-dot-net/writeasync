@@ -43,27 +43,7 @@ namespace CommSample
                     oracle.AddPattern(fill, bufferSize);
                 }
 
-                Receiver receiver = new Receiver(channel, this.logger, 16);
-                byte lastSeen = 0;
-                int lastCount = 0;
-                receiver.DataReceived += delegate(object sender, DataEventArgs e)
-                {
-                    for (int i = 0; i < e.BytesRead; ++i)
-                    {
-                        if (lastSeen != e.Buffer[i])
-                        {
-                            if (lastSeen != 0)
-                            {
-                                oracle.VerifyLastSeen(lastSeen, lastCount);
-                            }
-
-                            lastSeen = e.Buffer[i];
-                            lastCount = 0;
-                        }
-
-                        ++lastCount;
-                    }
-                };
+                ValidatingReceiver receiver = new ValidatingReceiver(channel, this.logger, 16, oracle);
 
                 Task<long>[] senderTasks = new Task<long>[senders.Length];
                 for (int i = 0; i < senderTasks.Length; ++i)

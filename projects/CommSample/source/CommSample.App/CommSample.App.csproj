@@ -37,6 +37,7 @@
     <Compile Include="DataEventArgs.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ReceiveLoopTest.cs" />
+    <Compile Include="ValidatingReceiver.cs" />
     <Compile Include="Receiver.cs" />
     <Compile Include="Delay.cs" />
     <Compile Include="DataOracle.cs" />
