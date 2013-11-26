@@ -41,8 +41,25 @@ namespace CommSample
                 }
 
                 Receiver receiver = new Receiver(channel, logger, 16);
+                byte lastSeen = 0;
+                int lastCount = 0;
                 receiver.DataReceived += delegate(object sender, DataEventArgs e)
                 {
+                    for (int i = 0; i < e.BytesRead; ++i)
+                    {
+                        if (lastSeen != e.Buffer[i])
+                        {
+                            if (lastSeen != 0)
+                            {
+                                oracle.VerifyLastSeen(lastSeen, lastCount);
+                            }
+
+                            lastSeen = e.Buffer[i];
+                            lastCount = 0;
+                        }
+
+                        ++lastCount;
+                    }
                 };
 
                 Task[] senderTasks = new Task[senders.Length];
