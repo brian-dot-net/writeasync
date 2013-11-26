@@ -29,13 +29,15 @@ namespace CommSample
 
             Receiver receiver = new Receiver(channel, logger, 16);
 
+            int[] sentDataSizes = new int[] { 11, 19, 29, 41, 53, 71 };
+
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 Task receiverTask = receiver.RunAsync();
                 Task[] senderTasks = new Task[senderCount];
                 for (int i = 0; i < senderTasks.Length; ++i)
                 {
-                    Sender sender = new Sender(channel, logger, 16, (byte)(i + 1), new Delay(2, 1));
+                    Sender sender = new Sender(channel, logger, sentDataSizes[i % sentDataSizes.Length], (byte)(i + 1), new Delay(2, 1));
                     senderTasks[i] = sender.RunAsync(cts.Token);
                 }
 
