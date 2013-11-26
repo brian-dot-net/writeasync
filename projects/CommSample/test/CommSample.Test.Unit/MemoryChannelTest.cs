@@ -24,8 +24,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer = new byte[3];
             Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3 });
 
             AssertTaskCompleted(3, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
@@ -39,8 +38,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer = new byte[3];
             Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
-            byte[] sendBuffer = new byte[] { 1, 2 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2 });
 
             AssertTaskCompleted(2, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 0 }, receiveBuffer);
@@ -54,8 +52,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer = new byte[3];
             Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3, 4 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3, 4 });
 
             AssertTaskCompleted(3, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
@@ -69,8 +66,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer = new byte[3];
             Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3, 4 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3, 4 });
 
             AssertTaskCompleted(3, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
@@ -88,8 +84,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer = new byte[3];
             Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3, 4, 5 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3, 4, 5 });
 
             AssertTaskCompleted(3, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
@@ -107,8 +102,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer = new byte[3];
             Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3, 4, 5 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3, 4, 5 });
 
             AssertTaskCompleted(3, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
@@ -126,8 +120,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer = new byte[3];
             Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3, 4, 5, 6 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3, 4, 5, 6 });
 
             AssertTaskCompleted(3, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
@@ -149,8 +142,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer = new byte[3];
             Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3, 4, 5, 6 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3, 4, 5, 6 });
 
             AssertTaskCompleted(3, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
@@ -171,8 +163,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer = new byte[3];
             Task<int> receiveTask = AssertTaskPending(channel.ReceiveAsync(receiveBuffer));
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3 });
 
             AssertTaskCompleted(3, receiveTask);
             Assert.Equal(new byte[] { 1, 2, 3 }, receiveBuffer);
@@ -180,8 +171,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer2 = new byte[3];
             Task<int> receiveTask2 = AssertTaskPending(channel.ReceiveAsync(receiveBuffer2));
 
-            byte[] sendBuffer2 = new byte[] { 4, 5, 6 };
-            channel.Send(sendBuffer2);
+            channel.Send(new byte[] { 4, 5, 6 });
 
             AssertTaskCompleted(3, receiveTask2);
             Assert.Equal(new byte[] { 4, 5, 6 }, receiveBuffer2);
@@ -192,8 +182,7 @@ namespace CommSample.Test.Unit
         {
             MemoryChannel channel = new MemoryChannel();
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3 });
 
             byte[] receiveBuffer = new byte[3];
             AssertTaskCompleted(3, channel.ReceiveAsync(receiveBuffer));
@@ -205,8 +194,7 @@ namespace CommSample.Test.Unit
         {
             MemoryChannel channel = new MemoryChannel();
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3 });
 
             byte[] receiveBuffer = new byte[2];
             AssertTaskCompleted(2, channel.ReceiveAsync(receiveBuffer));
@@ -218,8 +206,7 @@ namespace CommSample.Test.Unit
         {
             MemoryChannel channel = new MemoryChannel();
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1, 2, 3 });
 
             byte[] receiveBuffer = new byte[4];
             AssertTaskCompleted(3, channel.ReceiveAsync(receiveBuffer));
@@ -231,11 +218,8 @@ namespace CommSample.Test.Unit
         {
             MemoryChannel channel = new MemoryChannel();
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3 };
-            channel.Send(sendBuffer);
-
-            byte[] sendBuffer2 = new byte[] { 4, 5, 6 };
-            channel.Send(sendBuffer2);
+            channel.Send(new byte[] { 1, 2, 3 });
+            channel.Send(new byte[] { 4, 5, 6 });
 
             byte[] receiveBuffer = new byte[6];
             AssertTaskCompleted(6, channel.ReceiveAsync(receiveBuffer));
@@ -247,11 +231,8 @@ namespace CommSample.Test.Unit
         {
             MemoryChannel channel = new MemoryChannel();
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3 };
-            channel.Send(sendBuffer);
-
-            byte[] sendBuffer2 = new byte[] { 4, 5, 6 };
-            channel.Send(sendBuffer2);
+            channel.Send(new byte[] { 1, 2, 3 });
+            channel.Send(new byte[] { 4, 5, 6 });
 
             byte[] receiveBuffer = new byte[7];
             AssertTaskCompleted(6, channel.ReceiveAsync(receiveBuffer));
@@ -263,11 +244,8 @@ namespace CommSample.Test.Unit
         {
             MemoryChannel channel = new MemoryChannel();
 
-            byte[] sendBuffer = new byte[] { 1, 2, 3 };
-            channel.Send(sendBuffer);
-
-            byte[] sendBuffer2 = new byte[] { 4, 5, 6 };
-            channel.Send(sendBuffer2);
+            channel.Send(new byte[] { 1, 2, 3 });
+            channel.Send(new byte[] { 4, 5, 6 });
 
             byte[] receiveBuffer = new byte[2];
             AssertTaskCompleted(2, channel.ReceiveAsync(receiveBuffer));
@@ -293,8 +271,7 @@ namespace CommSample.Test.Unit
             byte[] receiveBuffer2 = new byte[1];
             Assert.Throws<InvalidOperationException>(() => channel.ReceiveAsync(receiveBuffer2));
 
-            byte[] sendBuffer = new byte[] { 1 };
-            channel.Send(sendBuffer);
+            channel.Send(new byte[] { 1 });
 
             AssertTaskCompleted(1, receiveTask);
             Assert.Equal(new byte[] { 1 }, receiveBuffer);
