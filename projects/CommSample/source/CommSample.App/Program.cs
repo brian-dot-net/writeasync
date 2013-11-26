@@ -14,10 +14,10 @@ namespace CommSample
         {
             Logger logger = new Logger();
             TimeSpan duration = TimeSpan.FromSeconds(5.0d);
-            for (int i = 1; i <= 8; ++i)
+            for (int i = 0; i < 8; ++i)
             {
-                int senderCount = i;
-                ReceiveLoopTest test = new ReceiveLoopTest(logger, senderCount, duration, true);
+                int senderCount = i + 1;
+                ReceiveLoopTest test = new ReceiveLoopTest(logger, senderCount, duration, true, 256);
                 test.Run();
             }
         }

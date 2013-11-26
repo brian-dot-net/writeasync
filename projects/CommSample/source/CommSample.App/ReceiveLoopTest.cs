@@ -17,28 +17,30 @@ namespace CommSample
         private readonly int senderCount;
         private readonly TimeSpan duration;
         private readonly bool sendBeforeReceive;
+        private readonly int receiveBufferSize;
 
-        public ReceiveLoopTest(Logger logger, int senderCount, TimeSpan duration, bool sendBeforeReceive)
+        public ReceiveLoopTest(Logger logger, int senderCount, TimeSpan duration, bool sendBeforeReceive, int receiveBufferSize)
         {
             this.logger = logger;
             this.senderCount = senderCount;
             this.duration = duration;
             this.sendBeforeReceive = sendBeforeReceive;
+            this.receiveBufferSize = receiveBufferSize;
         }
 
         public void Run()
         {
-            this.logger.WriteLine("Receive loop with {0} senders, {1:0.0} sec, send before receive={2}...", this.senderCount, this.duration.TotalSeconds, this.sendBeforeReceive);
+            this.logger.WriteLine("Receive loop with {0} senders, {1:0.0} sec, send before receive={2}, receive buffer={3}...", this.senderCount, this.duration.TotalSeconds, this.sendBeforeReceive, this.receiveBufferSize);
 
             MemoryChannel channel = new MemoryChannel();
-            int[] sentDataSizes = new int[] { 11, 19, 29, 41, 53, 71 };
+            int[] sentDataSizes = new int[] { 11, 19, 29, 41, 53, 71, 89, 101 };
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 DataOracle oracle = new DataOracle();
                 Sender[] senders = this.CreateSenders(channel, sentDataSizes, oracle);
 
-                ValidatingReceiver receiver = new ValidatingReceiver(channel, this.logger, 16, oracle);
+                ValidatingReceiver receiver = new ValidatingReceiver(channel, this.logger, this.receiveBufferSize, oracle);
 
                 Task<long>[] senderTasks = new Task<long>[senders.Length];
                 Task<long> receiverTask = this.StartSendersAndReceiver(cts.Token, senders, receiver, senderTasks);
