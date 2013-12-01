@@ -6,6 +6,7 @@
 
 namespace LockSample.Test.Unit
 {
+    using System;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -36,6 +37,14 @@ namespace LockSample.Test.Unit
             l.Release(token);
 
             AssertTaskCompleted(nextAcquireTask);
+        }
+
+        [Fact]
+        public void Release_invalid_token_throws_InvalidOperation()
+        {
+            ExclusiveLock l = new ExclusiveLock();
+
+            Assert.Throws<InvalidOperationException>(() => l.Release(new ExclusiveLock.Token()));
         }
 
         private static TResult AssertTaskCompleted<TResult>(Task<TResult> task)

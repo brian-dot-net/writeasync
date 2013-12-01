@@ -6,22 +6,26 @@
 
 namespace LockSample
 {
+    using System;
     using System.Threading.Tasks;
 
     public class ExclusiveLock
     {
+        private readonly LockState state;
+
         private Token owner;
         private TaskCompletionSource<Token> nextOwner;
 
         public ExclusiveLock()
         {
+            this.state = new LockState();
         }
 
         public Task<Token> AcquireAsync()
         {
             if (this.owner.State == null)
             {
-                this.owner = new Token(new object());
+                this.owner = new Token(this.state);
             }
             else
             {
@@ -43,9 +47,14 @@ namespace LockSample
 
         public void Release(Token token)
         {
+            if (token.State != this.state)
+            {
+                throw new InvalidOperationException("The token is invalid.");
+            }
+
             if (this.nextOwner != null)
             {
-                this.owner = new Token(new object());
+                this.owner = new Token(this.state);
                 this.nextOwner.SetResult(this.owner);
             }
         }
@@ -62,6 +71,13 @@ namespace LockSample
             public object State
             {
                 get { return this.state; }
+            }
+        }
+
+        private sealed class LockState
+        {
+            public LockState()
+            {
             }
         }
     }
