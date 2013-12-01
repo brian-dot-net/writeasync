@@ -19,10 +19,8 @@ namespace LockSample.Test.Unit
         public void Acquire_completes_sync_then_release_succeeds()
         {
             ExclusiveLock l = new ExclusiveLock();
-            Task<ExclusiveLock.Token> task = l.AcquireAsync();
 
-            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
-            ExclusiveLock.Token token = task.Result;
+            ExclusiveLock.Token token = AssertTaskCompleted(l.AcquireAsync());
 
             l.Release(token);
         }
@@ -31,19 +29,26 @@ namespace LockSample.Test.Unit
         public void First_acquire_completes_sync_next_acquire_is_pending_until_first_release()
         {
             ExclusiveLock l = new ExclusiveLock();
-            Task<ExclusiveLock.Token> acquireTask1 = l.AcquireAsync();
+            ExclusiveLock.Token token = AssertTaskCompleted(l.AcquireAsync());
 
-            Assert.Equal(TaskStatus.RanToCompletion, acquireTask1.Status);
-            ExclusiveLock.Token token = acquireTask1.Result;
-
-            Task<ExclusiveLock.Token> acquireTask2 = l.AcquireAsync();
-
-            Assert.False(acquireTask2.IsCompleted);
-            Assert.False(acquireTask2.IsFaulted);
+            Task<ExclusiveLock.Token> nextAcquireTask = AssertTaskPending(l.AcquireAsync());
 
             l.Release(token);
 
-            Assert.Equal(TaskStatus.RanToCompletion, acquireTask2.Status);
+            AssertTaskCompleted(nextAcquireTask);
+        }
+
+        private static TResult AssertTaskCompleted<TResult>(Task<TResult> task)
+        {
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            return task.Result;
+        }
+
+        private static Task<TResult> AssertTaskPending<TResult>(Task<TResult> task)
+        {
+            Assert.False(task.IsCompleted, "Task should not be completed.");
+            Assert.False(task.IsFaulted, "Task should not be faulted: " + task.Exception);
+            return task;
         }
     }
 }
