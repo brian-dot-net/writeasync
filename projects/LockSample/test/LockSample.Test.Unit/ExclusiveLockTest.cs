@@ -26,5 +26,24 @@ namespace LockSample.Test.Unit
 
             l.Release(token);
         }
+
+        [Fact]
+        public void First_acquire_completes_sync_next_acquire_is_pending_until_first_release()
+        {
+            ExclusiveLock l = new ExclusiveLock();
+            Task<ExclusiveLock.Token> acquireTask1 = l.AcquireAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, acquireTask1.Status);
+            ExclusiveLock.Token token = acquireTask1.Result;
+
+            Task<ExclusiveLock.Token> acquireTask2 = l.AcquireAsync();
+
+            Assert.False(acquireTask2.IsCompleted);
+            Assert.False(acquireTask2.IsFaulted);
+
+            l.Release(token);
+
+            Assert.Equal(TaskStatus.RanToCompletion, acquireTask2.Status);
+        }
     }
 }
