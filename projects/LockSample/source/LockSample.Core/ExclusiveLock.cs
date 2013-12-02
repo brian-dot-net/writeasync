@@ -12,12 +12,12 @@ namespace LockSample
 
     public class ExclusiveLock
     {
-        private readonly Queue<TaskCompletionSource<Token>> nextOwners;
-        private Token owner;
+        private readonly Queue<OwnerToken> nextOwners;
+        private OwnerToken owner;
 
         public ExclusiveLock()
         {
-            this.nextOwners = new Queue<TaskCompletionSource<Token>>();
+            this.nextOwners = new Queue<OwnerToken>();
         }
 
         public Task<Token> AcquireAsync()
@@ -26,11 +26,12 @@ namespace LockSample
             if (this.owner == null)
             {
                 this.owner = new OwnerToken();
-                task = Task.FromResult(this.owner);
+                this.owner.Complete();
+                task = this.owner.Task;
             }
             else
             {
-                TaskCompletionSource<Token> nextOwner = new TaskCompletionSource<Token>();
+                OwnerToken nextOwner = new OwnerToken();
                 task = nextOwner.Task;
                 this.nextOwners.Enqueue(nextOwner);
             }
@@ -48,9 +49,9 @@ namespace LockSample
             this.owner = null;
             if (this.nextOwners.Count > 0)
             {
-                TaskCompletionSource<Token> nextOwner = this.nextOwners.Dequeue();
-                this.owner = new OwnerToken();
-                nextOwner.SetResult(this.owner);
+                OwnerToken nextOwner = this.nextOwners.Dequeue();
+                this.owner = nextOwner;
+                nextOwner.Complete();
             }
         }
 
@@ -63,8 +64,21 @@ namespace LockSample
 
         private sealed class OwnerToken : Token
         {
+            private readonly TaskCompletionSource<Token> tcs;
+
             public OwnerToken()
             {
+                this.tcs = new TaskCompletionSource<Token>();
+            }
+
+            public Task<Token> Task
+            {
+                get { return this.tcs.Task; }
+            }
+
+            public void Complete()
+            {
+                this.tcs.SetResult(this);
             }
         }
     }
