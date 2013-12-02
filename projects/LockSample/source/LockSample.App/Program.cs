@@ -47,7 +47,7 @@ namespace LockSample
                 try
                 {
                     await Task.Yield();
-                    switch (random.Next(3))
+                    switch (random.Next(4))
                     {
                         case 0:
                             await EnumerateListAsync(list);
@@ -57,6 +57,9 @@ namespace LockSample
                             break;
                         case 2:
                             await RemoveFromListAsync(list);
+                            break;
+                        case 3:
+                            await RemoveAllFromListAsync(list);
                             break;
                     }
                 }
@@ -75,6 +78,14 @@ namespace LockSample
                 list.RemoveAt(n - 1);
                 await Task.Yield();
                 list.RemoveAt(n - 2);
+            }
+        }
+
+        private static async Task RemoveAllFromListAsync(IList<int> list)
+        {
+            while (list.Count > 0)
+            {
+                await RemoveFromListAsync(list);
             }
         }
 
