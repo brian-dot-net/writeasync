@@ -9,7 +9,6 @@ namespace LockSample
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Globalization;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -21,6 +20,7 @@ namespace LockSample
             Random random = new Random();
             ExclusiveLock l = new ExclusiveLock();
             List<int> list = new List<int>();
+            ListWorker worker = new ListWorker(list);
             TimeSpan targetDuration = TimeSpan.FromSeconds(10.0d);
             TimeSpan statusInterval = TimeSpan.FromSeconds(1.0d);
             int parallelCount = 4;
@@ -31,7 +31,7 @@ namespace LockSample
                 Task<Exception>[] tasks = new Task<Exception>[parallelCount];
                 for (int i = 0; i < parallelCount; ++i)
                 {
-                    tasks[i] = RunWithExceptionGuardAsync(() => LoopAsync(random, l, list, cts.Token));
+                    tasks[i] = RunWithExceptionGuardAsync(() => LoopAsync(random, l, worker, cts.Token));
                 }
 
                 while (stopwatch.Elapsed < targetDuration)
@@ -73,7 +73,7 @@ namespace LockSample
             return exception;
         }
 
-        private static async Task LoopAsync(Random random, ExclusiveLock l, IList<int> list, CancellationToken token)
+        private static async Task LoopAsync(Random random, ExclusiveLock l, ListWorker worker, CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
@@ -84,16 +84,16 @@ namespace LockSample
                     switch (random.Next(4))
                     {
                         case 0:
-                            await EnumerateListAsync(list);
+                            await worker.EnumerateAsync();
                             break;
                         case 1:
-                            await AppendToListAsync(list);
+                            await worker.AppendAsync();
                             break;
                         case 2:
-                            await RemoveFromListAsync(list);
+                            await worker.RemoveAsync();
                             break;
                         case 3:
-                            await RemoveAllFromListAsync(list);
+                            await worker.RemoveAllAsync();
                             break;
                     }
                 }
@@ -101,52 +101,6 @@ namespace LockSample
                 {
                     l.Release(elt);
                 }
-            }
-        }
-
-        private static async Task RemoveFromListAsync(IList<int> list)
-        {
-            int n = list.Count;
-            if (n > 0)
-            {
-                list.RemoveAt(n - 1);
-                await Task.Yield();
-                list.RemoveAt(n - 2);
-            }
-        }
-
-        private static async Task RemoveAllFromListAsync(IList<int> list)
-        {
-            while (list.Count > 0)
-            {
-                await RemoveFromListAsync(list);
-            }
-        }
-
-        private static async Task AppendToListAsync(IList<int> list)
-        {
-            int n = list.Count;
-            list.Add(n + 1);
-            await Task.Yield();
-            list.Add(n + 2);
-        }
-
-        private static async Task EnumerateListAsync(IList<int> list)
-        {
-            int lastItem = 0;
-            foreach (int item in list)
-            {
-                if (lastItem != (item - 1))
-                {
-                    throw new InvalidOperationException(string.Format(
-                        CultureInfo.InvariantCulture,
-                        "State corruption detected; expected {0} but saw {1} in next list entry.",
-                        lastItem + 1,
-                        item));
-                }
-
-                lastItem = item;
-                await Task.Yield();
             }
         }
     }
