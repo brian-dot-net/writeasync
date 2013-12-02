@@ -77,6 +77,21 @@ namespace LockSample.Test.Unit
             AssertTaskCompleted(acquireTask2);
         }
 
+        [Fact]
+        public void Acquire_and_release_three_times_in_a_row_completes_sync_each_time()
+        {
+            ExclusiveLock l = new ExclusiveLock();
+
+            ExclusiveLock.Token token1 = AssertTaskCompleted(l.AcquireAsync());
+            l.Release(token1);
+
+            ExclusiveLock.Token token2 = AssertTaskCompleted(l.AcquireAsync());
+            l.Release(token2);
+
+            ExclusiveLock.Token token3 = AssertTaskCompleted(l.AcquireAsync());
+            l.Release(token3);
+        }
+
         private static TResult AssertTaskCompleted<TResult>(Task<TResult> task)
         {
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
