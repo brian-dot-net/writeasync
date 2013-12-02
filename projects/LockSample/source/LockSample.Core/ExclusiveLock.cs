@@ -11,21 +11,18 @@ namespace LockSample
 
     public class ExclusiveLock
     {
-        private readonly LockState state;
-
         private Token owner;
         private TaskCompletionSource<Token> nextOwner;
 
         public ExclusiveLock()
         {
-            this.state = new LockState();
         }
 
         public Task<Token> AcquireAsync()
         {
-            if (this.owner.State == null)
+            if (this.owner == null)
             {
-                this.owner = new Token(this.state);
+                this.owner = new OwnerToken();
             }
             else
             {
@@ -47,36 +44,29 @@ namespace LockSample
 
         public void Release(Token token)
         {
-            if (token.State != this.state)
+            if (this.owner != token)
             {
-                throw new InvalidOperationException("The token is invalid.");
+                throw new InvalidOperationException("The token is not valid.");
             }
 
+            this.owner = null;
             if (this.nextOwner != null)
             {
-                this.owner = new Token(this.state);
+                this.owner = new OwnerToken();
                 this.nextOwner.SetResult(this.owner);
             }
         }
 
-        public struct Token
+        public abstract class Token
         {
-            private readonly object state;
-
-            public Token(object state)
+            protected Token()
             {
-                this.state = state;
-            }
-
-            public object State
-            {
-                get { return this.state; }
             }
         }
 
-        private sealed class LockState
+        private sealed class OwnerToken : Token
         {
-            public LockState()
+            public OwnerToken()
             {
             }
         }

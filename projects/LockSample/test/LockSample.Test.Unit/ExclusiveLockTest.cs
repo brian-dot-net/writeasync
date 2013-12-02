@@ -44,7 +44,19 @@ namespace LockSample.Test.Unit
         {
             ExclusiveLock l = new ExclusiveLock();
 
-            Assert.Throws<InvalidOperationException>(() => l.Release(new ExclusiveLock.Token()));
+            Assert.Throws<InvalidOperationException>(() => l.Release(new MyToken()));
+        }
+
+        [Fact]
+        public void Release_same_token_twice_throws_InvalidOperation()
+        {
+            ExclusiveLock l = new ExclusiveLock();
+
+            ExclusiveLock.Token token = AssertTaskCompleted(l.AcquireAsync());
+
+            l.Release(token);
+
+            Assert.Throws<InvalidOperationException>(() => l.Release(token));
         }
 
         private static TResult AssertTaskCompleted<TResult>(Task<TResult> task)
@@ -58,6 +70,13 @@ namespace LockSample.Test.Unit
             Assert.False(task.IsCompleted, "Task should not be completed.");
             Assert.False(task.IsFaulted, "Task should not be faulted: " + task.Exception);
             return task;
+        }
+
+        private sealed class MyToken : ExclusiveLock.Token
+        {
+            public MyToken()
+            {
+            }
         }
     }
 }
