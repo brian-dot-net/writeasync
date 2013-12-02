@@ -35,39 +35,51 @@ namespace LockSample
         {
             while (!token.IsCancellationRequested)
             {
-                switch (random.Next(1))
+                ExclusiveLock.Token elt = await l.AcquireAsync();
+                try
                 {
-                    case 0:
-                        await EnumerateListAsync(l, list);
-                        break;
+                    await Task.Yield();
+                    switch (random.Next(2))
+                    {
+                        case 0:
+                            await EnumerateListAsync(list);
+                            break;
+                        case 1:
+                            await AppendToListAsync(list);
+                            break;
+                    }
+                }
+                finally
+                {
+                    l.Release(elt);
                 }
             }
         }
 
-        private static async Task EnumerateListAsync(ExclusiveLock l, IList<int> list)
+        private static async Task AppendToListAsync(IList<int> list)
         {
-            ExclusiveLock.Token token = await l.AcquireAsync();
-            await Task.Yield();
-            try
-            {
-                int lastItem = 0;
-                foreach (int item in list)
-                {
-                    if (lastItem != (item - 1))
-                    {
-                        throw new InvalidOperationException(string.Format(
-                            CultureInfo.InvariantCulture,
-                            "State corruption detected; expected {0} but saw {1} in next list entry.",
-                            lastItem + 1,
-                            item));
-                    }
+            int n = list.Count;            
+            list.Add(n + 1);
+            await Task.Yield();            
+            list.Add(n + 2);
+        }
 
-                    await Task.Yield();
-                }
-            }
-            finally
+        private static async Task EnumerateListAsync(IList<int> list)
+        {
+            int lastItem = 0;
+            foreach (int item in list)
             {
-                l.Release(token);
+                if (lastItem != (item - 1))
+                {
+                    throw new InvalidOperationException(string.Format(
+                        CultureInfo.InvariantCulture,
+                        "State corruption detected; expected {0} but saw {1} in next list entry.",
+                        lastItem + 1,
+                        item));
+                }
+
+                lastItem = item;
+                await Task.Yield();
             }
         }
     }
