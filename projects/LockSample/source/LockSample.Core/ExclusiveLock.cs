@@ -22,19 +22,17 @@ namespace LockSample
 
         public Task<Token> AcquireAsync()
         {
-            Task<Token> task;
+            OwnerToken nextOwner = new OwnerToken();
+            Task<Token> task = nextOwner.Task;
             lock (this.nextOwners)
             {
                 if (this.owner == null)
                 {
-                    this.owner = new OwnerToken();
-                    this.owner.Complete();
-                    task = this.owner.Task;
+                    this.owner = nextOwner;
+                    nextOwner.Complete();
                 }
                 else
                 {
-                    OwnerToken nextOwner = new OwnerToken();
-                    task = nextOwner.Task;
                     this.nextOwners.Enqueue(nextOwner);
                 }
             }
