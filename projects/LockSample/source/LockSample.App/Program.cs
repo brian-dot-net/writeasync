@@ -21,7 +21,7 @@ namespace LockSample
             Random random = new Random();
             ExclusiveLock l = new ExclusiveLock();
             List<int> list = new List<int>();
-            TimeSpan targetDuration = TimeSpan.FromSeconds(3.0d);
+            TimeSpan targetDuration = TimeSpan.FromSeconds(10.0d);
             TimeSpan statusInterval = TimeSpan.FromSeconds(1.0d);
             int parallelCount = 4;
 
