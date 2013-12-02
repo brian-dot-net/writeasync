@@ -54,6 +54,8 @@ namespace LockSample
                 {
                     throw new AggregateException(exceptions);
                 }
+
+                worker.EnumerateAsync().Wait();
             }
         }
 
@@ -75,33 +77,33 @@ namespace LockSample
 
         private static async Task LoopAsync(Random random, ExclusiveLock l, ListWorker worker, CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
-            {
-                ExclusiveLock.Token elt = await l.AcquireAsync();
-                try
-                {
-                    await Task.Yield();
-                    switch (random.Next(4))
-                    {
-                        case 0:
-                            await worker.EnumerateAsync();
-                            break;
-                        case 1:
-                            await worker.AppendAsync();
-                            break;
-                        case 2:
-                            await worker.RemoveAsync();
-                            break;
-                        case 3:
-                            await worker.RemoveAllAsync();
-                            break;
-                    }
-                }
-                finally
-                {
-                    l.Release(elt);
-                }
-            }
+while (!token.IsCancellationRequested)
+{
+    ExclusiveLock.Token elt = await l.AcquireAsync();
+    try
+    {
+        await Task.Yield();
+        switch (random.Next(4))
+        {
+            case 0:
+                await worker.EnumerateAsync();
+                break;
+            case 1:
+                await worker.AppendAsync();
+                break;
+            case 2:
+                await worker.RemoveAsync();
+                break;
+            case 3:
+                await worker.RemoveAllAsync();
+                break;
+        }
+    }
+    finally
+    {
+        l.Release(elt);
+    }
+}
         }
     }
 }
