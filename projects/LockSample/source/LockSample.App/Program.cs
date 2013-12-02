@@ -10,6 +10,7 @@ namespace LockSample
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Globalization;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -22,15 +23,15 @@ namespace LockSample
             List<int> list = new List<int>();
             TimeSpan targetDuration = TimeSpan.FromSeconds(3.0d);
             TimeSpan statusInterval = TimeSpan.FromSeconds(1.0d);
-            int parallelCount = 1;
+            int parallelCount = 4;
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 Stopwatch stopwatch = Stopwatch.StartNew();
-                Task[] tasks = new Task[parallelCount];
+                Task<Exception>[] tasks = new Task<Exception>[parallelCount];
                 for (int i = 0; i < parallelCount; ++i)
                 {
-                    tasks[i] = LoopAsync(random, l, list, cts.Token);
+                    tasks[i] = RunWithExceptionGuardAsync(() => LoopAsync(random, l, list, cts.Token));
                 }
 
                 while (stopwatch.Elapsed < targetDuration)
@@ -40,8 +41,36 @@ namespace LockSample
                 }
 
                 cts.Cancel();
-                Task.WaitAll(tasks);
+                Task<Exception[]> finalTask = Task.WhenAll(tasks);
+                Console.WriteLine("Waiting for final task...");
+                if (!finalTask.Wait(5000))
+                {
+                    throw new TimeoutException();
+                }
+
+                Exception[] results = finalTask.Result;
+                Exception[] exceptions = results.Where(e => e != null).ToArray();
+                if (exceptions.Length > 0)
+                {
+                    throw new AggregateException(exceptions);
+                }
             }
+        }
+
+        private static async Task<Exception> RunWithExceptionGuardAsync(Func<Task> doAsync)
+        {
+            Exception exception = null;
+            try
+            {
+                await doAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR: {0}", e);
+                exception = e;
+            }
+
+            return exception;
         }
 
         private static async Task LoopAsync(Random random, ExclusiveLock l, IList<int> list, CancellationToken token)
