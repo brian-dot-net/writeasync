@@ -22,11 +22,16 @@ namespace LockSample
             List<int> list = new List<int>();
             TimeSpan targetDuration = TimeSpan.FromSeconds(3.0d);
             TimeSpan statusInterval = TimeSpan.FromSeconds(1.0d);
+            int parallelCount = 1;
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 Stopwatch stopwatch = Stopwatch.StartNew();
-                Task task = LoopAsync(random, l, list, cts.Token);
+                Task[] tasks = new Task[parallelCount];
+                for (int i = 0; i < parallelCount; ++i)
+                {
+                    tasks[i] = LoopAsync(random, l, list, cts.Token);
+                }
 
                 while (stopwatch.Elapsed < targetDuration)
                 {
@@ -35,7 +40,7 @@ namespace LockSample
                 }
 
                 cts.Cancel();
-                task.Wait();
+                Task.WaitAll(tasks);
             }
         }
 
