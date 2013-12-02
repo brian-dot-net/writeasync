@@ -7,36 +7,32 @@
 namespace LockSample
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public class ExclusiveLock
     {
+        private readonly Queue<TaskCompletionSource<Token>> nextOwners;
         private Token owner;
-        private TaskCompletionSource<Token> nextOwner;
 
         public ExclusiveLock()
         {
+            this.nextOwners = new Queue<TaskCompletionSource<Token>>();
         }
 
         public Task<Token> AcquireAsync()
         {
+            Task<Token> task;
             if (this.owner == null)
             {
                 this.owner = new OwnerToken();
-            }
-            else
-            {
-                this.nextOwner = new TaskCompletionSource<Token>();
-            }
-
-            Task<Token> task;
-            if (this.nextOwner == null)
-            {
                 task = Task.FromResult(this.owner);
             }
             else
             {
-                task = this.nextOwner.Task;
+                TaskCompletionSource<Token> nextOwner = new TaskCompletionSource<Token>();
+                task = nextOwner.Task;
+                this.nextOwners.Enqueue(nextOwner);
             }
 
             return task;
@@ -50,10 +46,11 @@ namespace LockSample
             }
 
             this.owner = null;
-            if (this.nextOwner != null)
+            if (this.nextOwners.Count > 0)
             {
+                TaskCompletionSource<Token> nextOwner = this.nextOwners.Dequeue();
                 this.owner = new OwnerToken();
-                this.nextOwner.SetResult(this.owner);
+                nextOwner.SetResult(this.owner);
             }
         }
 

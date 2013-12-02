@@ -59,6 +59,24 @@ namespace LockSample.Test.Unit
             Assert.Throws<InvalidOperationException>(() => l.Release(token));
         }
 
+        [Fact]
+        public void Three_acquires_first_completes_sync_next_acquires_are_pending_until_previous_owners_release()
+        {
+            ExclusiveLock l = new ExclusiveLock();
+            ExclusiveLock.Token token1 = AssertTaskCompleted(l.AcquireAsync());
+
+            Task<ExclusiveLock.Token> acquireTask1 = AssertTaskPending(l.AcquireAsync());
+            Task<ExclusiveLock.Token> acquireTask2 = AssertTaskPending(l.AcquireAsync());
+
+            l.Release(token1);
+
+            ExclusiveLock.Token token2 = AssertTaskCompleted(acquireTask1);
+
+            l.Release(token2);
+
+            AssertTaskCompleted(acquireTask2);
+        }
+
         private static TResult AssertTaskCompleted<TResult>(Task<TResult> task)
         {
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
