@@ -23,17 +23,20 @@ namespace LockSample
         public Task<Token> AcquireAsync()
         {
             Task<Token> task;
-            if (this.owner == null)
+            lock (this.nextOwners)
             {
-                this.owner = new OwnerToken();
-                this.owner.Complete();
-                task = this.owner.Task;
-            }
-            else
-            {
-                OwnerToken nextOwner = new OwnerToken();
-                task = nextOwner.Task;
-                this.nextOwners.Enqueue(nextOwner);
+                if (this.owner == null)
+                {
+                    this.owner = new OwnerToken();
+                    this.owner.Complete();
+                    task = this.owner.Task;
+                }
+                else
+                {
+                    OwnerToken nextOwner = new OwnerToken();
+                    task = nextOwner.Task;
+                    this.nextOwners.Enqueue(nextOwner);
+                }
             }
 
             return task;
@@ -41,16 +44,24 @@ namespace LockSample
 
         public void Release(Token token)
         {
-            if (this.owner != token)
+            OwnerToken nextOwner = null;
+            lock (this.nextOwners)
             {
-                throw new InvalidOperationException("The token is not valid.");
+                if (this.owner != token)
+                {
+                    throw new InvalidOperationException("The token is not valid.");
+                }
+
+                this.owner = null;
+                if (this.nextOwners.Count > 0)
+                {
+                    nextOwner = this.nextOwners.Dequeue();
+                    this.owner = nextOwner;
+                }
             }
 
-            this.owner = null;
-            if (this.nextOwners.Count > 0)
+            if (nextOwner != null)
             {
-                OwnerToken nextOwner = this.nextOwners.Dequeue();
-                this.owner = nextOwner;
                 nextOwner.Complete();
             }
         }
