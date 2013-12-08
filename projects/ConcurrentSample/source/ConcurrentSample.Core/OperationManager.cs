@@ -18,9 +18,12 @@ namespace ConcurrentSample
             this.doAsync = doAsync;
         }
 
-        public Task RunAsync(int totalCalls)
+        public async Task RunAsync(int totalCalls)
         {
-            return this.doAsync();
+            for (int i = 0; i < totalCalls; ++i)
+            {
+                await this.doAsync();
+            }
         }
     }
 }
