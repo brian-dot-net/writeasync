@@ -7,6 +7,8 @@
 namespace ConcurrentSample
 {
     using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     internal sealed class Program
     {
