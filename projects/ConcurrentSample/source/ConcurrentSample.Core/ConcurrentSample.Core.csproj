@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncSemaphore.cs" />
+    <Compile Include="ParallelOperationManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OperationManager.cs" />
   </ItemGroup>
