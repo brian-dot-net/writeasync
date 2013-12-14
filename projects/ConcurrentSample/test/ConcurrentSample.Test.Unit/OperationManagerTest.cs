@@ -37,6 +37,9 @@ namespace ConcurrentSample.Test.Unit
 
             TaskCompletionSource<bool> current = pending.Dequeue();
             current.SetResult(false);
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(0, pending.Count);
         }
 
         [Fact]
