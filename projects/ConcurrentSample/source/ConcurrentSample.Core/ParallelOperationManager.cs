@@ -6,10 +6,21 @@
 
 namespace ConcurrentSample
 {
+    using System;
+using System.Threading.Tasks;
+
     public class ParallelOperationManager
     {
-        public ParallelOperationManager()
+        private readonly Func<Task> doAsync;
+
+        public ParallelOperationManager(int maxPendingCalls, Func<Task> doAsync)
         {
+            this.doAsync = doAsync;
+        }
+
+        public Task RunAsync(int totalCalls)
+        {
+            return this.doAsync();
         }
     }
 }
