@@ -23,6 +23,7 @@ using System.Threading.Tasks;
         public Task RunAsync(int totalCalls)
         {
             int totalCallsPerLoop = totalCalls / this.maxPendingCalls;
+            totalCallsPerLoop += totalCalls % this.maxPendingCalls;
             Task[] loopTasks = new Task[this.maxPendingCalls];
             for (int i = 0; i < this.maxPendingCalls; ++i)
             {

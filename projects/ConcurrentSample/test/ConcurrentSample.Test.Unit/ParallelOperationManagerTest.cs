@@ -118,5 +118,48 @@ namespace ConcurrentSample.Test.Unit
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal(0, pending.Count);
         }
+
+        [Fact]
+        public void Max_of_2_with_call_count_3_rounds_up_to_4_call_count()
+        {
+            Queue<TaskCompletionSource<bool>> pending = new Queue<TaskCompletionSource<bool>>();
+            Func<Task> doAsync = delegate
+            {
+                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+                pending.Enqueue(tcs);
+                Assert.True(pending.Count < 3, "Pending calls should be less than 3");
+                return tcs.Task;
+            };
+
+            ParallelOperationManager manager = new ParallelOperationManager(2, doAsync);
+            Task task = manager.RunAsync(3);
+
+            Assert.False(task.IsCompleted);
+            Assert.Equal(2, pending.Count);
+
+            TaskCompletionSource<bool> current = pending.Dequeue();
+            current.SetResult(false);
+
+            Assert.False(task.IsCompleted);
+            Assert.Equal(2, pending.Count);
+
+            current = pending.Dequeue();
+            current.SetResult(false);
+
+            Assert.False(task.IsCompleted);
+            Assert.Equal(2, pending.Count);
+
+            current = pending.Dequeue();
+            current.SetResult(false);
+
+            Assert.False(task.IsCompleted);
+            Assert.Equal(1, pending.Count);
+
+            current = pending.Dequeue();
+            current.SetResult(false);
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(0, pending.Count);
+        }
     }
 }
