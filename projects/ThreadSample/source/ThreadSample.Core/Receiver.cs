@@ -47,25 +47,31 @@ namespace ThreadSample
             try
             {
                 channel = listener.AcceptChannel();
+                token.Register(c => ((ICommunicationObject)c).Abort(), channel);
                 channel.Open();
-                while (true)
+
+                bool sessionClosed = false;
+                do
                 {
                     using (Message message = channel.Receive())
                     {
-                        this.OnReceived();
+                        if (message != null)
+                        {
+                            this.OnReceived();
+                        }
+                        else
+                        {
+                            sessionClosed = true;
+                        }
                     }
                 }
+                while (!sessionClosed);
             }
             catch (CommunicationException)
             {
             }
             catch (TimeoutException)
             {
-            }
-
-            if (channel != null)
-            {
-                channel.Abort();
             }
         }
 
