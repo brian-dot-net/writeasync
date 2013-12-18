@@ -16,11 +16,13 @@ namespace ThreadSample
     {
         private readonly string name;
         private readonly bool useDedicatedThread;
+        private readonly TimeSpan delay;
 
-        public Sender(string name, bool useDedicatedThread)
+        public Sender(string name, bool useDedicatedThread, TimeSpan delay)
         {
             this.name = name;
             this.useDedicatedThread = useDedicatedThread;
+            this.delay = delay;
         }
 
         public event EventHandler DataSent;
@@ -57,6 +59,7 @@ namespace ThreadSample
                         buffer[0] = b;
                         stream.Write(buffer, 0, buffer.Length);
                         this.OnSent();
+                        Thread.Sleep(this.delay);
                     }
                 }
                 catch (IOException)

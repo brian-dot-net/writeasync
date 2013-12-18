@@ -20,7 +20,7 @@ namespace ThreadSample
                 StatusInfo info = new StatusInfo();
                 Receiver receiver = new Receiver(pipeName, true);
                 receiver.DataReceived += (o, e) => info.OnReceived();
-                Sender sender = new Sender(pipeName, true);
+                Sender sender = new Sender(pipeName, true, TimeSpan.FromSeconds(0.1d));
                 sender.DataSent += (o, e) => info.OnSent();
 
                 Task statusTask = PrintStatusAsync(info, cts.Token);
@@ -42,7 +42,7 @@ namespace ThreadSample
         {
             while (!token.IsCancellationRequested)
             {
-                Console.WriteLine("Sent: {0} / Received: {1}", info.BytesSent, info.BytesReceived);
+                Console.WriteLine("Sent: {0:00000000} / Received: {1:00000000}", info.BytesSent, info.BytesReceived);
                 try
                 {
                     await Task.Delay(1000, token);
