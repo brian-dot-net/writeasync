@@ -34,11 +34,19 @@ namespace ThreadSample
             }
         }
 
+        private static void Disconnect(NamedPipeServerStream stream)
+        {
+            if (stream.IsConnected)
+            {
+                stream.Disconnect();
+            }
+        }
+
         private void ReceiveInner(CancellationToken token)
         {
             using (NamedPipeServerStream stream = new NamedPipeServerStream(this.name, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.None))
             {
-                token.Register(s => ((NamedPipeServerStream)s).Disconnect(), stream);
+                token.Register(s => Disconnect((NamedPipeServerStream)s), stream);
                 try
                 {
                     stream.WaitForConnection();
