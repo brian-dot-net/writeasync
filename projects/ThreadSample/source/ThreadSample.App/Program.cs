@@ -28,21 +28,33 @@ namespace ThreadSample
                 Task receiveTask = receiver.ReceiveAsync(cts.Token);
                 Thread.Sleep(1000);
 
+                sender.OpenAsync().Wait();
                 Task sendTask = sender.SendAsync(cts.Token);
 
                 Thread.Sleep(5000);
 
                 cts.Cancel();
 
-                Task.WaitAll(receiveTask, sendTask, statusTask);
+                sendTask.Wait();
+                statusTask.Wait();
+                receiveTask.Wait();
+
+                sender.CloseAsync().Wait();
+
+                PrintStatus(info);
             }
+        }
+
+        private static void PrintStatus(StatusInfo info)
+        {
+            Console.WriteLine("Sent: {0:00000000} / Received: {1:00000000}", info.BytesSent, info.BytesReceived);
         }
 
         private static async Task PrintStatusAsync(StatusInfo info, CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
-                Console.WriteLine("Sent: {0:00000000} / Received: {1:00000000}", info.BytesSent, info.BytesReceived);
+                PrintStatus(info);
                 try
                 {
                     await Task.Delay(1000, token);
