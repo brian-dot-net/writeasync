@@ -6,15 +6,19 @@
 
 namespace ThreadSample
 {
+    using System.IO;
+    using System.IO.Pipes;
     using System.Threading;
     using System.Threading.Tasks;
 
     public class Sender
     {
+        private readonly string name;
         private readonly bool useDedicatedThread;
 
-        public Sender(bool useDedicatedThread)
+        public Sender(string name, bool useDedicatedThread)
         {
+            this.name = name;
             this.useDedicatedThread = useDedicatedThread;
         }
 
@@ -32,10 +36,29 @@ namespace ThreadSample
 
         private void SendInner(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            using (NamedPipeServerStream stream = new NamedPipeServerStream(this.name, PipeDirection.Out, 1, PipeTransmissionMode.Byte, PipeOptions.None))
             {
-                // TODO
-                Thread.Sleep(1000);
+                token.Register(s => ((NamedPipeServerStream)s).Disconnect(), stream);
+                try
+                {
+                    byte[] buffer = new byte[1];
+                    byte b = 0;
+                    while (true)
+                    {
+                        ++b;
+                        if (b == 0)
+                        {
+                            b = 1;
+                        }
+
+                        buffer[0] = b;
+                        stream.Write(buffer, 0, buffer.Length);
+                    }
+                }
+                catch (IOException)
+                {
+                    // Pipe is broken or disconnected.
+                }
             }
         }
 
