@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Sender.cs" company="Brian Rogers">
+// <copyright file="Receiver.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -9,28 +9,28 @@ namespace ThreadSample
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class Sender
+    public class Receiver
     {
         private readonly bool useDedicatedThread;
 
-        public Sender(bool useDedicatedThread)
+        public Receiver(bool useDedicatedThread)
         {
             this.useDedicatedThread = useDedicatedThread;
         }
 
-        public Task SendAsync(CancellationToken token)
+        public Task ReceiveAsync(CancellationToken token)
         {
             if (this.useDedicatedThread)
             {
-                return Task.Factory.StartNew(() => this.SendInner(token), TaskCreationOptions.LongRunning);
+                return Task.Factory.StartNew(() => this.ReceiveInner(token), TaskCreationOptions.LongRunning);
             }
             else
             {
-                return this.SendInnerAsync(token);
+                return this.ReceiveInnerAsync(token);
             }
         }
 
-        private void SendInner(CancellationToken token)
+        private void ReceiveInner(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
@@ -39,7 +39,7 @@ namespace ThreadSample
             }
         }
 
-        private async Task SendInnerAsync(CancellationToken token)
+        private async Task ReceiveInnerAsync(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
