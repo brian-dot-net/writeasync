@@ -107,6 +107,7 @@ namespace ThreadSample
                     }
 
                     this.OnSent();
+                    Thread.Sleep(this.delay);
                 }
             }
             catch (CommunicationException)
