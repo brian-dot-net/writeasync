@@ -7,8 +7,8 @@
 namespace ThreadSample
 {
     using System;
-    using System.IO;
-    using System.IO.Pipes;
+    using System.ServiceModel;
+    using System.ServiceModel.Channels;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -37,38 +37,35 @@ namespace ThreadSample
             }
         }
 
-        private static void Disconnect(NamedPipeServerStream stream)
-        {
-            if (stream.IsConnected)
-            {
-                stream.Disconnect();
-            }
-        }
-
         private void ReceiveInner(CancellationToken token)
         {
-            using (NamedPipeServerStream stream = new NamedPipeServerStream(this.name, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.None))
+            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+            IChannelListener<IDuplexSessionChannel> listener = binding.BuildChannelListener<IDuplexSessionChannel>(new Uri("net.pipe://localhost/" + this.name));
+            listener.Open();
+            IDuplexSessionChannel channel = null;
+            token.Register(l => ((ICommunicationObject)l).Abort(), listener);
+            try
             {
-                token.Register(s => Disconnect((NamedPipeServerStream)s), stream);
-                try
+                channel = listener.AcceptChannel();
+                channel.Open();
+                while (true)
                 {
-                    stream.WaitForConnection();
-                    byte[] buffer = new byte[1];
-                    int bytesRead;
-                    do
+                    using (Message message = channel.Receive())
                     {
-                        bytesRead = stream.Read(buffer, 0, buffer.Length);
-                        if (bytesRead > 0)
-                        {
-                            this.OnReceived();
-                        }
+                        this.OnReceived();
                     }
-                    while (bytesRead > 0);
                 }
-                catch (IOException)
-                {
-                    // Pipe is broken or disconnected.
-                }
+            }
+            catch (CommunicationException)
+            {
+            }
+            catch (TimeoutException)
+            {
+            }
+
+            if (channel != null)
+            {
+                channel.Abort();
             }
         }
 

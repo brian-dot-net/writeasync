@@ -7,8 +7,8 @@
 namespace ThreadSample
 {
     using System;
-    using System.IO;
-    using System.IO.Pipes;
+    using System.ServiceModel;
+    using System.ServiceModel.Channels;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -41,32 +41,32 @@ namespace ThreadSample
 
         private void SendInner(CancellationToken token)
         {
-            using (NamedPipeClientStream stream = new NamedPipeClientStream(".", this.name, PipeDirection.Out, PipeOptions.None))
+            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+            IChannelFactory<IDuplexSessionChannel> factory = binding.BuildChannelFactory<IDuplexSessionChannel>();
+            factory.Open();
+            IDuplexSessionChannel channel = factory.CreateChannel(new EndpointAddress("net.pipe://localhost/" + this.name));
+            try
             {
-                try
+                channel.Open();
+                while (!token.IsCancellationRequested)
                 {
-                    stream.Connect();
-                    byte[] buffer = new byte[1];
-                    byte b = 0;
-                    while (!token.IsCancellationRequested)
+                    using (Message message = Message.CreateMessage(MessageVersion.Default, "http://tempuri.org"))
                     {
-                        ++b;
-                        if (b == 0)
-                        {
-                            b = 1;
-                        }
-
-                        buffer[0] = b;
-                        stream.Write(buffer, 0, buffer.Length);
-                        this.OnSent();
-                        Thread.Sleep(this.delay);
+                        channel.Send(message);
                     }
-                }
-                catch (IOException)
-                {
-                    // Pipe is broken or disconnected.
+
+                    this.OnSent();
                 }
             }
+            catch (CommunicationException)
+            {
+            }
+            catch (TimeoutException)
+            {
+            }
+
+            channel.Abort();
+            factory.Abort();
         }
 
         private void OnSent()
