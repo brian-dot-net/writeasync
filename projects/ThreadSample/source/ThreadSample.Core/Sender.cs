@@ -6,6 +6,7 @@
 
 namespace ThreadSample
 {
+    using System;
     using System.IO;
     using System.IO.Pipes;
     using System.Threading;
@@ -21,6 +22,8 @@ namespace ThreadSample
             this.name = name;
             this.useDedicatedThread = useDedicatedThread;
         }
+
+        public event EventHandler DataSent;
 
         public Task SendAsync(CancellationToken token)
         {
@@ -53,12 +56,22 @@ namespace ThreadSample
 
                         buffer[0] = b;
                         stream.Write(buffer, 0, buffer.Length);
+                        this.OnSent();
                     }
                 }
                 catch (IOException)
                 {
                     // Pipe is broken or disconnected.
                 }
+            }
+        }
+
+        private void OnSent()
+        {
+            EventHandler handler = this.DataSent;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
             }
         }
 
