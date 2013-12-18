@@ -6,6 +6,7 @@
 
 namespace ThreadSample
 {
+    using System;
     using System.IO;
     using System.IO.Pipes;
     using System.Threading;
@@ -21,6 +22,8 @@ namespace ThreadSample
             this.name = name;
             this.useDedicatedThread = useDedicatedThread;
         }
+
+        public event EventHandler DataReceived;
 
         public Task ReceiveAsync(CancellationToken token)
         {
@@ -55,6 +58,10 @@ namespace ThreadSample
                     do
                     {
                         bytesRead = stream.Read(buffer, 0, buffer.Length);
+                        if (bytesRead > 0)
+                        {
+                            this.OnReceived();
+                        }
                     }
                     while (bytesRead > 0);
                 }
@@ -62,6 +69,15 @@ namespace ThreadSample
                 {
                     // Pipe is broken or disconnected.
                 }
+            }
+        }
+
+        private void OnReceived()
+        {
+            EventHandler handler = this.DataReceived;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
             }
         }
 
