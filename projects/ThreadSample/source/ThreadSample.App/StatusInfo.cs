@@ -6,16 +6,26 @@
 
 namespace ThreadSample
 {
+    using System;
+    using System.Diagnostics;
     using System.Threading;
 
     internal sealed class StatusInfo
     {
+        private readonly Stopwatch stopwatch;
+
         private int senderCount;
         private int bytesSent;
         private int bytesReceived;
 
         public StatusInfo()
         {
+            this.stopwatch = Stopwatch.StartNew();
+        }
+
+        public TimeSpan Elapsed
+        {
+            get { return this.stopwatch.Elapsed; }
         }
 
         public int SenderCount

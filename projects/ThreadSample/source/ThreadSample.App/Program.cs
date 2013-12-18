@@ -33,12 +33,11 @@ namespace ThreadSample
                 sender.OpenAsync().Wait();
 
                 List<Task> sendTasks = new List<Task>();
-                for (int i = 0; i < 10; ++i)
+                for (int i = 0; i < 100000; ++i)
                 {
                     Task sendTask = sender.SendAsync(cts.Token);
                     info.OnSenderAdded();
                     sendTasks.Add(sendTask);
-                    Thread.Sleep(1000);
                 }
 
                 cts.Cancel();
@@ -55,7 +54,7 @@ namespace ThreadSample
 
         private static void PrintStatus(StatusInfo info)
         {
-            Console.WriteLine("Senders: {0:000000} / Sent: {1:00000000} / Received: {2:00000000}", info.SenderCount, info.BytesSent, info.BytesReceived);
+            Console.WriteLine("[{0:000.000}] Senders: {1:000000} / Sent: {2:00000000} / Received: {3:00000000}", info.Elapsed.TotalSeconds, info.SenderCount, info.BytesSent, info.BytesReceived);
         }
 
         private static async Task PrintStatusAsync(StatusInfo info, CancellationToken token)
