@@ -10,11 +10,17 @@ namespace ThreadSample
 
     internal sealed class StatusInfo
     {
+        private int senderCount;
         private int bytesSent;
         private int bytesReceived;
 
         public StatusInfo()
         {
+        }
+
+        public int SenderCount
+        {
+            get { return this.senderCount; }
         }
 
         public int BytesSent
@@ -25,6 +31,11 @@ namespace ThreadSample
         public int BytesReceived
         {
             get { return Thread.VolatileRead(ref this.bytesSent); }
+        }
+
+        public void OnSenderAdded()
+        {
+            ++this.senderCount;
         }
 
         public void OnSent()
