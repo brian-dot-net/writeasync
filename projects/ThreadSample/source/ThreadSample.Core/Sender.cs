@@ -14,13 +14,11 @@ namespace ThreadSample
     public class Sender
     {
         private readonly string name;
-        private readonly string serverName;
         private readonly bool useDedicatedThread;
 
-        public Sender(string name, string serverName, bool useDedicatedThread)
+        public Sender(string name, bool useDedicatedThread)
         {
             this.name = name;
-            this.serverName = serverName;
             this.useDedicatedThread = useDedicatedThread;
         }
 
@@ -38,15 +36,14 @@ namespace ThreadSample
 
         private void SendInner(CancellationToken token)
         {
-            using (NamedPipeClientStream stream = new NamedPipeClientStream(this.serverName, this.name, PipeDirection.Out, PipeOptions.None))
+            using (NamedPipeClientStream stream = new NamedPipeClientStream(".", this.name, PipeDirection.Out, PipeOptions.None))
             {
-                token.Register(s => ((NamedPipeServerStream)s).Disconnect(), stream);
                 try
                 {
                     stream.Connect();
                     byte[] buffer = new byte[1];
                     byte b = 0;
-                    while (true)
+                    while (!token.IsCancellationRequested)
                     {
                         ++b;
                         if (b == 0)
