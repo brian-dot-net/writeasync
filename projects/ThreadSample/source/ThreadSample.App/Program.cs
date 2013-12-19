@@ -19,9 +19,9 @@ namespace ThreadSample
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 StatusInfo info = new StatusInfo();
-                Receiver receiver = new Receiver(pipeName, true);
+                Receiver receiver = new Receiver(pipeName, false);
                 receiver.DataReceived += (o, e) => info.OnReceived();
-                Sender sender = new Sender(pipeName, true, TimeSpan.FromSeconds(0.1d));
+                Sender sender = new Sender(pipeName, false, TimeSpan.FromSeconds(0.1d));
                 sender.DataSent += (o, e) => info.OnSent();
 
                 Task statusTask = PrintStatusAsync(info, cts.Token);
@@ -38,7 +38,13 @@ namespace ThreadSample
                     Task sendTask = sender.SendAsync(cts.Token);
                     info.OnSenderAdded();
                     sendTasks.Add(sendTask);
+                    if (i % 100 == 0)
+                    {
+                        Thread.Sleep(1);
+                    }
                 }
+
+                Thread.Sleep(1000);
 
                 cts.Cancel();
 
