@@ -37,6 +37,30 @@ namespace ThreadSample
             }
         }
 
+        private static Task OpenAsync(ICommunicationObject commObj)
+        {
+            return Task.Factory.FromAsync(
+                (c, s) => ((ICommunicationObject)s).BeginOpen(c, s),
+                r => ((ICommunicationObject)r.AsyncState).EndOpen(r),
+                commObj);
+        }
+
+        private static Task<IDuplexSessionChannel> AcceptChannelAsync(IChannelListener<IDuplexSessionChannel> listener)
+        {
+            return Task.Factory.FromAsync(
+                (c, s) => ((IChannelListener<IDuplexSessionChannel>)s).BeginAcceptChannel(c, s),
+                r => ((IChannelListener<IDuplexSessionChannel>)r.AsyncState).EndAcceptChannel(r),
+                listener);
+        }
+
+        private static Task<Message> ReceiveAsync(IInputChannel channel)
+        {
+            return Task.Factory.FromAsync(
+                (c, s) => ((IInputChannel)s).BeginReceive(c, s),
+                r => ((IInputChannel)r.AsyncState).EndReceive(r),
+                channel);
+        }
+
         private void ReceiveInner(CancellationToken token)
         {
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
@@ -86,10 +110,39 @@ namespace ThreadSample
 
         private async Task ReceiveInnerAsync(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+            IChannelListener<IDuplexSessionChannel> listener = binding.BuildChannelListener<IDuplexSessionChannel>(new Uri("net.pipe://localhost/" + this.name));
+            await OpenAsync(listener);
+            IDuplexSessionChannel channel = null;
+            token.Register(l => ((ICommunicationObject)l).Abort(), listener);
+            try
             {
-                // TODO
-                await Task.Delay(1000);
+                channel = await AcceptChannelAsync(listener);
+                token.Register(c => ((ICommunicationObject)c).Abort(), channel);
+                await OpenAsync(channel);
+
+                bool sessionClosed = false;
+                do
+                {
+                    using (Message message = await ReceiveAsync(channel))
+                    {
+                        if (message != null)
+                        {
+                            this.OnReceived();
+                        }
+                        else
+                        {
+                            sessionClosed = true;
+                        }
+                    }
+                }
+                while (!sessionClosed);
+            }
+            catch (CommunicationException)
+            {
+            }
+            catch (TimeoutException)
+            {
             }
         }
     }
