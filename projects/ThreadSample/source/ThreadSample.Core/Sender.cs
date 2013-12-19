@@ -118,21 +118,39 @@ namespace ThreadSample
             }
         }
 
+        private async Task SendInnerAsync(CancellationToken token)
+        {
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    using (Message message = Message.CreateMessage(MessageVersion.Default, "http://tempuri.org"))
+                    {
+                        await Task.Factory.FromAsync(
+                            (m, c, s) => ((IOutputChannel)s).BeginSend(m, c, s),
+                            r => ((IOutputChannel)r.AsyncState).EndSend(r),
+                            message,
+                            this.channel);
+                    }
+
+                    this.OnSent();
+                    await Task.Delay(this.delay);
+                }
+            }
+            catch (CommunicationException)
+            {
+            }
+            catch (TimeoutException)
+            {
+            }
+        }
+
         private void OnSent()
         {
             EventHandler handler = this.DataSent;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
-            }
-        }
-
-        private async Task SendInnerAsync(CancellationToken token)
-        {
-            while (!token.IsCancellationRequested)
-            {
-                // TODO
-                await Task.Delay(1000);
             }
         }
     }
