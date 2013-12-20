@@ -32,6 +32,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProviderInfo.cs" />
+    <Compile Include="TraceCollectorInfo.cs" />
     <Compile Include="ICollectorSet.cs" />
     <Compile Include="CollectorSetWrapper.cs" />
     <Compile Include="ISessionController.cs" />
