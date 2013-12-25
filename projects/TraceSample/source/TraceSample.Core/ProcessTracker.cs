@@ -68,7 +68,11 @@ namespace TraceSample
                 data.ExitCode = e.ExitCode;
                 data.ExitTime = e.Timestamp;
 
-                this.ProcessStopped(this, new ProcessDataEventArgs(data));
+                EventHandler<ProcessDataEventArgs> handler = this.ProcessStopped;
+                if (handler != null)
+                {
+                    handler(this, new ProcessDataEventArgs(data));
+                }
             }
         }
     }
