@@ -32,10 +32,11 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IProcessEvents.cs" />
     <Compile Include="ProcessEventArgs.cs" />
     <Compile Include="KernelProcessSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Class1.cs" />
+    <Compile Include="ProcessTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TraceEvent\TraceEvent.csproj">

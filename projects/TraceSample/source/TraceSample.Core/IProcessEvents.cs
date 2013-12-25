@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Program.cs" company="Brian Rogers">
+// <copyright file="IProcessEvents.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -8,10 +8,10 @@ namespace TraceSample
 {
     using System;
 
-    internal sealed class Program
+    public interface IProcessEvents
     {
-        private static void Main(string[] args)
-        {
-        }
+        event EventHandler<ProcessEventArgs> ProcessStarted;
+
+        event EventHandler<ProcessEventArgs> ProcessStopped;
     }
 }
