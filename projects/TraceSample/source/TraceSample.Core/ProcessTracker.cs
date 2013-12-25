@@ -43,14 +43,18 @@ namespace TraceSample
 
         private void OnProcessStarted(object sender, ProcessEventArgs e)
         {
-            ProcessData data = new ProcessData()
+            // Note that it is possible (but unlikely) that we already have an entry for
+            // a process with this ID. This can happen if the stopped event was lost.
+            ProcessData data;
+            if (!this.processes.TryGetValue(e.Id, out data))
             {
-                Id = e.Id,
-                Name = Path.GetFileName(e.ImageName),
-                StartTime = e.Timestamp
-            };
+                data = new ProcessData();
+                this.processes.Add(e.Id, data);
+            }
 
-            this.processes.Add(data.Id, data);
+            data.Id = e.Id;
+            data.Name = Path.GetFileName(e.ImageName);
+            data.StartTime = e.Timestamp;
         }
 
         private void OnProcessStopped(object sender, ProcessEventArgs e)
