@@ -66,6 +66,63 @@ namespace TraceSample.Test.Unit
             Assert.Equal(202, data[0].ExitCode);
         }
 
+        [Fact]
+        public void Two_process_starts_then_two_stops_raise_ProcessStopped_twice()
+        {
+            ProcessEventsImpl parent = new ProcessEventsImpl();
+            ProcessTracker tracker = new ProcessTracker(parent);
+            List<ProcessData> data = new List<ProcessData>();
+            tracker.ProcessStopped += delegate(object sender, ProcessDataEventArgs e)
+            {
+                Assert.Same(tracker, sender);
+                data.Add(e.Data);
+            };
+
+            ProcessEventArgs e1 = new ProcessEventArgs()
+            {
+                Id = 101,
+                ImageName = @"\A\B\C\X.exe",
+                Timestamp = new DateTime(2000, 1, 2, 3, 4, 5, 6)
+            };
+            parent.RaiseProcessStarted(e1);
+
+            ProcessEventArgs e2 = new ProcessEventArgs()
+            {
+                Id = 102,
+                ImageName = @"\A\B\C\Y.exe",
+                Timestamp = new DateTime(2001, 2, 3, 4, 5, 6, 7)
+            };
+            parent.RaiseProcessStarted(e2);
+
+            ProcessEventArgs e3 = new ProcessEventArgs()
+            {
+                Id = 102,
+                Timestamp = new DateTime(2002, 3, 4, 5, 6, 7, 8),
+                ExitCode = 202
+            };
+            parent.RaiseProcessStopped(e3);
+
+            ProcessEventArgs e4 = new ProcessEventArgs()
+            {
+                Id = 101,
+                Timestamp = new DateTime(2003, 4, 5, 6, 7, 8, 9),
+                ExitCode = 303
+            };
+            parent.RaiseProcessStopped(e4);
+
+            Assert.Equal(2, data.Count);
+            Assert.Equal(102, data[0].Id);
+            Assert.Equal("Y.exe", data[0].Name);
+            Assert.Equal(new DateTime(2001, 2, 3, 4, 5, 6, 7), data[0].StartTime);
+            Assert.Equal(new DateTime(2002, 3, 4, 5, 6, 7, 8), data[0].ExitTime);
+            Assert.Equal(202, data[0].ExitCode);
+            Assert.Equal(101, data[1].Id);
+            Assert.Equal("X.exe", data[1].Name);
+            Assert.Equal(new DateTime(2000, 1, 2, 3, 4, 5, 6), data[1].StartTime);
+            Assert.Equal(new DateTime(2003, 4, 5, 6, 7, 8, 9), data[1].ExitTime);
+            Assert.Equal(303, data[1].ExitCode);
+        }
+
         private sealed class ProcessEventsImpl : IProcessEvents
         {
             public ProcessEventsImpl()
