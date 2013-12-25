@@ -13,7 +13,7 @@ namespace TraceSample
     using Diagnostics.Tracing;
     using Diagnostics.Tracing.Parsers;
 
-    public sealed class KernelProcessSession : IDisposable
+    public sealed class KernelProcessSession : IProcessEvents, IDisposable
     {
         private const ushort ProcessStartId = 1;
         private const ushort ProcessStopId = 2;
