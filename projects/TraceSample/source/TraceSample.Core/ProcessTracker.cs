@@ -7,11 +7,14 @@
 namespace TraceSample
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
 
     public sealed class ProcessTracker : IDisposable
     {
         private readonly IProcessEvents parent;
+
+        private ProcessData data;
 
         public ProcessTracker(IProcessEvents parent)
         {
@@ -19,6 +22,8 @@ namespace TraceSample
             this.parent.ProcessStarted += this.OnProcessStarted;
             this.parent.ProcessStopped += this.OnProcessStopped;
         }
+
+        public event EventHandler<ProcessDataEventArgs> ProcessStopped;
 
         public void Dispose()
         {
@@ -37,12 +42,19 @@ namespace TraceSample
 
         private void OnProcessStarted(object sender, ProcessEventArgs e)
         {
-            throw new NotImplementedException();
+            this.data = new ProcessData()
+            {
+                Id = e.Id,
+                Name = Path.GetFileName(e.ImageName),
+                StartTime = e.Timestamp
+            };
         }
 
         private void OnProcessStopped(object sender, ProcessEventArgs e)
         {
-            throw new NotImplementedException();
+            this.data.ExitCode = e.ExitCode;
+            this.data.ExitTime = e.Timestamp;
+            this.ProcessStopped(this, new ProcessDataEventArgs(this.data));
         }
     }
 }

@@ -33,6 +33,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IProcessEvents.cs" />
+    <Compile Include="ProcessData.cs" />
+    <Compile Include="ProcessDataEventArgs.cs" />
     <Compile Include="ProcessEventArgs.cs" />
     <Compile Include="KernelProcessSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
