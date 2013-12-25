@@ -59,11 +59,17 @@ namespace TraceSample
 
         private void OnProcessStopped(object sender, ProcessEventArgs e)
         {
-            ProcessData data = this.processes[e.Id];
-            data.ExitCode = e.ExitCode;
-            data.ExitTime = e.Timestamp;
+            // Note that it is possible that we do not have an entry for this process. For
+            // example, a process could have started just before we began tracking events.
+            ProcessData data;
+            if (this.processes.TryGetValue(e.Id, out data))
+            {
+                this.processes.Remove(e.Id);
+                data.ExitCode = e.ExitCode;
+                data.ExitTime = e.Timestamp;
 
-            this.ProcessStopped(this, new ProcessDataEventArgs(data));
+                this.ProcessStopped(this, new ProcessDataEventArgs(data));
+            }
         }
     }
 }

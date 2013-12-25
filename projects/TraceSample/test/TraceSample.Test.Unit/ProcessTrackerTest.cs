@@ -167,6 +167,50 @@ namespace TraceSample.Test.Unit
             Assert.Equal(303, data[0].ExitCode);
         }
 
+        [Fact]
+        public void Process_start_then_two_stops_with_same_Id_raises_ProcessStopped_once_for_first_entry()
+        {
+            ProcessEventsImpl parent = new ProcessEventsImpl();
+            ProcessTracker tracker = new ProcessTracker(parent);
+            List<ProcessData> data = new List<ProcessData>();
+            tracker.ProcessStopped += delegate(object sender, ProcessDataEventArgs e)
+            {
+                Assert.Same(tracker, sender);
+                data.Add(e.Data);
+            };
+
+            ProcessEventArgs e1 = new ProcessEventArgs()
+            {
+                Id = 101,
+                ImageName = @"\A\B\C\X.exe",
+                Timestamp = new DateTime(2000, 1, 2, 3, 4, 5, 6)
+            };
+            parent.RaiseProcessStarted(e1);
+
+            ProcessEventArgs e2 = new ProcessEventArgs()
+            {
+                Id = 101,
+                Timestamp = new DateTime(2001, 2, 3, 4, 5, 6, 7),
+                ExitCode = 202
+            };
+            parent.RaiseProcessStopped(e2);
+
+            ProcessEventArgs e3 = new ProcessEventArgs()
+            {
+                Id = 101,
+                Timestamp = new DateTime(2002, 3, 4, 5, 6, 7, 8),
+                ExitCode = 303
+            };
+            parent.RaiseProcessStopped(e3);
+
+            Assert.Equal(1, data.Count);
+            Assert.Equal(101, data[0].Id);
+            Assert.Equal("X.exe", data[0].Name);
+            Assert.Equal(new DateTime(2000, 1, 2, 3, 4, 5, 6), data[0].StartTime);
+            Assert.Equal(new DateTime(2001, 2, 3, 4, 5, 6, 7), data[0].ExitTime);
+            Assert.Equal(202, data[0].ExitCode);
+        }
+
         private sealed class ProcessEventsImpl : IProcessEvents
         {
             public ProcessEventsImpl()
