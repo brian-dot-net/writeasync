@@ -211,6 +211,29 @@ namespace TraceSample.Test.Unit
             Assert.Equal(202, data[0].ExitCode);
         }
 
+        [Fact]
+        public void Process_stop_without_matching_start_does_nothing()
+        {
+            ProcessEventsImpl parent = new ProcessEventsImpl();
+            ProcessTracker tracker = new ProcessTracker(parent);
+            List<ProcessData> data = new List<ProcessData>();
+            tracker.ProcessStopped += delegate(object sender, ProcessDataEventArgs e)
+            {
+                Assert.Same(tracker, sender);
+                data.Add(e.Data);
+            };
+
+            ProcessEventArgs e1 = new ProcessEventArgs()
+            {
+                Id = 101,
+                Timestamp = new DateTime(2001, 2, 3, 4, 5, 6, 7),
+                ExitCode = 202
+            };
+            parent.RaiseProcessStopped(e1);
+
+            Assert.Equal(0, data.Count);
+        }
+
         private sealed class ProcessEventsImpl : IProcessEvents
         {
             public ProcessEventsImpl()
