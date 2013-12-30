@@ -14,13 +14,14 @@ namespace AlertSample
     {
         private static int Main(string[] args)
         {
+            Logger logger = new Logger();
             if (args.Length == 0)
             {
-                return RunParent();
+                return RunParent(logger);
             }
             else if (args.Length == 1)
             {
-                return RunChild(args[0]);
+                return RunChild(logger, args[0]);
             }
             else
             {
@@ -29,33 +30,45 @@ namespace AlertSample
             }
         }
 
-        private static int RunParent()
+        private static int RunParent(Logger logger)
         {
+            logger.WriteInfo("Parent started.");
             Alert alert = new Alert("AlertSample", 5.0d, 10.0d);
             ChildProcess childProcess = new ChildProcess("child");
             try
             {
+                logger.WriteInfo("Starting child...");
                 childProcess.Start();
+
+                logger.WriteInfo("Starting alert...");
                 alert.Start();
             }
             catch (Exception e)
             {
-                Console.WriteLine("ERROR: {0}", e);
+                logger.WriteError(e.ToString());
                 throw;
             }
             finally
             {
+                logger.WriteInfo("Stopping child...");
                 childProcess.Stop();
+
+                logger.WriteInfo("Stopping alert...");
                 alert.Stop();
             }
+
+            logger.WriteInfo("Parent exiting.");
 
             return 0;
         }
 
-        private static int RunChild(string name)
+        private static int RunChild(Logger logger, string name)
         {
-            Console.WriteLine("Child started.");
+            logger.WriteInfo("Child started ('{0}').", name);
+
             Console.ReadLine();
+            
+            logger.WriteInfo("Child exiting.");
             return 0;
         }
     }
