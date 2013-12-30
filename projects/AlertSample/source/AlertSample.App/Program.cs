@@ -7,6 +7,8 @@
 namespace AlertSample
 {
     using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
 
     internal sealed class Program
     {
@@ -30,8 +32,10 @@ namespace AlertSample
         private static int RunParent()
         {
             Alert alert = new Alert("AlertSample", 5.0d, 10.0d);
+            ChildProcess childProcess = new ChildProcess("child");
             try
             {
+                childProcess.Start();
                 alert.Start();
             }
             catch (Exception e)
@@ -41,6 +45,7 @@ namespace AlertSample
             }
             finally
             {
+                childProcess.Stop();
                 alert.Stop();
             }
 
@@ -49,7 +54,8 @@ namespace AlertSample
 
         private static int RunChild(string name)
         {
-            Console.WriteLine("TODO: " + name);
+            Console.WriteLine("Child started.");
+            Console.ReadLine();
             return 0;
         }
     }
