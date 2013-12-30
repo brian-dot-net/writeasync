@@ -32,6 +32,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CounterAlertInfo.cs" />
+    <Compile Include="ThresholdCondition.cs" />
+    <Compile Include="CounterThreshold.cs" />
     <Compile Include="ProviderInfo.cs" />
     <Compile Include="TraceCollectorInfo.cs" />
     <Compile Include="ICollectorSet.cs" />

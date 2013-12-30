@@ -13,8 +13,28 @@ namespace PlaSample
     {
         private static void Main(string[] args)
         {
+            CreatePerfCounterAlert();
             CreateTraceCollector();
             CreatePerfCounterCollector();
+        }
+
+        private static void CreatePerfCounterAlert()
+        {
+            CounterAlertInfo info = new CounterAlertInfo("MyAlert");
+            
+            info.SampleInterval = TimeSpan.FromSeconds(2.0d);
+
+            CounterName counterName = new CounterName() { Category = "Process", Counter = "% Processor Time", Instance = "notepad" };
+            info.Thresholds.Add(new CounterThreshold() { Name = counterName, Condition = ThresholdCondition.Below, Value = 5.0d });
+
+            ICollectorSet collector = info.Create();
+            collector.Start();
+
+            Thread.Sleep(5000);
+
+            collector.Stop();
+
+            collector.Delete();
         }
 
         private static void CreatePerfCounterCollector()
