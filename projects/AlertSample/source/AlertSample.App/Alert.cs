@@ -21,7 +21,7 @@ namespace AlertSample
         public Alert(string name, double lowerBound, double upperBound)
         {
             CounterAlertInfo info = new CounterAlertInfo("AlertSample");
-            info.SampleInterval = TimeSpan.FromSeconds(5.0d);
+            info.SampleInterval = TimeSpan.FromSeconds(3.0d);
 
             CounterName counterName = new CounterName() { Category = "Process", Counter = "IO Data Operations/sec", Instance = "AlertSample.App#1" };
             info.Thresholds.Add(new CounterThreshold() { Name = counterName, Condition = ThresholdCondition.Below, Value = lowerBound });
