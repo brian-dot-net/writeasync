@@ -7,8 +7,7 @@
 namespace AlertSample
 {
     using System;
-    using System.ComponentModel;
-    using System.Diagnostics;
+    using System.Threading;
 
     internal sealed class Program
     {
@@ -42,6 +41,8 @@ namespace AlertSample
 
                 logger.WriteInfo("Starting alert...");
                 alert.Start();
+
+                Thread.Sleep(10000);
             }
             catch (Exception e)
             {

@@ -8,11 +8,15 @@ namespace AlertSample
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Eventing.Reader;
     using System.Runtime.InteropServices;
+    using System.Xml;
 
     internal sealed class Alert
     {
         private readonly ICollectorSet collector;
+
+        private EventLogWatcher watcher;
 
         public Alert(string name, double lowerBound, double upperBound)
         {
@@ -28,12 +32,21 @@ namespace AlertSample
 
         public void Start()
         {
+            string queryText = GetQueryText();
+            this.watcher = new EventLogWatcher(new EventLogQuery("Microsoft-Windows-Diagnosis-PLA/Operational", PathType.LogName, queryText));
+            this.watcher.EventRecordWritten += this.OnEventWritten;
+            this.watcher.Enabled = true;
             this.collector.Start();
         }
 
         public void Stop()
         {
             List<Exception> exceptions = new List<Exception>();
+            
+            this.watcher.EventRecordWritten -= this.OnEventWritten;
+            this.watcher.Enabled = false;
+            this.watcher.Dispose();
+
             try
             {
                 this.collector.Stop();
@@ -56,6 +69,40 @@ namespace AlertSample
             {
                 throw new AggregateException(exceptions);
             }
+        }
+
+        private static string GetQueryText()
+        {
+            return
+                "*[System[(EventID=2031) and TimeCreated[@SystemTime>'" +
+                XmlConvert.ToString(DateTime.UtcNow, XmlDateTimeSerializationMode.Utc) +
+                "']]]";
+        }
+
+        private void OnEventWritten(object sender, EventRecordWrittenEventArgs e)
+        {
+            // Event has five properties:
+            //  [0] Counter name
+            //  [1] Counter value
+            //  [2] Operator
+            //  [3] Counter threshold
+            //  [4] Message
+            string operatorString = (string)e.EventRecord.Properties[2].Value;
+            switch (operatorString[0])
+            {
+                case '<':
+                    this.OnThresholdReached(true);
+                    break;
+                case '>':
+                    this.OnThresholdReached(false);
+                    break;
+            }
+        }
+
+        private void OnThresholdReached(bool isLowerBound)
+        {
+            // TODO
+            Console.WriteLine("Threshold reached, is lower bound: {0}", isLowerBound);
         }
     }
 }
