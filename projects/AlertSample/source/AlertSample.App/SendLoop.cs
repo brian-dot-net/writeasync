@@ -14,6 +14,7 @@ namespace AlertSample
     {
         private readonly Logger logger;
         private readonly string receiverName;
+        private readonly Sender sender;
 
         private CancellationTokenSource cts;
         private Task task;
@@ -22,6 +23,13 @@ namespace AlertSample
         {
             this.logger = logger;
             this.receiverName = receiverName;
+            this.sender = new Sender(receiverName);
+        }
+
+        public TimeSpan SendInterval
+        {
+            get { return this.sender.SendInterval; }
+            set { this.sender.SendInterval = value; }
         }
 
         public void Start()
@@ -41,16 +49,15 @@ namespace AlertSample
 
         private async Task RunAsync(CancellationToken token)
         {
-            Sender sender = new Sender(this.receiverName);
-            await sender.OpenAsync();
+            await this.sender.OpenAsync();
 
-            Task runTask = sender.RunAsync(token);
+            Task runTask = this.sender.RunAsync(token);
 
             int previous = 0;
             int current = 0;
             while (!token.IsCancellationRequested)
             {
-                current = sender.MessagesSent;
+                current = this.sender.MessagesSent;
                 this.logger.WriteInfo("Sender sent {0} messages to '{1}' (~{2} messages/sec).", current, this.receiverName, current - previous);
                 previous = current;
                 try
@@ -64,7 +71,7 @@ namespace AlertSample
 
             await runTask;
 
-            await sender.CloseAsync();
+            await this.sender.CloseAsync();
         }
     }
 }
