@@ -32,7 +32,7 @@ namespace AlertSample
         private static int RunParent(Logger logger)
         {
             logger.WriteInfo("Parent started.");
-            Alert alert = new Alert("AlertSample", 5.0d, 10.0d);
+            Alert alert = new Alert("AlertSample", 10.0d, 15.0d);
             string childName = "child";
             ChildProcess childProcess = new ChildProcess(childName);
             try
@@ -40,18 +40,32 @@ namespace AlertSample
                 logger.WriteInfo("Starting child...");
                 childProcess.Start();
 
+                TimeSpan sendInterval = TimeSpan.FromMilliseconds(500.0d);
+                SendLoop loop = new SendLoop(logger, childName);
+                loop.SendInterval = sendInterval;
+
                 alert.ThresholdReached += delegate(object sender, ThresholdEventArgs e)
                 {
                     logger.WriteInfo("Threshold reached; is lower bound? {0}", e.IsLowerBound);
+                    if (e.IsLowerBound)
+                    {
+                        sendInterval = TimeSpan.FromMilliseconds(sendInterval.TotalMilliseconds / 2.0);
+                    }
+                    else
+                    {
+                        sendInterval = TimeSpan.FromMilliseconds(sendInterval.TotalMilliseconds * 2.0);
+                    }
+
+                    loop.SendInterval = sendInterval;
+                    logger.WriteInfo("Send interval updated to {0:0.0} ms.", sendInterval.TotalMilliseconds);
                 };
 
                 logger.WriteInfo("Starting alert...");
                 alert.Start();
 
-                SendLoop loop = new SendLoop(logger, childName);
                 loop.Start();
 
-                Thread.Sleep(10000);
+                Thread.Sleep(60000);
 
                 loop.Stop();
             }
