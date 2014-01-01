@@ -15,6 +15,7 @@ namespace AlertSample
     {
         private readonly IClientAsync client;
 
+        private int messagesSent;
         private volatile int sendIntervalMilliseconds;
 
         public Sender(string receiverName)
@@ -27,6 +28,11 @@ namespace AlertSample
         {
             get { return TimeSpan.FromMilliseconds(this.sendIntervalMilliseconds); }
             set { this.sendIntervalMilliseconds = (int)value.TotalMilliseconds; }
+        }
+
+        public int MessagesSent
+        {
+            get { return Thread.VolatileRead(ref this.messagesSent); }
         }
 
         public Task OpenAsync()
@@ -42,6 +48,7 @@ namespace AlertSample
             while (!token.IsCancellationRequested)
             {
                 await this.client.SendAsync();
+                Interlocked.Increment(ref this.messagesSent);
                 try
                 {
                     await Task.Delay(this.sendIntervalMilliseconds, token);

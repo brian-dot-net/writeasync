@@ -8,6 +8,7 @@ namespace AlertSample
 {
     using System;
     using System.ServiceModel;
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal sealed class Receiver
@@ -20,6 +21,11 @@ namespace AlertSample
             this.instance = new ServiceInstance();
             this.host = new ServiceHost(this.instance, new Uri("net.pipe://localhost/" + name));
             this.host.AddServiceEndpoint(typeof(IClient), new NetNamedPipeBinding(NetNamedPipeSecurityMode.None), string.Empty);
+        }
+
+        public int MessagesReceived
+        {
+            get { return this.instance.MessagesReceived; }
         }
 
         public Task OpenAsync()
@@ -41,13 +47,20 @@ namespace AlertSample
         [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
         private sealed class ServiceInstance : IClient
         {
+            private int messagesReceived;
+
             public ServiceInstance()
             {
             }
 
+            public int MessagesReceived
+            {
+                get { return Thread.VolatileRead(ref this.messagesReceived); }
+            }
+
             public void Send()
             {
-                // TODO
+                Interlocked.Increment(ref this.messagesReceived);
             }
         }
     }
