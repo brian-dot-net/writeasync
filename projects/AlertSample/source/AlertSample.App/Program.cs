@@ -33,7 +33,8 @@ namespace AlertSample
         {
             logger.WriteInfo("Parent started.");
             Alert alert = new Alert("AlertSample", 5.0d, 10.0d);
-            ChildProcess childProcess = new ChildProcess("child");
+            string childName = "child";
+            ChildProcess childProcess = new ChildProcess(childName);
             try
             {
                 logger.WriteInfo("Starting child...");
@@ -47,7 +48,12 @@ namespace AlertSample
                 logger.WriteInfo("Starting alert...");
                 alert.Start();
 
+                SendLoop loop = new SendLoop(logger, childName);
+                loop.Start();
+
                 Thread.Sleep(10000);
+
+                loop.Stop();
             }
             catch (Exception e)
             {
