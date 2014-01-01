@@ -72,8 +72,13 @@ namespace AlertSample
         {
             logger.WriteInfo("Child started ('{0}').", name);
 
+            ReceiveLoop loop = new ReceiveLoop(logger, name);
+            loop.Start();
+
             Console.ReadLine();
-            
+
+            loop.Stop();
+
             logger.WriteInfo("Child exiting.");
             return 0;
         }
