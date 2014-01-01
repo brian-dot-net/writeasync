@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IClient.cs" />
+    <Compile Include="Sender.cs" />
     <Compile Include="Receiver.cs" />
     <Compile Include="ThresholdEventArgs.cs" />
     <Compile Include="Logger.cs" />
