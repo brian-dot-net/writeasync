@@ -35,6 +35,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ThresholdEventArgs.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ChildProcess.cs" />
     <Compile Include="Alert.cs" />

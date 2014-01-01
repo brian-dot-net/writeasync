@@ -30,6 +30,8 @@ namespace AlertSample
             this.collector = info.Create();
         }
 
+        public event EventHandler<ThresholdEventArgs> ThresholdReached;
+
         public void Start()
         {
             string queryText = GetQueryText();
@@ -101,8 +103,11 @@ namespace AlertSample
 
         private void OnThresholdReached(bool isLowerBound)
         {
-            // TODO
-            Console.WriteLine("Threshold reached, is lower bound: {0}", isLowerBound);
+            EventHandler<ThresholdEventArgs> handler = this.ThresholdReached;
+            if (handler != null)
+            {
+                handler(this, new ThresholdEventArgs(isLowerBound));
+            }
         }
     }
 }

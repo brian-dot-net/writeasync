@@ -39,6 +39,11 @@ namespace AlertSample
                 logger.WriteInfo("Starting child...");
                 childProcess.Start();
 
+                alert.ThresholdReached += delegate(object sender, ThresholdEventArgs e)
+                {
+                    logger.WriteInfo("Threshold reached; is lower bound? {0}", e.IsLowerBound);
+                };
+
                 logger.WriteInfo("Starting alert...");
                 alert.Start();
 
