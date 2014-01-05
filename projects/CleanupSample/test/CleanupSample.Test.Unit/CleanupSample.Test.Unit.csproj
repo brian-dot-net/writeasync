@@ -36,6 +36,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockingTaskTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CleanupTest.cs" />
   </ItemGroup>
