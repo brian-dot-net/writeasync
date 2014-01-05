@@ -12,12 +12,17 @@ namespace CleanupSample
 
     public class CleanupGuard
     {
+        private readonly Stack<Func<Task>> steps;
+
         public CleanupGuard()
         {
-            this.Steps = new Stack<Func<Task>>();
+            this.steps = new Stack<Func<Task>>();
         }
 
-        public Stack<Func<Task>> Steps { get; private set; }
+        public void Register(Func<Task> cleanupAsync)
+        {
+            this.steps.Push(cleanupAsync);
+        }
 
         public async Task RunAsync(Func<CleanupGuard, Task> doAsync)
         {
@@ -31,9 +36,9 @@ namespace CleanupSample
                 exceptions.Add(e);
             }
 
-            while (this.Steps.Count > 0)
+            while (this.steps.Count > 0)
             {
-                Func<Task> cleanupAsync = this.Steps.Pop();
+                Func<Task> cleanupAsync = this.steps.Pop();
                 try
                 {
                     await cleanupAsync();

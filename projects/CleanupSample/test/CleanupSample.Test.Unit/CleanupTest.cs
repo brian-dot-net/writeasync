@@ -46,8 +46,8 @@ namespace CleanupSample.Test.Unit
                 return Task.FromResult(false);
             };
 
-            guard.Steps.Push(() => doStepAsync(1));
-            guard.Steps.Push(() => doStepAsync(2));
+            guard.Register(() => doStepAsync(1));
+            guard.Register(() => doStepAsync(2));
 
             bool executed = false;
             Func<CleanupGuard, Task> doAsync = delegate(CleanupGuard g)
@@ -74,8 +74,8 @@ namespace CleanupSample.Test.Unit
                 return Task.FromResult(false);
             };
 
-            guard.Steps.Push(() => doStepAsync(1));
-            guard.Steps.Push(() => doStepAsync(2));
+            guard.Register(() => doStepAsync(1));
+            guard.Register(() => doStepAsync(2));
 
             InvalidTimeZoneException expectedException = new InvalidTimeZoneException("Expected.");
             Func<CleanupGuard, Task> doAsync = delegate(CleanupGuard g)
@@ -104,8 +104,8 @@ namespace CleanupSample.Test.Unit
                 return Task.FromResult(false);
             };
 
-            guard.Steps.Push(() => doStepAsync(1));
-            guard.Steps.Push(() => doStepAsync(2));
+            guard.Register(() => doStepAsync(1));
+            guard.Register(() => doStepAsync(2));
 
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Task task = guard.RunAsync(g => tcs.Task);
@@ -141,8 +141,8 @@ namespace CleanupSample.Test.Unit
 
             InvalidTimeZoneException expectedException = new InvalidTimeZoneException("Expected.");
 
-            guard.Steps.Push(() => doStepAsync(1, null));
-            guard.Steps.Push(() => doStepAsync(2, expectedException));
+            guard.Register(() => doStepAsync(1, null));
+            guard.Register(() => doStepAsync(2, expectedException));
 
             Task task = guard.RunAsync(g => Task.FromResult(false));
 
@@ -166,8 +166,8 @@ namespace CleanupSample.Test.Unit
             };
 
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            guard.Steps.Push(() => doStepAsync(1, Task.FromResult(false)));
-            guard.Steps.Push(() => doStepAsync(2, tcs.Task));
+            guard.Register(() => doStepAsync(1, Task.FromResult(false)));
+            guard.Register(() => doStepAsync(2, tcs.Task));
 
             Task task = guard.RunAsync(g => Task.FromResult(false));
 
@@ -196,8 +196,8 @@ namespace CleanupSample.Test.Unit
             };
 
             TaskCompletionSource<bool> cleanupTcs = new TaskCompletionSource<bool>();
-            guard.Steps.Push(() => doStepAsync(1, Task.FromResult(false)));
-            guard.Steps.Push(() => doStepAsync(2, cleanupTcs.Task));
+            guard.Register(() => doStepAsync(1, Task.FromResult(false)));
+            guard.Register(() => doStepAsync(2, cleanupTcs.Task));
 
             TaskCompletionSource<bool> runTcs = new TaskCompletionSource<bool>();
             Task task = guard.RunAsync(g => runTcs.Task);
