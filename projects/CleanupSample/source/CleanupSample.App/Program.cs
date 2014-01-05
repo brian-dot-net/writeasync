@@ -19,8 +19,11 @@ namespace CleanupSample
         {
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
+                TraceSource traceSource = new TraceSource("CleanupSample", SourceLevels.All);
+                traceSource.Listeners.Add(new ConsoleTraceListener() { TraceOutputOptions = TraceOptions.DateTime | TraceOptions.ThreadId });
+
                 CleanupGuard guard = new CleanupGuard();
-                Task task = guard.RunAsync(g => RunSampleAsync(g, cts.Token));
+                Task task = guard.RunAsync(g => RunSampleAsync(g, traceSource, cts.Token));
 
                 Console.WriteLine("Press ENTER to stop.");
                 Console.ReadLine();
@@ -33,12 +36,12 @@ namespace CleanupSample
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("ERROR: " + e);
+                    traceSource.TraceEvent(TraceEventType.Error, 0, "ERROR: {0}", e);
                 }
             }
         }
 
-        private static async Task RunSampleAsync(CleanupGuard guard, CancellationToken token)
+        private static async Task RunSampleAsync(CleanupGuard guard, TraceSource traceSource, CancellationToken token)
         {
             // Make sure we switch to another thread before starting the work.
             await Task.Yield();
@@ -52,25 +55,25 @@ namespace CleanupSample
             while (!token.IsCancellationRequested)
             {
                 string fileName = filePrefix + index + ".txt";
-                guard.Register(() => ZeroFileAsync(fileName));
+                guard.Register(() => ZeroFileAsync(fileName, traceSource));
 
-                Console.WriteLine("Writing file '{0}'...", fileName);
+                traceSource.TraceInformation("Writing file '{0}'...", fileName);
                 await WriteFileAsync(fileName, random, alphabet, token);
 
-                Console.WriteLine("Starting 'notepad.exe {0}'...", fileName);
+                traceSource.TraceInformation("Starting 'notepad.exe {0}'...", fileName);
                 Process process = Process.Start("notepad.exe", fileName);
-                guard.Register(Blocking.Task(KillProcess, process));
+                guard.Register(Blocking.Task(KillProcess, Tuple.Create(process, traceSource)));
 
-                Console.WriteLine("Waiting...");
+                traceSource.TraceInformation("Waiting...");
                 await Task.Delay(3000, token);
 
                 ++index;
             }
         }
 
-        private static async Task ZeroFileAsync(string fileName)
+        private static async Task ZeroFileAsync(string fileName, TraceSource traceSource)
         {
-            Console.WriteLine("Zeroing out file '{0}'...", fileName);
+            traceSource.TraceInformation("Zeroing out file '{0}'...", fileName);
             using (FileStream stream = CreateAsyncStream(fileName))
             {
                 await stream.WriteAsync(new byte[0], 0, 0);
@@ -112,11 +115,12 @@ namespace CleanupSample
             return new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Read, 1024, true);
         }
 
-        private static void KillProcess(Process process)
+        private static void KillProcess(Tuple<Process, TraceSource> args)
         {
-            Console.WriteLine("Killing process (args='{0}')...", process.StartInfo.Arguments);
-            using (process)
+            TraceSource traceSource = args.Item2;
+            using (Process process = args.Item1)
             {
+                traceSource.TraceInformation("Killing process (args='{0}')...", process.StartInfo.Arguments);
                 process.Kill();
                 process.WaitForExit();
             }
