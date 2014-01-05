@@ -153,5 +153,35 @@ namespace CleanupSample.Test.Unit
             Assert.Same(expectedException, ae.InnerExceptions[0]);
             Assert.Equal(new int[] { 2, 1 }, steps.ToArray());
         }
+
+        [Fact]
+        public void Should_execute_all_cleanup_steps_despite_async_exception_in_cleanup_and_complete_with_exception()
+        {
+            CleanupGuard guard = new CleanupGuard();
+            List<int> steps = new List<int>();
+            Func<int, Task, Task> doStepAsync = delegate(int i, Task t)
+            {
+                steps.Add(i);
+                return t;
+            };
+
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            guard.Steps.Push(() => doStepAsync(1, Task.FromResult(false)));
+            guard.Steps.Push(() => doStepAsync(2, tcs.Task));
+
+            Task task = guard.RunAsync(g => Task.FromResult(false));
+
+            Assert.False(task.IsCompleted);
+
+            InvalidTimeZoneException expectedException = new InvalidTimeZoneException("Expected.");
+            tcs.SetException(expectedException);
+
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
+            AggregateException ae = Assert.IsType<AggregateException>(task.Exception).Flatten();
+            Assert.Equal(1, ae.InnerExceptions.Count);
+            Assert.Same(expectedException, ae.InnerExceptions[0]);
+            Assert.Equal(new int[] { 2, 1 }, steps.ToArray());
+        }
     }
 }
