@@ -7,6 +7,7 @@
 namespace CleanupSample.Test.Unit
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -32,6 +33,34 @@ namespace CleanupSample.Test.Unit
 
             Assert.True(executed);
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+        }
+
+        [Fact]
+        public void Should_execute_cleanup_steps_in_opposite_order_after_delegate()
+        {
+            CleanupGuard guard = new CleanupGuard();
+            List<int> steps = new List<int>();
+            Func<int, Task> doStepAsync = delegate(int i)
+            {
+                steps.Add(i);
+                return Task.FromResult(false);
+            };
+
+            guard.Steps.Push(() => doStepAsync(1));
+            guard.Steps.Push(() => doStepAsync(2));
+
+            bool executed = false;
+            Func<CleanupGuard, Task> doAsync = delegate(CleanupGuard g)
+            {
+                executed = true;
+                return Task.FromResult(false);
+            };
+
+            Task task = guard.RunAsync(doAsync);
+
+            Assert.True(executed);
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(new int[] { 2, 1 }, steps.ToArray());
         }
     }
 }
