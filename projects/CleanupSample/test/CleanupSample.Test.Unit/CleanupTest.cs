@@ -62,5 +62,35 @@ namespace CleanupSample.Test.Unit
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal(new int[] { 2, 1 }, steps.ToArray());
         }
+
+        [Fact]
+        public void Should_execute_cleanup_steps_on_sync_exception_in_delegate_and_complete_with_exception()
+        {
+            CleanupGuard guard = new CleanupGuard();
+            List<int> steps = new List<int>();
+            Func<int, Task> doStepAsync = delegate(int i)
+            {
+                steps.Add(i);
+                return Task.FromResult(false);
+            };
+
+            guard.Steps.Push(() => doStepAsync(1));
+            guard.Steps.Push(() => doStepAsync(2));
+
+            InvalidTimeZoneException expectedException = new InvalidTimeZoneException("Expected.");
+            Func<CleanupGuard, Task> doAsync = delegate(CleanupGuard g)
+            {
+                throw expectedException;
+            };
+
+            Task task = guard.RunAsync(doAsync);
+
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
+            AggregateException ae = Assert.IsType<AggregateException>(task.Exception).Flatten();
+            Assert.Equal(1, ae.InnerExceptions.Count);
+            Assert.Same(expectedException, ae.InnerExceptions[0]);
+            Assert.Equal(new int[] { 2, 1 }, steps.ToArray());
+        }
     }
 }

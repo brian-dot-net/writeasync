@@ -21,11 +21,25 @@ namespace CleanupSample
 
         public async Task RunAsync(Func<CleanupGuard, Task> doAsync)
         {
-            await doAsync(this);
+            Exception exception = null;
+            try
+            {
+                await doAsync(this);
+            }
+            catch (Exception e)
+            {
+                exception = e;
+            }
+
             while (this.Steps.Count > 0)
             {
                 Func<Task> cleanupAsync = this.Steps.Pop();
                 await cleanupAsync();
+            }
+            
+            if (exception != null)
+            {
+                throw new AggregateException(exception).Flatten();
             }
         }
     }
