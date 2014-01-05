@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Class1.cs" company="Brian Rogers">
+// <copyright file="CleanupGuard.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -9,18 +9,15 @@ namespace CleanupSample
     using System;
     using System.Threading.Tasks;
 
-    public class Class1
+    public class CleanupGuard
     {
-        private readonly string name;
-
-        public Class1(string name)
+        public CleanupGuard()
         {
-            this.name = name;
         }
 
-        public Task<string> DoAsync()
+        public Task RunAsync(Func<CleanupGuard, Task> doAsync)
         {
-            return Task.FromResult(this.name);
+            return doAsync(this);
         }
     }
 }
