@@ -83,6 +83,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="LICENSE" />
     <Content Include="SupportDlls\amd64\dbghelp.dll" />
     <Content Include="SupportDlls\amd64\KernelTraceControl.dll" />
     <Content Include="SupportDlls\amd64\symsrv.dll" />
