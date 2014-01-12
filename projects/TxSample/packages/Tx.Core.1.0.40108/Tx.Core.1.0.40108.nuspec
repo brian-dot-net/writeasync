@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Tx.Core</id>
+    <version>1.0.40108</version>
+    <title>Tx.Core</title>
+    <authors>Microsoft Open Technologies,  Inc.</authors>
+    <owners>Microsoft Open Technologies,  Inc.</owners>
+    <licenseUrl>http://tx.codeplex.com/license</licenseUrl>
+    <projectUrl>http://tx.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Tx (LINQ to Logs and Traces) core components, not specific to the event format</description>
+    <copyright>Microsoft Open Technologies, Inc. © 2013</copyright>
+    <language>en-us</language>
+    <tags>Tx Traces Logs Playback Replay XEvent ETW</tags>
+    <dependencies>
+      <dependency id="Rx-Main" version="2.1.30204" />
+    </dependencies>
+  </metadata>
+</package>

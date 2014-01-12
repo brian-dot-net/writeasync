@@ -30,8 +30,25 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Reactive.Core, Version=2.1.30214.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Rx-Core.2.1.30214.0\lib\Net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces, Version=2.1.30214.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Rx-Interfaces.2.1.30214.0\lib\Net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Tx.Core, Version=1.0.40108.0, Culture=neutral, PublicKeyToken=3d3a4b0768c9178e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Tx.Core.1.0.40108\lib\Net45\Tx.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Tx.Windows, Version=1.0.40108.0, Culture=neutral, PublicKeyToken=3d3a4b0768c9178e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Tx.Windows.1.0.40108\lib\Net45\Tx.Windows.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KernelProcessSession.cs" />
     <Compile Include="CollectorSetWrapper.cs" />
     <Compile Include="ICollectorSet.cs" />
     <Compile Include="IProcessEvents.cs" />
