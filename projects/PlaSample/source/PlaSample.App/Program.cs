@@ -13,15 +13,33 @@ namespace PlaSample
     {
         private static void Main(string[] args)
         {
+            CreateRealTimeTraceCollector();
             CreatePerfCounterAlert();
             CreateTraceCollector();
             CreatePerfCounterCollector();
         }
 
+        private static void CreateRealTimeTraceCollector()
+        {
+            RealTimeTraceCollectorInfo info = new RealTimeTraceCollectorInfo("MyRealTimeCollector");
+
+            // Microsoft-Windows-Kernel-Process         
+            Guid providerId = new Guid("{22FB2CD6-0E7B-422B-A0C7-2FAD1FD0E716}");
+
+            info.Providers.Add(new ProviderInfo(providerId) { Level = 5 });
+
+            ISessionController controller = info.Create();
+            controller.Start();
+
+            Thread.Sleep(5000);
+
+            controller.Stop();
+        }
+
         private static void CreatePerfCounterAlert()
         {
             CounterAlertInfo info = new CounterAlertInfo("MyAlert");
-            
+
             info.SampleInterval = TimeSpan.FromSeconds(2.0d);
 
             CounterName counterName = new CounterName() { Category = "Process", Counter = "% Processor Time", Instance = "notepad" };

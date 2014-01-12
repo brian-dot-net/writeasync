@@ -32,13 +32,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectorSetWrapper.cs" />
     <Compile Include="CounterAlertInfo.cs" />
     <Compile Include="ThresholdCondition.cs" />
     <Compile Include="CounterThreshold.cs" />
     <Compile Include="ProviderInfo.cs" />
+    <Compile Include="RealTimeTraceCollectorInfo.cs" />
     <Compile Include="TraceCollectorInfo.cs" />
     <Compile Include="ICollectorSet.cs" />
-    <Compile Include="CollectorSetWrapper.cs" />
     <Compile Include="ISessionController.cs" />
     <Compile Include="LogFileFormat.cs" />
     <Compile Include="CounterName.cs" />
