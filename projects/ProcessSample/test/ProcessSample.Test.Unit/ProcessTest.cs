@@ -102,6 +102,21 @@ namespace ProcessSample.Test.Unit
             }
         }
 
+        [Fact]
+        public void WaitForExit_is_canceled_immediately_if_token_is_already_canceled()
+        {
+            ProcessStub inner = new ProcessStub();
+            ProcessEx process = new ProcessEx(inner);
+
+            using (CancellationTokenSource cts = new CancellationTokenSource())
+            {
+                cts.Cancel();
+                Task task = process.WaitForExitAsync(cts.Token);
+
+                Assert.True(task.IsCanceled);
+            }
+        }
+
         private sealed class ProcessStub : IProcess
         {
             public ProcessStub()
