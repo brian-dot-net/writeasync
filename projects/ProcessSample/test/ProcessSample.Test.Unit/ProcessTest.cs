@@ -223,6 +223,16 @@ namespace ProcessSample.Test.Unit
 
             public bool EnableRaisingEvents { get; set; }
 
+            public int ExitCode
+            {
+                get { throw new NotImplementedException(); }
+            }
+
+            public DateTime ExitTime
+            {
+                get { throw new NotImplementedException(); }
+            }
+
             public int ExitedSubscriberCount
             {
                 get

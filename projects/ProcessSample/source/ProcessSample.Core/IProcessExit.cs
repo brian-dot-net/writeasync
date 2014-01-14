@@ -15,5 +15,9 @@ namespace ProcessSample
         bool HasExited { get; }
 
         bool EnableRaisingEvents { get; set; }
+
+        int ExitCode { get; }
+
+        DateTime ExitTime { get; }
     }
 }
