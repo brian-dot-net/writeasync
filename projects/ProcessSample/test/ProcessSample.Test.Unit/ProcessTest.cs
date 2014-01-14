@@ -25,6 +25,7 @@ namespace ProcessSample.Test.Unit
             Assert.False(inner.EnableRaisingEvents);
 
             ProcessEx process = new ProcessEx(inner);
+            Assert.Same(inner, process.Inner);
             Assert.Equal(1, inner.ExitedSubscriberCount);
             Assert.True(inner.EnableRaisingEvents);
         }

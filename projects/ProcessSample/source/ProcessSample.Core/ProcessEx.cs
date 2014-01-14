@@ -7,8 +7,8 @@
 namespace ProcessSample
 {
     using System;
-using System.Threading;
-using System.Threading.Tasks;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public sealed class ProcessEx : IDisposable
     {
@@ -25,6 +25,11 @@ using System.Threading.Tasks;
             {
                 this.exited.TrySetResult(false);
             }
+        }
+
+        public IProcess Inner
+        {
+            get { return this.inner; }
         }
 
         public async Task WaitForExitAsync(CancellationToken token)
