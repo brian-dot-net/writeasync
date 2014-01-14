@@ -57,6 +57,20 @@ namespace ProcessSample.Test.Unit
         }
 
         [Fact]
+        public void Dispose_is_idempotent()
+        {
+            ProcessExitStub inner = new ProcessExitStub();
+
+            ProcessExitWatcher process = new ProcessExitWatcher(inner);
+            process.Dispose();
+
+            inner.EnableRaisingEvents = true;
+            process.Dispose();
+
+            Assert.True(inner.EnableRaisingEvents);
+        }
+
+        [Fact]
         public void WaitForExit_completes_after_exit()
         {
             ProcessExitStub inner = new ProcessExitStub();
