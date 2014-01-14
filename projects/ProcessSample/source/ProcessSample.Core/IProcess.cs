@@ -12,6 +12,8 @@ namespace ProcessSample
     {
         event EventHandler Exited;
 
+        bool HasExited { get; }
+
         bool EnableRaisingEvents { get; set; }
     }
 }

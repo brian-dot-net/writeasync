@@ -55,6 +55,18 @@ namespace ProcessSample.Test.Unit
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
         }
 
+        [Fact]
+        public void WaitForExit_completes_sync_if_exited_before_subscribed()
+        {
+            ProcessStub inner = new ProcessStub();
+            inner.HasExited = true;
+            ProcessEx process = new ProcessEx(inner);
+
+            Task task = process.WaitForExitAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+        }
+
         private sealed class ProcessStub : IProcess
         {
             public ProcessStub()
@@ -62,6 +74,8 @@ namespace ProcessSample.Test.Unit
             }
 
             public event EventHandler Exited;
+
+            public bool HasExited { get; set; }
 
             public bool EnableRaisingEvents { get; set; }
 

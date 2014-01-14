@@ -20,6 +20,10 @@ namespace ProcessSample
             this.inner = inner;
             this.inner.EnableRaisingEvents = true;
             this.inner.Exited += this.OnProcessExited;
+            if (this.inner.HasExited)
+            {
+                this.exited.SetResult(false);
+            }
         }
 
         public Task WaitForExitAsync()
@@ -44,7 +48,7 @@ namespace ProcessSample
 
         private void OnProcessExited(object sender, EventArgs e)
         {
-            this.exited.TrySetResult(false);
+            this.exited.SetResult(false);
         }
     }
 }
