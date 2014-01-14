@@ -41,6 +41,20 @@ namespace ProcessSample.Test.Unit
             Assert.False(inner.EnableRaisingEvents);
         }
 
+        [Fact]
+        public void WaitForExit_completes_after_exit()
+        {
+            ProcessStub inner = new ProcessStub();
+            ProcessEx process = new ProcessEx(inner);
+
+            Task task = process.WaitForExitAsync();
+            Assert.False(task.IsCompleted);
+
+            inner.RaiseExited();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+        }
+
         private sealed class ProcessStub : IProcess
         {
             public ProcessStub()
@@ -63,6 +77,11 @@ namespace ProcessSample.Test.Unit
 
                     return count;
                 }
+            }
+
+            public void RaiseExited()
+            {
+                this.Exited(this, EventArgs.Empty);
             }
         }
     }

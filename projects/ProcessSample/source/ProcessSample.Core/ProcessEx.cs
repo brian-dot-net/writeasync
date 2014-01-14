@@ -7,16 +7,24 @@
 namespace ProcessSample
 {
     using System;
+    using System.Threading.Tasks;
 
     public sealed class ProcessEx : IDisposable
     {
+        private readonly TaskCompletionSource<bool> exited;
         private readonly IProcess inner;
 
         public ProcessEx(IProcess inner)
         {
+            this.exited = new TaskCompletionSource<bool>();
             this.inner = inner;
             this.inner.EnableRaisingEvents = true;
             this.inner.Exited += this.OnProcessExited;
+        }
+
+        public Task WaitForExitAsync()
+        {
+            return this.exited.Task;
         }
 
         public void Dispose()
@@ -36,6 +44,7 @@ namespace ProcessSample
 
         private void OnProcessExited(object sender, EventArgs e)
         {
+            this.exited.TrySetResult(false);
         }
     }
 }
