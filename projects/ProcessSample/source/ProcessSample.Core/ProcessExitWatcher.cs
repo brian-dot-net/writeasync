@@ -30,7 +30,7 @@ namespace ProcessSample
             }
         }
 
-        public IProcessExit Inner
+        public IProcessExitStatus Status
         {
             get { return this.exit; }
         }

@@ -25,9 +25,22 @@ namespace ProcessSample.Test.Unit
             Assert.False(exit.EnableRaisingEvents);
 
             ProcessExitWatcher process = new ProcessExitWatcher(exit);
-            Assert.Same(exit, process.Inner);
             Assert.Equal(1, exit.ExitedSubscriberCount);
             Assert.True(exit.EnableRaisingEvents);
+        }
+
+        [Fact]
+        public void Status_provides_access_to_inner_status()
+        {
+            ProcessExitStub exit = new ProcessExitStub();
+
+            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+
+            exit.ExitCode = 123;
+            exit.ExitTime = new DateTime(2000, 1, 2);
+
+            Assert.Equal(123, process.Status.ExitCode);
+            Assert.Equal(new DateTime(2000, 1, 2), process.Status.ExitTime);
         }
 
         [Fact]
@@ -223,15 +236,9 @@ namespace ProcessSample.Test.Unit
 
             public bool EnableRaisingEvents { get; set; }
 
-            public int ExitCode
-            {
-                get { throw new NotImplementedException(); }
-            }
+            public int ExitCode { get; set; }
 
-            public DateTime ExitTime
-            {
-                get { throw new NotImplementedException(); }
-            }
+            public DateTime ExitTime { get; set; }
 
             public int ExitedSubscriberCount
             {
