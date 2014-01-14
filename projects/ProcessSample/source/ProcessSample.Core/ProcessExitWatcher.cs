@@ -14,11 +14,13 @@ namespace ProcessSample
     {
         private readonly TaskCompletionSource<bool> exited;
         private readonly IProcessExit inner;
+        private bool savedEnableRaisingEvents;
 
         public ProcessExitWatcher(IProcessExit inner)
         {
             this.exited = new TaskCompletionSource<bool>();
             this.inner = inner;
+            this.savedEnableRaisingEvents = this.inner.EnableRaisingEvents;
             this.inner.EnableRaisingEvents = true;
             this.inner.Exited += this.OnProcessExited;
             if (this.inner.HasExited)
@@ -59,7 +61,7 @@ namespace ProcessSample
         {
             if (disposing)
             {
-                this.inner.EnableRaisingEvents = false;
+                this.inner.EnableRaisingEvents = this.savedEnableRaisingEvents;
                 this.inner.Exited -= this.OnProcessExited;
             }
         }

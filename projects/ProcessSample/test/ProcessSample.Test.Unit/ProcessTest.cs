@@ -18,7 +18,7 @@ namespace ProcessSample.Test.Unit
         }
 
         [Fact]
-        public void Subscribes_to_Exited_event_on_construction()
+        public void Constructor_sets_EnableRaisingEvents_and_subscribes_to_Exited()
         {
             ProcessExitStub inner = new ProcessExitStub();
             Assert.Equal(0, inner.ExitedSubscriberCount);
@@ -31,7 +31,7 @@ namespace ProcessSample.Test.Unit
         }
 
         [Fact]
-        public void Unsubscribes_from_Exited_event_on_Dispose()
+        public void Dispose_Unsubscribes_from_Exited_and_resets_EnableRaisingEvents()
         {
             ProcessExitStub inner = new ProcessExitStub();
 
@@ -41,6 +41,19 @@ namespace ProcessSample.Test.Unit
 
             Assert.Equal(0, inner.ExitedSubscriberCount);
             Assert.False(inner.EnableRaisingEvents);
+        }
+
+        [Fact]
+        public void Dispose_does_not_change_EnableRaisingEvents_if_started_as_true()
+        {
+            ProcessExitStub inner = new ProcessExitStub();
+            inner.EnableRaisingEvents = true;
+
+            using (ProcessExitWatcher process = new ProcessExitWatcher(inner))
+            {
+            }
+
+            Assert.True(inner.EnableRaisingEvents);
         }
 
         [Fact]
