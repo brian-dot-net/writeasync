@@ -35,11 +35,16 @@ namespace ProcessSample
             get { return this.inner; }
         }
 
+        private bool IsDisposed
+        {
+            get { return this.savedEnableRaisingEvents == null; }
+        }
+
         public Task WaitForExitAsync(CancellationToken token)
         {
-            if (this.savedEnableRaisingEvents == null)
+            if (this.IsDisposed)
             {
-                throw new ObjectDisposedException("ProcessExitWatcher");
+                throw GetDisposedException();
             }
 
             Task task = this.exited.Task;
@@ -57,6 +62,11 @@ namespace ProcessSample
             GC.SuppressFinalize(this);
         }
 
+        private static Exception GetDisposedException()
+        {
+            return new ObjectDisposedException("ProcessExitWatcher");
+        }
+
         private void Dispose(bool disposing)
         {
             if (disposing)
@@ -65,7 +75,7 @@ namespace ProcessSample
                 {
                     this.inner.EnableRaisingEvents = this.savedEnableRaisingEvents.Value;
                     this.inner.Exited -= this.OnProcessExited;
-                    this.exited.TrySetException(new ObjectDisposedException("ProcessExitWatcher"));
+                    this.exited.TrySetException(GetDisposedException());
                     this.savedEnableRaisingEvents = null;
                 }
             }
