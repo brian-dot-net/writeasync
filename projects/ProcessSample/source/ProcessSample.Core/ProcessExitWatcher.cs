@@ -63,6 +63,7 @@ namespace ProcessSample
             {
                 this.inner.EnableRaisingEvents = this.savedEnableRaisingEvents;
                 this.inner.Exited -= this.OnProcessExited;
+                this.exited.TrySetException(new ObjectDisposedException("ProcessExitWatcher"));
             }
         }
 

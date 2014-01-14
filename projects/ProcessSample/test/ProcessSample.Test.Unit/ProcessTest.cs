@@ -147,6 +147,24 @@ namespace ProcessSample.Test.Unit
             }
         }
 
+        [Fact]
+        public void WaitForExit_completes_with_ObjectDisposed_after_Dispose()
+        {
+            ProcessExitStub inner = new ProcessExitStub();
+            Task task;
+            using (ProcessExitWatcher process = new ProcessExitWatcher(inner))
+            {
+                task = process.WaitForExitAsync(CancellationToken.None);
+                Assert.False(task.IsCompleted);
+            }
+
+            Assert.True(task.IsFaulted);
+            AggregateException ae = Assert.IsType<AggregateException>(task.Exception);
+            Assert.Equal(1, ae.InnerExceptions.Count);
+            ObjectDisposedException ode = Assert.IsType<ObjectDisposedException>(ae.InnerExceptions[0]);
+            Assert.Equal("ProcessExitWatcher", ode.ObjectName);
+        }
+
         private sealed class ProcessExitStub : IProcessExit
         {
             public ProcessExitStub()
