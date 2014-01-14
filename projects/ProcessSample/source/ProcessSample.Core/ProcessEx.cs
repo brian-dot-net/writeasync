@@ -7,7 +7,8 @@
 namespace ProcessSample
 {
     using System;
-    using System.Threading.Tasks;
+using System.Threading;
+using System.Threading.Tasks;
 
     public sealed class ProcessEx : IDisposable
     {
@@ -26,9 +27,21 @@ namespace ProcessSample
             }
         }
 
-        public Task WaitForExitAsync()
+        public async Task WaitForExitAsync(CancellationToken token)
         {
-            return this.exited.Task;
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            using (token.Register(o => ((TaskCompletionSource<bool>)o).SetResult(false), tcs))
+            {
+                Task completed = await Task.WhenAny(this.exited.Task, tcs.Task);
+                if (completed == this.exited.Task)
+                {
+                    await this.exited.Task;
+                }
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+            }
         }
 
         public void Dispose()

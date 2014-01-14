@@ -7,6 +7,7 @@
 namespace ProcessSample.Test.Unit
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -47,7 +48,7 @@ namespace ProcessSample.Test.Unit
             ProcessStub inner = new ProcessStub();
             ProcessEx process = new ProcessEx(inner);
 
-            Task task = process.WaitForExitAsync();
+            Task task = process.WaitForExitAsync(CancellationToken.None);
             Assert.False(task.IsCompleted);
 
             inner.RaiseExited();
@@ -62,7 +63,7 @@ namespace ProcessSample.Test.Unit
             inner.HasExited = true;
             ProcessEx process = new ProcessEx(inner);
 
-            Task task = process.WaitForExitAsync();
+            Task task = process.WaitForExitAsync(CancellationToken.None);
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
         }
@@ -79,9 +80,26 @@ namespace ProcessSample.Test.Unit
 
             ProcessEx process = new ProcessEx(inner);
 
-            Task task = process.WaitForExitAsync();
+            Task task = process.WaitForExitAsync(CancellationToken.None);
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+        }
+
+        [Fact]
+        public void WaitForExit_is_canceled_if_token_requests_cancellation()
+        {
+            ProcessStub inner = new ProcessStub();
+            ProcessEx process = new ProcessEx(inner);
+
+            using (CancellationTokenSource cts = new CancellationTokenSource())
+            {
+                Task task = process.WaitForExitAsync(cts.Token);
+                Assert.False(task.IsCompleted);
+
+                cts.Cancel();
+
+                Assert.True(task.IsCanceled);
+            }
         }
 
         private sealed class ProcessStub : IProcess
