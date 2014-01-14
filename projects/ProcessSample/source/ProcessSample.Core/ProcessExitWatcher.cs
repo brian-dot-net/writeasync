@@ -35,21 +35,15 @@ namespace ProcessSample
             get { return this.inner; }
         }
 
-        public async Task WaitForExitAsync(CancellationToken token)
+        public Task WaitForExitAsync(CancellationToken token)
         {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            using (token.Register(o => ((TaskCompletionSource<bool>)o).SetResult(false), tcs))
+            Task task = this.exited.Task;
+            if (token.CanBeCanceled)
             {
-                Task completed = await Task.WhenAny(this.exited.Task, tcs.Task);
-                if (completed == this.exited.Task)
-                {
-                    await this.exited.Task;
-                }
-                else
-                {
-                    token.ThrowIfCancellationRequested();
-                }
+                task = this.WaitForExitInnerAsync(token);
             }
+
+            return task;
         }
 
         public void Dispose()
@@ -75,6 +69,23 @@ namespace ProcessSample
         private void OnProcessExited(object sender, EventArgs e)
         {
             this.exited.TrySetResult(false);
+        }
+
+        private async Task WaitForExitInnerAsync(CancellationToken token)
+        {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            using (token.Register(o => ((TaskCompletionSource<bool>)o).SetResult(false), tcs))
+            {
+                Task completed = await Task.WhenAny(this.exited.Task, tcs.Task);
+                if (completed == this.exited.Task)
+                {
+                    await this.exited.Task;
+                }
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                }
+            }
         }
     }
 }
