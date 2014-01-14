@@ -30,6 +30,14 @@ namespace ProcessSample.Test.Unit
         }
 
         [Fact]
+        public void Constructor_throws_ArgumentNull_for_null_exit()
+        {
+            IProcessExit exit = null;
+            ArgumentNullException ane = Assert.Throws<ArgumentNullException>(() => new ProcessExitWatcher(exit));
+            Assert.Equal("exit", ane.ParamName);
+        }
+
+        [Fact]
         public void Status_provides_access_to_inner_status()
         {
             ProcessExitStub exit = new ProcessExitStub();

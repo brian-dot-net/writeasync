@@ -19,6 +19,11 @@ namespace ProcessSample
 
         public ProcessExitWatcher(IProcessExit exit)
         {
+            if (exit == null)
+            {
+                throw new ArgumentNullException("exit");
+            }
+
             this.exited = new TaskCompletionSource<bool>();
             this.exit = exit;
             this.savedEnableRaisingEvents = this.exit.EnableRaisingEvents;
