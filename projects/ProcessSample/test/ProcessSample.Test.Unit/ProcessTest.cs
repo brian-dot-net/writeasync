@@ -20,32 +20,32 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void Constructor_sets_EnableRaisingEvents_and_subscribes_to_Exited()
         {
-            ProcessExitStub exit = new ProcessExitStub();
-            Assert.Equal(0, exit.ExitedSubscriberCount);
-            Assert.False(exit.EnableRaisingEvents);
+            ProcessExitStub subject = new ProcessExitStub();
+            Assert.Equal(0, subject.ExitedSubscriberCount);
+            Assert.False(subject.EnableRaisingEvents);
 
-            ProcessExitWatcher process = new ProcessExitWatcher(exit);
-            Assert.Equal(1, exit.ExitedSubscriberCount);
-            Assert.True(exit.EnableRaisingEvents);
+            ProcessExitWatcher process = new ProcessExitWatcher(subject);
+            Assert.Equal(1, subject.ExitedSubscriberCount);
+            Assert.True(subject.EnableRaisingEvents);
         }
 
         [Fact]
-        public void Constructor_throws_ArgumentNull_for_null_exit()
+        public void Constructor_throws_ArgumentNull_for_null_subject()
         {
-            IProcessExit exit = null;
-            ArgumentNullException ane = Assert.Throws<ArgumentNullException>(() => new ProcessExitWatcher(exit));
-            Assert.Equal("exit", ane.ParamName);
+            IProcessExit subject = null;
+            ArgumentNullException ane = Assert.Throws<ArgumentNullException>(() => new ProcessExitWatcher(subject));
+            Assert.Equal("subject", ane.ParamName);
         }
 
         [Fact]
         public void Status_provides_access_to_inner_status()
         {
-            ProcessExitStub exit = new ProcessExitStub();
+            ProcessExitStub subject = new ProcessExitStub();
 
-            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+            ProcessExitWatcher process = new ProcessExitWatcher(subject);
 
-            exit.ExitCode = 123;
-            exit.ExitTime = new DateTime(2000, 1, 2);
+            subject.ExitCode = 123;
+            subject.ExitTime = new DateTime(2000, 1, 2);
 
             Assert.Equal(123, process.Status.ExitCode);
             Assert.Equal(new DateTime(2000, 1, 2), process.Status.ExitTime);
@@ -54,53 +54,53 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void Dispose_Unsubscribes_from_Exited_and_resets_EnableRaisingEvents()
         {
-            ProcessExitStub exit = new ProcessExitStub();
+            ProcessExitStub subject = new ProcessExitStub();
 
-            using (ProcessExitWatcher process = new ProcessExitWatcher(exit))
+            using (ProcessExitWatcher process = new ProcessExitWatcher(subject))
             {
             }
 
-            Assert.Equal(0, exit.ExitedSubscriberCount);
-            Assert.False(exit.EnableRaisingEvents);
+            Assert.Equal(0, subject.ExitedSubscriberCount);
+            Assert.False(subject.EnableRaisingEvents);
         }
 
         [Fact]
         public void Dispose_does_not_change_EnableRaisingEvents_if_started_as_true()
         {
-            ProcessExitStub exit = new ProcessExitStub();
-            exit.EnableRaisingEvents = true;
+            ProcessExitStub subject = new ProcessExitStub();
+            subject.EnableRaisingEvents = true;
 
-            using (ProcessExitWatcher process = new ProcessExitWatcher(exit))
+            using (ProcessExitWatcher process = new ProcessExitWatcher(subject))
             {
             }
 
-            Assert.True(exit.EnableRaisingEvents);
+            Assert.True(subject.EnableRaisingEvents);
         }
 
         [Fact]
         public void Dispose_is_idempotent()
         {
-            ProcessExitStub exit = new ProcessExitStub();
+            ProcessExitStub subject = new ProcessExitStub();
 
-            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+            ProcessExitWatcher process = new ProcessExitWatcher(subject);
             process.Dispose();
 
-            exit.EnableRaisingEvents = true;
+            subject.EnableRaisingEvents = true;
             process.Dispose();
 
-            Assert.True(exit.EnableRaisingEvents);
+            Assert.True(subject.EnableRaisingEvents);
         }
 
         [Fact]
         public void WaitForExit_completes_after_exit()
         {
-            ProcessExitStub exit = new ProcessExitStub();
-            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+            ProcessExitStub subject = new ProcessExitStub();
+            ProcessExitWatcher process = new ProcessExitWatcher(subject);
 
             Task task = process.WaitForExitAsync(CancellationToken.None);
             Assert.False(task.IsCompleted);
 
-            exit.RaiseExited();
+            subject.RaiseExited();
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
         }
@@ -108,9 +108,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_completes_sync_if_exited_before_subscribed()
         {
-            ProcessExitStub exit = new ProcessExitStub();
-            exit.HasExited = true;
-            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+            ProcessExitStub subject = new ProcessExitStub();
+            subject.HasExited = true;
+            ProcessExitWatcher process = new ProcessExitWatcher(subject);
 
             Task task = process.WaitForExitAsync(CancellationToken.None);
 
@@ -120,9 +120,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_after_Dispose_throws_ObjectDisposed()
         {
-            ProcessExitStub exit = new ProcessExitStub();
+            ProcessExitStub subject = new ProcessExitStub();
 
-            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+            ProcessExitWatcher process = new ProcessExitWatcher(subject);
             process.Dispose();
 
             ObjectDisposedException ode = Assert.Throws<ObjectDisposedException>(() => process.WaitForExitAsync(CancellationToken.None));
@@ -132,14 +132,14 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void Race_with_exit_and_subscribe_does_not_cause_errors()
         {
-            ProcessExitStub exit = new ProcessExitStub();
-            exit.Subscribed += delegate(object sender, EventArgs e)
+            ProcessExitStub subject = new ProcessExitStub();
+            subject.Subscribed += delegate(object sender, EventArgs e)
             {
-                exit.RaiseExited();
-                exit.HasExited = true;
+                subject.RaiseExited();
+                subject.HasExited = true;
             };
 
-            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+            ProcessExitWatcher process = new ProcessExitWatcher(subject);
 
             Task task = process.WaitForExitAsync(CancellationToken.None);
 
@@ -149,8 +149,8 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_is_canceled_if_token_requests_cancellation()
         {
-            ProcessExitStub exit = new ProcessExitStub();
-            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+            ProcessExitStub subject = new ProcessExitStub();
+            ProcessExitWatcher process = new ProcessExitWatcher(subject);
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
@@ -166,8 +166,8 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_is_canceled_immediately_if_token_is_already_canceled()
         {
-            ProcessExitStub exit = new ProcessExitStub();
-            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+            ProcessExitStub subject = new ProcessExitStub();
+            ProcessExitWatcher process = new ProcessExitWatcher(subject);
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
@@ -181,9 +181,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_completes_successfully_if_already_exited_even_if_token_is_already_canceled()
         {
-            ProcessExitStub exit = new ProcessExitStub();
-            exit.HasExited = true;
-            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+            ProcessExitStub subject = new ProcessExitStub();
+            subject.HasExited = true;
+            ProcessExitWatcher process = new ProcessExitWatcher(subject);
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
@@ -197,9 +197,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_completes_with_ObjectDisposed_after_Dispose()
         {
-            ProcessExitStub exit = new ProcessExitStub();
+            ProcessExitStub subject = new ProcessExitStub();
             Task task;
-            using (ProcessExitWatcher process = new ProcessExitWatcher(exit))
+            using (ProcessExitWatcher process = new ProcessExitWatcher(subject))
             {
                 task = process.WaitForExitAsync(CancellationToken.None);
                 Assert.False(task.IsCompleted);

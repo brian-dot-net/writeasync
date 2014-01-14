@@ -13,23 +13,23 @@ namespace ProcessSample
     public sealed class ProcessExitWatcher : IDisposable
     {
         private readonly TaskCompletionSource<bool> exited;
-        private readonly IProcessExit exit;
+        private readonly IProcessExit subject;
 
         private bool? savedEnableRaisingEvents;
 
-        public ProcessExitWatcher(IProcessExit exit)
+        public ProcessExitWatcher(IProcessExit subject)
         {
-            if (exit == null)
+            if (subject == null)
             {
-                throw new ArgumentNullException("exit");
+                throw new ArgumentNullException("subject");
             }
 
             this.exited = new TaskCompletionSource<bool>();
-            this.exit = exit;
-            this.savedEnableRaisingEvents = this.exit.EnableRaisingEvents;
-            this.exit.EnableRaisingEvents = true;
-            this.exit.Exited += this.OnProcessExited;
-            if (this.exit.HasExited)
+            this.subject = subject;
+            this.savedEnableRaisingEvents = this.subject.EnableRaisingEvents;
+            this.subject.EnableRaisingEvents = true;
+            this.subject.Exited += this.OnProcessExited;
+            if (this.subject.HasExited)
             {
                 this.exited.TrySetResult(false);
             }
@@ -37,7 +37,7 @@ namespace ProcessSample
 
         public IProcessExitStatus Status
         {
-            get { return this.exit; }
+            get { return this.subject; }
         }
 
         private bool IsDisposed
@@ -78,8 +78,8 @@ namespace ProcessSample
             {
                 if (this.savedEnableRaisingEvents.HasValue)
                 {
-                    this.exit.EnableRaisingEvents = this.savedEnableRaisingEvents.Value;
-                    this.exit.Exited -= this.OnProcessExited;
+                    this.subject.EnableRaisingEvents = this.savedEnableRaisingEvents.Value;
+                    this.subject.Exited -= this.OnProcessExited;
                     this.exited.TrySetException(GetDisposedException());
                     this.savedEnableRaisingEvents = null;
                 }
