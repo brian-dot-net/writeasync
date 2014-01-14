@@ -1,12 +1,19 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IProcessExit.cs" company="Brian Rogers">
+// <copyright file="IProcessExitStatus.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 namespace ProcessSample
 {
-    public interface IProcessExit : IProcessExitEvents, IProcessExitStatus
+    using System;
+
+    public interface IProcessExitStatus
     {
+        bool HasExited { get; }
+
+        int ExitCode { get; }
+
+        DateTime ExitTime { get; }
     }
 }
