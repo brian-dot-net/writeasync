@@ -97,6 +97,18 @@ namespace ProcessSample.Test.Unit
         }
 
         [Fact]
+        public void WaitForExit_after_Dispose_throws_ObjectDisposed()
+        {
+            ProcessExitStub inner = new ProcessExitStub();
+
+            ProcessExitWatcher process = new ProcessExitWatcher(inner);
+            process.Dispose();
+
+            ObjectDisposedException ode = Assert.Throws<ObjectDisposedException>(() => process.WaitForExitAsync(CancellationToken.None));
+            Assert.Equal("ProcessExitWatcher", ode.ObjectName);
+        }
+
+        [Fact]
         public void Race_with_exit_and_subscribe_does_not_cause_errors()
         {
             ProcessExitStub inner = new ProcessExitStub();

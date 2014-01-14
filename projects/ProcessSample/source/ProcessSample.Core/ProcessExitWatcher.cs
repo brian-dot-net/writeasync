@@ -37,6 +37,11 @@ namespace ProcessSample
 
         public Task WaitForExitAsync(CancellationToken token)
         {
+            if (this.savedEnableRaisingEvents == null)
+            {
+                throw new ObjectDisposedException("ProcessExitWatcher");
+            }
+
             Task task = this.exited.Task;
             if (token.CanBeCanceled)
             {
