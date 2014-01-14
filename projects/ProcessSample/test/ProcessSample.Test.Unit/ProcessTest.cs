@@ -6,6 +6,7 @@
 
 namespace ProcessSample.Test.Unit
 {
+    using System;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -16,8 +17,36 @@ namespace ProcessSample.Test.Unit
         }
 
         [Fact]
-        public void Todo()
+        public void Subscribes_to_exited_event_on_construction()
         {
+            ProcessStub inner = new ProcessStub();
+            Assert.Equal(0, inner.ExitedSubscriberCount);
+
+            ProcessEx process = new ProcessEx(inner);
+            Assert.Equal(1, inner.ExitedSubscriberCount);
+        }
+
+        private sealed class ProcessStub : IProcess
+        {
+            public ProcessStub()
+            {
+            }
+
+            public event EventHandler Exited;
+
+            public int ExitedSubscriberCount
+            {
+                get
+                {
+                    int count = 0;
+                    if (this.Exited != null)
+                    {
+                        count = this.Exited.GetInvocationList().Length;
+                    }
+
+                    return count;
+                }
+            }
         }
     }
 }
