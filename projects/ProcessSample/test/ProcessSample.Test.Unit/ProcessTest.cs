@@ -20,11 +20,11 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void Subscribes_to_Exited_event_on_construction()
         {
-            ProcessStub inner = new ProcessStub();
+            ProcessExitStub inner = new ProcessExitStub();
             Assert.Equal(0, inner.ExitedSubscriberCount);
             Assert.False(inner.EnableRaisingEvents);
 
-            ProcessEx process = new ProcessEx(inner);
+            ProcessExitWatcher process = new ProcessExitWatcher(inner);
             Assert.Same(inner, process.Inner);
             Assert.Equal(1, inner.ExitedSubscriberCount);
             Assert.True(inner.EnableRaisingEvents);
@@ -33,9 +33,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void Unsubscribes_from_Exited_event_on_Dispose()
         {
-            ProcessStub inner = new ProcessStub();
+            ProcessExitStub inner = new ProcessExitStub();
 
-            using (ProcessEx process = new ProcessEx(inner))
+            using (ProcessExitWatcher process = new ProcessExitWatcher(inner))
             {
             }
 
@@ -46,8 +46,8 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_completes_after_exit()
         {
-            ProcessStub inner = new ProcessStub();
-            ProcessEx process = new ProcessEx(inner);
+            ProcessExitStub inner = new ProcessExitStub();
+            ProcessExitWatcher process = new ProcessExitWatcher(inner);
 
             Task task = process.WaitForExitAsync(CancellationToken.None);
             Assert.False(task.IsCompleted);
@@ -60,9 +60,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_completes_sync_if_exited_before_subscribed()
         {
-            ProcessStub inner = new ProcessStub();
+            ProcessExitStub inner = new ProcessExitStub();
             inner.HasExited = true;
-            ProcessEx process = new ProcessEx(inner);
+            ProcessExitWatcher process = new ProcessExitWatcher(inner);
 
             Task task = process.WaitForExitAsync(CancellationToken.None);
 
@@ -72,14 +72,14 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void Race_with_exit_and_subscribe_does_not_cause_errors()
         {
-            ProcessStub inner = new ProcessStub();
+            ProcessExitStub inner = new ProcessExitStub();
             inner.Subscribed += delegate(object sender, EventArgs e)
             {
                 inner.RaiseExited();
                 inner.HasExited = true;
             };
 
-            ProcessEx process = new ProcessEx(inner);
+            ProcessExitWatcher process = new ProcessExitWatcher(inner);
 
             Task task = process.WaitForExitAsync(CancellationToken.None);
 
@@ -89,8 +89,8 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_is_canceled_if_token_requests_cancellation()
         {
-            ProcessStub inner = new ProcessStub();
-            ProcessEx process = new ProcessEx(inner);
+            ProcessExitStub inner = new ProcessExitStub();
+            ProcessExitWatcher process = new ProcessExitWatcher(inner);
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
@@ -106,8 +106,8 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_is_canceled_immediately_if_token_is_already_canceled()
         {
-            ProcessStub inner = new ProcessStub();
-            ProcessEx process = new ProcessEx(inner);
+            ProcessExitStub inner = new ProcessExitStub();
+            ProcessExitWatcher process = new ProcessExitWatcher(inner);
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
@@ -121,9 +121,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_completes_successfully_if_already_exited_even_if_token_is_already_canceled()
         {
-            ProcessStub inner = new ProcessStub();
+            ProcessExitStub inner = new ProcessExitStub();
             inner.HasExited = true;
-            ProcessEx process = new ProcessEx(inner);
+            ProcessExitWatcher process = new ProcessExitWatcher(inner);
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
@@ -134,9 +134,9 @@ namespace ProcessSample.Test.Unit
             }
         }
 
-        private sealed class ProcessStub : IProcess
+        private sealed class ProcessExitStub : IProcessExit
         {
-            public ProcessStub()
+            public ProcessExitStub()
             {
             }
 

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IProcess.cs" company="Brian Rogers">
+// <copyright file="IProcessExit.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -8,7 +8,7 @@ namespace ProcessSample
 {
     using System;
 
-    public interface IProcess
+    public interface IProcessExit
     {
         event EventHandler Exited;
 

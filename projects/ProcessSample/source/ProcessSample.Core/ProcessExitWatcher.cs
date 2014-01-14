@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ProcessEx.cs" company="Brian Rogers">
+// <copyright file="ProcessExitWatcher.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -10,12 +10,12 @@ namespace ProcessSample
     using System.Threading;
     using System.Threading.Tasks;
 
-    public sealed class ProcessEx : IDisposable
+    public sealed class ProcessExitWatcher : IDisposable
     {
         private readonly TaskCompletionSource<bool> exited;
-        private readonly IProcess inner;
+        private readonly IProcessExit inner;
 
-        public ProcessEx(IProcess inner)
+        public ProcessExitWatcher(IProcessExit inner)
         {
             this.exited = new TaskCompletionSource<bool>();
             this.inner = inner;
@@ -27,7 +27,7 @@ namespace ProcessSample
             }
         }
 
-        public IProcess Inner
+        public IProcessExit Inner
         {
             get { return this.inner; }
         }
