@@ -8,11 +8,28 @@ namespace ProcessSample
 {
     using System;
 
-    public class ProcessEx
+    public sealed class ProcessEx : IDisposable
     {
+        private readonly IProcess inner;
+
         public ProcessEx(IProcess inner)
         {
-            inner.Exited += this.OnProcessExited;
+            this.inner = inner;
+            this.inner.Exited += this.OnProcessExited;
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.inner.Exited -= this.OnProcessExited;
+            }
         }
 
         private void OnProcessExited(object sender, EventArgs e)
