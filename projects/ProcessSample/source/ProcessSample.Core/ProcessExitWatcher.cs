@@ -13,18 +13,18 @@ namespace ProcessSample
     public sealed class ProcessExitWatcher : IDisposable
     {
         private readonly TaskCompletionSource<bool> exited;
-        private readonly IProcessExit inner;
+        private readonly IProcessExit exit;
 
         private bool? savedEnableRaisingEvents;
 
-        public ProcessExitWatcher(IProcessExit inner)
+        public ProcessExitWatcher(IProcessExit exit)
         {
             this.exited = new TaskCompletionSource<bool>();
-            this.inner = inner;
-            this.savedEnableRaisingEvents = this.inner.EnableRaisingEvents;
-            this.inner.EnableRaisingEvents = true;
-            this.inner.Exited += this.OnProcessExited;
-            if (this.inner.HasExited)
+            this.exit = exit;
+            this.savedEnableRaisingEvents = this.exit.EnableRaisingEvents;
+            this.exit.EnableRaisingEvents = true;
+            this.exit.Exited += this.OnProcessExited;
+            if (this.exit.HasExited)
             {
                 this.exited.TrySetResult(false);
             }
@@ -32,7 +32,7 @@ namespace ProcessSample
 
         public IProcessExit Inner
         {
-            get { return this.inner; }
+            get { return this.exit; }
         }
 
         private bool IsDisposed
@@ -73,8 +73,8 @@ namespace ProcessSample
             {
                 if (this.savedEnableRaisingEvents.HasValue)
                 {
-                    this.inner.EnableRaisingEvents = this.savedEnableRaisingEvents.Value;
-                    this.inner.Exited -= this.OnProcessExited;
+                    this.exit.EnableRaisingEvents = this.savedEnableRaisingEvents.Value;
+                    this.exit.Exited -= this.OnProcessExited;
                     this.exited.TrySetException(GetDisposedException());
                     this.savedEnableRaisingEvents = null;
                 }

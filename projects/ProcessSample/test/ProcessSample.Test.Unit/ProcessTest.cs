@@ -20,66 +20,66 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void Constructor_sets_EnableRaisingEvents_and_subscribes_to_Exited()
         {
-            ProcessExitStub inner = new ProcessExitStub();
-            Assert.Equal(0, inner.ExitedSubscriberCount);
-            Assert.False(inner.EnableRaisingEvents);
+            ProcessExitStub exit = new ProcessExitStub();
+            Assert.Equal(0, exit.ExitedSubscriberCount);
+            Assert.False(exit.EnableRaisingEvents);
 
-            ProcessExitWatcher process = new ProcessExitWatcher(inner);
-            Assert.Same(inner, process.Inner);
-            Assert.Equal(1, inner.ExitedSubscriberCount);
-            Assert.True(inner.EnableRaisingEvents);
+            ProcessExitWatcher process = new ProcessExitWatcher(exit);
+            Assert.Same(exit, process.Inner);
+            Assert.Equal(1, exit.ExitedSubscriberCount);
+            Assert.True(exit.EnableRaisingEvents);
         }
 
         [Fact]
         public void Dispose_Unsubscribes_from_Exited_and_resets_EnableRaisingEvents()
         {
-            ProcessExitStub inner = new ProcessExitStub();
+            ProcessExitStub exit = new ProcessExitStub();
 
-            using (ProcessExitWatcher process = new ProcessExitWatcher(inner))
+            using (ProcessExitWatcher process = new ProcessExitWatcher(exit))
             {
             }
 
-            Assert.Equal(0, inner.ExitedSubscriberCount);
-            Assert.False(inner.EnableRaisingEvents);
+            Assert.Equal(0, exit.ExitedSubscriberCount);
+            Assert.False(exit.EnableRaisingEvents);
         }
 
         [Fact]
         public void Dispose_does_not_change_EnableRaisingEvents_if_started_as_true()
         {
-            ProcessExitStub inner = new ProcessExitStub();
-            inner.EnableRaisingEvents = true;
+            ProcessExitStub exit = new ProcessExitStub();
+            exit.EnableRaisingEvents = true;
 
-            using (ProcessExitWatcher process = new ProcessExitWatcher(inner))
+            using (ProcessExitWatcher process = new ProcessExitWatcher(exit))
             {
             }
 
-            Assert.True(inner.EnableRaisingEvents);
+            Assert.True(exit.EnableRaisingEvents);
         }
 
         [Fact]
         public void Dispose_is_idempotent()
         {
-            ProcessExitStub inner = new ProcessExitStub();
+            ProcessExitStub exit = new ProcessExitStub();
 
-            ProcessExitWatcher process = new ProcessExitWatcher(inner);
+            ProcessExitWatcher process = new ProcessExitWatcher(exit);
             process.Dispose();
 
-            inner.EnableRaisingEvents = true;
+            exit.EnableRaisingEvents = true;
             process.Dispose();
 
-            Assert.True(inner.EnableRaisingEvents);
+            Assert.True(exit.EnableRaisingEvents);
         }
 
         [Fact]
         public void WaitForExit_completes_after_exit()
         {
-            ProcessExitStub inner = new ProcessExitStub();
-            ProcessExitWatcher process = new ProcessExitWatcher(inner);
+            ProcessExitStub exit = new ProcessExitStub();
+            ProcessExitWatcher process = new ProcessExitWatcher(exit);
 
             Task task = process.WaitForExitAsync(CancellationToken.None);
             Assert.False(task.IsCompleted);
 
-            inner.RaiseExited();
+            exit.RaiseExited();
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
         }
@@ -87,9 +87,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_completes_sync_if_exited_before_subscribed()
         {
-            ProcessExitStub inner = new ProcessExitStub();
-            inner.HasExited = true;
-            ProcessExitWatcher process = new ProcessExitWatcher(inner);
+            ProcessExitStub exit = new ProcessExitStub();
+            exit.HasExited = true;
+            ProcessExitWatcher process = new ProcessExitWatcher(exit);
 
             Task task = process.WaitForExitAsync(CancellationToken.None);
 
@@ -99,9 +99,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_after_Dispose_throws_ObjectDisposed()
         {
-            ProcessExitStub inner = new ProcessExitStub();
+            ProcessExitStub exit = new ProcessExitStub();
 
-            ProcessExitWatcher process = new ProcessExitWatcher(inner);
+            ProcessExitWatcher process = new ProcessExitWatcher(exit);
             process.Dispose();
 
             ObjectDisposedException ode = Assert.Throws<ObjectDisposedException>(() => process.WaitForExitAsync(CancellationToken.None));
@@ -111,14 +111,14 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void Race_with_exit_and_subscribe_does_not_cause_errors()
         {
-            ProcessExitStub inner = new ProcessExitStub();
-            inner.Subscribed += delegate(object sender, EventArgs e)
+            ProcessExitStub exit = new ProcessExitStub();
+            exit.Subscribed += delegate(object sender, EventArgs e)
             {
-                inner.RaiseExited();
-                inner.HasExited = true;
+                exit.RaiseExited();
+                exit.HasExited = true;
             };
 
-            ProcessExitWatcher process = new ProcessExitWatcher(inner);
+            ProcessExitWatcher process = new ProcessExitWatcher(exit);
 
             Task task = process.WaitForExitAsync(CancellationToken.None);
 
@@ -128,8 +128,8 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_is_canceled_if_token_requests_cancellation()
         {
-            ProcessExitStub inner = new ProcessExitStub();
-            ProcessExitWatcher process = new ProcessExitWatcher(inner);
+            ProcessExitStub exit = new ProcessExitStub();
+            ProcessExitWatcher process = new ProcessExitWatcher(exit);
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
@@ -145,8 +145,8 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_is_canceled_immediately_if_token_is_already_canceled()
         {
-            ProcessExitStub inner = new ProcessExitStub();
-            ProcessExitWatcher process = new ProcessExitWatcher(inner);
+            ProcessExitStub exit = new ProcessExitStub();
+            ProcessExitWatcher process = new ProcessExitWatcher(exit);
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
@@ -160,9 +160,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_completes_successfully_if_already_exited_even_if_token_is_already_canceled()
         {
-            ProcessExitStub inner = new ProcessExitStub();
-            inner.HasExited = true;
-            ProcessExitWatcher process = new ProcessExitWatcher(inner);
+            ProcessExitStub exit = new ProcessExitStub();
+            exit.HasExited = true;
+            ProcessExitWatcher process = new ProcessExitWatcher(exit);
 
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
@@ -176,9 +176,9 @@ namespace ProcessSample.Test.Unit
         [Fact]
         public void WaitForExit_completes_with_ObjectDisposed_after_Dispose()
         {
-            ProcessExitStub inner = new ProcessExitStub();
+            ProcessExitStub exit = new ProcessExitStub();
             Task task;
-            using (ProcessExitWatcher process = new ProcessExitWatcher(inner))
+            using (ProcessExitWatcher process = new ProcessExitWatcher(exit))
             {
                 task = process.WaitForExitAsync(CancellationToken.None);
                 Assert.False(task.IsCompleted);
