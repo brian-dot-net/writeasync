@@ -21,9 +21,11 @@ namespace ProcessSample.Test.Unit
         {
             ProcessStub inner = new ProcessStub();
             Assert.Equal(0, inner.ExitedSubscriberCount);
+            Assert.False(inner.EnableRaisingEvents);
 
             ProcessEx process = new ProcessEx(inner);
             Assert.Equal(1, inner.ExitedSubscriberCount);
+            Assert.True(inner.EnableRaisingEvents);
         }
 
         [Fact]
@@ -36,6 +38,7 @@ namespace ProcessSample.Test.Unit
             }
 
             Assert.Equal(0, inner.ExitedSubscriberCount);
+            Assert.False(inner.EnableRaisingEvents);
         }
 
         private sealed class ProcessStub : IProcess
@@ -45,6 +48,8 @@ namespace ProcessSample.Test.Unit
             }
 
             public event EventHandler Exited;
+
+            public bool EnableRaisingEvents { get; set; }
 
             public int ExitedSubscriberCount
             {

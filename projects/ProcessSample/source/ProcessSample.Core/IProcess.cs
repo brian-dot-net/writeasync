@@ -11,5 +11,7 @@ namespace ProcessSample
     public interface IProcess
     {
         event EventHandler Exited;
+
+        bool EnableRaisingEvents { get; set; }
     }
 }

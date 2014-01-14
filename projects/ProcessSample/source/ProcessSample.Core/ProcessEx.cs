@@ -15,6 +15,7 @@ namespace ProcessSample
         public ProcessEx(IProcess inner)
         {
             this.inner = inner;
+            this.inner.EnableRaisingEvents = true;
             this.inner.Exited += this.OnProcessExited;
         }
 
@@ -28,6 +29,7 @@ namespace ProcessSample
         {
             if (disposing)
             {
+                this.inner.EnableRaisingEvents = false;
                 this.inner.Exited -= this.OnProcessExited;
             }
         }
