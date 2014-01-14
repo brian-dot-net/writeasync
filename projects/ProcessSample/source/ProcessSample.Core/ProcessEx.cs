@@ -6,7 +6,17 @@
 
 namespace ProcessSample
 {
+    using System;
+
     public class ProcessEx
     {
+        public ProcessEx(IProcess inner)
+        {
+            inner.Exited += this.OnProcessExited;
+        }
+
+        private void OnProcessExited(object sender, EventArgs e)
+        {
+        }
     }
 }
