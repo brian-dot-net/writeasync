@@ -67,13 +67,50 @@ namespace ProcessSample.Test.Unit
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
         }
 
+        [Fact]
+        public void Race_with_exit_and_subscribe_does_not_cause_errors()
+        {
+            ProcessStub inner = new ProcessStub();
+            inner.Subscribed += delegate(object sender, EventArgs e)
+            {
+                inner.RaiseExited();
+                inner.HasExited = true;
+            };
+
+            ProcessEx process = new ProcessEx(inner);
+
+            Task task = process.WaitForExitAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+        }
+
         private sealed class ProcessStub : IProcess
         {
             public ProcessStub()
             {
             }
 
-            public event EventHandler Exited;
+            public event EventHandler Subscribed;
+
+            public event EventHandler Exited
+            {
+                add
+                {
+                    this.ExitedCore += value;
+                    EventHandler handler = this.Subscribed;
+                    if (handler != null)
+                    {
+                        handler(this, EventArgs.Empty);
+                    }
+                }
+
+                remove
+                {
+                    this.ExitedCore -= value;
+                }
+            }
+
+            private event EventHandler ExitedCore;
 
             public bool HasExited { get; set; }
 
@@ -84,9 +121,9 @@ namespace ProcessSample.Test.Unit
                 get
                 {
                     int count = 0;
-                    if (this.Exited != null)
+                    if (this.ExitedCore != null)
                     {
-                        count = this.Exited.GetInvocationList().Length;
+                        count = this.ExitedCore.GetInvocationList().Length;
                     }
 
                     return count;
@@ -95,7 +132,7 @@ namespace ProcessSample.Test.Unit
 
             public void RaiseExited()
             {
-                this.Exited(this, EventArgs.Empty);
+                this.ExitedCore(this, EventArgs.Empty);
             }
         }
     }

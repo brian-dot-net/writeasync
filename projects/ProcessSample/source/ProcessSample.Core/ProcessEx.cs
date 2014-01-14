@@ -22,7 +22,7 @@ namespace ProcessSample
             this.inner.Exited += this.OnProcessExited;
             if (this.inner.HasExited)
             {
-                this.exited.SetResult(false);
+                this.exited.TrySetResult(false);
             }
         }
 
@@ -48,7 +48,7 @@ namespace ProcessSample
 
         private void OnProcessExited(object sender, EventArgs e)
         {
-            this.exited.SetResult(false);
+            this.exited.TrySetResult(false);
         }
     }
 }
