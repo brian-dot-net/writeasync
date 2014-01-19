@@ -25,7 +25,7 @@ namespace EventSourceSample
 
         public Task<double> SubtractAsync(double x, double y)
         {
-            throw new NotImplementedException();
+            return this.inner.SubtractAsync(x, y);
         }
 
         public Task<double> SquareRootAsync(double x)

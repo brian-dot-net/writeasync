@@ -26,6 +26,17 @@ namespace EventSourceSample.Test.Unit
             clientStub.VerifyOperation("Add", 2.0d, 3.0d);
         }
 
+        [Fact]
+        public void Subtract_with_events_calls_inner()
+        {
+            CalculatorClientStub clientStub = new CalculatorClientStub();
+            clientStub.Results.Enqueue(4.0d);
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(clientStub);
+
+            VerifyResult(4.0d, client.SubtractAsync(5.0d, 6.0d));
+            clientStub.VerifyOperation("Subtract", 5.0d, 6.0d);
+        }
+
         private static void VerifyResult(double expectedResult, Task<double> task)
         {
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
