@@ -31,7 +31,10 @@ namespace EventSourceSample
 
         public Task<double> SubtractAsync(double x, double y)
         {
-            return this.inner.SubtractAsync(x, y);
+            using (RequestScope scope = this.TraceStart())
+            {
+                return this.TraceEnd(scope, this.inner.SubtractAsync(x, y));
+            }
         }
 
         public Task<double> SquareRootAsync(double x)

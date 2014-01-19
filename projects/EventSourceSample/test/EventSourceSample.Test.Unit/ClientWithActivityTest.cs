@@ -63,6 +63,27 @@ namespace EventSourceSample.Test.Unit
             }
         }
 
+        [Fact]
+        public void Subtract_with_activity_traces_start_and_end()
+        {
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
+            {
+                Task<double> task = VerifyPending(client.SubtractAsync(1.0d, 2.0d));
+
+                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start);
+                listener.Events.Clear();
+
+                tcs.SetResult(0.0d);
+                VerifyResult(0.0d, task);
+
+                listener.VerifyEvent(ClientEventId.RequestCompleted, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Stop);
+            }
+        }
+
         private static Task<double> VerifyPending(Task<double> task)
         {
             Assert.False(task.IsCompleted);
