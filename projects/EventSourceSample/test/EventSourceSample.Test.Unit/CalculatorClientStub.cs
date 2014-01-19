@@ -9,6 +9,7 @@ namespace EventSourceSample.Test.Unit
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Xunit;
 
     internal sealed class CalculatorClientStub : ICalculatorClientAsync
     {
@@ -43,6 +44,14 @@ namespace EventSourceSample.Test.Unit
         public Task<double> SquareRootAsync(double x)
         {
             return this.Complete("SquareRoot", x, 0.0d);
+        }
+
+        public void VerifyOperation(string expectedName, double expectedX, double expectedY)
+        {
+            Assert.Equal(1, this.Operations.Count);
+            Assert.Equal(expectedName, this.Operations[0].Item1);
+            Assert.Equal(expectedX, this.Operations[0].Item2);
+            Assert.Equal(expectedY, this.Operations[0].Item3);
         }
 
         private Task<double> Complete(string name, double x, double y)

@@ -23,7 +23,7 @@ namespace EventSourceSample.Test.Unit
             CalculatorClientWithEvents client = new CalculatorClientWithEvents(clientStub, ClientEventSource.Instance);
 
             VerifyResult(1.0d, client.AddAsync(2.0d, 3.0d));
-            VerifyOperation("Add", 2.0d, 3.0d, clientStub);
+            clientStub.VerifyOperation("Add", 2.0d, 3.0d);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace EventSourceSample.Test.Unit
             CalculatorClientWithEvents client = new CalculatorClientWithEvents(clientStub, ClientEventSource.Instance);
 
             VerifyResult(4.0d, client.SubtractAsync(5.0d, 6.0d));
-            VerifyOperation("Subtract", 5.0d, 6.0d, clientStub);
+            clientStub.VerifyOperation("Subtract", 5.0d, 6.0d);
         }
 
         [Fact]
@@ -45,21 +45,13 @@ namespace EventSourceSample.Test.Unit
             CalculatorClientWithEvents client = new CalculatorClientWithEvents(clientStub, ClientEventSource.Instance);
 
             VerifyResult(8.0d, client.SquareRootAsync(7.0d));
-            VerifyOperation("SquareRoot", 7.0d, 0.0d, clientStub);
+            clientStub.VerifyOperation("SquareRoot", 7.0d, 0.0d);
         }
 
         private static void VerifyResult(double expectedResult, Task<double> task)
         {
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal(expectedResult, task.Result);            
-        }
-
-        private static void VerifyOperation(string expectedName, double expectedX, double expectedY, CalculatorClientStub clientStub)
-        {
-            Assert.Equal(1, clientStub.Operations.Count);
-            Assert.Equal(expectedName, clientStub.Operations[0].Item1);
-            Assert.Equal(expectedX, clientStub.Operations[0].Item2);
-            Assert.Equal(expectedY, clientStub.Operations[0].Item3);
         }
     }
 }
