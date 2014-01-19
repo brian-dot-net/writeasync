@@ -21,22 +21,7 @@ namespace EventSourceSample.Test.Unit
         [Fact]
         public void Add_with_activity_traces_start_and_end()
         {
-            ClientEventSource eventSource = ClientEventSource.Instance;
-            TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
-            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
-
-            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
-            {
-                Task<double> task = VerifyPending(client.AddAsync(1.0d, 2.0d));
-
-                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start);
-                listener.Events.Clear();
-
-                tcs.SetResult(0.0d);
-                VerifyResult(0.0d, task);
-
-                listener.VerifyEvent(ClientEventId.RequestCompleted, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Stop);
-            }
+            VerifyTracesStartAndEnd(c => c.AddAsync(1.0d, 2.0d));
         }
 
         [Fact]
@@ -48,13 +33,24 @@ namespace EventSourceSample.Test.Unit
         [Fact]
         public void Subtract_with_activity_traces_start_and_end()
         {
+            VerifyTracesStartAndEnd(c => c.SubtractAsync(3.0d, 4.0d));
+        }
+
+        [Fact]
+        public void Subtract_with_activity_sets_and_restores_activity_id()
+        {
+            VerifySetsAndRestoresActivityId(c => c.SubtractAsync(3.0d, 4.0d));
+        }
+
+        private static void VerifyTracesStartAndEnd(Func<ICalculatorClientAsync, Task<double>> doAsync)
+        {
             ClientEventSource eventSource = ClientEventSource.Instance;
             TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
             CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
             {
-                Task<double> task = VerifyPending(client.SubtractAsync(1.0d, 2.0d));
+                Task<double> task = VerifyPending(doAsync(client));
 
                 listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start);
                 listener.Events.Clear();
@@ -64,12 +60,6 @@ namespace EventSourceSample.Test.Unit
 
                 listener.VerifyEvent(ClientEventId.RequestCompleted, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Stop);
             }
-        }
-
-        [Fact]
-        public void Subtract_with_activity_sets_and_restores_activity_id()
-        {
-            VerifySetsAndRestoresActivityId(c => c.SubtractAsync(3.0d, 4.0d));
         }
 
         private static void VerifySetsAndRestoresActivityId(Func<ICalculatorClientAsync, Task<double>> doAsync)
