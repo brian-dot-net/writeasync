@@ -35,6 +35,24 @@ namespace EventSourceSample.Test.Unit
             Assert.Equal(3.0d, clientStub.Operations[0].Item3);
         }
 
+        [Fact]
+        public void Subtract_with_events_calls_inner()
+        {
+            CalculatorClientStub clientStub = new CalculatorClientStub();
+            clientStub.Results.Enqueue(4.0d);
+            CalculatorClientWithEvents client = new CalculatorClientWithEvents(clientStub);
+
+            Task<double> task = client.SubtractAsync(5.0d, 6.0d);
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(4.0d, task.Result);
+
+            Assert.Equal(1, clientStub.Operations.Count);
+            Assert.Equal("Subtract", clientStub.Operations[0].Item1);
+            Assert.Equal(5.0d, clientStub.Operations[0].Item2);
+            Assert.Equal(6.0d, clientStub.Operations[0].Item3);
+        }
+
         private sealed class CalculatorClientStub : ICalculatorClientAsync
         {
             public CalculatorClientStub()
