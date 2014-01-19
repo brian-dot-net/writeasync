@@ -27,20 +27,39 @@ namespace EventSourceSample.Test.Unit
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
             {
-                Guid originalActivityId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
-                Trace.CorrelationManager.ActivityId = originalActivityId;
-
                 Task<double> task = VerifyPending(client.AddAsync(1.0d, 2.0d));
 
-                Assert.Equal(originalActivityId, Trace.CorrelationManager.ActivityId);
                 listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start);
                 listener.Events.Clear();
 
                 tcs.SetResult(0.0d);
                 VerifyResult(0.0d, task);
 
-                Assert.Equal(originalActivityId, Trace.CorrelationManager.ActivityId);
                 listener.VerifyEvent(ClientEventId.RequestCompleted, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Stop);
+            }
+        }
+
+        [Fact]
+        public void Add_with_activity_sets_and_restores_activity_id()
+        {
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
+            {
+                Guid originalActivityId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+                Trace.CorrelationManager.ActivityId = originalActivityId;
+                listener.EventWritten += (o, e) => Assert.NotEqual(originalActivityId, Trace.CorrelationManager.ActivityId);
+
+                Task<double> task = VerifyPending(client.AddAsync(1.0d, 2.0d));
+
+                Assert.Equal(originalActivityId, Trace.CorrelationManager.ActivityId);
+
+                tcs.SetResult(0.0d);
+                VerifyResult(0.0d, task);
+
+                Assert.Equal(originalActivityId, Trace.CorrelationManager.ActivityId);
             }
         }
 

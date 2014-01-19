@@ -7,6 +7,7 @@
 namespace EventSourceSample
 {
     using System;
+    using System.Diagnostics;
     using System.Threading.Tasks;
 
     public class CalculatorClientWithActivity : ICalculatorClientAsync
@@ -22,8 +23,10 @@ namespace EventSourceSample
 
         public Task<double> AddAsync(double x, double y)
         {
-            this.TraceStart();
-            return this.TraceEnd(this.inner.AddAsync(x, y));
+            using (RequestScope scope = this.TraceStart())
+            {
+                return this.TraceEnd(scope, this.inner.AddAsync(x, y));
+            }
         }
 
         public Task<double> SubtractAsync(double x, double y)
@@ -36,20 +39,58 @@ namespace EventSourceSample
             return this.inner.SquareRootAsync(x);
         }
 
-        private void TraceStart()
+        private RequestScope TraceStart()
         {
+            RequestScope scope = RequestScope.Start();
             this.eventSource.Request();
+            return scope;
         }
 
-        private Task<double> TraceEnd(Task<double> task)
+        private Task<double> TraceEnd(RequestScope scope, Task<double> task)
         {
-            return task.ContinueWith<double>(this.AfterRequest, TaskContinuationOptions.ExecuteSynchronously);
+            return task.ContinueWith<double>(this.AfterRequest, scope.Id, TaskContinuationOptions.ExecuteSynchronously);
         }
 
-        private double AfterRequest(Task<double> task)
+        private double AfterRequest(Task<double> task, object objId)
         {
-            this.eventSource.RequestCompleted();
-            return task.Result;
+            using (RequestScope scope = RequestScope.Resume((Guid)objId))
+            {
+                this.eventSource.RequestCompleted();
+                return task.Result;
+            }
+        }
+
+        private struct RequestScope : IDisposable
+        {
+            private readonly Guid previousId;
+            private readonly Guid id;
+
+            private RequestScope(Guid id)
+            {
+                this.previousId = Trace.CorrelationManager.ActivityId;
+                this.id = id;
+                Trace.CorrelationManager.ActivityId = this.id;
+            }
+
+            public Guid Id
+            {
+                get { return this.id; }
+            }
+
+            public static RequestScope Start()
+            {
+                return new RequestScope(Guid.NewGuid());
+            }
+
+            public static RequestScope Resume(Guid id)
+            {
+                return new RequestScope(id);
+            }
+
+            public void Dispose()
+            {
+                Trace.CorrelationManager.ActivityId = this.previousId;
+            }
         }
     }
 }

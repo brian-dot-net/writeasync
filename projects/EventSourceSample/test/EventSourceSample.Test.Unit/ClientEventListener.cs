@@ -6,6 +6,7 @@
 
 namespace EventSourceSample.Test.Unit
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics.Tracing;
     using System.Linq;
@@ -21,6 +22,8 @@ namespace EventSourceSample.Test.Unit
             this.eventSource = eventSource;
             this.EnableEvents(this.eventSource, level, keywords);
         }
+
+        public event EventHandler EventWritten;
 
         public IList<EventWrittenEventArgs> Events { get; private set; }
 
@@ -54,6 +57,11 @@ namespace EventSourceSample.Test.Unit
         protected override void OnEventWritten(EventWrittenEventArgs eventData)
         {
             this.Events.Add(eventData);
+            EventHandler handler = this.EventWritten;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
         }
     }
 }
