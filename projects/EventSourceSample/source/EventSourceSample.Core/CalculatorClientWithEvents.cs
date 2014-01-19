@@ -12,14 +12,17 @@ namespace EventSourceSample
     public class CalculatorClientWithEvents : ICalculatorClientAsync
     {
         private readonly ICalculatorClientAsync inner;
+        private readonly ClientEventSource eventSource;
 
-        public CalculatorClientWithEvents(ICalculatorClientAsync inner)
+        public CalculatorClientWithEvents(ICalculatorClientAsync inner, ClientEventSource eventSource)
         {
             this.inner = inner;
+            this.eventSource = eventSource;
         }
 
         public Task<double> AddAsync(double x, double y)
         {
+            this.eventSource.Add(x, y);
             return this.inner.AddAsync(x, y);
         }
 
