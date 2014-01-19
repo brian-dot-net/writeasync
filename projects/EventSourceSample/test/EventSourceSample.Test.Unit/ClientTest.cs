@@ -24,10 +24,7 @@ namespace EventSourceSample.Test.Unit
             clientStub.Results.Enqueue(1.0d);
             CalculatorClientWithEvents client = new CalculatorClientWithEvents(clientStub);
 
-            Task<double> task = client.AddAsync(2.0d, 3.0d);
-
-            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
-            Assert.Equal(1.0d, task.Result);
+            VerifyResult(1.0d, client.AddAsync(2.0d, 3.0d));
 
             Assert.Equal(1, clientStub.Operations.Count);
             Assert.Equal("Add", clientStub.Operations[0].Item1);
@@ -42,15 +39,18 @@ namespace EventSourceSample.Test.Unit
             clientStub.Results.Enqueue(4.0d);
             CalculatorClientWithEvents client = new CalculatorClientWithEvents(clientStub);
 
-            Task<double> task = client.SubtractAsync(5.0d, 6.0d);
-
-            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
-            Assert.Equal(4.0d, task.Result);
+            VerifyResult(4.0d, client.SubtractAsync(5.0d, 6.0d));
 
             Assert.Equal(1, clientStub.Operations.Count);
             Assert.Equal("Subtract", clientStub.Operations[0].Item1);
             Assert.Equal(5.0d, clientStub.Operations[0].Item2);
             Assert.Equal(6.0d, clientStub.Operations[0].Item3);
+        }
+
+        private static void VerifyResult(double expectedResult, Task<double> task)
+        {
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(expectedResult, task.Result);            
         }
 
         private sealed class CalculatorClientStub : ICalculatorClientAsync
