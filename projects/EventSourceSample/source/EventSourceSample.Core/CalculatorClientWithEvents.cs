@@ -28,6 +28,7 @@ namespace EventSourceSample
 
         public Task<double> SubtractAsync(double x, double y)
         {
+            this.eventSource.Subtract(x, y);
             return this.inner.SubtractAsync(x, y);
         }
 

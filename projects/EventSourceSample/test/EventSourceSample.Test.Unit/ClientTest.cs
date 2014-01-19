@@ -61,6 +61,26 @@ namespace EventSourceSample.Test.Unit
         }
 
         [Fact]
+        public void Subtract_with_events_traces_event()
+        {
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            CalculatorClientWithEvents client = new CalculatorClientWithEvents(new CalculatorClientStub(true), eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Basic))
+            {
+                VerifyResult(0.0d, client.SubtractAsync(1.0d, 2.0d));
+
+                Assert.Equal(1, listener.Events.Count);
+                Assert.Equal((int)ClientEventId.Subtract, listener.Events[0].EventId);
+                Assert.Equal(EventLevel.Informational, listener.Events[0].Level);
+                Assert.True(listener.Events[0].Keywords.HasFlag(ClientEventSource.Keywords.Basic));
+                Assert.Equal(2, listener.Events[0].Payload.Count);
+                Assert.Equal(1.0d, listener.Events[0].Payload[0]);
+                Assert.Equal(2.0d, listener.Events[0].Payload[1]);
+            }
+        }
+
+        [Fact]
         public void SquareRoot_with_events_calls_inner()
         {
             CalculatorClientStub clientStub = new CalculatorClientStub();

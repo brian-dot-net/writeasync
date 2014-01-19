@@ -32,6 +32,12 @@ namespace EventSourceSample
             this.WriteEvent((int)ClientEventId.Add, x, y);
         }
 
+        [Event((int)ClientEventId.Subtract, Level = EventLevel.Informational, Keywords = Keywords.Basic, Message = "Subtracting {0} and {1}.")]
+        public void Subtract(double x, double y)
+        {
+            this.WriteEvent((int)ClientEventId.Subtract, x, y);
+        }
+
         public static class Keywords
         {
             public const EventKeywords Basic = (EventKeywords)0x1;

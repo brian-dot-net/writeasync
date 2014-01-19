@@ -12,5 +12,6 @@ namespace EventSourceSample
 
         // Basic operations
         Add = 1,
+        Subtract = 2,
     }
 }
