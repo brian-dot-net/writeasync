@@ -26,14 +26,14 @@ namespace EventSourceSample.Test.Unit
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
             {
                 Task<double> task = VerifyPending(client.AddAsync(1.0d, 2.0d));
-                
-                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request);
+
+                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start);
                 listener.Events.Clear();
 
                 tcs.SetResult(0.0d);
                 VerifyResult(0.0d, task);
 
-                listener.VerifyEvent(ClientEventId.RequestCompleted, EventLevel.Informational, ClientEventSource.Keywords.Request);
+                listener.VerifyEvent(ClientEventId.RequestCompleted, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Stop);
             }
         }
 

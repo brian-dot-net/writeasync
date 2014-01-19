@@ -38,9 +38,15 @@ namespace EventSourceSample.Test.Unit
 
         public void VerifyEvent(ClientEventId id, EventLevel level, EventKeywords keywords, params object[] payloadItems)
         {
+            this.VerifyEvent(id, level, keywords, EventOpcode.Info, payloadItems);
+        }
+        
+        public void VerifyEvent(ClientEventId id, EventLevel level, EventKeywords keywords, EventOpcode opcode, params object[] payloadItems)
+        {
             Assert.Equal(1, this.Events.Count);
             Assert.Equal((int)id, this.Events[0].EventId);
             Assert.Equal(level, this.Events[0].Level);
+            Assert.Equal(opcode, this.Events[0].Opcode);
             Assert.True(this.Events[0].Keywords.HasFlag(keywords));
             Assert.Equal(payloadItems, this.Events[0].Payload.ToArray());
         }
