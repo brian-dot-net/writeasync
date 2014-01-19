@@ -30,7 +30,7 @@ namespace EventSourceSample
 
         public Task<double> SquareRootAsync(double x)
         {
-            throw new NotImplementedException();
+            return this.inner.SquareRootAsync(x);
         }
     }
 }

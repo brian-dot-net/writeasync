@@ -39,6 +39,17 @@ namespace EventSourceSample.Test.Unit
             VerifyOperation("Subtract", 5.0d, 6.0d, clientStub);
         }
 
+        [Fact]
+        public void SquareRoot_with_events_calls_inner()
+        {
+            CalculatorClientStub clientStub = new CalculatorClientStub();
+            clientStub.Results.Enqueue(8.0d);
+            CalculatorClientWithEvents client = new CalculatorClientWithEvents(clientStub);
+
+            VerifyResult(8.0d, client.SquareRootAsync(7.0d));
+            VerifyOperation("SquareRoot", 7.0d, 0.0d, clientStub);
+        }
+
         private static void VerifyResult(double expectedResult, Task<double> task)
         {
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
