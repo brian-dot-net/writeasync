@@ -14,7 +14,7 @@ namespace EventSourceSample.Test.Unit
 
         protected override ICalculatorClientAsync CreateClient(CalculatorClientStub clientStub)
         {
-            return new CalculatorClientWithActivity(clientStub);
+            return new CalculatorClientWithActivity(clientStub, ClientEventSource.Instance);
         }
     }
 }

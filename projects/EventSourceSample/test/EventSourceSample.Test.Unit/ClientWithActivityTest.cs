@@ -1,0 +1,52 @@
+﻿//-----------------------------------------------------------------------
+// <copyright file="ClientWithActivityTest.cs" company="Brian Rogers">
+// Copyright (c) Brian Rogers. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+namespace EventSourceSample.Test.Unit
+{
+    using System.Diagnostics.Tracing;
+    using System.Threading.Tasks;
+    using Xunit;
+
+    public class ClientWithActivityTest
+    {
+        public ClientWithActivityTest()
+        {
+        }
+
+        [Fact]
+        public void Add_with_activity_traces_start_and_end()
+        {
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
+            {
+                Task<double> task = VerifyPending(client.AddAsync(1.0d, 2.0d));
+                
+                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request);
+                listener.Events.Clear();
+
+                tcs.SetResult(0.0d);
+                VerifyResult(0.0d, task);
+
+                listener.VerifyEvent(ClientEventId.RequestCompleted, EventLevel.Informational, ClientEventSource.Keywords.Request);
+            }
+        }
+
+        private static Task<double> VerifyPending(Task<double> task)
+        {
+            Assert.False(task.IsCompleted);
+            return task;
+        }
+
+        private static void VerifyResult(double expectedResult, Task<double> task)
+        {
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(expectedResult, task.Result);            
+        }
+    }
+}

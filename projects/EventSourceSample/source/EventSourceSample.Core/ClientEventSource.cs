@@ -44,10 +44,23 @@ namespace EventSourceSample
             this.WriteEvent((int)ClientEventId.SquareRoot, x);
         }
 
+        [Event((int)ClientEventId.Request, Level = EventLevel.Informational, Keywords = Keywords.Request, Message = "Request invoked.")]
+        public void Request()
+        {
+            this.WriteEvent((int)ClientEventId.Request);
+        }
+
+        [Event((int)ClientEventId.RequestCompleted, Level = EventLevel.Informational, Keywords = Keywords.Request, Message = "Request invoked.")]
+        public void RequestCompleted()
+        {
+            this.WriteEvent((int)ClientEventId.RequestCompleted);
+        }
+
         public static class Keywords
         {
             public const EventKeywords Basic = (EventKeywords)0x1;
             public const EventKeywords Advanced = (EventKeywords)0x2;
+            public const EventKeywords Request = (EventKeywords)0x4;
         }
     }
 }

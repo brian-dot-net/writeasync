@@ -20,7 +20,7 @@ namespace EventSourceSample.Test.Unit
         public void Add_with_events_traces_event()
         {
             ClientEventSource eventSource = ClientEventSource.Instance;
-            CalculatorClientWithEvents client = new CalculatorClientWithEvents(new CalculatorClientStub(true), eventSource);
+            CalculatorClientWithEvents client = new CalculatorClientWithEvents(new CalculatorClientStub(() => Task.FromResult(0.0d)), eventSource);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Basic))
             {
@@ -33,7 +33,7 @@ namespace EventSourceSample.Test.Unit
         public void Subtract_with_events_traces_event()
         {
             ClientEventSource eventSource = ClientEventSource.Instance;
-            CalculatorClientWithEvents client = new CalculatorClientWithEvents(new CalculatorClientStub(true), eventSource);
+            CalculatorClientWithEvents client = new CalculatorClientWithEvents(new CalculatorClientStub(() => Task.FromResult(0.0d)), eventSource);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Basic))
             {
@@ -46,7 +46,7 @@ namespace EventSourceSample.Test.Unit
         public void SquareRoot_with_events_traces_event()
         {
             ClientEventSource eventSource = ClientEventSource.Instance;
-            CalculatorClientWithEvents client = new CalculatorClientWithEvents(new CalculatorClientStub(true), eventSource);
+            CalculatorClientWithEvents client = new CalculatorClientWithEvents(new CalculatorClientStub(() => Task.FromResult(0.0d)), eventSource);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Advanced))
             {

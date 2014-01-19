@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="CalculatorClientStub.cs" />
     <Compile Include="ClientEventListener.cs" />
+    <Compile Include="ClientWithActivityTest.cs" />
     <Compile Include="ClientWrapperActivityTest.cs" />
     <Compile Include="ClientWrapperEventsTest.cs" />
     <Compile Include="ClientWrapperTest.cs" />

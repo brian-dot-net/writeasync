@@ -16,5 +16,9 @@ namespace EventSourceSample
 
         // Advanced operations
         SquareRoot = 10,
+
+        // Generic request
+        Request = 20,
+        RequestCompleted = 21,
     }
 }

@@ -13,17 +13,24 @@ namespace EventSourceSample.Test.Unit
 
     public sealed class CalculatorClientStub : ICalculatorClientAsync
     {
+        private readonly Func<Task<double>> getResult;
+
         public CalculatorClientStub()
-            : this(false)
+            : this(null)
         {
         }
 
-        public CalculatorClientStub(bool useDefaultResult)
+        public CalculatorClientStub(Func<Task<double>> getResult)
         {
             this.Operations = new List<Tuple<string, double, double>>();
-            if (!useDefaultResult)
+            if (getResult != null)
+            {
+                this.getResult = getResult;
+            }
+            else
             {
                 this.Results = new Queue<double>();
+                this.getResult = this.NextResult;
             }
         }
 
@@ -57,10 +64,10 @@ namespace EventSourceSample.Test.Unit
         private Task<double> Complete(string name, double x, double y)
         {
             this.Operations.Add(Tuple.Create(name, x, y));
-            return Task.FromResult(this.NextResult());
+            return this.getResult();
         }
 
-        private double NextResult()
+        private Task<double> NextResult()
         {
             double result = 0.0d;
             if (this.Results != null)
@@ -68,7 +75,7 @@ namespace EventSourceSample.Test.Unit
                 result = this.Results.Dequeue();
             }
 
-            return result;
+            return Task.FromResult(result);
         }
     }
 }
