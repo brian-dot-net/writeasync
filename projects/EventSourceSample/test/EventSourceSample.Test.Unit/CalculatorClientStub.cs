@@ -11,7 +11,7 @@ namespace EventSourceSample.Test.Unit
     using System.Threading.Tasks;
     using Xunit;
 
-    internal sealed class CalculatorClientStub : ICalculatorClientAsync
+    public sealed class CalculatorClientStub : ICalculatorClientAsync
     {
         public CalculatorClientStub()
             : this(false)

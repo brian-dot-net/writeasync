@@ -9,9 +9,9 @@ namespace EventSourceSample.Test.Unit
     using System.Threading.Tasks;
     using Xunit;
 
-    public class ClientWrapperTest
+    public abstract class ClientWrapperTest
     {
-        public ClientWrapperTest()
+        protected ClientWrapperTest()
         {
         }
 
@@ -20,7 +20,7 @@ namespace EventSourceSample.Test.Unit
         {
             CalculatorClientStub clientStub = new CalculatorClientStub();
             clientStub.Results.Enqueue(1.0d);
-            CalculatorClientWithEvents client = new CalculatorClientWithEvents(clientStub, ClientEventSource.Instance);
+            ICalculatorClientAsync client = this.CreateClient(clientStub);
 
             VerifyResult(1.0d, client.AddAsync(2.0d, 3.0d));
             clientStub.VerifyOperation("Add", 2.0d, 3.0d);
@@ -31,7 +31,7 @@ namespace EventSourceSample.Test.Unit
         {
             CalculatorClientStub clientStub = new CalculatorClientStub();
             clientStub.Results.Enqueue(4.0d);
-            CalculatorClientWithEvents client = new CalculatorClientWithEvents(clientStub, ClientEventSource.Instance);
+            ICalculatorClientAsync client = this.CreateClient(clientStub);
 
             VerifyResult(4.0d, client.SubtractAsync(5.0d, 6.0d));
             clientStub.VerifyOperation("Subtract", 5.0d, 6.0d);
@@ -42,11 +42,13 @@ namespace EventSourceSample.Test.Unit
         {
             CalculatorClientStub clientStub = new CalculatorClientStub();
             clientStub.Results.Enqueue(8.0d);
-            CalculatorClientWithEvents client = new CalculatorClientWithEvents(clientStub, ClientEventSource.Instance);
+            ICalculatorClientAsync client = this.CreateClient(clientStub);
 
             VerifyResult(8.0d, client.SquareRootAsync(7.0d));
             clientStub.VerifyOperation("SquareRoot", 7.0d, 0.0d);
         }
+
+        protected abstract ICalculatorClientAsync CreateClient(CalculatorClientStub clientStub);
 
         private static void VerifyResult(double expectedResult, Task<double> task)
         {
