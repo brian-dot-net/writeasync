@@ -6,9 +6,6 @@
 
 namespace EventSourceSample.Test.Unit
 {
-    using System.Threading.Tasks;
-    using Xunit;
-
     public class ClientWrapperEventsTest : ClientWrapperTest
     {
         public ClientWrapperEventsTest()
