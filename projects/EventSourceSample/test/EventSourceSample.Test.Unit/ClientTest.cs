@@ -9,6 +9,7 @@ namespace EventSourceSample.Test.Unit
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.Tracing;
+    using System.Linq;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -38,14 +39,7 @@ namespace EventSourceSample.Test.Unit
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Basic))
             {
                 VerifyResult(0.0d, client.AddAsync(1.0d, 2.0d));
-
-                Assert.Equal(1, listener.Events.Count);
-                Assert.Equal((int)ClientEventId.Add, listener.Events[0].EventId);
-                Assert.Equal(EventLevel.Informational, listener.Events[0].Level);
-                Assert.True(listener.Events[0].Keywords.HasFlag(ClientEventSource.Keywords.Basic));
-                Assert.Equal(2, listener.Events[0].Payload.Count);
-                Assert.Equal(1.0d, listener.Events[0].Payload[0]);
-                Assert.Equal(2.0d, listener.Events[0].Payload[1]);
+                VerifyEvent(listener, ClientEventId.Add, EventLevel.Informational, ClientEventSource.Keywords.Basic, 1.0d, 2.0d);
             }
         }
 
@@ -68,15 +62,8 @@ namespace EventSourceSample.Test.Unit
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Basic))
             {
-                VerifyResult(0.0d, client.SubtractAsync(1.0d, 2.0d));
-
-                Assert.Equal(1, listener.Events.Count);
-                Assert.Equal((int)ClientEventId.Subtract, listener.Events[0].EventId);
-                Assert.Equal(EventLevel.Informational, listener.Events[0].Level);
-                Assert.True(listener.Events[0].Keywords.HasFlag(ClientEventSource.Keywords.Basic));
-                Assert.Equal(2, listener.Events[0].Payload.Count);
-                Assert.Equal(1.0d, listener.Events[0].Payload[0]);
-                Assert.Equal(2.0d, listener.Events[0].Payload[1]);
+                VerifyResult(0.0d, client.SubtractAsync(3.0d, 4.0d));
+                VerifyEvent(listener, ClientEventId.Subtract, EventLevel.Informational, ClientEventSource.Keywords.Basic, 3.0d, 4.0d);
             }
         }
 
@@ -103,6 +90,15 @@ namespace EventSourceSample.Test.Unit
             Assert.Equal(expectedName, clientStub.Operations[0].Item1);
             Assert.Equal(expectedX, clientStub.Operations[0].Item2);
             Assert.Equal(expectedY, clientStub.Operations[0].Item3);
+        }
+
+        private static void VerifyEvent(ClientEventListener listener, ClientEventId id, EventLevel level, EventKeywords keywords, params object[] payloadItems)
+        {
+            Assert.Equal(1, listener.Events.Count);
+            Assert.Equal((int)id, listener.Events[0].EventId);
+            Assert.Equal(level, listener.Events[0].Level);
+            Assert.True(listener.Events[0].Keywords.HasFlag(keywords));
+            Assert.Equal(payloadItems, listener.Events[0].Payload.ToArray());
         }
 
         private sealed class ClientEventListener : EventListener
