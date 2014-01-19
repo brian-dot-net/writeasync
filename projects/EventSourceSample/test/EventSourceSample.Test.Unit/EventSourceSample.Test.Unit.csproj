@@ -36,6 +36,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalculatorClientStub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientTest.cs" />
   </ItemGroup>
