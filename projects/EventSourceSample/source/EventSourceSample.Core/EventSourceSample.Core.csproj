@@ -33,6 +33,7 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CalculatorClientWithEvents.cs" />
     <Compile Include="ICalculatorClient.cs" />
     <Compile Include="ICalculatorClientAsync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
