@@ -34,6 +34,7 @@ namespace EventSourceSample
 
         public Task<double> SquareRootAsync(double x)
         {
+            this.eventSource.SquareRoot(x);
             return this.inner.SquareRootAsync(x);
         }
     }

@@ -38,9 +38,16 @@ namespace EventSourceSample
             this.WriteEvent((int)ClientEventId.Subtract, x, y);
         }
 
+        [Event((int)ClientEventId.SquareRoot, Level = EventLevel.Informational, Keywords = Keywords.Advanced, Message = "Finding square root of {0}.")]
+        public void SquareRoot(double x)
+        {
+            this.WriteEvent((int)ClientEventId.SquareRoot, x);
+        }
+
         public static class Keywords
         {
             public const EventKeywords Basic = (EventKeywords)0x1;
+            public const EventKeywords Advanced = (EventKeywords)0x2;
         }
     }
 }

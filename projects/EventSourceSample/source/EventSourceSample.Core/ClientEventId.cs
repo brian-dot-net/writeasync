@@ -13,5 +13,8 @@ namespace EventSourceSample
         // Basic operations
         Add = 1,
         Subtract = 2,
+
+        // Advanced operations
+        SquareRoot = 10,
     }
 }

@@ -78,6 +78,19 @@ namespace EventSourceSample.Test.Unit
             VerifyOperation("SquareRoot", 7.0d, 0.0d, clientStub);
         }
 
+        [Fact]
+        public void SquareRoot_with_events_traces_event()
+        {
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            CalculatorClientWithEvents client = new CalculatorClientWithEvents(new CalculatorClientStub(true), eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Advanced))
+            {
+                VerifyResult(0.0d, client.SquareRootAsync(5.0d));
+                VerifyEvent(listener, ClientEventId.SquareRoot, EventLevel.Informational, ClientEventSource.Keywords.Advanced, 5.0d);
+            }
+        }
+
         private static void VerifyResult(double expectedResult, Task<double> task)
         {
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
