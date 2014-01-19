@@ -8,6 +8,8 @@ namespace EventSourceSample.Test.Unit
 {
     using System.Collections.Generic;
     using System.Diagnostics.Tracing;
+    using System.Linq;
+    using Xunit;
 
     internal sealed class ClientEventListener : EventListener
     {
@@ -32,6 +34,15 @@ namespace EventSourceSample.Test.Unit
             {
                 base.Dispose();
             }
+        }
+
+        public void VerifyEvent(ClientEventId id, EventLevel level, EventKeywords keywords, params object[] payloadItems)
+        {
+            Assert.Equal(1, this.Events.Count);
+            Assert.Equal((int)id, this.Events[0].EventId);
+            Assert.Equal(level, this.Events[0].Level);
+            Assert.True(this.Events[0].Keywords.HasFlag(keywords));
+            Assert.Equal(payloadItems, this.Events[0].Payload.ToArray());
         }
 
         protected override void OnEventWritten(EventWrittenEventArgs eventData)
