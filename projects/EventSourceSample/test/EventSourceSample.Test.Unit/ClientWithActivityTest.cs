@@ -84,6 +84,30 @@ namespace EventSourceSample.Test.Unit
             }
         }
 
+        [Fact]
+        public void Subtract_with_activity_sets_and_restores_activity_id()
+        {
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
+            {
+                Guid originalActivityId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+                Trace.CorrelationManager.ActivityId = originalActivityId;
+                listener.EventWritten += (o, e) => Assert.NotEqual(originalActivityId, Trace.CorrelationManager.ActivityId);
+
+                Task<double> task = VerifyPending(client.SubtractAsync(1.0d, 2.0d));
+
+                Assert.Equal(originalActivityId, Trace.CorrelationManager.ActivityId);
+
+                tcs.SetResult(0.0d);
+                VerifyResult(0.0d, task);
+
+                Assert.Equal(originalActivityId, Trace.CorrelationManager.ActivityId);
+            }
+        }
+
         private static Task<double> VerifyPending(Task<double> task)
         {
             Assert.False(task.IsCompleted);
