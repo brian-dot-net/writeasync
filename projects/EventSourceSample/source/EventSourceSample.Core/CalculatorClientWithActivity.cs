@@ -39,7 +39,10 @@ namespace EventSourceSample
 
         public Task<double> SquareRootAsync(double x)
         {
-            return this.inner.SquareRootAsync(x);
+            using (RequestScope scope = this.TraceStart())
+            {
+                return this.TraceEnd(scope, this.inner.SquareRootAsync(x));
+            }
         }
 
         private RequestScope TraceStart()
