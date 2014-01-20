@@ -7,6 +7,7 @@
 namespace EventSourceSample
 {
     using System;
+    using System.Collections.Generic;
     using System.ServiceModel;
     using System.Threading;
     using System.Threading.Tasks;
@@ -31,10 +32,17 @@ namespace EventSourceSample
 
         private static Task RunAsync(Uri address, CancellationToken token)
         {
-            Task clientTask = RunClientAsync(address, token);
-            Task serviceTask = RunServiceAsync(address, token);
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < 3; ++i)
+            {
+                Task clientTask = RunClientAsync(address, token);
+                tasks.Add(clientTask);
+            }
 
-            return Task.WhenAll(clientTask, serviceTask);
+            Task serviceTask = RunServiceAsync(address, token);
+            tasks.Add(serviceTask);
+
+            return Task.WhenAll(tasks);
         }
 
         private static async Task RunServiceAsync(Uri address, CancellationToken token)
