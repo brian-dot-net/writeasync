@@ -27,7 +27,7 @@ namespace EventSourceSample
 
         public Task OpenAsync()
         {
-            return OpenAsync(this.factory);
+            return this.factory.OpenAsync();
         }
 
         public async Task<TResult> InvokeAsync<TResult>(Func<ICalculatorClientAsync, Task<TResult>> doAsync)
@@ -47,18 +47,7 @@ namespace EventSourceSample
 
         public Task CloseAsync()
         {
-            return Task.Factory.FromAsync(
-                (c, s) => ((ICommunicationObject)s).BeginClose(c, s),
-                r => ((ICommunicationObject)r.AsyncState).EndClose(r),
-                this.factory);
-        }
-
-        private static Task OpenAsync(ICommunicationObject commObj)
-        {
-            return Task.Factory.FromAsync(
-                (c, s) => ((ICommunicationObject)s).BeginOpen(c, s),
-                r => ((ICommunicationObject)r.AsyncState).EndOpen(r),
-                commObj);
+            return this.factory.CloseAsync();
         }
 
         private async Task ConnectAsync()
@@ -66,7 +55,8 @@ namespace EventSourceSample
             if (this.coreProxy == null)
             {
                 this.coreProxy = this.factory.CreateChannel();
-                await OpenAsync((ICommunicationObject)this.coreProxy);
+                ICommunicationObject commObj = (ICommunicationObject)this.coreProxy;
+                await commObj.OpenAsync();
                 this.wrappedProxy = this.wrapClient(this.coreProxy);
             }
         }

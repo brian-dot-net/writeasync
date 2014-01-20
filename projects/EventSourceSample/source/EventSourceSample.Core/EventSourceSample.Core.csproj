@@ -35,6 +35,8 @@
   <ItemGroup>
     <Compile Include="CalculatorClientWithActivity.cs" />
     <Compile Include="CalculatorProxy.cs" />
+    <Compile Include="CommunicationObjectExtensions.cs" />
+    <Compile Include="CalculatorServiceHost.cs" />
     <Compile Include="ClientEventId.cs" />
     <Compile Include="CalculatorService.cs" />
     <Compile Include="ClientEventSource.cs" />
