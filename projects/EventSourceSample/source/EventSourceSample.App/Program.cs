@@ -39,7 +39,7 @@ namespace EventSourceSample
 
         private static async Task RunServiceAsync(Uri address, CancellationToken token)
         {
-            CalculatorServiceHost host = new CalculatorServiceHost(new NetNamedPipeBinding(NetNamedPipeSecurityMode.None), address);
+            CalculatorServiceHost host = new CalculatorServiceHost(TimeSpan.FromMilliseconds(100.0d), new NetNamedPipeBinding(NetNamedPipeSecurityMode.None), address);
             await host.OpenAsync();
 
             while (!token.IsCancellationRequested)
