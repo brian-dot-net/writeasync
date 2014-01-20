@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="ICalculatorClient.cs" company="Brian Rogers">
+// <copyright file="ICalculator.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -8,8 +8,8 @@ namespace EventSourceSample
 {
     using System.ServiceModel;
 
-    [ServiceContract(Name = "ICalculatorClient")]
-    public interface ICalculatorClient
+    [ServiceContract(Name = "ICalculator")]
+    public interface ICalculator
     {
         [OperationContract]
         double Add(double x, double y);
@@ -18,6 +18,6 @@ namespace EventSourceSample
         double Subtract(double x, double y);
 
         [OperationContract]
-        double SquareRootAsync(double x);
+        double SquareRoot(double x);
     }
 }

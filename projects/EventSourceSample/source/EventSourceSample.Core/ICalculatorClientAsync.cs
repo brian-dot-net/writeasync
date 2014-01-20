@@ -9,7 +9,7 @@ namespace EventSourceSample
     using System.ServiceModel;
     using System.Threading.Tasks;
 
-    [ServiceContract(Name = "ICalculatorClient")]
+    [ServiceContract(Name = "ICalculator")]
     public interface ICalculatorClientAsync
     {
         [OperationContract(AsyncPattern = true)]

@@ -35,9 +35,10 @@
   <ItemGroup>
     <Compile Include="CalculatorClientWithActivity.cs" />
     <Compile Include="ClientEventId.cs" />
+    <Compile Include="CalculatorService.cs" />
     <Compile Include="ClientEventSource.cs" />
     <Compile Include="CalculatorClientWithEvents.cs" />
-    <Compile Include="ICalculatorClient.cs" />
+    <Compile Include="ICalculator.cs" />
     <Compile Include="ICalculatorClientAsync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
