@@ -43,6 +43,12 @@ namespace EventSourceSample.Test.Unit
         }
 
         [Fact]
+        public void Subtract_with_activity_traces_start_and_end_with_error()
+        {
+            VerifyTracesStartAndEndError(c => c.SubtractAsync(1.0d, 2.0d));
+        }
+
+        [Fact]
         public void Subtract_with_activity_sets_and_restores_activity_id()
         {
             VerifySetsAndRestoresActivityId(c => c.SubtractAsync(3.0d, 4.0d));
