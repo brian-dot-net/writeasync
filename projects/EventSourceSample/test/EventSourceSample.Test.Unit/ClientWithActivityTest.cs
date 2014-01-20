@@ -37,6 +37,12 @@ namespace EventSourceSample.Test.Unit
         }
 
         [Fact]
+        public void Add_with_activity_sets_and_restores_activity_id_on_error()
+        {
+            VerifySetsAndRestoresActivityIdOnError(c => c.AddAsync(1.0d, 2.0d));
+        }
+
+        [Fact]
         public void Subtract_with_activity_traces_start_and_end()
         {
             VerifyTracesStartAndEnd(c => c.SubtractAsync(3.0d, 4.0d));
@@ -131,6 +137,30 @@ namespace EventSourceSample.Test.Unit
 
                 tcs.SetResult(0.0d);
                 VerifyResult(0.0d, task);
+
+                Assert.Equal(originalActivityId, Trace.CorrelationManager.ActivityId);
+            }
+        }
+
+        private static void VerifySetsAndRestoresActivityIdOnError(Func<ICalculatorClientAsync, Task<double>> doAsync)
+        {
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
+            {
+                Guid originalActivityId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+                Trace.CorrelationManager.ActivityId = originalActivityId;
+                listener.EventWritten += (o, e) => Assert.NotEqual(originalActivityId, Trace.CorrelationManager.ActivityId);
+
+                Task<double> task = VerifyPending(doAsync(client));
+
+                Assert.Equal(originalActivityId, Trace.CorrelationManager.ActivityId);
+
+                InvalidTimeZoneException expectedException = new InvalidTimeZoneException("Expected.");
+                tcs.SetException(expectedException);
+                VerifyResultError(expectedException, task);
 
                 Assert.Equal(originalActivityId, Trace.CorrelationManager.ActivityId);
             }
