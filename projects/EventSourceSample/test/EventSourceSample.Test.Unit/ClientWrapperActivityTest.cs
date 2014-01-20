@@ -6,6 +6,8 @@
 
 namespace EventSourceSample.Test.Unit
 {
+    using System;
+
     public class ClientWrapperActivityTest : ClientWrapperTest
     {
         public ClientWrapperActivityTest()
@@ -14,7 +16,7 @@ namespace EventSourceSample.Test.Unit
 
         protected override ICalculatorClientAsync CreateClient(CalculatorClientStub clientStub)
         {
-            return new CalculatorClientWithActivity(clientStub, ClientEventSource.Instance);
+            return new CalculatorClientWithActivity(clientStub, ClientEventSource.Instance, Guid.Empty);
         }
     }
 }

@@ -14,11 +14,13 @@ namespace EventSourceSample
     {
         private readonly ICalculatorClientAsync inner;
         private readonly ClientEventSource eventSource;
+        private readonly Guid clientId;
 
-        public CalculatorClientWithActivity(ICalculatorClientAsync inner, ClientEventSource eventSource)
+        public CalculatorClientWithActivity(ICalculatorClientAsync inner, ClientEventSource eventSource, Guid clientId)
         {
             this.inner = inner;
             this.eventSource = eventSource;
+            this.clientId = clientId;
         }
 
         public Task<double> AddAsync(double x, double y)

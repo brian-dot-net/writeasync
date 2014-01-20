@@ -94,7 +94,7 @@ namespace EventSourceSample.Test.Unit
         {
             ClientEventSource eventSource = ClientEventSource.Instance;
             TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
-            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource, Guid.Empty);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
             {
@@ -114,7 +114,8 @@ namespace EventSourceSample.Test.Unit
         {
             ClientEventSource eventSource = ClientEventSource.Instance;
             TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
-            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+            Guid clientId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xC);
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource, clientId);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
             {
@@ -135,7 +136,7 @@ namespace EventSourceSample.Test.Unit
         {
             ClientEventSource eventSource = ClientEventSource.Instance;
             TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
-            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource, Guid.Empty);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
             {
@@ -158,7 +159,7 @@ namespace EventSourceSample.Test.Unit
         {
             ClientEventSource eventSource = ClientEventSource.Instance;
             TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
-            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource, Guid.Empty);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
             {
