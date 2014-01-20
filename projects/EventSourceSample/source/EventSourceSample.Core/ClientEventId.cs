@@ -20,5 +20,6 @@ namespace EventSourceSample
         // Generic request
         Request = 20,
         RequestCompleted = 21,
+        RequestError = 22,
     }
 }

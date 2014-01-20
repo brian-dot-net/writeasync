@@ -56,6 +56,12 @@ namespace EventSourceSample
             this.WriteEvent((int)ClientEventId.RequestCompleted);
         }
 
+        [Event((int)ClientEventId.RequestError, Level = EventLevel.Warning, Keywords = Keywords.Request, Opcode = EventOpcode.Stop, Message = "Request error {0}: {1}")]
+        public void RequestError(string errorType, string errorMessage)
+        {
+            this.WriteEvent((int)ClientEventId.RequestError, errorType, errorMessage);
+        }
+
         public static class Keywords
         {
             public const EventKeywords Basic = (EventKeywords)0x1;

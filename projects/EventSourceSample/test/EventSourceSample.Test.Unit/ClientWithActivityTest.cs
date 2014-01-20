@@ -25,6 +25,28 @@ namespace EventSourceSample.Test.Unit
         }
 
         [Fact]
+        public void Add_with_activity_traces_start_and_end_with_error()
+        {
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
+            {
+                Task<double> task = VerifyPending(client.AddAsync(1.0d, 2.0d));
+
+                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start);
+                listener.Events.Clear();
+
+                InvalidCastException expectedException = new InvalidCastException("Expected.");
+                tcs.SetException(expectedException);
+                VerifyResultError(expectedException, task);
+
+                listener.VerifyEvent(ClientEventId.RequestError, EventLevel.Warning, ClientEventSource.Keywords.Request, EventOpcode.Stop, "System.InvalidCastException", "Expected.");
+            }
+        }
+
+        [Fact]
         public void Add_with_activity_sets_and_restores_activity_id()
         {
             VerifySetsAndRestoresActivityId(c => c.AddAsync(1.0d, 2.0d));
@@ -107,6 +129,14 @@ namespace EventSourceSample.Test.Unit
         {
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal(expectedResult, task.Result);            
+        }
+
+        private static void VerifyResultError<TException>(TException expectedException, Task<double> task)
+        {
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            AggregateException ae = Assert.IsType<AggregateException>(task.Exception).Flatten();
+            Assert.Equal(1, ae.InnerExceptions.Count);
+            Assert.Same(expectedException, ae.InnerExceptions[0]);
         }
     }
 }

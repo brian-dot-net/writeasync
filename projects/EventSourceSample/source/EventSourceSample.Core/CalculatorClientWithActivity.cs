@@ -61,7 +61,16 @@ namespace EventSourceSample
         {
             using (RequestScope scope = RequestScope.Resume((Guid)objId))
             {
-                this.eventSource.RequestCompleted();
+                if (task.IsFaulted)
+                {
+                    Exception error = task.Exception.InnerException;
+                    this.eventSource.RequestError(error.GetType().FullName, error.Message);
+                }
+                else
+                {
+                    this.eventSource.RequestCompleted();
+                }
+
                 return task.Result;
             }
         }
