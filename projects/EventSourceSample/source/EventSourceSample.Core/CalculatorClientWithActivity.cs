@@ -50,7 +50,7 @@ namespace EventSourceSample
         private RequestScope TraceStart()
         {
             RequestScope scope = RequestScope.Start();
-            this.eventSource.Request();
+            this.eventSource.Request(this.clientId);
             return scope;
         }
 
@@ -66,11 +66,11 @@ namespace EventSourceSample
                 if (task.IsFaulted)
                 {
                     Exception error = task.Exception.InnerException;
-                    this.eventSource.RequestError(error.GetType().FullName, error.Message);
+                    this.eventSource.RequestError(this.clientId, error.GetType().FullName, error.Message);
                 }
                 else
                 {
-                    this.eventSource.RequestCompleted();
+                    this.eventSource.RequestCompleted(this.clientId);
                 }
 
                 return task.Result;

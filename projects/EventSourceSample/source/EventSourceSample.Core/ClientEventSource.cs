@@ -44,22 +44,22 @@ namespace EventSourceSample
             this.WriteEvent((int)ClientEventId.SquareRoot, x);
         }
 
-        [Event((int)ClientEventId.Request, Level = EventLevel.Informational, Keywords = Keywords.Request, Opcode = EventOpcode.Start, Message = "Request invoked.")]
-        public void Request()
+        [Event((int)ClientEventId.Request, Level = EventLevel.Informational, Keywords = Keywords.Request, Opcode = EventOpcode.Start, Message = "Request invoked on client {0}.")]
+        public void Request(Guid clientId)
         {
-            this.WriteEvent((int)ClientEventId.Request);
+            this.WriteEvent((int)ClientEventId.Request, clientId);
         }
 
-        [Event((int)ClientEventId.RequestCompleted, Level = EventLevel.Informational, Keywords = Keywords.Request, Opcode = EventOpcode.Stop, Message = "Request completed.")]
-        public void RequestCompleted()
+        [Event((int)ClientEventId.RequestCompleted, Level = EventLevel.Informational, Keywords = Keywords.Request, Opcode = EventOpcode.Stop, Message = "Request completed on client {0}.")]
+        public void RequestCompleted(Guid clientId)
         {
-            this.WriteEvent((int)ClientEventId.RequestCompleted);
+            this.WriteEvent((int)ClientEventId.RequestCompleted, clientId);
         }
 
-        [Event((int)ClientEventId.RequestError, Level = EventLevel.Warning, Keywords = Keywords.Request, Opcode = EventOpcode.Stop, Message = "Request error {0}: {1}")]
-        public void RequestError(string errorType, string errorMessage)
+        [Event((int)ClientEventId.RequestError, Level = EventLevel.Warning, Keywords = Keywords.Request, Opcode = EventOpcode.Stop, Message = "Request error on client {0}, {1}: {2}")]
+        public void RequestError(Guid clientId, string errorType, string errorMessage)
         {
-            this.WriteEvent((int)ClientEventId.RequestError, errorType, errorMessage);
+            this.WriteEvent((int)ClientEventId.RequestError, clientId, errorType, errorMessage);
         }
 
         public static class Keywords

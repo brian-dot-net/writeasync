@@ -94,19 +94,20 @@ namespace EventSourceSample.Test.Unit
         {
             ClientEventSource eventSource = ClientEventSource.Instance;
             TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
-            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource, Guid.Empty);
+            Guid clientId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xC);
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource, clientId);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
             {
                 Task<double> task = VerifyPending(doAsync(client));
 
-                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start);
+                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start, clientId);
                 listener.Events.Clear();
 
                 tcs.SetResult(0.0d);
                 VerifyResult(0.0d, task);
 
-                listener.VerifyEvent(ClientEventId.RequestCompleted, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Stop);
+                listener.VerifyEvent(ClientEventId.RequestCompleted, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Stop, clientId);
             }
         }
 
@@ -121,14 +122,14 @@ namespace EventSourceSample.Test.Unit
             {
                 Task<double> task = VerifyPending(doAsync(client));
 
-                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start);
+                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start, clientId);
                 listener.Events.Clear();
 
                 InvalidCastException expectedException = new InvalidCastException("Expected.");
                 tcs.SetException(expectedException);
                 VerifyResultError(expectedException, task);
 
-                listener.VerifyEvent(ClientEventId.RequestError, EventLevel.Warning, ClientEventSource.Keywords.Request, EventOpcode.Stop, "System.InvalidCastException", "Expected.");
+                listener.VerifyEvent(ClientEventId.RequestError, EventLevel.Warning, ClientEventSource.Keywords.Request, EventOpcode.Stop, clientId, "System.InvalidCastException", "Expected.");
             }
         }
 
