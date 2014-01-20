@@ -9,7 +9,7 @@ namespace EventSourceSample
     using System;
     using System.ServiceModel;
 
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class CalculatorService : ICalculator
     {
         public CalculatorService()
