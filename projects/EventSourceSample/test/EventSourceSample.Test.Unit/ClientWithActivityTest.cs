@@ -8,6 +8,7 @@ namespace EventSourceSample.Test.Unit
 {
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.Eventing;
     using System.Diagnostics.Tracing;
     using System.Threading.Tasks;
     using Xunit;
@@ -142,7 +143,7 @@ namespace EventSourceSample.Test.Unit
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
             {
                 Guid originalActivityId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
-                Trace.CorrelationManager.ActivityId = originalActivityId;
+                EventProvider.SetActivityId(ref originalActivityId);
                 listener.EventWritten += (o, e) => Assert.NotEqual(originalActivityId, Trace.CorrelationManager.ActivityId);
 
                 Task<double> task = VerifyPending(doAsync(client));
@@ -165,7 +166,7 @@ namespace EventSourceSample.Test.Unit
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
             {
                 Guid originalActivityId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
-                Trace.CorrelationManager.ActivityId = originalActivityId;
+                EventProvider.SetActivityId(ref originalActivityId);
                 listener.EventWritten += (o, e) => Assert.NotEqual(originalActivityId, Trace.CorrelationManager.ActivityId);
 
                 Task<double> task = VerifyPending(doAsync(client));

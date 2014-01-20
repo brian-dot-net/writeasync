@@ -8,6 +8,7 @@ namespace EventSourceSample
 {
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.Eventing;
     using System.Threading.Tasks;
 
     public class CalculatorClientWithActivity : ICalculatorClientAsync
@@ -86,7 +87,7 @@ namespace EventSourceSample
             {
                 this.previousId = Trace.CorrelationManager.ActivityId;
                 this.id = id;
-                Trace.CorrelationManager.ActivityId = this.id;
+                EventProvider.SetActivityId(ref this.id);
             }
 
             public Guid Id
@@ -106,7 +107,8 @@ namespace EventSourceSample
 
             public void Dispose()
             {
-                Trace.CorrelationManager.ActivityId = this.previousId;
+                Guid resetId = this.previousId;
+                EventProvider.SetActivityId(ref resetId);
             }
         }
     }
