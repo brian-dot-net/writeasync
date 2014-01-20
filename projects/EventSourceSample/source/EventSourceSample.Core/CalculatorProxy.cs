@@ -35,7 +35,7 @@ namespace EventSourceSample
             try
             {
                 await this.ConnectAsync();
-                TResult result = await doAsync(this.coreProxy);
+                TResult result = await doAsync(this.wrappedProxy);
                 return result;
             }
             catch (Exception)
