@@ -27,23 +27,7 @@ namespace EventSourceSample.Test.Unit
         [Fact]
         public void Add_with_activity_traces_start_and_end_with_error()
         {
-            ClientEventSource eventSource = ClientEventSource.Instance;
-            TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
-            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
-
-            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
-            {
-                Task<double> task = VerifyPending(client.AddAsync(1.0d, 2.0d));
-
-                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start);
-                listener.Events.Clear();
-
-                InvalidCastException expectedException = new InvalidCastException("Expected.");
-                tcs.SetException(expectedException);
-                VerifyResultError(expectedException, task);
-
-                listener.VerifyEvent(ClientEventId.RequestError, EventLevel.Warning, ClientEventSource.Keywords.Request, EventOpcode.Stop, "System.InvalidCastException", "Expected.");
-            }
+            VerifyTracesStartAndEndError(c => c.AddAsync(1.0d, 2.0d));
         }
 
         [Fact]
@@ -93,6 +77,27 @@ namespace EventSourceSample.Test.Unit
                 VerifyResult(0.0d, task);
 
                 listener.VerifyEvent(ClientEventId.RequestCompleted, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Stop);
+            }
+        }
+
+        private static void VerifyTracesStartAndEndError(Func<ICalculatorClientAsync, Task<double>> doAsync)
+        {
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
+            CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(() => tcs.Task), eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
+            {
+                Task<double> task = VerifyPending(doAsync(client));
+
+                listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start);
+                listener.Events.Clear();
+
+                InvalidCastException expectedException = new InvalidCastException("Expected.");
+                tcs.SetException(expectedException);
+                VerifyResultError(expectedException, task);
+
+                listener.VerifyEvent(ClientEventId.RequestError, EventLevel.Warning, ClientEventSource.Keywords.Request, EventOpcode.Stop, "System.InvalidCastException", "Expected.");
             }
         }
 
