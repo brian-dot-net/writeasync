@@ -45,7 +45,7 @@ namespace EventSourceSample.Test.Unit
         [Fact]
         public void Subtract_with_activity_traces_start_and_end_with_error()
         {
-            VerifyTracesStartAndEndError(c => c.SubtractAsync(1.0d, 2.0d));
+            VerifyTracesStartAndEndError(c => c.SubtractAsync(3.0d, 4.0d));
         }
 
         [Fact]
@@ -58,6 +58,12 @@ namespace EventSourceSample.Test.Unit
         public void SquareRoot_with_activity_traces_start_and_end()
         {
             VerifyTracesStartAndEnd(c => c.SquareRootAsync(5.0d));
+        }
+
+        [Fact]
+        public void SquareRoot_with_activity_traces_start_and_end_with_error()
+        {
+            VerifyTracesStartAndEndError(c => c.SquareRootAsync(5.0d));
         }
 
         [Fact]
