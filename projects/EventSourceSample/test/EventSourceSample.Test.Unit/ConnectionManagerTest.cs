@@ -55,6 +55,31 @@ namespace EventSourceSample.Test.Unit
             Assert.Equal(1, connectionStub.OpenCount);
         }
 
+        [Fact]
+        public void Invalidate_aborts_and_allows_subsequent_reconnection()
+        {
+            FactoryStub factoryStub = new FactoryStub();
+            ConnectionManager<IMyChannel> manager = new ConnectionManager<IMyChannel>(factoryStub);
+            ConnectionStub connectionStub = new ConnectionStub();
+            factoryStub.Channels.Enqueue(connectionStub);
+
+            Task task = manager.ConnectAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(1, connectionStub.OpenCount);
+
+            manager.Invalidate();
+
+            Assert.Equal(1, connectionStub.AbortCount);
+
+            ConnectionStub connectionStub2 = new ConnectionStub();
+            factoryStub.Channels.Enqueue(connectionStub2);
+            task = manager.ConnectAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(1, connectionStub2.OpenCount);
+        }
+
         private sealed class ConnectionStub : IConnection<IMyChannel>
         {
             public ConnectionStub()
@@ -62,6 +87,8 @@ namespace EventSourceSample.Test.Unit
             }
 
             public int OpenCount { get; private set; }
+
+            public int AbortCount { get; private set; }
 
             public IMyChannel Instance
             {
@@ -72,6 +99,11 @@ namespace EventSourceSample.Test.Unit
             {
                 ++this.OpenCount;
                 return Task.FromResult(false);
+            }
+
+            public void Abort()
+            {
+                ++this.AbortCount;
             }
         }
 

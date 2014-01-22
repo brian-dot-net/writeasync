@@ -13,5 +13,7 @@ namespace EventSourceSample
         TProxy Instance { get; }
 
         Task OpenAsync();
+
+        void Abort();
     }
 }

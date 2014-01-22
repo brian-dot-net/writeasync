@@ -28,5 +28,11 @@ namespace EventSourceSample
                 await this.connection.OpenAsync();
             }
         }
+
+        public void Invalidate()
+        {
+            this.connection.Abort();
+            this.connection = null;
+        }
     }
 }
