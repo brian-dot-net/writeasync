@@ -62,11 +62,24 @@ namespace EventSourceSample
             this.WriteEvent((int)ClientEventId.RequestError, clientId, errorType, errorMessage);
         }
 
+        [Event((int)ClientEventId.ConnectionOpening, Level = EventLevel.Informational, Keywords = Keywords.Connection, Opcode = EventOpcode.Start, Message = "Connection opening.")]
+        public void ConnectionOpening()
+        {
+            this.WriteEvent((int)ClientEventId.ConnectionOpening);
+        }
+
+        [Event((int)ClientEventId.ConnectionOpened, Level = EventLevel.Informational, Keywords = Keywords.Connection, Opcode = EventOpcode.Stop, Message = "Connection opened.")]
+        public void ConnectionOpened()
+        {
+            this.WriteEvent((int)ClientEventId.ConnectionOpened);
+        }
+
         public static class Keywords
         {
             public const EventKeywords Basic = (EventKeywords)0x1;
             public const EventKeywords Advanced = (EventKeywords)0x2;
             public const EventKeywords Request = (EventKeywords)0x4;
+            public const EventKeywords Connection = (EventKeywords)0x8;
         }
     }
 }

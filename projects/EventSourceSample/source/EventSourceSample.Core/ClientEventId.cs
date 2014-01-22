@@ -21,5 +21,9 @@ namespace EventSourceSample
         Request = 20,
         RequestCompleted = 21,
         RequestError = 22,
+
+        // Connection
+        ConnectionOpening = 30,
+        ConnectionOpened = 31,
     }
 }

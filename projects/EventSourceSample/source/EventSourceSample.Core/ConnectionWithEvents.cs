@@ -12,10 +12,12 @@ namespace EventSourceSample
     public class ConnectionWithEvents<TProxy> : IConnection<TProxy>
     {
         private readonly IConnection<TProxy> inner;
+        private readonly ClientEventSource eventSource;
 
-        public ConnectionWithEvents(IConnection<TProxy> inner)
+        public ConnectionWithEvents(IConnection<TProxy> inner, ClientEventSource eventSource)
         {
             this.inner = inner;
+            this.eventSource = eventSource;
         }
 
         public TProxy Instance
@@ -23,9 +25,11 @@ namespace EventSourceSample
             get { return this.inner.Instance; }
         }
 
-        public Task OpenAsync()
+        public async Task OpenAsync()
         {
-            return this.inner.OpenAsync();
+            this.eventSource.ConnectionOpening();
+            await this.inner.OpenAsync();
+            this.eventSource.ConnectionOpened();
         }
 
         public void Abort()
