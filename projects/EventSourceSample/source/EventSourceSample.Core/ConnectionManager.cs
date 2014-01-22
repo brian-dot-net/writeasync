@@ -9,7 +9,7 @@ namespace EventSourceSample
     using System;
     using System.Threading.Tasks;
 
-    public class ConnectionManager<TProxy>
+    public class ConnectionManager<TProxy> : IConnectionManager<TProxy>
     {
         private readonly IFactory<IConnection<TProxy>> factory;
 
