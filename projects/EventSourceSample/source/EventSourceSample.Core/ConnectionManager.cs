@@ -13,15 +13,20 @@ namespace EventSourceSample
     {
         private readonly IFactory<IConnection<TProxy>> factory;
 
+        private IConnection<TProxy> connection;
+
         public ConnectionManager(IFactory<IConnection<TProxy>> factory)
         {
             this.factory = factory;
         }
 
-        public Task ConnectAsync()
+        public async Task ConnectAsync()
         {
-            IConnection<TProxy> connection = this.factory.Create();
-            return connection.OpenAsync();
+            if (this.connection == null)
+            {
+                this.connection = this.factory.Create();
+                await this.connection.OpenAsync();
+            }
         }
     }
 }
