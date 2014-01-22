@@ -26,5 +26,6 @@ namespace EventSourceSample
         ConnectionOpening = 30,
         ConnectionOpened = 31,
         ConnectionAborting = 32,
+        ConnectionError = 33,
     }
 }

@@ -79,6 +79,33 @@ namespace EventSourceSample.Test.Unit
         }
 
         [Fact]
+        public void Open_with_events_traces_start_and_end_error()
+        {
+            ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>(true);
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Connection))
+            {
+                Task task = outer.OpenAsync();
+
+                Assert.False(task.IsCompleted);
+                listener.VerifyEvent(ClientEventId.ConnectionOpening, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Start);
+                listener.Events.Clear();
+
+                InvalidTimeZoneException expectedException = new InvalidTimeZoneException("Expected.");
+                inner.OpenCall.SetException(expectedException);
+                Assert.True(task.IsFaulted);
+                AggregateException ae = Assert.IsType<AggregateException>(task.Exception);
+                Assert.Equal(1, ae.InnerExceptions.Count);
+                Assert.Same(expectedException, ae.InnerException);
+
+                listener.VerifyEvent(ClientEventId.ConnectionError, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Stop, "System.InvalidTimeZoneException", "Expected.");
+                listener.Events.Clear();
+            }
+        }
+
+        [Fact]
         public void Abort_with_events_traces_event()
         {
             ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>();

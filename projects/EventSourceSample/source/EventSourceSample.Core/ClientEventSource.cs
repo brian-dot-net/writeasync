@@ -80,6 +80,12 @@ namespace EventSourceSample
             this.WriteEvent((int)ClientEventId.ConnectionAborting);
         }
 
+        [Event((int)ClientEventId.ConnectionError, Level = EventLevel.Informational, Keywords = Keywords.Connection, Opcode = EventOpcode.Stop, Message = "Connection error {0}: {1}")]
+        public void ConnectionError(string errorType, string errorMessage)
+        {
+            this.WriteEvent((int)ClientEventId.ConnectionError, errorType, errorMessage);
+        }
+
         public static class Keywords
         {
             public const EventKeywords Basic = (EventKeywords)0x1;

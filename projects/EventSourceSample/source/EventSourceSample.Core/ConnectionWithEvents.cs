@@ -27,9 +27,17 @@ namespace EventSourceSample
 
         public async Task OpenAsync()
         {
-            this.eventSource.ConnectionOpening();
-            await this.inner.OpenAsync();
-            this.eventSource.ConnectionOpened();
+            try
+            {
+                this.eventSource.ConnectionOpening();
+                await this.inner.OpenAsync();
+                this.eventSource.ConnectionOpened();
+            }
+            catch (Exception e)
+            {
+                this.eventSource.ConnectionError(e.GetType().FullName, e.Message);
+                throw;
+            }
         }
 
         public void Abort()
