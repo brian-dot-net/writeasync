@@ -6,14 +6,16 @@
 
 namespace EventSourceSample
 {
+    using System;
     using System.ServiceModel;
     using System.Threading.Tasks;
 
     public class CalculatorConnection : IConnection<ICalculatorClientAsync>
     {
-        public CalculatorConnection(ICalculatorClientAsync proxy)
+        public CalculatorConnection(ICalculatorClientAsync proxy, ClientEventSource eventSource)
         {
-            this.Instance = proxy;
+            ICalculatorClientAsync middle = new CalculatorClientWithEvents(proxy, eventSource);
+            this.Instance = new CalculatorClientWithActivity(middle, eventSource, Guid.NewGuid());
         }
 
         public ICalculatorClientAsync Instance { get; private set; }

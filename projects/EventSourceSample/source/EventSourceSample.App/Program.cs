@@ -75,7 +75,7 @@ namespace EventSourceSample
             binding.ReceiveTimeout = TimeSpan.FromSeconds(1.0d);
             binding.CloseTimeout = TimeSpan.FromSeconds(1.0d);
 
-            CalculatorChannelFactory factory = new CalculatorChannelFactory(binding, new EndpointAddress(address));
+            CalculatorChannelFactory factory = new CalculatorChannelFactory(binding, new EndpointAddress(address), eventSource);
             await factory.OpenAsync();
 
             using (CalculatorProxy proxy = new CalculatorProxy(factory))
@@ -97,12 +97,6 @@ namespace EventSourceSample
             }
 
             await factory.CloseAsync();
-        }
-
-        private static ICalculatorClientAsync WrapClient(ICalculatorClientAsync lower, ClientEventSource eventSource)
-        {
-            ICalculatorClientAsync middle = new CalculatorClientWithEvents(lower, eventSource);
-            return new CalculatorClientWithActivity(middle, eventSource, Guid.NewGuid());
         }
 
         private static async Task<double> InvokeRandomAsync(Random random, ICalculatorClientAsync client)

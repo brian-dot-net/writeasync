@@ -13,10 +13,12 @@ namespace EventSourceSample
     public class CalculatorChannelFactory : IFactory<IConnection<ICalculatorClientAsync>>
     {
         private readonly ChannelFactory<ICalculatorClientAsync> factory;
+        private readonly ClientEventSource eventSource;
 
-        public CalculatorChannelFactory(Binding binding, EndpointAddress address)
+        public CalculatorChannelFactory(Binding binding, EndpointAddress address, ClientEventSource eventSource)
         {
             this.factory = new ChannelFactory<ICalculatorClientAsync>(binding, address);
+            this.eventSource = eventSource;
         }
 
         public Task OpenAsync()
@@ -26,7 +28,7 @@ namespace EventSourceSample
 
         public IConnection<ICalculatorClientAsync> Create()
         {
-            return new CalculatorConnection(this.factory.CreateChannel());
+            return new CalculatorConnection(this.factory.CreateChannel(), this.eventSource);
         }
 
         public Task CloseAsync()
