@@ -31,20 +31,20 @@ namespace EventSourceSample
         {
             try
             {
-                this.eventSource.ConnectionOpening();
+                this.eventSource.ConnectionOpening(this.id);
                 await this.inner.OpenAsync();
-                this.eventSource.ConnectionOpened();
+                this.eventSource.ConnectionOpened(this.id);
             }
             catch (Exception e)
             {
-                this.eventSource.ConnectionError(e.GetType().FullName, e.Message);
+                this.eventSource.ConnectionError(this.id, e.GetType().FullName, e.Message);
                 throw;
             }
         }
 
         public void Abort()
         {
-            this.eventSource.ConnectionAborting();
+            this.eventSource.ConnectionAborting(this.id);
             this.inner.Abort();
         }
     }

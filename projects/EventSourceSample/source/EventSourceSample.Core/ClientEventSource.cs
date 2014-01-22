@@ -62,28 +62,28 @@ namespace EventSourceSample
             this.WriteEvent((int)ClientEventId.RequestError, clientId, errorType, errorMessage);
         }
 
-        [Event((int)ClientEventId.ConnectionOpening, Level = EventLevel.Informational, Keywords = Keywords.Connection, Opcode = EventOpcode.Start, Message = "Connection opening.")]
-        public void ConnectionOpening()
+        [Event((int)ClientEventId.ConnectionOpening, Level = EventLevel.Informational, Keywords = Keywords.Connection, Opcode = EventOpcode.Start, Message = "Connection {0} opening.")]
+        public void ConnectionOpening(Guid id)
         {
-            this.WriteEvent((int)ClientEventId.ConnectionOpening);
+            this.WriteEvent((int)ClientEventId.ConnectionOpening, id);
         }
 
-        [Event((int)ClientEventId.ConnectionOpened, Level = EventLevel.Informational, Keywords = Keywords.Connection, Opcode = EventOpcode.Stop, Message = "Connection opened.")]
-        public void ConnectionOpened()
+        [Event((int)ClientEventId.ConnectionOpened, Level = EventLevel.Informational, Keywords = Keywords.Connection, Opcode = EventOpcode.Stop, Message = "Connection {0} opened.")]
+        public void ConnectionOpened(Guid id)
         {
-            this.WriteEvent((int)ClientEventId.ConnectionOpened);
+            this.WriteEvent((int)ClientEventId.ConnectionOpened, id);
         }
 
-        [Event((int)ClientEventId.ConnectionAborting, Level = EventLevel.Informational, Keywords = Keywords.Connection, Message = "Connection aborting.")]
-        public void ConnectionAborting()
+        [Event((int)ClientEventId.ConnectionAborting, Level = EventLevel.Informational, Keywords = Keywords.Connection, Message = "Connection {0} aborting.")]
+        public void ConnectionAborting(Guid id)
         {
-            this.WriteEvent((int)ClientEventId.ConnectionAborting);
+            this.WriteEvent((int)ClientEventId.ConnectionAborting, id);
         }
 
-        [Event((int)ClientEventId.ConnectionError, Level = EventLevel.Informational, Keywords = Keywords.Connection, Opcode = EventOpcode.Stop, Message = "Connection error {0}: {1}")]
-        public void ConnectionError(string errorType, string errorMessage)
+        [Event((int)ClientEventId.ConnectionError, Level = EventLevel.Informational, Keywords = Keywords.Connection, Opcode = EventOpcode.Stop, Message = "Connection {0} error {1}: {2}")]
+        public void ConnectionError(Guid id, string errorType, string errorMessage)
         {
-            this.WriteEvent((int)ClientEventId.ConnectionError, errorType, errorMessage);
+            this.WriteEvent((int)ClientEventId.ConnectionError, id, errorType, errorMessage);
         }
 
         public static class Keywords

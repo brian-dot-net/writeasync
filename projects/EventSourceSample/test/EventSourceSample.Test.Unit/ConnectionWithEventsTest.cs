@@ -69,12 +69,12 @@ namespace EventSourceSample.Test.Unit
                 Task task = outer.OpenAsync();
 
                 Assert.False(task.IsCompleted);
-                listener.VerifyEvent(ClientEventId.ConnectionOpening, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Start);
+                listener.VerifyEvent(ClientEventId.ConnectionOpening, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Start, id);
                 listener.Events.Clear();
 
                 inner.OpenCall.SetResult(false);
                 Assert.Equal(TaskStatus.RanToCompletion, task.Status);
-                listener.VerifyEvent(ClientEventId.ConnectionOpened, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Stop);
+                listener.VerifyEvent(ClientEventId.ConnectionOpened, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Stop, id);
                 listener.Events.Clear();
             }
         }
@@ -92,7 +92,7 @@ namespace EventSourceSample.Test.Unit
                 Task task = outer.OpenAsync();
 
                 Assert.False(task.IsCompleted);
-                listener.VerifyEvent(ClientEventId.ConnectionOpening, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Start);
+                listener.VerifyEvent(ClientEventId.ConnectionOpening, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Start, id);
                 listener.Events.Clear();
 
                 InvalidTimeZoneException expectedException = new InvalidTimeZoneException("Expected.");
@@ -102,7 +102,7 @@ namespace EventSourceSample.Test.Unit
                 Assert.Equal(1, ae.InnerExceptions.Count);
                 Assert.Same(expectedException, ae.InnerException);
 
-                listener.VerifyEvent(ClientEventId.ConnectionError, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Stop, "System.InvalidTimeZoneException", "Expected.");
+                listener.VerifyEvent(ClientEventId.ConnectionError, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Stop, id, "System.InvalidTimeZoneException", "Expected.");
                 listener.Events.Clear();
             }
         }
@@ -118,7 +118,7 @@ namespace EventSourceSample.Test.Unit
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Connection))
             {
                 outer.Abort();
-                listener.VerifyEvent(ClientEventId.ConnectionAborting, EventLevel.Informational, ClientEventSource.Keywords.Connection);
+                listener.VerifyEvent(ClientEventId.ConnectionAborting, EventLevel.Informational, ClientEventSource.Keywords.Connection, id);
             }
         }
 
