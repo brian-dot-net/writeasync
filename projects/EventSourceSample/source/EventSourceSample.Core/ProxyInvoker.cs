@@ -20,9 +20,17 @@ namespace EventSourceSample
 
         public async Task<TResult> InvokeAsync<TResult>(Func<TProxy, Task<TResult>> doAsync)
         {
-            await this.connectionManager.ConnectAsync();
-            TResult result = await doAsync(this.connectionManager.Proxy);
-            return result;
+            try
+            {
+                await this.connectionManager.ConnectAsync();
+                TResult result = await doAsync(this.connectionManager.Proxy);
+                return result;
+            }
+            catch (Exception)
+            {
+                this.connectionManager.Invalidate();
+                throw;
+            }
         }
     }
 }

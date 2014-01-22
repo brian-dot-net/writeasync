@@ -33,6 +33,26 @@ namespace EventSourceSample.Test.Unit
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Same(input, task.Result);
+            Assert.Equal(1, connectionManagerStub.ConnectCount);
+        }
+
+        [Fact]
+        public void Invoke_connects_and_invokes_method_with_exception_and_invalidates()
+        {
+            ConnectionManagerStub connectionManagerStub = new ConnectionManagerStub();
+            MyProxyStub proxyStub = new MyProxyStub();
+            connectionManagerStub.Proxy = proxyStub;
+            ProxyInvoker<IMyProxy> invoker = new ProxyInvoker<IMyProxy>(connectionManagerStub);
+
+            InvalidTimeZoneException expectedException = new InvalidTimeZoneException("Expected.");
+            proxyStub.Exception = expectedException;
+            Task<object> task = invoker.InvokeAsync(p => p.DoAsync(new object()));
+
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            AggregateException ae = Assert.IsType<AggregateException>(task.Exception);
+            Assert.Equal(1, ae.InnerExceptions.Count);
+            Assert.Same(expectedException, ae.InnerExceptions[0]);
+            Assert.Equal(1, connectionManagerStub.InvalidateCount);
         }
 
         private sealed class MyProxyStub : IMyProxy
@@ -41,9 +61,21 @@ namespace EventSourceSample.Test.Unit
             {
             }
 
+            public Exception Exception { get; set; }
+
             public Task<object> DoAsync(object input)
             {
-                return Task.FromResult(input);
+                TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+                if (this.Exception == null)
+                {
+                    tcs.SetResult(input);
+                }
+                else
+                {
+                    tcs.SetException(this.Exception);
+                }
+
+                return tcs.Task;
             }
         }
 
@@ -57,6 +89,8 @@ namespace EventSourceSample.Test.Unit
 
             public int ConnectCount { get; private set; }
 
+            public int InvalidateCount { get; private set; }
+
             public Task ConnectAsync()
             {
                 ++this.ConnectCount;
@@ -65,7 +99,7 @@ namespace EventSourceSample.Test.Unit
 
             public void Invalidate()
             {
-                throw new NotImplementedException();
+                ++this.InvalidateCount;
             }
         }
     }
