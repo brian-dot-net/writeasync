@@ -12,27 +12,25 @@ namespace EventSourceSample
 
     public class CalculatorConnection : IConnection<ICalculatorClientAsync>
     {
+        private readonly ICommunicationObject channel;
+
         public CalculatorConnection(ICalculatorClientAsync proxy, ClientEventSource eventSource, Guid id)
         {
+            this.channel = (ICommunicationObject)proxy;
             ICalculatorClientAsync middle = new CalculatorClientWithEvents(proxy, eventSource);
             this.Instance = new CalculatorClientWithActivity(middle, eventSource, id);
         }
 
         public ICalculatorClientAsync Instance { get; private set; }
 
-        private ICommunicationObject Channel
-        {
-            get { return (ICommunicationObject)this.Instance; }
-        }
-
         public Task OpenAsync()
         {
-            return this.Channel.OpenAsync();
+            return this.channel.OpenAsync();
         }
 
         public void Abort()
         {
-            this.Channel.Abort();
+            this.channel.Abort();
         }
     }
 }
