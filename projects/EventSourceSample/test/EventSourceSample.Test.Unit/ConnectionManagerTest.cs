@@ -80,6 +80,15 @@ namespace EventSourceSample.Test.Unit
             Assert.Equal(1, connectionStub2.OpenCount);
         }
 
+        [Fact]
+        public void Invalidate_before_connect_does_nothing()
+        {
+            FactoryStub factoryStub = new FactoryStub();
+            ConnectionManager<IMyChannel> manager = new ConnectionManager<IMyChannel>(factoryStub);
+
+            manager.Invalidate();
+        }
+
         private sealed class ConnectionStub : IConnection<IMyChannel>
         {
             public ConnectionStub()

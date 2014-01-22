@@ -31,8 +31,11 @@ namespace EventSourceSample
 
         public void Invalidate()
         {
-            this.connection.Abort();
-            this.connection = null;
+            if (this.connection != null)
+            {
+                this.connection.Abort();
+                this.connection = null;
+            }
         }
     }
 }
