@@ -34,6 +34,7 @@ namespace EventSourceSample
 
         public void Abort()
         {
+            this.eventSource.ConnectionAborting();
             this.inner.Abort();
         }
     }

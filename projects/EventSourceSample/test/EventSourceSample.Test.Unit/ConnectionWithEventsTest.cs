@@ -78,6 +78,20 @@ namespace EventSourceSample.Test.Unit
             }
         }
 
+        [Fact]
+        public void Abort_with_events_traces_event()
+        {
+            ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>();
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, eventSource);
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Connection))
+            {
+                outer.Abort();
+                listener.VerifyEvent(ClientEventId.ConnectionAborting, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Start);
+            }
+        }
+
         private sealed class MyProxyStub : IMyProxy
         {
             public MyProxyStub()
