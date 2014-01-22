@@ -34,6 +34,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CalculatorClientWithActivity.cs" />
+    <Compile Include="CalculatorChannelFactory.cs" />
+    <Compile Include="CalculatorConnection.cs" />
     <Compile Include="IFactory.cs" />
     <Compile Include="IConnection.cs" />
     <Compile Include="ConnectionManager.cs" />

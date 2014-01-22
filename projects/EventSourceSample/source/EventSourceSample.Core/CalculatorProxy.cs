@@ -7,67 +7,35 @@
 namespace EventSourceSample
 {
     using System;
-    using System.ServiceModel;
-    using System.ServiceModel.Channels;
     using System.Threading.Tasks;
 
-    public class CalculatorProxy
+    public sealed class CalculatorProxy : IDisposable
     {
-        private readonly ChannelFactory<ICalculatorClientAsync> factory;
-        private readonly Func<ICalculatorClientAsync, ICalculatorClientAsync> wrapClient;
+        private readonly ConnectionManager<ICalculatorClientAsync> connectionManager;
 
-        private ICalculatorClientAsync coreProxy;
-        private ICalculatorClientAsync wrappedProxy;
-
-        public CalculatorProxy(Binding binding, EndpointAddress address, Func<ICalculatorClientAsync, ICalculatorClientAsync> wrapClient)
+        public CalculatorProxy(CalculatorChannelFactory factory)
         {
-            this.factory = new ChannelFactory<ICalculatorClientAsync>(binding, address);
-            this.wrapClient = wrapClient;
-        }
-
-        public Task OpenAsync()
-        {
-            return this.factory.OpenAsync();
+            this.connectionManager = new ConnectionManager<ICalculatorClientAsync>(factory);
         }
 
         public async Task<TResult> InvokeAsync<TResult>(Func<ICalculatorClientAsync, Task<TResult>> doAsync)
         {
             try
             {
-                await this.ConnectAsync();
-                TResult result = await doAsync(this.wrappedProxy);
+                await this.connectionManager.ConnectAsync();
+                TResult result = await doAsync(this.connectionManager.Proxy);
                 return result;
             }
             catch (Exception)
             {
-                this.Invalidate();
+                this.connectionManager.Invalidate();
                 throw;
             }
         }
 
-        public Task CloseAsync()
+        public void Dispose()
         {
-            return this.factory.CloseAsync();
-        }
-
-        private async Task ConnectAsync()
-        {
-            if (this.coreProxy == null)
-            {
-                this.coreProxy = this.factory.CreateChannel();
-                ICommunicationObject commObj = (ICommunicationObject)this.coreProxy;
-                await commObj.OpenAsync();
-                this.wrappedProxy = this.wrapClient(this.coreProxy);
-            }
-        }
-
-        private void Invalidate()
-        {
-            if (this.coreProxy != null)
-            {
-                ((ICommunicationObject)this.coreProxy).Abort();
-                this.coreProxy = null;
-            }
+            this.connectionManager.Invalidate();
         }
     }
 }

@@ -75,25 +75,28 @@ namespace EventSourceSample
             binding.ReceiveTimeout = TimeSpan.FromSeconds(1.0d);
             binding.CloseTimeout = TimeSpan.FromSeconds(1.0d);
 
-            CalculatorProxy proxy = new CalculatorProxy(binding, new EndpointAddress(address), c => WrapClient(c, eventSource));
-            await proxy.OpenAsync();
+            CalculatorChannelFactory factory = new CalculatorChannelFactory(binding, new EndpointAddress(address));
+            await factory.OpenAsync();
 
-            Random random = new Random();
-
-            while (!token.IsCancellationRequested)
+            using (CalculatorProxy proxy = new CalculatorProxy(factory))
             {
-                try
-                {
-                    await proxy.InvokeAsync(c => InvokeRandomAsync(random, c));
-                }
-                catch (Exception)
-                {
-                }
+                Random random = new Random();
 
-                await Task.Delay(TimeSpan.FromMilliseconds(250.0d));
+                while (!token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        await proxy.InvokeAsync(c => InvokeRandomAsync(random, c));
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    await Task.Delay(TimeSpan.FromMilliseconds(250.0d));
+                }
             }
 
-            await proxy.CloseAsync();
+            await factory.CloseAsync();
         }
 
         private static ICalculatorClientAsync WrapClient(ICalculatorClientAsync lower, ClientEventSource eventSource)
