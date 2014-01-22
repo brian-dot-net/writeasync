@@ -28,12 +28,16 @@ namespace EventSourceSample.Test.Unit
             FactoryStub factoryStub = new FactoryStub();
             ConnectionManager<IMyChannel> manager = new ConnectionManager<IMyChannel>(factoryStub);
             ConnectionStub connectionStub = new ConnectionStub();
-            factoryStub.Channels.Enqueue(connectionStub);
+            factoryStub.Connections.Enqueue(connectionStub);
 
             Task task = manager.ConnectAsync();
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal(1, connectionStub.OpenCount);
+
+            MyChannelStub channelStub = new MyChannelStub();
+            connectionStub.Instance = channelStub;
+            Assert.Same(channelStub, manager.Proxy);
         }
 
         [Fact]
@@ -42,7 +46,7 @@ namespace EventSourceSample.Test.Unit
             FactoryStub factoryStub = new FactoryStub();
             ConnectionManager<IMyChannel> manager = new ConnectionManager<IMyChannel>(factoryStub);
             ConnectionStub connectionStub = new ConnectionStub();
-            factoryStub.Channels.Enqueue(connectionStub);
+            factoryStub.Connections.Enqueue(connectionStub);
 
             Task task = manager.ConnectAsync();
 
@@ -61,7 +65,7 @@ namespace EventSourceSample.Test.Unit
             FactoryStub factoryStub = new FactoryStub();
             ConnectionManager<IMyChannel> manager = new ConnectionManager<IMyChannel>(factoryStub);
             ConnectionStub connectionStub = new ConnectionStub();
-            factoryStub.Channels.Enqueue(connectionStub);
+            factoryStub.Connections.Enqueue(connectionStub);
 
             Task task = manager.ConnectAsync();
 
@@ -73,7 +77,7 @@ namespace EventSourceSample.Test.Unit
             Assert.Equal(1, connectionStub.AbortCount);
 
             ConnectionStub connectionStub2 = new ConnectionStub();
-            factoryStub.Channels.Enqueue(connectionStub2);
+            factoryStub.Connections.Enqueue(connectionStub2);
             task = manager.ConnectAsync();
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
@@ -98,6 +102,18 @@ namespace EventSourceSample.Test.Unit
             Assert.Throws<InvalidOperationException>(() => manager.Proxy);
         }
 
+        private sealed class MyChannelStub : IMyChannel
+        {
+            public MyChannelStub()
+            {
+            }
+
+            public void Stub()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         private sealed class ConnectionStub : IConnection<IMyChannel>
         {
             public ConnectionStub()
@@ -108,10 +124,7 @@ namespace EventSourceSample.Test.Unit
 
             public int AbortCount { get; private set; }
 
-            public IMyChannel Instance
-            {
-                get { throw new NotImplementedException(); }
-            }
+            public IMyChannel Instance { get; set; }
 
             public Task OpenAsync()
             {
@@ -129,14 +142,14 @@ namespace EventSourceSample.Test.Unit
         {
             public FactoryStub()
             {
-                this.Channels = new Queue<IConnection<IMyChannel>>();
+                this.Connections = new Queue<IConnection<IMyChannel>>();
             }
 
-            public Queue<IConnection<IMyChannel>> Channels { get; private set; }
+            public Queue<IConnection<IMyChannel>> Connections { get; private set; }
 
             public IConnection<IMyChannel> Create()
             {
-                return this.Channels.Dequeue();
+                return this.Connections.Dequeue();
             }
         }
     }

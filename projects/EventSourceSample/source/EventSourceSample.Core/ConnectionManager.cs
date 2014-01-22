@@ -22,7 +22,15 @@ namespace EventSourceSample
 
         public TProxy Proxy
         {
-            get { throw new InvalidOperationException("The proxy is not available."); }
+            get
+            {
+                if (this.connection == null)
+                {
+                    throw new InvalidOperationException("The proxy is not available.");
+                }
+
+                return this.connection.Instance;
+            }
         }
 
         public async Task ConnectAsync()
