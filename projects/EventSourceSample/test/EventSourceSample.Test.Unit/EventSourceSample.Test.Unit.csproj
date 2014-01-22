@@ -36,6 +36,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionManagerTest.cs" />
     <Compile Include="CalculatorClientStub.cs" />
     <Compile Include="ClientEventListener.cs" />
     <Compile Include="ClientWithActivityTest.cs" />
