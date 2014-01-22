@@ -25,7 +25,7 @@ foreach ($type in $types)
     if ($type.IsSubclassOf($eventSourceType))
     {
         Write-Host "Found type '$type'.";
-        $text = [System.Diagnostics.Tracing.EventSource]::GenerateManifest($type, $null);
+        $text = [System.Diagnostics.Tracing.EventSource]::GenerateManifest($type, "NOT-USED");
         $fileName = "$outputDirectory\" + $type.FullName.Replace(".", "-") + ".man";
         Write-Host "Writing manifest to '$fileName'...";
         $text | Out-File $fileName;
