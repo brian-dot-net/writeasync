@@ -78,7 +78,9 @@ namespace EventSourceSample
             CalculatorChannelFactory factory = new CalculatorChannelFactory(binding, new EndpointAddress(address), eventSource);
             await factory.OpenAsync();
 
-            using (CalculatorProxy proxy = new CalculatorProxy(factory))
+            ConnectionManager<ICalculatorClientAsync> connectionManager = new ConnectionManager<ICalculatorClientAsync>(factory);
+
+            using (ProxyInvoker<ICalculatorClientAsync> proxy = new ProxyInvoker<ICalculatorClientAsync>(connectionManager))
             {
                 Random random = new Random();
 

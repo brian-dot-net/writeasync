@@ -41,7 +41,6 @@
     <Compile Include="IFactory.cs" />
     <Compile Include="IConnection.cs" />
     <Compile Include="ConnectionManager.cs" />
-    <Compile Include="CalculatorProxy.cs" />
     <Compile Include="CommunicationObjectExtensions.cs" />
     <Compile Include="CalculatorServiceHost.cs" />
     <Compile Include="ClientEventId.cs" />
