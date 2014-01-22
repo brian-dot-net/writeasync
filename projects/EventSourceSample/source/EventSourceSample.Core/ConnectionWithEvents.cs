@@ -30,7 +30,7 @@ namespace EventSourceSample
 
         public void Abort()
         {
-            throw new NotImplementedException();
+            this.inner.Abort();
         }
     }
 }

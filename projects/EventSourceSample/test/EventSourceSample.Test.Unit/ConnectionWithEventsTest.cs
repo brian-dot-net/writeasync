@@ -31,5 +31,16 @@ namespace EventSourceSample.Test.Unit
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal(1, inner.OpenCount);
         }
+
+        [Fact]
+        public void Abort_with_events_calls_inner()
+        {
+            ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>();
+            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner);
+
+            outer.Abort();
+
+            Assert.Equal(1, inner.AbortCount);
+        }
     }
 }
