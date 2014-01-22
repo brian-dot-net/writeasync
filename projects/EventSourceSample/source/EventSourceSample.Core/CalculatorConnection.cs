@@ -12,10 +12,10 @@ namespace EventSourceSample
 
     public class CalculatorConnection : IConnection<ICalculatorClientAsync>
     {
-        public CalculatorConnection(ICalculatorClientAsync proxy, ClientEventSource eventSource)
+        public CalculatorConnection(ICalculatorClientAsync proxy, ClientEventSource eventSource, Guid id)
         {
             ICalculatorClientAsync middle = new CalculatorClientWithEvents(proxy, eventSource);
-            this.Instance = new CalculatorClientWithActivity(middle, eventSource, Guid.NewGuid());
+            this.Instance = new CalculatorClientWithActivity(middle, eventSource, id);
         }
 
         public ICalculatorClientAsync Instance { get; private set; }

@@ -6,6 +6,7 @@
 
 namespace EventSourceSample
 {
+    using System;
     using System.ServiceModel;
     using System.ServiceModel.Channels;
     using System.Threading.Tasks;
@@ -28,7 +29,9 @@ namespace EventSourceSample
 
         public IConnection<ICalculatorClientAsync> Create()
         {
-            return new CalculatorConnection(this.factory.CreateChannel(), this.eventSource);
+            Guid id = Guid.NewGuid();
+            IConnection<ICalculatorClientAsync> inner = new CalculatorConnection(this.factory.CreateChannel(), this.eventSource, id);
+            return new ConnectionWithEvents<ICalculatorClientAsync>(inner, this.eventSource, id);
         }
 
         public Task CloseAsync()
