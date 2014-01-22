@@ -36,6 +36,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectionStub.cs" />
+    <Compile Include="ConnectionWithEventsTest.cs" />
     <Compile Include="ProxyInvokerTest.cs" />
     <Compile Include="ConnectionManagerTest.cs" />
     <Compile Include="CalculatorClientStub.cs" />

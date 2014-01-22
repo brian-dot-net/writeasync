@@ -36,6 +36,7 @@
     <Compile Include="CalculatorClientWithActivity.cs" />
     <Compile Include="CalculatorChannelFactory.cs" />
     <Compile Include="CalculatorConnection.cs" />
+    <Compile Include="ConnectionWithEvents.cs" />
     <Compile Include="ProxyInvoker.cs" />
     <Compile Include="IConnectionManager.cs" />
     <Compile Include="IFactory.cs" />

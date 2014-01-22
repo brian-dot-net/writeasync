@@ -27,7 +27,7 @@ namespace EventSourceSample.Test.Unit
         {
             FactoryStub factoryStub = new FactoryStub();
             ConnectionManager<IMyChannel> manager = new ConnectionManager<IMyChannel>(factoryStub);
-            ConnectionStub connectionStub = new ConnectionStub();
+            ConnectionStub<IMyChannel> connectionStub = new ConnectionStub<IMyChannel>();
             factoryStub.Connections.Enqueue(connectionStub);
 
             Task task = manager.ConnectAsync();
@@ -45,7 +45,7 @@ namespace EventSourceSample.Test.Unit
         {
             FactoryStub factoryStub = new FactoryStub();
             ConnectionManager<IMyChannel> manager = new ConnectionManager<IMyChannel>(factoryStub);
-            ConnectionStub connectionStub = new ConnectionStub();
+            ConnectionStub<IMyChannel> connectionStub = new ConnectionStub<IMyChannel>();
             factoryStub.Connections.Enqueue(connectionStub);
 
             Task task = manager.ConnectAsync();
@@ -64,7 +64,7 @@ namespace EventSourceSample.Test.Unit
         {
             FactoryStub factoryStub = new FactoryStub();
             ConnectionManager<IMyChannel> manager = new ConnectionManager<IMyChannel>(factoryStub);
-            ConnectionStub connectionStub = new ConnectionStub();
+            ConnectionStub<IMyChannel> connectionStub = new ConnectionStub<IMyChannel>();
             factoryStub.Connections.Enqueue(connectionStub);
 
             Task task = manager.ConnectAsync();
@@ -76,7 +76,7 @@ namespace EventSourceSample.Test.Unit
 
             Assert.Equal(1, connectionStub.AbortCount);
 
-            ConnectionStub connectionStub2 = new ConnectionStub();
+            ConnectionStub<IMyChannel> connectionStub2 = new ConnectionStub<IMyChannel>();
             factoryStub.Connections.Enqueue(connectionStub2);
             task = manager.ConnectAsync();
 
@@ -111,30 +111,6 @@ namespace EventSourceSample.Test.Unit
             public void Stub()
             {
                 throw new NotImplementedException();
-            }
-        }
-
-        private sealed class ConnectionStub : IConnection<IMyChannel>
-        {
-            public ConnectionStub()
-            {
-            }
-
-            public int OpenCount { get; private set; }
-
-            public int AbortCount { get; private set; }
-
-            public IMyChannel Instance { get; set; }
-
-            public Task OpenAsync()
-            {
-                ++this.OpenCount;
-                return Task.FromResult(false);
-            }
-
-            public void Abort()
-            {
-                ++this.AbortCount;
             }
         }
 
