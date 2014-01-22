@@ -26,10 +26,10 @@ namespace EventSourceSample.Test.Unit
         public void Open_with_events_calls_inner()
         {
             ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>();
-            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, ClientEventSource.Instance);
+            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, ClientEventSource.Instance, Guid.Empty);
 
             Task task = outer.OpenAsync();
-            
+
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal(1, inner.OpenCount);
         }
@@ -38,7 +38,7 @@ namespace EventSourceSample.Test.Unit
         public void Abort_with_events_calls_inner()
         {
             ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>();
-            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, ClientEventSource.Instance);
+            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, ClientEventSource.Instance, Guid.Empty);
 
             outer.Abort();
 
@@ -51,7 +51,7 @@ namespace EventSourceSample.Test.Unit
             ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>();
             MyProxyStub proxyStub = new MyProxyStub();
             inner.Instance = proxyStub;
-            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, ClientEventSource.Instance);
+            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, ClientEventSource.Instance, Guid.Empty);
 
             Assert.Same(proxyStub, outer.Instance);
         }
@@ -61,12 +61,13 @@ namespace EventSourceSample.Test.Unit
         {
             ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>(true);
             ClientEventSource eventSource = ClientEventSource.Instance;
-            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, eventSource);
+            Guid id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4);
+            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, eventSource, id);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Connection))
             {
                 Task task = outer.OpenAsync();
-                
+
                 Assert.False(task.IsCompleted);
                 listener.VerifyEvent(ClientEventId.ConnectionOpening, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Start);
                 listener.Events.Clear();
@@ -83,7 +84,8 @@ namespace EventSourceSample.Test.Unit
         {
             ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>(true);
             ClientEventSource eventSource = ClientEventSource.Instance;
-            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, eventSource);
+            Guid id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5);
+            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, eventSource, id);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Connection))
             {
@@ -110,7 +112,8 @@ namespace EventSourceSample.Test.Unit
         {
             ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>();
             ClientEventSource eventSource = ClientEventSource.Instance;
-            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, eventSource);
+            Guid id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6);
+            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner, eventSource, id);
 
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Connection))
             {

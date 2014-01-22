@@ -13,11 +13,13 @@ namespace EventSourceSample
     {
         private readonly IConnection<TProxy> inner;
         private readonly ClientEventSource eventSource;
+        private readonly Guid id;
 
-        public ConnectionWithEvents(IConnection<TProxy> inner, ClientEventSource eventSource)
+        public ConnectionWithEvents(IConnection<TProxy> inner, ClientEventSource eventSource, Guid id)
         {
             this.inner = inner;
             this.eventSource = eventSource;
+            this.id = id;
         }
 
         public TProxy Instance
