@@ -6,6 +6,7 @@
 
 namespace EventSourceSample.Test.Unit
 {
+    using System;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -41,6 +42,29 @@ namespace EventSourceSample.Test.Unit
             outer.Abort();
 
             Assert.Equal(1, inner.AbortCount);
+        }
+
+        [Fact]
+        public void Get_instance_with_events_calls_inner()
+        {
+            ConnectionStub<IMyProxy> inner = new ConnectionStub<IMyProxy>();
+            MyProxyStub proxyStub = new MyProxyStub();
+            inner.Instance = proxyStub;
+            ConnectionWithEvents<IMyProxy> outer = new ConnectionWithEvents<IMyProxy>(inner);
+
+            Assert.Same(proxyStub, outer.Instance);
+        }
+
+        private sealed class MyProxyStub : IMyProxy
+        {
+            public MyProxyStub()
+            {
+            }
+
+            public void Stub()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

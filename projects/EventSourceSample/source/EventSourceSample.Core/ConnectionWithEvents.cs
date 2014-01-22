@@ -20,7 +20,7 @@ namespace EventSourceSample
 
         public TProxy Instance
         {
-            get { throw new NotImplementedException(); }
+            get { return this.inner.Instance; }
         }
 
         public Task OpenAsync()
