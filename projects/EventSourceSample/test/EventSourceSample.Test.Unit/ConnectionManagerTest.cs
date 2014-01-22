@@ -30,12 +30,9 @@ namespace EventSourceSample.Test.Unit
             ConnectionStub connectionStub = new ConnectionStub();
             factoryStub.Channels.Enqueue(connectionStub);
 
-            Uri address = new Uri("urn:test");
-            Task task = manager.ConnectAsync(address);
+            Task task = manager.ConnectAsync();
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
-            Assert.Equal(1, factoryStub.Inputs.Count);
-            Assert.Equal(address, factoryStub.Inputs[0]);
             Assert.Equal(1, connectionStub.OpenCount);
         }
 
@@ -59,21 +56,17 @@ namespace EventSourceSample.Test.Unit
             }
         }
 
-        private sealed class FactoryStub : IFactory<Uri, IConnection<IMyChannel>>
+        private sealed class FactoryStub : IFactory<IConnection<IMyChannel>>
         {
             public FactoryStub()
             {
                 this.Channels = new Queue<IConnection<IMyChannel>>();
-                this.Inputs = new List<Uri>();
             }
 
             public Queue<IConnection<IMyChannel>> Channels { get; private set; }
 
-            public IList<Uri> Inputs { get; private set; }
-
-            public IConnection<IMyChannel> Create(Uri input)
+            public IConnection<IMyChannel> Create()
             {
-                this.Inputs.Add(input);
                 return this.Channels.Dequeue();
             }
         }

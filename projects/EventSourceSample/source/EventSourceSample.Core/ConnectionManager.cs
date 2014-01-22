@@ -11,16 +11,16 @@ namespace EventSourceSample
 
     public class ConnectionManager<TProxy>
     {
-        private readonly IFactory<Uri, IConnection<TProxy>> factory;
+        private readonly IFactory<IConnection<TProxy>> factory;
 
-        public ConnectionManager(IFactory<Uri, IConnection<TProxy>> factory)
+        public ConnectionManager(IFactory<IConnection<TProxy>> factory)
         {
             this.factory = factory;
         }
 
-        public Task ConnectAsync(Uri address)
+        public Task ConnectAsync()
         {
-            IConnection<TProxy> connection = this.factory.Create(address);
+            IConnection<TProxy> connection = this.factory.Create();
             return connection.OpenAsync();
         }
     }

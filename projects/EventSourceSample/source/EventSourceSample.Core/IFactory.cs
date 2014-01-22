@@ -6,8 +6,8 @@
 
 namespace EventSourceSample
 {
-    public interface IFactory<TInput, TOutput>
+    public interface IFactory<TOutput>
     {
-        TOutput Create(TInput input);
+        TOutput Create();
     }
 }
