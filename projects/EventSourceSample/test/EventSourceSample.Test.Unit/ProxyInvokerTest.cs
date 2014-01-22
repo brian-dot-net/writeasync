@@ -55,6 +55,17 @@ namespace EventSourceSample.Test.Unit
             Assert.Equal(1, connectionManagerStub.InvalidateCount);
         }
 
+        [Fact]
+        public void Dispose_invalidates_connection()
+        {
+            ConnectionManagerStub connectionManagerStub = new ConnectionManagerStub();
+            ProxyInvoker<IMyProxy> invoker = new ProxyInvoker<IMyProxy>(connectionManagerStub);
+
+            invoker.Dispose();
+
+            Assert.Equal(1, connectionManagerStub.InvalidateCount);
+        }
+
         private sealed class MyProxyStub : IMyProxy
         {
             public MyProxyStub()

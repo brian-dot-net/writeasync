@@ -9,7 +9,7 @@ namespace EventSourceSample
     using System;
     using System.Threading.Tasks;
 
-    public class ProxyInvoker<TProxy>
+    public sealed class ProxyInvoker<TProxy> : IDisposable
     {
         private readonly IConnectionManager<TProxy> connectionManager;
 
@@ -31,6 +31,11 @@ namespace EventSourceSample
                 this.connectionManager.Invalidate();
                 throw;
             }
+        }
+
+        public void Dispose()
+        {
+            this.connectionManager.Invalidate();
         }
     }
 }
