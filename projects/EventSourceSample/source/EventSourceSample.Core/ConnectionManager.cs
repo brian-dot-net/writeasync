@@ -20,6 +20,11 @@ namespace EventSourceSample
             this.factory = factory;
         }
 
+        public TProxy Proxy
+        {
+            get { throw new InvalidOperationException("The proxy is not available."); }
+        }
+
         public async Task ConnectAsync()
         {
             if (this.connection == null)

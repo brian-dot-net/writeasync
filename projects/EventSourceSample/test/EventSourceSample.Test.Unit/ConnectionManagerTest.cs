@@ -89,6 +89,15 @@ namespace EventSourceSample.Test.Unit
             manager.Invalidate();
         }
 
+        [Fact]
+        public void Get_proxy_before_connect_throws_InvalidOperation()
+        {
+            FactoryStub factoryStub = new FactoryStub();
+            ConnectionManager<IMyChannel> manager = new ConnectionManager<IMyChannel>(factoryStub);
+
+            Assert.Throws<InvalidOperationException>(() => manager.Proxy);
+        }
+
         private sealed class ConnectionStub : IConnection<IMyChannel>
         {
             public ConnectionStub()
