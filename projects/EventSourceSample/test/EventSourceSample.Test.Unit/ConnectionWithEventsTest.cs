@@ -88,7 +88,7 @@ namespace EventSourceSample.Test.Unit
             using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Connection))
             {
                 outer.Abort();
-                listener.VerifyEvent(ClientEventId.ConnectionAborting, EventLevel.Informational, ClientEventSource.Keywords.Connection, EventOpcode.Start);
+                listener.VerifyEvent(ClientEventId.ConnectionAborting, EventLevel.Informational, ClientEventSource.Keywords.Connection);
             }
         }
 
