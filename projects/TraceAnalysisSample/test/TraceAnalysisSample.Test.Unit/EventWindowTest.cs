@@ -83,5 +83,13 @@ namespace TraceAnalysisSample.Test.Unit
             Assert.Equal(2, window.GetPendingCount(eventIdB));
             Assert.Equal(3, window.GetPendingCount(eventIdC));
         }
+
+        [Fact]
+        public void Get_pending_count_missing_type_returns_0()
+        {
+            EventWindow window = new EventWindow();
+
+            Assert.Equal(0, window.GetPendingCount(1));
+        }
     }
 }

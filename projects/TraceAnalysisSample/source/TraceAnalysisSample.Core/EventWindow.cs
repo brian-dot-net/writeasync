@@ -30,7 +30,13 @@ namespace TraceAnalysisSample
 
         public int GetPendingCount(int eventId)
         {
-            return this.pending[eventId];
+            int count;
+            if (!this.pending.TryGetValue(eventId, out count))
+            {
+                count = 0;
+            }
+
+            return count;
         }
     }
 }
