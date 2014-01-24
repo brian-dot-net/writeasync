@@ -38,7 +38,6 @@ namespace TraceAnalysisSample
         public void CloseWindow()
         {
             this.WindowClosed(this, new WindowEventArgs(this.window));
-            this.window = null;
         }
     }
 }
