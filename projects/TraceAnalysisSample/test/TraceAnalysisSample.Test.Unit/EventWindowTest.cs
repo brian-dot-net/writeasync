@@ -118,5 +118,19 @@ namespace TraceAnalysisSample.Test.Unit
 
             Assert.Equal(0, window.GetCompletedCount(eventId));
         }
+
+        [Fact]
+        public void Complete_pending_event_with_same_type_and_ID_moves_to_completed()
+        {
+            EventWindow window = new EventWindow();
+            int eventId = 1;
+            Guid instanceId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+
+            window.Add(eventId, instanceId);
+            window.Complete(eventId, instanceId);
+
+            Assert.Equal(0, window.GetPendingCount(eventId));
+            Assert.Equal(1, window.GetCompletedCount(eventId));
+        }
     }
 }

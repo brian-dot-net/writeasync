@@ -13,6 +13,8 @@ namespace TraceAnalysisSample
     {
         private readonly Dictionary<int, HashSet<Guid>> pending;
 
+        private int completed;
+
         public EventWindow()
         {
             this.pending = new Dictionary<int, HashSet<Guid>>();
@@ -34,11 +36,22 @@ namespace TraceAnalysisSample
 
         public void Complete(int eventId, Guid instanceId)
         {
+            bool wasPending = false;
+            HashSet<Guid> events;
+            if (this.pending.TryGetValue(eventId, out events))
+            {
+                wasPending = events.Remove(instanceId);
+            }
+
+            if (wasPending)
+            {
+                ++this.completed;
+            }
         }
 
         public int GetCompletedCount(int eventId)
         {
-            return 0;
+            return this.completed;
         }
 
         public int GetPendingCount(int eventId)
