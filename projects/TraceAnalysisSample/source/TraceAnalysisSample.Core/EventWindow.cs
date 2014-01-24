@@ -19,13 +19,17 @@ namespace TraceAnalysisSample
         {
             this.pending = new Dictionary<int, HashSet<Guid>>();
             this.completed = new Dictionary<int, int>();
+            this.StartTime = startTime;
         }
 
         public EventWindow(EventWindow other)
         {
             this.pending = new Dictionary<int, HashSet<Guid>>(other.pending);
             this.completed = new Dictionary<int, int>(other.completed);
+            this.StartTime = other.StartTime;
         }
+
+        public DateTime StartTime { get; private set; }
 
         public IEnumerable<int> KnownEventIds
         {

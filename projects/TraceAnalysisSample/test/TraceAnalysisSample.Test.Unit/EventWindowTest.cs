@@ -190,7 +190,11 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Copy_construct_deep_copies_instance()
         {
-            EventWindow window = new EventWindow(DateTime.MinValue);
+            DateTime startTime = new DateTime(2000, 1, 2, 3, 4, 5, 6);
+            EventWindow window = new EventWindow(startTime);
+
+            Assert.Equal(startTime, window.StartTime);
+
             int eventIdA = 1;
             int eventIdB = 2;
             Guid instanceIdA = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
@@ -202,6 +206,7 @@ namespace TraceAnalysisSample.Test.Unit
 
             EventWindow copiedWindow = new EventWindow(window);
 
+            Assert.Equal(startTime, copiedWindow.StartTime);
             Assert.Equal(1, copiedWindow.GetCompletedCount(eventIdA));
             
             window.Complete(eventIdB, instanceIdB);
