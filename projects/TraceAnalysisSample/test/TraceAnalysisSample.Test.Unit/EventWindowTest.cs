@@ -132,5 +132,39 @@ namespace TraceAnalysisSample.Test.Unit
             Assert.Equal(0, window.GetPendingCount(eventId));
             Assert.Equal(1, window.GetCompletedCount(eventId));
         }
+
+        [Fact]
+        public void Add_and_complete_multiple_event_types_moves_to_completed()
+        {
+            EventWindow window = new EventWindow();
+            int eventIdA = 1;
+            int eventIdB = 2;
+            int eventIdC = 3;
+            Guid instanceIdA1 = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            Guid instanceIdB1 = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
+            Guid instanceIdB2 = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3);
+            Guid instanceIdC1 = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4);
+            Guid instanceIdC2 = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5);
+            Guid instanceIdC3 = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6);
+
+            window.Add(eventIdA, instanceIdA1);
+            window.Add(eventIdB, instanceIdB1);
+            window.Add(eventIdB, instanceIdB2);
+            window.Add(eventIdC, instanceIdC1);
+            window.Add(eventIdC, instanceIdC2);
+            window.Add(eventIdC, instanceIdC3);
+
+            window.Complete(eventIdA, instanceIdA1);
+            window.Complete(eventIdB, instanceIdB2);
+            window.Complete(eventIdC, instanceIdC2);
+            window.Complete(eventIdC, instanceIdC3);
+
+            Assert.Equal(0, window.GetPendingCount(eventIdA));
+            Assert.Equal(1, window.GetPendingCount(eventIdB));
+            Assert.Equal(1, window.GetPendingCount(eventIdC));
+            Assert.Equal(1, window.GetCompletedCount(eventIdA));
+            Assert.Equal(1, window.GetCompletedCount(eventIdB));
+            Assert.Equal(2, window.GetCompletedCount(eventIdC));
+        }
     }
 }
