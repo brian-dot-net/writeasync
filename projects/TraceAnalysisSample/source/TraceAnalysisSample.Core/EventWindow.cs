@@ -11,29 +11,34 @@ namespace TraceAnalysisSample
 
     public class EventWindow
     {
-        private readonly Dictionary<int, int> pending;
+        private readonly Dictionary<int, HashSet<Guid>> pending;
 
         public EventWindow()
         {
-            this.pending = new Dictionary<int, int>();
+            this.pending = new Dictionary<int, HashSet<Guid>>();
         }
 
         public void Add(int eventId, Guid instanceId)
         {
             if (!this.pending.ContainsKey(eventId))
             {
-                this.pending[eventId] = 0;
+                this.pending[eventId] = new HashSet<Guid>();
             }
 
-            ++this.pending[eventId];
+            bool added = this.pending[eventId].Add(instanceId);
+            if (!added)
+            {
+                throw new InvalidOperationException("An event with instance ID " + instanceId + " is already present.");
+            }
         }
 
         public int GetPendingCount(int eventId)
         {
-            int count;
-            if (!this.pending.TryGetValue(eventId, out count))
+            int count = 0;
+            HashSet<Guid> events;
+            if (this.pending.TryGetValue(eventId, out events))
             {
-                count = 0;
+                count = events.Count;
             }
 
             return count;

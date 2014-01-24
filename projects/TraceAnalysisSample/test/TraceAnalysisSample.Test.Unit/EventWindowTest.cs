@@ -85,6 +85,21 @@ namespace TraceAnalysisSample.Test.Unit
         }
 
         [Fact]
+        public void Add_same_type_same_ID_throws_InvalidOperation()
+        {
+            EventWindow window = new EventWindow();
+            int eventId = 1;
+            Guid instanceId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+
+            window.Add(eventId, instanceId);
+
+            InvalidOperationException ioe = Assert.Throws<InvalidOperationException>(() => window.Add(eventId, instanceId));
+            Assert.Contains("00000000-0000-0000-0000-000000000001", ioe.Message, StringComparison.Ordinal);
+
+            Assert.Equal(1, window.GetPendingCount(eventId));
+        }
+
+        [Fact]
         public void Get_pending_count_missing_type_returns_0()
         {
             EventWindow window = new EventWindow();
