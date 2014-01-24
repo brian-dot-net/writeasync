@@ -7,7 +7,7 @@
 namespace TraceAnalysisSample.Test.Unit
 {
     using System;
-    using System.Threading.Tasks;
+    using System.Linq;
     using Xunit;
 
     public class EventWindowTest
@@ -211,6 +211,25 @@ namespace TraceAnalysisSample.Test.Unit
             window.ClearCompleted();
 
             Assert.Equal(1, copiedWindow.GetCompletedCount(eventIdA));
+        }
+
+        [Fact]
+        public void Known_event_IDs_returns_all_completed_and_pending()
+        {
+            EventWindow window = new EventWindow();
+            int eventIdA = 1;
+            int eventIdB = 2;
+            Guid instanceIdA = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            Guid instanceIdB = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
+
+            window.Add(eventIdB, instanceIdB);
+            window.Add(eventIdA, instanceIdA);
+            window.Complete(eventIdA, instanceIdA);
+
+            int[] eventIds = window.KnownEventIds.ToArray();
+            Array.Sort(eventIds);
+
+            Assert.Equal(new int[] { eventIdA, eventIdB }, eventIds);
         }
     }
 }

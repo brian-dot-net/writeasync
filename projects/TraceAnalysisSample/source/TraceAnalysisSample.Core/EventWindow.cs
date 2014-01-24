@@ -8,6 +8,7 @@ namespace TraceAnalysisSample
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class EventWindow
     {
@@ -24,6 +25,11 @@ namespace TraceAnalysisSample
         {
             this.pending = new Dictionary<int, HashSet<Guid>>(other.pending);
             this.completed = new Dictionary<int, int>(other.completed);
+        }
+
+        public IEnumerable<int> KnownEventIds
+        {
+            get { return this.pending.Keys.Concat(this.completed.Keys).Distinct(); }
         }
 
         public void Add(int eventId, Guid instanceId)
