@@ -166,5 +166,25 @@ namespace TraceAnalysisSample.Test.Unit
             Assert.Equal(1, window.GetCompletedCount(eventIdB));
             Assert.Equal(2, window.GetCompletedCount(eventIdC));
         }
+
+        [Fact]
+        public void Clear_completed_resets_completed_counts()
+        {
+            EventWindow window = new EventWindow();
+            int eventIdA = 1;
+            int eventIdB = 2;
+            Guid instanceIdA = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            Guid instanceIdB = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
+
+            window.Add(eventIdA, instanceIdA);
+            window.Complete(eventIdA, instanceIdA);
+            window.Add(eventIdB, instanceIdB);
+
+            window.ClearCompleted();
+
+            Assert.Equal(0, window.GetPendingCount(eventIdA));
+            Assert.Equal(1, window.GetPendingCount(eventIdB));
+            Assert.Equal(0, window.GetCompletedCount(eventIdA));
+        }
     }
 }

@@ -54,6 +54,11 @@ namespace TraceAnalysisSample
             }
         }
 
+        public void ClearCompleted()
+        {
+            this.completed.Clear();
+        }
+
         public int GetCompletedCount(int eventId)
         {
             int count;
