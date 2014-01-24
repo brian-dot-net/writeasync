@@ -20,6 +20,12 @@ namespace TraceAnalysisSample
             this.completed = new Dictionary<int, int>();
         }
 
+        public EventWindow(EventWindow other)
+        {
+            this.pending = new Dictionary<int, HashSet<Guid>>(other.pending);
+            this.completed = new Dictionary<int, int>(other.completed);
+        }
+
         public void Add(int eventId, Guid instanceId)
         {
             if (!this.pending.ContainsKey(eventId))

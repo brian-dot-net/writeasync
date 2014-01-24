@@ -186,5 +186,31 @@ namespace TraceAnalysisSample.Test.Unit
             Assert.Equal(1, window.GetPendingCount(eventIdB));
             Assert.Equal(0, window.GetCompletedCount(eventIdA));
         }
+
+        [Fact]
+        public void Copy_construct_deep_copies_instance()
+        {
+            EventWindow window = new EventWindow();
+            int eventIdA = 1;
+            int eventIdB = 2;
+            Guid instanceIdA = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            Guid instanceIdB = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
+
+            window.Add(eventIdA, instanceIdA);
+            window.Complete(eventIdA, instanceIdA);
+            window.Add(eventIdB, instanceIdB);
+
+            EventWindow copiedWindow = new EventWindow(window);
+
+            Assert.Equal(1, copiedWindow.GetCompletedCount(eventIdA));
+            
+            window.Complete(eventIdB, instanceIdB);
+
+            Assert.Equal(0, copiedWindow.GetCompletedCount(eventIdB));
+
+            window.ClearCompleted();
+
+            Assert.Equal(1, copiedWindow.GetCompletedCount(eventIdA));
+        }
     }
 }
