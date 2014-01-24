@@ -22,11 +22,11 @@ namespace TraceAnalysisSample
             this.StartTime = startTime;
         }
 
-        public EventWindow(EventWindow other)
+        public EventWindow(EventWindow other, DateTime startTime)
         {
             this.pending = new Dictionary<int, HashSet<Guid>>(other.pending);
             this.completed = new Dictionary<int, int>(other.completed);
-            this.StartTime = other.StartTime;
+            this.StartTime = startTime;
         }
 
         public DateTime StartTime { get; private set; }

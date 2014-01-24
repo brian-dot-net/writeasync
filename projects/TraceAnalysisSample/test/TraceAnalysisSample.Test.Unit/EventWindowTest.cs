@@ -204,9 +204,10 @@ namespace TraceAnalysisSample.Test.Unit
             window.Complete(eventIdA, instanceIdA);
             window.Add(eventIdB, instanceIdB);
 
-            EventWindow copiedWindow = new EventWindow(window);
+            DateTime newStartTime = new DateTime(2001, 2, 3, 4, 5, 6, 7);
+            EventWindow copiedWindow = new EventWindow(window, newStartTime);
 
-            Assert.Equal(startTime, copiedWindow.StartTime);
+            Assert.Equal(newStartTime, copiedWindow.StartTime);
             Assert.Equal(1, copiedWindow.GetCompletedCount(eventIdA));
             
             window.Complete(eventIdB, instanceIdB);
