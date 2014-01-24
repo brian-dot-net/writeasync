@@ -19,7 +19,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Add_adds_operation_to_pending()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventId = 1;
             Guid instanceId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
 
@@ -31,7 +31,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Add_same_type_twices_adds_2_operations_to_pending()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventId = 1;
             Guid instanceId1 = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
             Guid instanceId2 = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
@@ -45,7 +45,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Add_different_types_adds_2_separate_operations_to_pending()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventId1 = 1;
             Guid instanceId1 = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
             int eventId2 = 2;
@@ -61,7 +61,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Add_many_types_adds_separate_operations_to_pending()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventIdA = 1;
             Guid instanceIdA1 = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
             int eventIdB = 2;
@@ -87,7 +87,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Add_same_type_same_ID_throws_InvalidOperation()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventId = 1;
             Guid instanceId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
 
@@ -102,7 +102,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Get_pending_count_missing_type_returns_0()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
 
             Assert.Equal(0, window.GetPendingCount(1));
         }
@@ -110,7 +110,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Complete_no_existing_event_does_nothing()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventId = 1;
             Guid instanceId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
 
@@ -122,7 +122,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Complete_pending_event_with_same_type_and_ID_moves_to_completed()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventId = 1;
             Guid instanceId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
 
@@ -136,7 +136,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Add_and_complete_multiple_event_types_moves_to_completed()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventIdA = 1;
             int eventIdB = 2;
             int eventIdC = 3;
@@ -170,7 +170,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Clear_completed_resets_completed_counts()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventIdA = 1;
             int eventIdB = 2;
             Guid instanceIdA = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
@@ -190,7 +190,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Copy_construct_deep_copies_instance()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventIdA = 1;
             int eventIdB = 2;
             Guid instanceIdA = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
@@ -216,7 +216,7 @@ namespace TraceAnalysisSample.Test.Unit
         [Fact]
         public void Known_event_IDs_returns_all_completed_and_pending()
         {
-            EventWindow window = new EventWindow();
+            EventWindow window = new EventWindow(DateTime.MinValue);
             int eventIdA = 1;
             int eventIdB = 2;
             Guid instanceIdA = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);

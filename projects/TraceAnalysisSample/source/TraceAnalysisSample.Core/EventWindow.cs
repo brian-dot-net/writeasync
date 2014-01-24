@@ -15,7 +15,7 @@ namespace TraceAnalysisSample
         private readonly Dictionary<int, HashSet<Guid>> pending;
         private readonly Dictionary<int, int> completed;
 
-        public EventWindow()
+        public EventWindow(DateTime startTime)
         {
             this.pending = new Dictionary<int, HashSet<Guid>>();
             this.completed = new Dictionary<int, int>();
