@@ -32,6 +32,15 @@ namespace TraceAnalysisSample
             }
         }
 
+        public void Complete(int eventId, Guid instanceId)
+        {
+        }
+
+        public int GetCompletedCount(int eventId)
+        {
+            return 0;
+        }
+
         public int GetPendingCount(int eventId)
         {
             int count = 0;
