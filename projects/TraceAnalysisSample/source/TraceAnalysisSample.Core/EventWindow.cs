@@ -7,23 +7,30 @@
 namespace TraceAnalysisSample
 {
     using System;
+    using System.Collections.Generic;
 
     public class EventWindow
     {
-        private int pendingCount;
+        private readonly Dictionary<int, int> pending;
 
         public EventWindow()
         {
+            this.pending = new Dictionary<int, int>();
         }
 
         public void Add(int eventId, Guid instanceId)
         {
-            ++this.pendingCount;
+            if (!this.pending.ContainsKey(eventId))
+            {
+                this.pending[eventId] = 0;
+            }
+
+            ++this.pending[eventId];
         }
 
         public int GetPendingCount(int eventId)
         {
-            return this.pendingCount;
+            return this.pending[eventId];
         }
     }
 }
