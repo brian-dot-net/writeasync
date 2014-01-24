@@ -37,7 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="OperationTrackerTest.cs" />
+    <Compile Include="EventWindowTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\source\TraceAnalysisSample.Core\TraceAnalysisSample.Core.csproj">
