@@ -36,10 +36,12 @@ namespace TraceAnalysisSample
         {
             if (this.window != null)
             {
+                EventWindow closedWindow = this.window;
+                this.window = null;
                 EventHandler<WindowEventArgs> handler = this.WindowClosed;
                 if (handler != null)
                 {
-                    handler(this, new WindowEventArgs(this.window));
+                    handler(this, new WindowEventArgs(closedWindow));
                 }
             }
         }

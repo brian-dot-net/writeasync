@@ -139,5 +139,23 @@ namespace TraceAnalysisSample.Test.Unit
 
             collector.CloseWindow();
         }
+
+        [Fact]
+        public void Close_window_twice_closes_first_then_does_nothing()
+        {
+            EventCollector collector = new EventCollector();
+            int count = 0;
+            collector.WindowClosed += (o, e) => ++count;
+
+            collector.OnStart(1, new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1), new DateTime(2000, 1, 2, 3, 4, 5, 6));
+
+            collector.CloseWindow();
+
+            Assert.Equal(1, count);
+
+            collector.CloseWindow();
+
+            Assert.Equal(1, count);
+        }
     }
 }
