@@ -129,5 +129,15 @@ namespace TraceAnalysisSample.Test.Unit
 
             Assert.Equal(0, count);
         }
+
+        [Fact]
+        public void Close_window_when_no_event_does_not_fail()
+        {
+            EventCollector collector = new EventCollector();
+
+            collector.OnStart(1, new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1), new DateTime(2000, 1, 2, 3, 4, 5, 6));
+
+            collector.CloseWindow();
+        }
     }
 }
