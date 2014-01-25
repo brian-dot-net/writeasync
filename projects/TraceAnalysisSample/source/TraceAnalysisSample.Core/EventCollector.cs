@@ -45,9 +45,11 @@ namespace TraceAnalysisSample
             }
             else
             {
-                DateTime nextStartTime = this.window.StartTime + TimeSpan.FromSeconds(1.0d);
-                if (timestamp >= nextStartTime)
+                TimeSpan delta = timestamp - this.window.StartTime;
+                int secondsAfter = (int)delta.TotalSeconds;
+                if (secondsAfter > 0)
                 {
+                    DateTime nextStartTime = this.window.StartTime + TimeSpan.FromSeconds(secondsAfter);
                     EventWindow nextWindow = new EventWindow(this.window, nextStartTime);
                     nextWindow.ClearCompleted();
                     this.CloseWindow();
