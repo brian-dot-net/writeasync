@@ -4,24 +4,17 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace TraceAnalysisSample
+namespace MyProj
 {
     using System;
 
     internal sealed class Program
     {
-        private static int Main(string[] args)
+        private static void Main(string[] args)
         {
-            if (args.Length != 1)
-            {
-                Console.WriteLine("Please provide an ETL file name.");
-                return 1;
-            }
-
-            TraceReader reader = new TraceReader(args[0]);
-            reader.ReadAsync().Wait();
-
-            return 0;
+            Class1 c = new Class1("world");
+            string name = c.DoAsync().Result;
+            Console.WriteLine("Hello, {0}!", name);
         }
     }
 }
