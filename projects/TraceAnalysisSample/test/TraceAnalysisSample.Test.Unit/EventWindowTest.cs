@@ -210,9 +210,10 @@ namespace TraceAnalysisSample.Test.Unit
             Assert.Equal(newStartTime, copiedWindow.StartTime);
             Assert.Equal(1, copiedWindow.GetCompletedCount(eventIdA));
             
-            window.Complete(eventIdB, instanceIdB);
+            copiedWindow.Complete(eventIdB, instanceIdB);
 
-            Assert.Equal(0, copiedWindow.GetCompletedCount(eventIdB));
+            Assert.Equal(1, window.GetPendingCount(eventIdB));
+            Assert.Equal(0, window.GetCompletedCount(eventIdB));
 
             window.ClearCompleted();
 

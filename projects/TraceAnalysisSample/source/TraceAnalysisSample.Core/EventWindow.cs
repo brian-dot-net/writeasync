@@ -24,7 +24,7 @@ namespace TraceAnalysisSample
 
         public EventWindow(EventWindow other, DateTime startTime)
         {
-            this.pending = new Dictionary<int, HashSet<Guid>>(other.pending);
+            this.pending = DeepCopy(other.pending);
             this.completed = new Dictionary<int, int>(other.completed);
             this.StartTime = startTime;
         }
@@ -96,6 +96,17 @@ namespace TraceAnalysisSample
             }
 
             return count;
+        }
+
+        private static Dictionary<int, HashSet<Guid>> DeepCopy(Dictionary<int, HashSet<Guid>> other)
+        {
+            Dictionary<int, HashSet<Guid>> copied = new Dictionary<int, HashSet<Guid>>();
+            foreach (KeyValuePair<int, HashSet<Guid>> kv in other)
+            {
+                copied[kv.Key] = new HashSet<Guid>(kv.Value);
+            }
+
+            return copied;
         }
     }
 }
