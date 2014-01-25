@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Tx.Windows</id>
+    <version>1.0.40123</version>
+    <title>Tx.Windows</title>
+    <authors>Microsoft Open Technologies,  Inc.</authors>
+    <owners>Microsoft Open Technologies,  Inc.</owners>
+    <licenseUrl>http://tx.codeplex.com/license</licenseUrl>
+    <projectUrl>http://tx.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Tx (LINQ to Logs and Traces) components for Windows: ETW, Logs (.evtx), Perormance Counters (.blg, .csv, .tsv), IIS Logs in W3C format</description>
+    <releaseNotes />
+    <copyright>Microsoft Open Technologies, Inc. © 2013</copyright>
+    <language>en-us</language>
+    <tags>Tx Traces Logs Playback ETW</tags>
+    <dependencies>
+      <dependency id="Tx.Core" version="1.0.40123" />
+    </dependencies>
+  </metadata>
+</package>

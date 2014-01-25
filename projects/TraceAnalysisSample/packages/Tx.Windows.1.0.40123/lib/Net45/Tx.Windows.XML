@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tx.Windows</name>
+    </assembly>
+    <members>
+        <member name="T:Tx.Windows.EtwNativeEvent">
+            <summary>
+                EtwNativeEvent represents event from ETW as native structure
+                Note that the structure is not a C# object - it is not on the heap or on the stack
+                instead, it is in ETW's dedicated buffer
+            </summary>
+        </member>
+        <member name="T:Tx.Windows.EtwFileReader">
+            <summary>
+                Observable that will read .etl files and push the
+                and produce the events in the ETW native format
+            </summary>
+        </member>
+        <member name="M:Tx.Windows.EtwFileReader.#ctor(System.IObserver{Tx.Windows.EtwNativeEvent},System.String[])">
+            <summary>
+                Constructor
+            </summary>
+            <param name="observer">Observer to push events into</param>
+            <param name="etlFiles">.etl (Event Trace Log) files to read. Up to 63 files are supported</param>
+        </member>
+        <member name="T:Tx.Windows.EtwListener">
+            <summary>
+                Listener to real-time event tracing session
+            </summary>
+        </member>
+        <member name="M:Tx.Windows.EtwListener.#ctor(System.IObserver{Tx.Windows.EtwNativeEvent},System.String)">
+            <summary>
+                Constructor
+            </summary>
+            <param name="observer">Observer to push events into</param>
+            <param name="sessionName">real-time session name</param>
+        </member>
+        <member name="M:Tx.Windows.TypeServiceUtil.CompareBytes(System.Byte*,System.Int32,System.Byte*,System.Int32)">
+            <summary>
+                Do a byte by byte comparison of two byte arrays
+            </summary>
+            <param name="leftByte">pointer to the memory that holds left side of comparison value</param>
+            <param name="leftLen">the valid length for pLeft</param>
+            <param name="rightByte">pointer to the memory that holds right side of comparison value</param>
+            <param name="rightLen">the valid lenghth for pRight</param>
+            <returns>
+                negatve value if pLeft is less than pRight, positive value if pLeft
+                is greater than pRight and 0 if equals
+            </returns>
+        </member>
+        <member name="M:Tx.Windows.TypeServiceUtil.MemCopy(System.Byte*,System.Byte*,System.Int32)">
+            <summary>
+                Copy memory in native bytes
+            </summary>
+            <param name="srcPtr"></param>
+            <param name="destPtr"></param>
+            <param name="bytesToCopy"></param>
+        </member>
+        <member name="T:Tx.Windows.EtwObservable">
+            <summary>
+                Factory for creating raw ETW (Event Tracing for Windows) observable sources
+            </summary>
+        </member>
+        <member name="M:Tx.Windows.EtwObservable.FromFiles(System.String[])">
+            <summary>
+                Creates a reader for one or more .etl (Event Trace Log) files
+            </summary>
+            <param name="etlFiles">up to 63 files to read</param>
+            <returns>sequence of events ordered by timestamp</returns>
+        </member>
+        <member name="M:Tx.Windows.EtwObservable.FromSession(System.String)">
+            <summary>
+                Creates a listener to ETW real-time session
+            </summary>
+            <param name="sessionName">session name</param>
+            <returns>events received from the session</returns>
+        </member>
+        <member name="M:Tx.Windows.EtwObservable.ExtractManifests(System.String)">
+            <summary>
+                Extracts manifest from .etl file that was produced using System.Diagnostics.Tracing.EventSource
+            </summary>
+            <param name="etlFile">Trace file</param>
+            <returns></returns>
+        </member>
+        <member name="M:Tx.Windows.PdhNativeMethods.PdhOpenQueryH(Tx.Windows.PdhLogHandle,System.IntPtr,Tx.Windows.PdhQueryHandle@)">
+            Opens a query against a bound input source.
+        </member>
+        <member name="M:Tx.Windows.PdhNativeMethods.PdhBindInputDataSource(Tx.Windows.PdhLogHandle@,System.String)">
+            Binds multiple logs files together.
+            
+            Use this along with the API's ending in 'H' to string multiple files together.
+        </member>
+    </members>
+</doc>
