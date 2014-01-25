@@ -22,22 +22,38 @@ namespace TraceAnalysisSample
 
         public void OnStart(int eventId, Guid instanceId, DateTime timestamp)
         {
-            if (this.window == null)
-            {
-                this.window = new EventWindow(timestamp);
-            }
-
+            this.EnsureWindow(timestamp);
             this.window.Add(eventId, instanceId);
         }
 
         public void OnEnd(int eventId, Guid instanceId, DateTime timestamp)
         {
+            this.EnsureWindow(timestamp);
             this.window.Complete(eventId, instanceId);
         }
 
         public void CloseWindow()
         {
             this.WindowClosed(this, new WindowEventArgs(this.window));
+        }
+
+        private void EnsureWindow(DateTime timestamp)
+        {
+            if (this.window == null)
+            {
+                this.window = new EventWindow(timestamp);
+            }
+            else
+            {
+                DateTime nextStartTime = this.window.StartTime + TimeSpan.FromSeconds(1.0d);
+                if (timestamp >= nextStartTime)
+                {
+                    EventWindow nextWindow = new EventWindow(this.window, nextStartTime);
+                    nextWindow.ClearCompleted();
+                    this.CloseWindow();
+                    this.window = nextWindow;
+                }
+            }
         }
     }
 }
