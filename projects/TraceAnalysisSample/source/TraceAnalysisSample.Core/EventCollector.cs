@@ -34,7 +34,10 @@ namespace TraceAnalysisSample
 
         public void CloseWindow()
         {
-            this.WindowClosed(this, new WindowEventArgs(this.window));
+            if (this.window != null)
+            {
+                this.WindowClosed(this, new WindowEventArgs(this.window));
+            }
         }
 
         private void EnsureWindow(DateTime timestamp)

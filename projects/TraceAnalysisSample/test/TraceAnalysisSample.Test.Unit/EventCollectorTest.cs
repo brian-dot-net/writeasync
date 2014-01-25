@@ -117,5 +117,17 @@ namespace TraceAnalysisSample.Test.Unit
             Assert.Equal(0, windows[1].GetPendingCount(eventId));
             Assert.Equal(1, windows[1].GetCompletedCount(eventId));
         }
+
+        [Fact]
+        public void Close_window_when_no_window_does_nothing()
+        {
+            EventCollector collector = new EventCollector();
+            int count = 0;
+            collector.WindowClosed += (o, e) => ++count;
+
+            collector.CloseWindow();
+
+            Assert.Equal(0, count);
+        }
     }
 }
