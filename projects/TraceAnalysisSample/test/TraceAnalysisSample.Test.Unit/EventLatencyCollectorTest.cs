@@ -105,6 +105,20 @@ namespace TraceAnalysisSample.Test.Unit
         }
 
         [Fact]
+        public void Start_then_end_with_no_subscriber_does_nothing()
+        {
+            EventLatencyCollector collector = new EventLatencyCollector();
+
+            int eventId = 1;
+            Guid instanceId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            DateTime startTime = new DateTime(2000, 1, 2, 3, 4, 5, 6);
+            DateTime endTime = new DateTime(2000, 1, 2, 3, 4, 5, 7);
+
+            collector.OnStart(eventId, instanceId, startTime);
+            collector.OnEnd(eventId, instanceId, endTime);
+        }
+
+        [Fact]
         public void Start_multiple_then_end_multiple_raises_event_completed_multiple()
         {
             EventLatencyCollector collector = new EventLatencyCollector();

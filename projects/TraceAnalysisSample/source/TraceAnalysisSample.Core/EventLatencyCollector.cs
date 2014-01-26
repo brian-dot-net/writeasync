@@ -31,7 +31,11 @@ using System.Collections.Generic;
             if (this.events.TryGetValue(new EventKey(eventId, instanceId), out startTime))
             {
                 TimeSpan latency = endTime - startTime;
-                this.EventCompleted(this, new LatencyEventArgs(latency, eventId, instanceId));
+                EventHandler<LatencyEventArgs> handler = this.EventCompleted;
+                if (handler != null)
+                {
+                    handler(this, new LatencyEventArgs(latency, eventId, instanceId));
+                }
             }
         }
 
