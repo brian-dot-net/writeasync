@@ -7,7 +7,6 @@
 namespace TraceAnalysisSample
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
 
     public class CompositeEventCollector : IEventCollector
@@ -29,7 +28,10 @@ namespace TraceAnalysisSample
 
         public void OnEnd(int eventId, Guid instanceId, DateTime endTime)
         {
-            throw new NotImplementedException();
+            foreach (IEventCollector inner in this.innerCollectors)
+            {
+                inner.OnEnd(eventId, instanceId, endTime);
+            }
         }
     }
 }
