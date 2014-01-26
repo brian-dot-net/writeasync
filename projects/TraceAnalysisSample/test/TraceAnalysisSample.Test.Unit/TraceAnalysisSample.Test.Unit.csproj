@@ -36,6 +36,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventLatencyCollectorTest.cs" />
     <Compile Include="EventWindowCollectorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EventWindowTest.cs" />

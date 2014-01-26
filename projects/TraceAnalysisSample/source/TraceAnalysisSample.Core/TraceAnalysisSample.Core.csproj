@@ -46,7 +46,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventLatencyCollector.cs" />
     <Compile Include="TraceReader.cs" />
+    <Compile Include="LatencyEventArgs.cs" />
     <Compile Include="WindowEventArgs.cs" />
     <Compile Include="EventWindowCollector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
