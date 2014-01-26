@@ -10,6 +10,7 @@ namespace TraceAnalysisSample
 
     public class EventLatencyCollector
     {
+        private int eventId;
         private DateTime startTime;
 
         public EventLatencyCollector()
@@ -20,13 +21,17 @@ namespace TraceAnalysisSample
 
         public void OnStart(int eventId, Guid instanceId, DateTime startTime)
         {
+            this.eventId = eventId;
             this.startTime = startTime;
         }
 
         public void OnEnd(int eventId, Guid instanceId, DateTime endTime)
         {
-            TimeSpan latency = endTime - this.startTime;
-            this.EventCompleted(this, new LatencyEventArgs(latency, eventId, instanceId));
+            if (this.eventId == eventId)
+            {
+                TimeSpan latency = endTime - this.startTime;
+                this.EventCompleted(this, new LatencyEventArgs(latency, eventId, instanceId));
+            }
         }
     }
 }

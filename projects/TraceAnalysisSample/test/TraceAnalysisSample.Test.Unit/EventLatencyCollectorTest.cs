@@ -46,5 +46,22 @@ namespace TraceAnalysisSample.Test.Unit
             Assert.Equal(eventId, eventIds[0]);
             Assert.Equal(instanceId, instanceIds[0]);
         }
+
+        [Fact]
+        public void End_with_no_start_does_nothing()
+        {
+            EventLatencyCollector collector = new EventLatencyCollector();
+
+            int eventId = 1;
+            Guid instanceId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            DateTime endTime = new DateTime(2000, 1, 2, 3, 4, 5, 7);
+
+            int count = 0;
+            collector.EventCompleted += (o, e) => ++count;
+
+            collector.OnEnd(eventId, instanceId, endTime);
+
+            Assert.Equal(0, count);
+        }
     }
 }
