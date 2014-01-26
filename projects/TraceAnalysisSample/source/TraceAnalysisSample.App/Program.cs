@@ -24,6 +24,7 @@ namespace TraceAnalysisSample
             collector.WindowClosed += (o, e) => OnWindowClosed(ref startTime, e.Window);
             Console.WriteLine("Time,Pending,Completed");
             reader.ReadAsync(collector).Wait();
+            collector.CloseWindow();
 
             return 0;
         }
