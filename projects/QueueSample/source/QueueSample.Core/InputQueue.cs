@@ -10,7 +10,7 @@ namespace QueueSample
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public class InputQueue<T>
+    public class InputQueue<T> : IDisposable
     {
         private readonly Queue<T> items;
 
@@ -23,18 +23,26 @@ namespace QueueSample
 
         public Task<T> DequeueAsync()
         {
-            if (this.pending != null)
+            Task<T> task;
+            lock (this.items)
             {
-                throw new InvalidOperationException("A dequeue operation is already in progress.");
-            }
+                if (this.pending != null)
+                {
+                    throw new InvalidOperationException("A dequeue operation is already in progress.");
+                }
 
-            this.pending = new TaskCompletionSource<T>();
-            Task<T> task = this.pending.Task;
-            if (this.items.Count > 0)
-            {
-                T item = this.items.Dequeue();
-                this.pending.SetResult(item);
-                this.pending = null;
+                TaskCompletionSource<T> current = new TaskCompletionSource<T>();
+                task = current.Task;
+
+                if (this.items.Count > 0)
+                {
+                    T item = this.items.Dequeue();
+                    current.SetResult(item);
+                }
+                else
+                {
+                    this.pending = current;
+                }
             }
 
             return task;
@@ -42,14 +50,38 @@ namespace QueueSample
 
         public void Enqueue(T item)
         {
-            if (this.pending == null)
+            TaskCompletionSource<T> current = null;
+            lock (this.items)
             {
-                this.items.Enqueue(item);
+                if (this.pending == null)
+                {
+                    this.items.Enqueue(item);
+                }
+                else
+                {
+                    current = this.pending;
+                    this.pending = null;
+                }
             }
-            else
+
+            if (current != null)
             {
-                this.pending.SetResult(item);
+                current.SetResult(item);
+            }
+        }
+
+        public void Dispose()
+        {
+            TaskCompletionSource<T> current = null;
+            lock (this.items)
+            {
+                current = this.pending;
                 this.pending = null;
+            }
+
+            if (current != null)
+            {
+                current.SetException(new ObjectDisposedException("InputQueue"));
             }
         }
     }

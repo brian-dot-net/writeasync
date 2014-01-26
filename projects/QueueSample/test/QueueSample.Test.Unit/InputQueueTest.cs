@@ -118,5 +118,23 @@ namespace QueueSample.Test.Unit
 
             Assert.Throws<InvalidOperationException>(() => queue.DequeueAsync());
         }
+
+        [Fact]
+        public void Dispose_completes_pending_receive_with_ObjectDisposed()
+        {
+            InputQueue<string> queue = new InputQueue<string>();
+
+            Task<string> task = queue.DequeueAsync();
+
+            Assert.False(task.IsCompleted);
+
+            queue.Dispose();
+
+            Assert.True(task.IsFaulted);
+            Assert.NotNull(task.Exception);
+            AggregateException ae = task.Exception;
+            Assert.Equal(1, ae.InnerExceptions.Count);
+            Assert.IsType<ObjectDisposedException>(ae.InnerExceptions[0]);
+        }
     }
 }
