@@ -103,5 +103,47 @@ namespace TraceAnalysisSample.Test.Unit
 
             Assert.Equal(0, count);
         }
+
+        [Fact]
+        public void Start_multiple_then_end_multiple_raises_event_completed_multiple()
+        {
+            EventLatencyCollector collector = new EventLatencyCollector();
+
+            int eventIdA = 1;
+            int eventIdB = 2;
+            Guid instanceIdA = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            Guid instanceIdB = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
+            DateTime startTimeA = new DateTime(2000, 1, 2, 3, 4, 5, 6);
+            DateTime endTimeA = new DateTime(2000, 1, 2, 3, 4, 5, 7);
+            DateTime startTimeB = new DateTime(2000, 1, 2, 3, 4, 6, 5);
+            DateTime endTimeB = new DateTime(2000, 1, 2, 3, 4, 6, 7);
+            List<TimeSpan> latencies = new List<TimeSpan>();
+            List<int> eventIds = new List<int>();
+            List<Guid> instanceIds = new List<Guid>();
+
+            collector.EventCompleted += delegate(object sender, LatencyEventArgs e)
+            {
+                latencies.Add(e.Latency);
+                eventIds.Add(e.EventId);
+                instanceIds.Add(e.InstanceId);
+            };
+
+            collector.OnStart(eventIdA, instanceIdA, startTimeA);
+            collector.OnStart(eventIdB, instanceIdB, startTimeB);
+
+            collector.OnEnd(eventIdA, instanceIdA, endTimeA);
+
+            Assert.Equal(1, latencies.Count);
+            Assert.Equal(TimeSpan.FromMilliseconds(1.0d), latencies[0]);
+            Assert.Equal(eventIdA, eventIds[0]);
+            Assert.Equal(instanceIdA, instanceIds[0]);
+
+            collector.OnEnd(eventIdB, instanceIdB, endTimeB);
+
+            Assert.Equal(2, latencies.Count);
+            Assert.Equal(TimeSpan.FromMilliseconds(2.0d), latencies[1]);
+            Assert.Equal(eventIdB, eventIds[1]);
+            Assert.Equal(instanceIdB, instanceIds[1]);
+        }
     }
 }

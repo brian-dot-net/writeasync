@@ -7,32 +7,53 @@
 namespace TraceAnalysisSample
 {
     using System;
+using System.Collections.Generic;
 
     public class EventLatencyCollector
     {
-        private int eventId;
-        private Guid instanceId;
-        private DateTime startTime;
+        private readonly Dictionary<EventKey, DateTime> events;
 
         public EventLatencyCollector()
         {
+            this.events = new Dictionary<EventKey, DateTime>();
         }
 
         public event EventHandler<LatencyEventArgs> EventCompleted;
 
         public void OnStart(int eventId, Guid instanceId, DateTime startTime)
         {
-            this.eventId = eventId;
-            this.instanceId = instanceId;
-            this.startTime = startTime;
+            this.events.Add(new EventKey(eventId, instanceId), startTime);
         }
 
         public void OnEnd(int eventId, Guid instanceId, DateTime endTime)
         {
-            if ((this.eventId == eventId) && (this.instanceId == instanceId))
+            DateTime startTime;
+            if (this.events.TryGetValue(new EventKey(eventId, instanceId), out startTime))
             {
-                TimeSpan latency = endTime - this.startTime;
+                TimeSpan latency = endTime - startTime;
                 this.EventCompleted(this, new LatencyEventArgs(latency, eventId, instanceId));
+            }
+        }
+
+        private struct EventKey : IEquatable<EventKey>
+        {
+            private readonly int eventId;
+            private readonly Guid instanceId;
+
+            public EventKey(int eventId, Guid instanceId)
+            {
+                this.eventId = eventId;
+                this.instanceId = instanceId;
+            }
+
+            public bool Equals(EventKey other)
+            {
+                return (this.eventId == other.eventId) && (this.instanceId == other.instanceId);
+            }
+
+            public override int GetHashCode()
+            {
+                return this.eventId.GetHashCode() ^ this.instanceId.GetHashCode();
             }
         }
     }
