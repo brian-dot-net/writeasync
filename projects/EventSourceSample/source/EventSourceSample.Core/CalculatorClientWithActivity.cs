@@ -44,7 +44,15 @@ namespace EventSourceSample
         {
             using (RequestScope scope = this.TraceStart())
             {
-                return this.TraceEnd(scope, this.inner.SubtractAsync(x, y));
+                try
+                {
+                    return this.TraceEnd(scope, this.inner.SubtractAsync(x, y));
+                }
+                catch (Exception e)
+                {
+                    this.eventSource.RequestError(this.clientId, e.GetType().FullName, e.Message);
+                    throw;
+                }
             }
         }
 
