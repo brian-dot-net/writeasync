@@ -26,43 +26,26 @@ namespace EventSourceSample
 
         public Task<double> AddAsync(double x, double y)
         {
-            using (RequestScope scope = this.TraceStart())
-            {
-                try
-                {
-                    return this.TraceEnd(scope, this.inner.AddAsync(x, y));
-                }
-                catch (Exception e)
-                {
-                    this.eventSource.RequestError(this.clientId, e.GetType().FullName, e.Message);
-                    throw;
-                }
-            }
+            return this.DoWithActivityAsync(x, y, (xx, yy, p) => p.AddAsync(xx, yy));
         }
 
         public Task<double> SubtractAsync(double x, double y)
         {
-            using (RequestScope scope = this.TraceStart())
-            {
-                try
-                {
-                    return this.TraceEnd(scope, this.inner.SubtractAsync(x, y));
-                }
-                catch (Exception e)
-                {
-                    this.eventSource.RequestError(this.clientId, e.GetType().FullName, e.Message);
-                    throw;
-                }
-            }
+            return this.DoWithActivityAsync(x, y, (xx, yy, p) => p.SubtractAsync(xx, yy));
         }
 
         public Task<double> SquareRootAsync(double x)
+        {
+            return this.DoWithActivityAsync(x, 0.0d, (xx, yy, p) => p.SquareRootAsync(xx));
+        }
+
+        private Task<double> DoWithActivityAsync(double x, double y, Func<double, double, ICalculatorClientAsync, Task<double>> doAsync)
         {
             using (RequestScope scope = this.TraceStart())
             {
                 try
                 {
-                    return this.TraceEnd(scope, this.inner.SquareRootAsync(x));
+                    return this.TraceEnd(scope, doAsync(x, y, this.inner));
                 }
                 catch (Exception e)
                 {
