@@ -28,7 +28,15 @@ namespace EventSourceSample
         {
             using (RequestScope scope = this.TraceStart())
             {
-                return this.TraceEnd(scope, this.inner.AddAsync(x, y));
+                try
+                {
+                    return this.TraceEnd(scope, this.inner.AddAsync(x, y));
+                }
+                catch (Exception e)
+                {
+                    this.eventSource.RequestError(this.clientId, e.GetType().FullName, e.Message);
+                    throw;
+                }
             }
         }
 

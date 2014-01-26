@@ -32,6 +32,12 @@ namespace EventSourceSample.Test.Unit
         }
 
         [Fact]
+        public void Add_with_activity_traces_start_and_end_with_sync_error()
+        {
+            VerifyTracesStartAndEndSyncError(c => c.AddAsync(1.0d, 2.0d));
+        }
+
+        [Fact]
         public void Add_with_activity_sets_and_restores_activity_id()
         {
             VerifySetsAndRestoresActivityId(c => c.AddAsync(1.0d, 2.0d));
@@ -149,6 +155,30 @@ namespace EventSourceSample.Test.Unit
                 VerifyResultError(expectedException, task);
 
                 listener.VerifyEvent(ClientEventId.RequestError, EventLevel.Warning, ClientEventSource.Keywords.Request, EventOpcode.Stop, clientId, "System.InvalidCastException", "Expected.");
+            }
+        }
+
+        private static void VerifyTracesStartAndEndSyncError(Func<ICalculatorClientAsync, Task<double>> doAsync)
+        {
+            ClientEventSource eventSource = ClientEventSource.Instance;
+            Guid clientId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xC);
+            InvalidTimeZoneException expectedException = new InvalidTimeZoneException("Expected.");
+
+            using (ClientEventListener listener = new ClientEventListener(eventSource, EventLevel.Informational, ClientEventSource.Keywords.Request))
+            {
+                Func<Task<double>> verifyStartEventAndThrow = delegate
+                {
+                    listener.VerifyEvent(ClientEventId.Request, EventLevel.Informational, ClientEventSource.Keywords.Request, EventOpcode.Start, clientId);
+                    listener.Events.Clear();
+                    throw expectedException;
+                };
+
+                CalculatorClientWithActivity client = new CalculatorClientWithActivity(new CalculatorClientStub(verifyStartEventAndThrow), eventSource, clientId);
+
+                InvalidTimeZoneException ite = Assert.Throws<InvalidTimeZoneException>(() => doAsync(client));
+                Assert.Same(expectedException, ite);
+
+                listener.VerifyEvent(ClientEventId.RequestError, EventLevel.Warning, ClientEventSource.Keywords.Request, EventOpcode.Stop, clientId, "System.InvalidTimeZoneException", "Expected.");
             }
         }
 
