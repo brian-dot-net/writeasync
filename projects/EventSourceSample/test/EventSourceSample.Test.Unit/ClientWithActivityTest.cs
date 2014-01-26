@@ -103,6 +103,12 @@ namespace EventSourceSample.Test.Unit
             VerifySetsAndRestoresActivityIdOnError(c => c.SquareRootAsync(5.0d));
         }
 
+        [Fact]
+        public void SquareRoot_with_activity_sets_and_restores_activity_id_on_sync_error()
+        {
+            VerifySetsAndRestoresActivityIdOnSyncError(c => c.SquareRootAsync(5.0d));
+        }
+
         private static void VerifyTracesStartAndEnd(Func<ICalculatorClientAsync, Task<double>> doAsync)
         {
             ClientEventSource eventSource = ClientEventSource.Instance;
