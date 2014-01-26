@@ -15,6 +15,7 @@ namespace QueueSample
         private readonly Queue<T> items;
 
         private TaskCompletionSource<T> pending;
+        private bool disposed;
 
         public InputQueue()
         {
@@ -26,6 +27,11 @@ namespace QueueSample
             Task<T> task;
             lock (this.items)
             {
+                if (this.disposed)
+                {
+                    throw new ObjectDisposedException("InputQueue");
+                }
+
                 if (this.pending != null)
                 {
                     throw new InvalidOperationException("A dequeue operation is already in progress.");
@@ -53,6 +59,11 @@ namespace QueueSample
             TaskCompletionSource<T> current = null;
             lock (this.items)
             {
+                if (this.disposed)
+                {
+                    throw new ObjectDisposedException("InputQueue");
+                }
+
                 if (this.pending == null)
                 {
                     this.items.Enqueue(item);
@@ -72,16 +83,20 @@ namespace QueueSample
 
         public void Dispose()
         {
-            TaskCompletionSource<T> current = null;
-            lock (this.items)
+            if (!this.disposed)
             {
-                current = this.pending;
-                this.pending = null;
-            }
+                TaskCompletionSource<T> current = null;
+                lock (this.items)
+                {
+                    current = this.pending;
+                    this.pending = null;
+                    this.disposed = true;
+                }
 
-            if (current != null)
-            {
-                current.SetException(new ObjectDisposedException("InputQueue"));
+                if (current != null)
+                {
+                    current.SetException(new ObjectDisposedException("InputQueue"));
+                }
             }
         }
     }

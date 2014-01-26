@@ -136,5 +136,15 @@ namespace QueueSample.Test.Unit
             Assert.Equal(1, ae.InnerExceptions.Count);
             Assert.IsType<ObjectDisposedException>(ae.InnerExceptions[0]);
         }
+
+        [Fact]
+        public void Dispose_causes_subsequent_enqueue_and_dequeue_to_throw_ObjectDisposed()
+        {
+            InputQueue<string> queue = new InputQueue<string>();
+            queue.Dispose();
+
+            Assert.Throws<ObjectDisposedException>(() => queue.Enqueue("a"));
+            Assert.Throws<ObjectDisposedException>(() => queue.DequeueAsync());
+        }
     }
 }
