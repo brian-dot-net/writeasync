@@ -9,10 +9,23 @@ namespace QueueSample
     using System;
     using System.Threading.Tasks;
 
-    public class InputQueue
+    public class InputQueue<T>
     {
+        private TaskCompletionSource<T> pending;
+
         public InputQueue()
         {
+        }
+
+        public Task<T> DequeueAsync()
+        {
+            this.pending = new TaskCompletionSource<T>();
+            return this.pending.Task;
+        }
+
+        public void Enqueue(T item)
+        {
+            this.pending.SetResult(item);
         }
     }
 }

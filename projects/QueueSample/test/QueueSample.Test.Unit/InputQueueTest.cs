@@ -16,8 +16,18 @@ namespace QueueSample.Test.Unit
         }
 
         [Fact]
-        public void Todo()
+        public void Dequeue_completes_after_enqueue()
         {
+            InputQueue<string> queue = new InputQueue<string>();
+            
+            Task<string> task = queue.DequeueAsync();
+
+            Assert.False(task.IsCompleted);
+
+            queue.Enqueue("a");
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal("a", task.Result);
         }
     }
 }
