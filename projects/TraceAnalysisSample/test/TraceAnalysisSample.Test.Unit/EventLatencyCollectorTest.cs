@@ -72,6 +72,7 @@ namespace TraceAnalysisSample.Test.Unit
             int eventIdA = 1;
             int eventIdB = 2;
             Guid instanceId = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            DateTime startTime = new DateTime(2000, 1, 2, 3, 4, 5, 6);
             DateTime endTime = new DateTime(2000, 1, 2, 3, 4, 5, 7);
 
             int count = 0;
@@ -79,6 +80,26 @@ namespace TraceAnalysisSample.Test.Unit
 
             collector.OnStart(eventIdA, instanceId, endTime);
             collector.OnEnd(eventIdB, instanceId, endTime);
+
+            Assert.Equal(0, count);
+        }
+
+        [Fact]
+        public void Start_then_end_with_unmatched_instance_id_does_nothing()
+        {
+            EventLatencyCollector collector = new EventLatencyCollector();
+
+            int eventId = 1;
+            Guid instanceIdA = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            Guid instanceIdB = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2);
+            DateTime startTime = new DateTime(2000, 1, 2, 3, 4, 5, 6);
+            DateTime endTime = new DateTime(2000, 1, 2, 3, 4, 5, 7);
+
+            int count = 0;
+            collector.EventCompleted += (o, e) => ++count;
+
+            collector.OnStart(eventId, instanceIdA, startTime);
+            collector.OnEnd(eventId, instanceIdB, endTime);
 
             Assert.Equal(0, count);
         }
