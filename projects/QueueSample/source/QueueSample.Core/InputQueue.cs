@@ -7,21 +7,27 @@
 namespace QueueSample
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public class InputQueue<T>
     {
+        private readonly Queue<T> items;
+
         private TaskCompletionSource<T> pending;
 
         public InputQueue()
         {
+            this.items = new Queue<T>();
         }
 
         public Task<T> DequeueAsync()
         {
-            if (this.pending == null)
+            this.pending = new TaskCompletionSource<T>();
+            if (this.items.Count > 0)
             {
-                this.pending = new TaskCompletionSource<T>();
+                T item = this.items.Dequeue();
+                this.pending.SetResult(item);
             }
 
             return this.pending.Task;
@@ -31,10 +37,12 @@ namespace QueueSample
         {
             if (this.pending == null)
             {
-                this.pending = new TaskCompletionSource<T>();
+                this.items.Enqueue(item);
             }
-
-            this.pending.SetResult(item);
+            else
+            {
+                this.pending.SetResult(item);
+            }
         }
     }
 }
