@@ -6,6 +6,7 @@
 
 namespace QueueSample.Test.Unit
 {
+    using System;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -104,6 +105,18 @@ namespace QueueSample.Test.Unit
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal("b", task.Result);
+        }
+
+        [Fact]
+        public void Dequeue_while_dequeue_still_pending_throws_InvalidOperation()
+        {
+            InputQueue<string> queue = new InputQueue<string>();
+
+            Task<string> task = queue.DequeueAsync();
+
+            Assert.False(task.IsCompleted);
+
+            Assert.Throws<InvalidOperationException>(() => queue.DequeueAsync());
         }
     }
 }

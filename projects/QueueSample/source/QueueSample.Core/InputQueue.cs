@@ -23,6 +23,11 @@ namespace QueueSample
 
         public Task<T> DequeueAsync()
         {
+            if (this.pending != null)
+            {
+                throw new InvalidOperationException("A dequeue operation is already in progress.");
+            }
+
             this.pending = new TaskCompletionSource<T>();
             Task<T> task = this.pending.Task;
             if (this.items.Count > 0)
