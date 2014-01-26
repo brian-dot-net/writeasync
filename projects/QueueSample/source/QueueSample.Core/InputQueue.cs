@@ -19,12 +19,21 @@ namespace QueueSample
 
         public Task<T> DequeueAsync()
         {
-            this.pending = new TaskCompletionSource<T>();
+            if (this.pending == null)
+            {
+                this.pending = new TaskCompletionSource<T>();
+            }
+
             return this.pending.Task;
         }
 
         public void Enqueue(T item)
         {
+            if (this.pending == null)
+            {
+                this.pending = new TaskCompletionSource<T>();
+            }
+
             this.pending.SetResult(item);
         }
     }
