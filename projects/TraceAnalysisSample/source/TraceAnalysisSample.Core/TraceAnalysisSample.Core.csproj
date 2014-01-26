@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompositeEventCollector.cs" />
     <Compile Include="IEventCollector.cs" />
     <Compile Include="EventLatencyCollector.cs" />
     <Compile Include="TraceReader.cs" />
