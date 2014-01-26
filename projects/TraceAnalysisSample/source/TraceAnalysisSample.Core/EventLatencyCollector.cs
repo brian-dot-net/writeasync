@@ -28,8 +28,10 @@ using System.Collections.Generic;
         public void OnEnd(int eventId, Guid instanceId, DateTime endTime)
         {
             DateTime startTime;
-            if (this.events.TryGetValue(new EventKey(eventId, instanceId), out startTime))
+            EventKey key = new EventKey(eventId, instanceId);
+            if (this.events.TryGetValue(key, out startTime))
             {
+                this.events.Remove(key);
                 TimeSpan latency = endTime - startTime;
                 EventHandler<LatencyEventArgs> handler = this.EventCompleted;
                 if (handler != null)
