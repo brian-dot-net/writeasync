@@ -49,7 +49,7 @@ namespace EventSourceSample
                 }
                 catch (Exception e)
                 {
-                    this.eventSource.RequestError(this.clientId, e.GetType().FullName, e.Message);
+                    this.TraceError(e);
                     throw;
                 }
             }
@@ -73,8 +73,7 @@ namespace EventSourceSample
             {
                 if (task.IsFaulted)
                 {
-                    Exception error = task.Exception.InnerException;
-                    this.eventSource.RequestError(this.clientId, error.GetType().FullName, error.Message);
+                    this.TraceError(task.Exception.InnerException);
                 }
                 else
                 {
@@ -83,6 +82,11 @@ namespace EventSourceSample
 
                 return task.Result;
             }
+        }
+
+        private void TraceError(Exception error)
+        {
+            this.eventSource.RequestError(this.clientId, error.GetType().FullName, error.Message);
         }
 
         private struct RequestScope : IDisposable
