@@ -20,7 +20,7 @@ namespace TraceAnalysisSample
             this.eventStream = EtwObservable.FromFiles(fileName);
         }
 
-        public async Task ReadAsync(EventCollector collector)
+        public async Task ReadAsync(EventWindowCollector collector)
         {
             Subscriber subscriber = new Subscriber(collector);
             using (this.eventStream.Subscribe(subscriber))
@@ -35,9 +35,9 @@ namespace TraceAnalysisSample
             private static readonly Guid SampleProviderId = new Guid("{0745B9D3-BC9A-4C33-953C-77DE89336B0D}");
 
             private readonly TaskCompletionSource<bool> tcs;
-            private readonly EventCollector collector;
+            private readonly EventWindowCollector collector;
 
-            public Subscriber(EventCollector collector)
+            public Subscriber(EventWindowCollector collector)
             {
                 this.tcs = new TaskCompletionSource<bool>();
                 this.collector = collector;

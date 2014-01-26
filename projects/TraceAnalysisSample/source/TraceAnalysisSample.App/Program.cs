@@ -19,7 +19,7 @@ namespace TraceAnalysisSample
             }
 
             TraceReader reader = new TraceReader(args[0]);
-            EventCollector collector = new EventCollector();
+            EventWindowCollector collector = new EventWindowCollector();
             DateTime startTime = DateTime.MinValue;
             collector.WindowClosed += (o, e) => OnWindowClosed(ref startTime, e.Window);
             Console.WriteLine("Time,Pending,Completed");

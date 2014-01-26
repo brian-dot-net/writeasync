@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="EventCollector.cs" company="Brian Rogers">
+// <copyright file="EventWindowCollector.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -10,11 +10,11 @@ namespace TraceAnalysisSample
     using System.Collections.Generic;
     using System.Linq;
 
-    public class EventCollector
+    public class EventWindowCollector
     {
         private EventWindow window;
 
-        public EventCollector()
+        public EventWindowCollector()
         {
         }
 
