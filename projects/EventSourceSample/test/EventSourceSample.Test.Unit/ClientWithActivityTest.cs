@@ -74,6 +74,12 @@ namespace EventSourceSample.Test.Unit
         }
 
         [Fact]
+        public void Subtract_with_activity_sets_and_restores_activity_id_on_sync_error()
+        {
+            VerifySetsAndRestoresActivityIdOnSyncError(c => c.SubtractAsync(3.0d, 4.0d));
+        }
+
+        [Fact]
         public void SquareRoot_with_activity_traces_start_and_end()
         {
             VerifyTracesStartAndEnd(c => c.SquareRootAsync(5.0d));
