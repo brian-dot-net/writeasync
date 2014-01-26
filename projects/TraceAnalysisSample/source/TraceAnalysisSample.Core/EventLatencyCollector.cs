@@ -7,9 +7,9 @@
 namespace TraceAnalysisSample
 {
     using System;
-using System.Collections.Generic;
+    using System.Collections.Generic;
 
-    public class EventLatencyCollector
+    public class EventLatencyCollector : IEventCollector
     {
         private readonly Dictionary<EventKey, DateTime> events;
 

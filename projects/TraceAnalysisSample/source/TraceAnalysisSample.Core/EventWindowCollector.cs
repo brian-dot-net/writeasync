@@ -10,7 +10,7 @@ namespace TraceAnalysisSample
     using System.Collections.Generic;
     using System.Linq;
 
-    public class EventWindowCollector
+    public class EventWindowCollector : IEventCollector
     {
         private EventWindow window;
 
@@ -20,15 +20,15 @@ namespace TraceAnalysisSample
 
         public event EventHandler<WindowEventArgs> WindowClosed;
 
-        public void OnStart(int eventId, Guid instanceId, DateTime timestamp)
+        public void OnStart(int eventId, Guid instanceId, DateTime startTime)
         {
-            this.EnsureWindow(timestamp);
+            this.EnsureWindow(startTime);
             this.window.Add(eventId, instanceId);
         }
 
-        public void OnEnd(int eventId, Guid instanceId, DateTime timestamp)
+        public void OnEnd(int eventId, Guid instanceId, DateTime endTime)
         {
-            this.EnsureWindow(timestamp);
+            this.EnsureWindow(endTime);
             this.window.Complete(eventId, instanceId);
         }
 
