@@ -7,6 +7,7 @@
 namespace TraceAnalysisSample
 {
     using System;
+    using System.Runtime.InteropServices;
     using System.Threading.Tasks;
     using Tx.Windows;
 
@@ -19,12 +20,13 @@ namespace TraceAnalysisSample
             this.eventStream = EtwObservable.FromFiles(fileName);
         }
 
-        public async Task ReadAsync()
+        public async Task ReadAsync(EventCollector collector)
         {
-            Subscriber subscriber = new Subscriber();
+            Subscriber subscriber = new Subscriber(collector);
             using (this.eventStream.Subscribe(subscriber))
             {
                 await subscriber.WaitAsync();
+                collector.CloseWindow();
             }
         }
 
@@ -33,10 +35,12 @@ namespace TraceAnalysisSample
             private static readonly Guid SampleProviderId = new Guid("{0745B9D3-BC9A-4C33-953C-77DE89336B0D}");
 
             private readonly TaskCompletionSource<bool> tcs;
+            private readonly EventCollector collector;
 
-            public Subscriber()
+            public Subscriber(EventCollector collector)
             {
                 this.tcs = new TaskCompletionSource<bool>();
+                this.collector = collector;
             }
 
             public Task WaitAsync()
@@ -61,31 +65,24 @@ namespace TraceAnalysisSample
                     switch (value.Id)
                     {
                         case 20:
-                            this.ReadRequest(ref value);
+                            this.OnStarted(ref value);
                             break;
                         case 21:
-                            this.ReadRequestCompleted(ref value);
-                            break;
                         case 22:
-                            this.ReadRequestError(ref value);
+                            this.OnCompleted(ref value);
                             break;
                     }
                 }
             }
 
-            private void ReadRequest(ref EtwNativeEvent value)
+            private void OnStarted(ref EtwNativeEvent value)
             {
-                // TODO
+                this.collector.OnStart(1, value.ActivityId, value.TimeStamp.DateTime);
             }
 
-            private void ReadRequestCompleted(ref EtwNativeEvent value)
+            private void OnCompleted(ref EtwNativeEvent value)
             {
-                // TODO
-            }
-
-            private void ReadRequestError(ref EtwNativeEvent value)
-            {
-                // TODO
+                this.collector.OnEnd(1, value.ActivityId, value.TimeStamp.DateTime);
             }
         }
     }
