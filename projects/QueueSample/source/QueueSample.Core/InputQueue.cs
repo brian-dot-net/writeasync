@@ -24,13 +24,15 @@ namespace QueueSample
         public Task<T> DequeueAsync()
         {
             this.pending = new TaskCompletionSource<T>();
+            Task<T> task = this.pending.Task;
             if (this.items.Count > 0)
             {
                 T item = this.items.Dequeue();
                 this.pending.SetResult(item);
+                this.pending = null;
             }
 
-            return this.pending.Task;
+            return task;
         }
 
         public void Enqueue(T item)
@@ -42,6 +44,7 @@ namespace QueueSample
             else
             {
                 this.pending.SetResult(item);
+                this.pending = null;
             }
         }
     }

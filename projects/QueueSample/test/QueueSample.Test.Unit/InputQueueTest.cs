@@ -61,5 +61,25 @@ namespace QueueSample.Test.Unit
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal("b", task.Result);
         }
+
+        [Fact]
+        public void Enqueue_then_dequeue_repeated_twice_completes_sync()
+        {
+            InputQueue<string> queue = new InputQueue<string>();
+
+            queue.Enqueue("a");
+
+            Task<string> task = queue.DequeueAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal("a", task.Result);
+
+            queue.Enqueue("b");
+
+            task = queue.DequeueAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal("b", task.Result);
+        }
     }
 }
