@@ -32,6 +32,7 @@ namespace QueueSample
         private static async Task EnqueueLoopAsync(InputQueue<int> queue, CancellationToken token)
         {
             await Task.Yield();
+
             int i = 0;
             while (!token.IsCancellationRequested)
             {
@@ -43,6 +44,8 @@ namespace QueueSample
 
         private static async Task DequeueLoopAsync(InputQueue<int> queue, CancellationToken token)
         {
+            await Task.Yield();
+
             int previous = 0;
             while (!token.IsCancellationRequested)
             {
@@ -52,6 +55,8 @@ namespace QueueSample
                     string message = string.Format(CultureInfo.InvariantCulture, "Invalid data! Current is {0} but previous was {1}.", current, previous);
                     throw new InvalidOperationException(message);
                 }
+
+                previous = current;
             }
         }
 
