@@ -24,6 +24,7 @@ namespace QueueSample
                 Console.WriteLine("Press ENTER to cancel.");
                 Console.ReadLine();
                 cts.Cancel();
+                queue.Dispose();
 
                 Task.WaitAll(enqueueTask, dequeueTask);
             }
@@ -47,16 +48,22 @@ namespace QueueSample
             await Task.Yield();
 
             int previous = 0;
-            while (!token.IsCancellationRequested)
+            try
             {
-                int current = await queue.DequeueAsync();
-                if (current - previous != 1)
+                while (!token.IsCancellationRequested)
                 {
-                    string message = string.Format(CultureInfo.InvariantCulture, "Invalid data! Current is {0} but previous was {1}.", current, previous);
-                    throw new InvalidOperationException(message);
-                }
+                    int current = await queue.DequeueAsync();
+                    if (current - previous != 1)
+                    {
+                        string message = string.Format(CultureInfo.InvariantCulture, "Invalid data! Current is {0} but previous was {1}.", current, previous);
+                        throw new InvalidOperationException(message);
+                    }
 
-                previous = current;
+                    previous = current;
+                }
+            }
+            catch (ObjectDisposedException)
+            {
             }
         }
 
