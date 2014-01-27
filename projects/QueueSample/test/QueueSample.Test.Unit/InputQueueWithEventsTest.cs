@@ -41,6 +41,31 @@ namespace QueueSample.Test.Unit
         }
 
         [Fact]
+        public void Enqueue_with_events_traces_event_on_error()
+        {
+            InputQueueStub<string> inner = new InputQueueStub<string>();
+            QueueEventSource eventSource = QueueEventSource.Instance;
+            Guid id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            InputQueueWithEvents<string> queue = new InputQueueWithEvents<string>(inner, id, eventSource);
+
+            using (QueueEventListener listener = new QueueEventListener(eventSource, EventLevel.Informational, EventKeywords.None))
+            {
+                InvalidProgramException expectedException = new InvalidProgramException("Expected.");
+                inner.Enqueued += delegate(object sender, EventArgs e)
+                {
+                    listener.VerifyEvent(QueueEventId.Enqueue, EventLevel.Informational, EventKeywords.None, id);
+                    listener.Events.Clear();
+                    throw expectedException;
+                };
+
+                InvalidProgramException ipe = Assert.Throws<InvalidProgramException>(() => queue.Enqueue("a"));
+                Assert.Same(expectedException, ipe);
+
+                listener.VerifyEvent(QueueEventId.EnqueueCompleted, EventLevel.Informational, EventKeywords.None, id);
+            }
+        }
+
+        [Fact]
         public void Dequeue_with_events_traces_event()
         {
             InputQueueStub<string> inner = new InputQueueStub<string>();
