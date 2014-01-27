@@ -12,8 +12,9 @@ namespace QueueSample
 
         // Queue
         Enqueue = 1,
-        Dequeue = 2,
-        DequeueCompleted = 3,
-        QueueDispose = 4,
+        EnqueueCompleted = 2,
+        Dequeue = 3,
+        DequeueCompleted = 4,
+        QueueDispose = 5,
     }
 }

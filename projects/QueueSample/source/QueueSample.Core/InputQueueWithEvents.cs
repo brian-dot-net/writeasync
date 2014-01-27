@@ -40,6 +40,7 @@ namespace QueueSample
         {
             this.eventSource.Enqueue(this.id);
             this.inner.Enqueue(item);
+            this.eventSource.EnqueueCompleted(this.id);
         }
 
         public void Dispose()

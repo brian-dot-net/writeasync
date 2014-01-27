@@ -27,10 +27,16 @@ namespace QueueSample.Test.Unit
 
             using (QueueEventListener listener = new QueueEventListener(eventSource, EventLevel.Informational, EventKeywords.None))
             {
+                inner.Enqueued += delegate(object sender, EventArgs e)
+                {
+                    listener.VerifyEvent(QueueEventId.Enqueue, EventLevel.Informational, EventKeywords.None, id);
+                    listener.Events.Clear();
+                };
+
                 queue.Enqueue("a");
 
                 Assert.Equal("a", inner.Item);
-                listener.VerifyEvent(QueueEventId.Enqueue, EventLevel.Informational, EventKeywords.None, id);
+                listener.VerifyEvent(QueueEventId.EnqueueCompleted, EventLevel.Informational, EventKeywords.None, id);
             }
         }
 
@@ -112,6 +118,8 @@ namespace QueueSample.Test.Unit
             {
             }
 
+            public event EventHandler Enqueued;
+
             public T Item { get; private set; }
 
             public TaskCompletionSource<T> PendingDequeue { get; private set; }
@@ -127,6 +135,7 @@ namespace QueueSample.Test.Unit
             public void Enqueue(T item)
             {
                 this.Item = item;
+                this.Enqueued(this, EventArgs.Empty);
             }
 
             public void Dispose()

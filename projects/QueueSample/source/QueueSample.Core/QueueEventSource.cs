@@ -26,10 +26,16 @@ namespace QueueSample
             get { return SingletonInstance; }
         }
 
-        [Event((int)QueueEventId.Enqueue, Level = EventLevel.Informational, Message = "Enqueue {0}.")]
+        [Event((int)QueueEventId.Enqueue, Level = EventLevel.Informational, Message = "Enqueue {0} started.")]
         public void Enqueue(Guid id)
         {
             this.WriteEvent((int)QueueEventId.Enqueue, id);
+        }
+
+        [Event((int)QueueEventId.EnqueueCompleted, Level = EventLevel.Informational, Message = "Enqueue {0} completed.")]
+        public void EnqueueCompleted(Guid id)
+        {
+            this.WriteEvent((int)QueueEventId.EnqueueCompleted, id);
         }
 
         [Event((int)QueueEventId.Dequeue, Level = EventLevel.Informational, Message = "Dequeue {0} started.")]
@@ -44,7 +50,7 @@ namespace QueueSample
             this.WriteEvent((int)QueueEventId.DequeueCompleted, id);
         }
 
-        [Event((int)QueueEventId.QueueDispose, Level = EventLevel.Informational, Message = "Queue dispose {0}.")]
+        [Event((int)QueueEventId.QueueDispose, Level = EventLevel.Informational, Message = "Queue {0} dispose.")]
         public void QueueDispose(Guid id)
         {
             this.WriteEvent((int)QueueEventId.QueueDispose, id);
