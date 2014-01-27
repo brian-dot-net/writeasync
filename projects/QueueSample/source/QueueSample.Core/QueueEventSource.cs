@@ -37,5 +37,11 @@ namespace QueueSample
         {
             this.WriteEvent((int)QueueEventId.Dequeue, id);
         }
+
+        [Event((int)QueueEventId.QueueDispose, Level = EventLevel.Informational, Message = "Queue dispose {0}.")]
+        public void QueueDispose(Guid id)
+        {
+            this.WriteEvent((int)QueueEventId.QueueDispose, id);
+        }
     }
 }

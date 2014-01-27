@@ -52,6 +52,23 @@ namespace QueueSample.Test.Unit
             }
         }
 
+        [Fact]
+        public void Dispose_with_events_traces_event()
+        {
+            InputQueueStub<string> inner = new InputQueueStub<string>();
+            QueueEventSource eventSource = QueueEventSource.Instance;
+            Guid id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            InputQueueWithEvents<string> queue = new InputQueueWithEvents<string>(inner, id, eventSource);
+
+            using (QueueEventListener listener = new QueueEventListener(eventSource, EventLevel.Informational, EventKeywords.None))
+            {
+                queue.Dispose();
+
+                Assert.True(inner.Disposed);
+                listener.VerifyEvent(QueueEventId.QueueDispose, EventLevel.Informational, EventKeywords.None, id);
+            }
+        }
+
         private sealed class InputQueueStub<T> : IInputQueue<T>
         {
             public InputQueueStub()
@@ -61,6 +78,8 @@ namespace QueueSample.Test.Unit
             public T Item { get; private set; }
 
             public TaskCompletionSource<T> PendingDequeue { get; private set; }
+
+            public bool Disposed { get; private set; }
 
             public Task<T> DequeueAsync()
             {
@@ -75,7 +94,7 @@ namespace QueueSample.Test.Unit
 
             public void Dispose()
             {
-                throw new NotImplementedException();
+                this.Disposed = true;
             }
         }
     }

@@ -36,7 +36,8 @@ namespace QueueSample
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            this.eventSource.QueueDispose(this.id);
+            this.inner.Dispose();
         }
     }
 }
