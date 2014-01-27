@@ -12,5 +12,6 @@ namespace QueueSample
 
         // Queue
         Enqueue = 1,
+        Dequeue = 2,
     }
 }

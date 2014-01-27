@@ -24,7 +24,8 @@ namespace QueueSample
 
         public Task<T> DequeueAsync()
         {
-            throw new NotImplementedException();
+            this.eventSource.Dequeue(this.id);
+            return this.inner.DequeueAsync();
         }
 
         public void Enqueue(T item)

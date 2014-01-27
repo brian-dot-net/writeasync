@@ -34,17 +34,38 @@ namespace QueueSample.Test.Unit
             }
         }
 
+        [Fact]
+        public void Dequeue_with_events_traces_event()
+        {
+            InputQueueStub<string> inner = new InputQueueStub<string>();
+            QueueEventSource eventSource = QueueEventSource.Instance;
+            Guid id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            InputQueueWithEvents<string> queue = new InputQueueWithEvents<string>(inner, id, eventSource);
+
+            using (QueueEventListener listener = new QueueEventListener(eventSource, EventLevel.Informational, EventKeywords.None))
+            {
+                Task task = queue.DequeueAsync();
+
+                Assert.False(task.IsCompleted);
+
+                listener.VerifyEvent(QueueEventId.Dequeue, EventLevel.Informational, EventKeywords.None, id);
+            }
+        }
+
         private sealed class InputQueueStub<T> : IInputQueue<T>
         {
             public InputQueueStub()
             {
             }
 
-            public T Item { get; set; }
+            public T Item { get; private set; }
+
+            public TaskCompletionSource<T> PendingDequeue { get; private set; }
 
             public Task<T> DequeueAsync()
             {
-                throw new NotImplementedException();
+                this.PendingDequeue = new TaskCompletionSource<T>();
+                return this.PendingDequeue.Task;
             }
 
             public void Enqueue(T item)

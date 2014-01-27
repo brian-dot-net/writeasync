@@ -31,5 +31,11 @@ namespace QueueSample
         {
             this.WriteEvent((int)QueueEventId.Enqueue, id);
         }
+
+        [Event((int)QueueEventId.Dequeue, Level = EventLevel.Informational, Message = "Dequeue {0}.")]
+        public void Dequeue(Guid id)
+        {
+            this.WriteEvent((int)QueueEventId.Dequeue, id);
+        }
     }
 }
