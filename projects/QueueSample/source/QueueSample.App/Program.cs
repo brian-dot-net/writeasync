@@ -15,7 +15,7 @@ namespace QueueSample
     {
         private static void Main(string[] args)
         {
-            InputQueue<int> queue = new InputQueue<int>();
+            IInputQueue<int> queue = new InputQueueWithEvents<int>(new InputQueue<int>(), Guid.NewGuid(), QueueEventSource.Instance);
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 Task enqueueTask = PrintException(EnqueueLoopAsync(queue, cts.Token));
@@ -30,7 +30,7 @@ namespace QueueSample
             }
         }
 
-        private static async Task EnqueueLoopAsync(InputQueue<int> queue, CancellationToken token)
+        private static async Task EnqueueLoopAsync(IInputQueue<int> queue, CancellationToken token)
         {
             await Task.Yield();
 
@@ -43,7 +43,7 @@ namespace QueueSample
             }
         }
 
-        private static async Task DequeueLoopAsync(InputQueue<int> queue, CancellationToken token)
+        private static async Task DequeueLoopAsync(IInputQueue<int> queue, CancellationToken token)
         {
             await Task.Yield();
 
