@@ -25,5 +25,11 @@ namespace QueueSample
         {
             get { return SingletonInstance; }
         }
+
+        [Event((int)QueueEventId.Enqueue, Level = EventLevel.Informational, Message = "Enqueue {0}.")]
+        public void Enqueue(Guid id)
+        {
+            this.WriteEvent((int)QueueEventId.Enqueue, id);
+        }
     }
 }

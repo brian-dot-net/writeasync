@@ -9,5 +9,8 @@ namespace QueueSample
     public enum QueueEventId : ushort
     {
         None = 0,
+
+        // Queue
+        Enqueue = 1,
     }
 }
