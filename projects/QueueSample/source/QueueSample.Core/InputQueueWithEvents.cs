@@ -25,9 +25,15 @@ namespace QueueSample
         public async Task<T> DequeueAsync()
         {
             this.eventSource.Dequeue(this.id);
-            T item = await this.inner.DequeueAsync();
-            this.eventSource.DequeueCompleted(this.id);
-            return item;
+            try
+            {
+                T item = await this.inner.DequeueAsync();
+                return item;
+            }
+            finally
+            {
+                this.eventSource.DequeueCompleted(this.id);
+            }
         }
 
         public void Enqueue(T item)

@@ -60,6 +60,36 @@ namespace QueueSample.Test.Unit
         }
 
         [Fact]
+        public void Dequeue_with_events_traces_event_on_error()
+        {
+            InputQueueStub<string> inner = new InputQueueStub<string>();
+            QueueEventSource eventSource = QueueEventSource.Instance;
+            Guid id = new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+            InputQueueWithEvents<string> queue = new InputQueueWithEvents<string>(inner, id, eventSource);
+
+            using (QueueEventListener listener = new QueueEventListener(eventSource, EventLevel.Informational, EventKeywords.None))
+            {
+                Task<string> task = queue.DequeueAsync();
+
+                Assert.False(task.IsCompleted);
+
+                listener.VerifyEvent(QueueEventId.Dequeue, EventLevel.Informational, EventKeywords.None, id);
+                listener.Events.Clear();
+
+                InvalidTimeZoneException expectedException = new InvalidTimeZoneException("Expected.");
+                inner.PendingDequeue.SetException(expectedException);
+
+                Assert.Equal(TaskStatus.Faulted, task.Status);
+                Assert.NotNull(task.Exception);
+                AggregateException ae = task.Exception;
+                Assert.Equal(1, ae.InnerExceptions.Count);
+                Assert.Same(expectedException, ae.InnerExceptions[0]);
+
+                listener.VerifyEvent(QueueEventId.DequeueCompleted, EventLevel.Informational, EventKeywords.None, id);
+            }
+        }
+
+        [Fact]
         public void Dispose_with_events_traces_event()
         {
             InputQueueStub<string> inner = new InputQueueStub<string>();
