@@ -32,6 +32,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="QueueEventId.cs" />
+    <Compile Include="QueueEventSource.cs" />
     <Compile Include="IInputQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="InputQueue.cs" />
