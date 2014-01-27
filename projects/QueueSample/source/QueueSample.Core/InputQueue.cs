@@ -10,7 +10,7 @@ namespace QueueSample
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public class InputQueue<T> : IDisposable
+    public class InputQueue<T> : IInputQueue<T>
     {
         private readonly Queue<T> items;
 
