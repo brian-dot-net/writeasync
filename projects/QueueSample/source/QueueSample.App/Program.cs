@@ -55,8 +55,7 @@ namespace QueueSample
                     int current = await queue.DequeueAsync();
                     if (current - previous != 1)
                     {
-                        string message = string.Format(CultureInfo.InvariantCulture, "Invalid data! Current is {0} but previous was {1}.", current, previous);
-                        throw new InvalidOperationException(message);
+                        throw GetOutOfOrderError(current, previous);
                     }
 
                     previous = current;
@@ -65,6 +64,12 @@ namespace QueueSample
             catch (ObjectDisposedException)
             {
             }
+        }
+
+        private static Exception GetOutOfOrderError(int current, int previous)
+        {
+            string message = string.Format(CultureInfo.InvariantCulture, "Invalid data! Current is {0} but previous was {1}.", current, previous);
+            return new InvalidOperationException(message);
         }
 
         private static async Task PrintException(Task task)
