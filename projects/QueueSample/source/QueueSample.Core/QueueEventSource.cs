@@ -32,10 +32,16 @@ namespace QueueSample
             this.WriteEvent((int)QueueEventId.Enqueue, id);
         }
 
-        [Event((int)QueueEventId.Dequeue, Level = EventLevel.Informational, Message = "Dequeue {0}.")]
+        [Event((int)QueueEventId.Dequeue, Level = EventLevel.Informational, Message = "Dequeue {0} started.")]
         public void Dequeue(Guid id)
         {
             this.WriteEvent((int)QueueEventId.Dequeue, id);
+        }
+
+        [Event((int)QueueEventId.DequeueCompleted, Level = EventLevel.Informational, Message = "Dequeue {0} completed.")]
+        public void DequeueCompleted(Guid id)
+        {
+            this.WriteEvent((int)QueueEventId.DequeueCompleted, id);
         }
 
         [Event((int)QueueEventId.QueueDispose, Level = EventLevel.Informational, Message = "Queue dispose {0}.")]

@@ -22,10 +22,12 @@ namespace QueueSample
             this.eventSource = eventSource;
         }
 
-        public Task<T> DequeueAsync()
+        public async Task<T> DequeueAsync()
         {
             this.eventSource.Dequeue(this.id);
-            return this.inner.DequeueAsync();
+            T item = await this.inner.DequeueAsync();
+            this.eventSource.DequeueCompleted(this.id);
+            return item;
         }
 
         public void Enqueue(T item)

@@ -44,11 +44,18 @@ namespace QueueSample.Test.Unit
 
             using (QueueEventListener listener = new QueueEventListener(eventSource, EventLevel.Informational, EventKeywords.None))
             {
-                Task task = queue.DequeueAsync();
+                Task<string> task = queue.DequeueAsync();
 
                 Assert.False(task.IsCompleted);
 
                 listener.VerifyEvent(QueueEventId.Dequeue, EventLevel.Informational, EventKeywords.None, id);
+                listener.Events.Clear();
+
+                inner.PendingDequeue.SetResult("a");
+
+                Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+                Assert.Equal("a", task.Result);
+                listener.VerifyEvent(QueueEventId.DequeueCompleted, EventLevel.Informational, EventKeywords.None, id);
             }
         }
 
