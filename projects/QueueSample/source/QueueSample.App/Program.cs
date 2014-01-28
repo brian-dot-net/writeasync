@@ -30,7 +30,7 @@ namespace QueueSample
             }
         }
 
-        private static async Task EnqueueLoopAsync(IInputQueue<int> queue, CancellationToken token)
+        private static async Task EnqueueLoopAsync(IProducerQueue<int> queue, CancellationToken token)
         {
             await Task.Yield();
 
@@ -43,7 +43,7 @@ namespace QueueSample
             }
         }
 
-        private static async Task DequeueLoopAsync(IInputQueue<int> queue, CancellationToken token)
+        private static async Task DequeueLoopAsync(IConsumerQueue<int> queue, CancellationToken token)
         {
             await Task.Yield();
 

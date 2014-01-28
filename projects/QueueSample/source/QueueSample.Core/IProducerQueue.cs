@@ -1,12 +1,13 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IInputQueue.cs" company="Brian Rogers">
+// <copyright file="IProducerQueue.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 namespace QueueSample
 {
-    public interface IInputQueue<T> : IProducerQueue<T>, IConsumerQueue<T>
+    public interface IProducerQueue<T>
     {
+        void Enqueue(T item);
     }
 }

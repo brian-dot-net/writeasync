@@ -1,12 +1,16 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="IInputQueue.cs" company="Brian Rogers">
+// <copyright file="IConsumerQueue.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
 
 namespace QueueSample
 {
-    public interface IInputQueue<T> : IProducerQueue<T>, IConsumerQueue<T>
+    using System;
+    using System.Threading.Tasks;
+
+    public interface IConsumerQueue<T> : IDisposable
     {
+        Task<T> DequeueAsync();
     }
 }
