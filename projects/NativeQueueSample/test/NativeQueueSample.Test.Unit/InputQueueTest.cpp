@@ -74,5 +74,24 @@ namespace NativeQueueSample
             Assert::IsTrue(task.is_done());
             Assert::AreEqual(wstring(L"b"), task.get());
         }
+
+        TEST_METHOD(Enqueue_then_dequeue_repeated_twice_completes_sync)
+        {
+            InputQueue<wstring> queue;
+
+            queue.Enqueue(wstring(L"a"));
+
+            task<wstring> task = queue.DequeueAsync();
+
+            Assert::IsTrue(task.is_done());
+            Assert::AreEqual(wstring(L"a"), task.get());
+
+            queue.Enqueue(wstring(L"b"));
+
+            task = queue.DequeueAsync();
+
+            Assert::IsTrue(task.is_done());
+            Assert::AreEqual(wstring(L"b"), task.get());
+        }
     };
 }

@@ -35,20 +35,23 @@ namespace NativeQueueSample
             else
             {
                 pending_->set(item);
+                pending_.reset();
             }
         }
 
         concurrency::task<T> DequeueAsync()
         {
             pending_ = make_unique<concurrency::task_completion_event<T>>();
+            concurrency::task<T> task = concurrency::task<T>(*pending_);
             if (!items_.empty())
             {
                 T item = items_.front();
                 items_.pop();
                 pending_->set(item);
+                pending_.reset();
             }
 
-            return concurrency::task<T>(*pending_);
+            return task;
         }
 
     private:
