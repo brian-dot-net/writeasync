@@ -26,17 +26,26 @@ namespace NativeQueueSample
 
         void Enqueue(T item)
         {
-            tce_.set(item);
+            if (!tce_)
+            {
+                tce_ = make_unique<concurrency::task_completion_event<T>>();
+            }
+
+            tce_->set(item);
         }
 
         concurrency::task<T> DequeueAsync()
         {
-            tce_ = concurrency::task_completion_event<T>();
-            return concurrency::task<T>(tce_);
+            if (!tce_)
+            {
+                tce_ = make_unique<concurrency::task_completion_event<T>>();
+            }
+
+            return concurrency::task<T>(*tce_);
         }
 
     private:
-        concurrency::task_completion_event<T> tce_;
+        std::unique_ptr<concurrency::task_completion_event<T>> tce_;
 
         InputQueue(InputQueue const & other);
         InputQueue & operator=(InputQueue const & other);
