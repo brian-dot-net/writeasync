@@ -8,6 +8,7 @@
 
 #include <string>
 #include <ppltasks.h>
+#include <queue>
 
 namespace NativeQueueSample
 {
@@ -16,7 +17,8 @@ namespace NativeQueueSample
     {
     public:
         InputQueue()
-            : tce_()
+            : items_(),
+            pending_()
         {
         }
         
@@ -26,26 +28,32 @@ namespace NativeQueueSample
 
         void Enqueue(T item)
         {
-            if (!tce_)
+            if (!pending_)
             {
-                tce_ = make_unique<concurrency::task_completion_event<T>>();
+                items_.push(item);
             }
-
-            tce_->set(item);
+            else
+            {
+                pending_->set(item);
+            }
         }
 
         concurrency::task<T> DequeueAsync()
         {
-            if (!tce_)
+            pending_ = make_unique<concurrency::task_completion_event<T>>();
+            if (!items_.empty())
             {
-                tce_ = make_unique<concurrency::task_completion_event<T>>();
+                T item = items_.front();
+                items_.pop();
+                pending_->set(item);
             }
 
-            return concurrency::task<T>(*tce_);
+            return concurrency::task<T>(*pending_);
         }
 
     private:
-        std::unique_ptr<concurrency::task_completion_event<T>> tce_;
+        std::queue<T> items_;
+        std::unique_ptr<concurrency::task_completion_event<T>> pending_;
 
         InputQueue(InputQueue const & other);
         InputQueue & operator=(InputQueue const & other);
