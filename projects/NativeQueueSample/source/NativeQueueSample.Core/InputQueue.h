@@ -41,6 +41,11 @@ namespace NativeQueueSample
 
         concurrency::task<T> DequeueAsync()
         {
+            if (pending_)
+            {
+                throw concurrency::invalid_operation("A dequeue operation is already in progress.");
+            }
+
             pending_ = make_unique<concurrency::task_completion_event<T>>();
             concurrency::task<T> task = concurrency::task<T>(*pending_);
             if (!items_.empty())

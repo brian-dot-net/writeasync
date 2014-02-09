@@ -112,5 +112,14 @@ namespace NativeQueueSample
             Assert::IsTrue(task.is_done());
             Assert::AreEqual(wstring(L"b"), task.get());
         }
+
+        TEST_METHOD(Dequeue_while_dequeue_still_pending_throws_invalid_operation)
+        {
+            InputQueue<wstring> queue;
+
+            task<wstring> task = AssertTaskPending(queue.DequeueAsync());
+
+            Assert::ExpectException<invalid_operation>([&queue](){ queue.DequeueAsync(); });
+        }
     };
 }
