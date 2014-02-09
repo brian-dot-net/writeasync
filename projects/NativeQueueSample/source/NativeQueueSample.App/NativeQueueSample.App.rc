@@ -1,0 +1,45 @@
+//-----------------------------------------------------------------------
+// <copyright file="NativeQueueSample.App.rc" company="Brian Rogers">
+// Copyright (c) Brian Rogers. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+#include <windows.h>
+
+#ifndef _DEBUG
+#define VER_DEBUG   0
+#else
+#define VER_DEBUG   VS_FF_DEBUG
+#endif
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION    	1,0,0,0
+PRODUCTVERSION 	1,0,0,0
+FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
+FILEFLAGS       VER_DEBUG
+FILEOS         	VOS__WINDOWS32
+FILETYPE       	VFT_APP
+FILESUBTYPE    	VFT2_UNKNOWN
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName", "Brian Rogers\0"
+            VALUE "FileDescription", "NativeQueueSample.App\0"
+            VALUE "FileVersion", "1.0.0.0\0"
+            VALUE "InternalName", "NativeQueueSample.App\0"
+            VALUE "LegalCopyright", "Copyright \251 Brian Rogers\0"
+            VALUE "LegalTrademarks1", "\0"
+            VALUE "LegalTrademarks2", "\0"
+            VALUE "OriginalFilename", "NativeQueueSample.App.exe\0"
+            VALUE "ProductName", "NativeQueueSample.App\0"
+            VALUE "ProductVersion", "1.0.0.0\0"
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
