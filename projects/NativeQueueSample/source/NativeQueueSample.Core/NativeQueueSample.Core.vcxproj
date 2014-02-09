@@ -71,10 +71,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Class1.h" />
+    <ClInclude Include="InputQueue.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Class1.cpp" />
+    <ClCompile Include="InputQueue.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

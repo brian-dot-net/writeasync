@@ -1,0 +1,48 @@
+//-----------------------------------------------------------------------
+// <copyright file="InputQueueTest.cpp" company="Brian Rogers">
+// Copyright (c) Brian Rogers. All rights reserved.
+// </copyright>
+//-----------------------------------------------------------------------
+
+#include <ppl.h>
+#include "InputQueue.h"
+#include "CppUnitTest.h"
+
+using namespace concurrency;
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+using namespace std;
+
+namespace NativeQueueSample
+{
+    template <typename T>
+    task<T> & AssertTaskPending(task<T> & task)
+    {
+        if (task.is_done())
+        {
+            // Before asserting, force rethrow of exception if task finished with error.
+            // Otherwise, we run the risk of a "double fault" due to an unobserved task
+            // error, which can end up hanging the VS test executor.
+            Logger::WriteMessage(L"Task completed unexpectedly.");
+            task.get();
+        }
+
+        Assert::IsFalse(task.is_done());
+        return task;
+    }
+    
+    TEST_CLASS(InputQueueTest)
+    {
+    public:
+        TEST_METHOD(Dequeue_completes_after_enqueue)
+        {
+            InputQueue<wstring> queue;
+
+            task<wstring> task = AssertTaskPending(queue.DequeueAsync());
+
+            queue.Enqueue(wstring(L"a"));
+
+            Assert::IsTrue(task.is_done());
+            Assert::AreEqual(wstring(L"a"), task.get());
+        }
+    };
+}
