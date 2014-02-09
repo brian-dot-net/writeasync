@@ -29,6 +29,13 @@ namespace NativeQueueSample
         Assert::IsFalse(task.is_done());
         return task;
     }
+
+    template <typename T>
+    void AssertTaskCanceled(task<T> & task)
+    {
+        Assert::IsTrue(task.is_done());
+        Assert::ExpectException<task_canceled>([&task](){ task.get(); });
+    }
     
     TEST_CLASS(InputQueueTest)
     {
@@ -120,6 +127,17 @@ namespace NativeQueueSample
             task<wstring> task = AssertTaskPending(queue.DequeueAsync());
 
             Assert::ExpectException<invalid_operation>([&queue](){ queue.DequeueAsync(); });
+        }
+
+        TEST_METHOD(Destruct_cancels_pending_receive)
+        {
+            task<wstring> task;
+            {
+                InputQueue<wstring> queue;
+                task = AssertTaskPending(queue.DequeueAsync());
+            }
+
+            AssertTaskCanceled(task);
         }
     };
 }
