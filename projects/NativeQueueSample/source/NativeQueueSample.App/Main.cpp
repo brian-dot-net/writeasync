@@ -33,6 +33,7 @@ int wmain(int argc, wchar_t ** argv)
     try
     {
         when_all(tasks.begin(), tasks.end()).get();
+        wcout << L"Succeeded." << endl;
     }
     catch (exception & e)
     {

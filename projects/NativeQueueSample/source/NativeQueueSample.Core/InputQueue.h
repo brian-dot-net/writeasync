@@ -18,7 +18,8 @@ namespace NativeQueueSample
     public:
         InputQueue()
             : items_(),
-            pending_()
+            pending_(),
+            syncRoot_()
         {
         }
         
@@ -28,32 +29,44 @@ namespace NativeQueueSample
 
         void Enqueue(T item)
         {
-            if (!pending_)
+            std::unique_ptr<concurrency::task_completion_event<T>> current;
             {
-                items_.push(item);
+                concurrency::critical_section::scoped_lock lock(syncRoot_);
+                if (!pending_)
+                {
+                    items_.push(item);
+                }
+                else
+                {
+                    current = std::move(pending_);
+                }
             }
-            else
+
+            if (current)
             {
-                pending_->set(item);
-                pending_.reset();
+                current->set(item);
             }
         }
 
         concurrency::task<T> DequeueAsync()
         {
+            concurrency::critical_section::scoped_lock lock(syncRoot_);
             if (pending_)
             {
                 throw concurrency::invalid_operation("A dequeue operation is already in progress.");
             }
 
-            pending_ = make_unique<concurrency::task_completion_event<T>>();
-            concurrency::task<T> task = concurrency::task<T>(*pending_);
+            std::unique_ptr<concurrency::task_completion_event<T>> current = make_unique<concurrency::task_completion_event<T>>();
+            concurrency::task<T> task(*current);
             if (!items_.empty())
             {
                 T item = items_.front();
                 items_.pop();
-                pending_->set(item);
-                pending_.reset();
+                current->set(item);
+            }
+            else
+            {
+                pending_ = move(current);
             }
 
             return task;
@@ -62,6 +75,7 @@ namespace NativeQueueSample
     private:
         std::queue<T> items_;
         std::unique_ptr<concurrency::task_completion_event<T>> pending_;
+        concurrency::critical_section syncRoot_;
 
         InputQueue(InputQueue const & other);
         InputQueue & operator=(InputQueue const & other);

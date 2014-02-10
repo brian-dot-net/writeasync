@@ -47,14 +47,21 @@ namespace NativeQueueSample
                 concurrency::task<int> dequeueTask = queue.DequeueAsync();
                 return dequeueTask.then([previous](concurrency::task<int> t)
                 {
-                    int current = t.get();
-                    if ((current - *previous) != 1)
+                    try
                     {
-                        throw GetOutOfOrderError(current, *previous);
-                    }
+                        int current = t.get();
+                        if ((current - *previous) != 1)
+                        {
+                            throw GetOutOfOrderError(current, *previous);
+                        }
 
-                    *previous = current;
-                    return true;
+                        *previous = current;
+                        return true;
+                    }
+                    catch (task_canceled const &)
+                    {
+                        return false;
+                    }
                 });
             });
         });
@@ -75,7 +82,7 @@ namespace NativeQueueSample
             {
                 t.get();
             }
-            catch (std::exception & e)
+            catch (std::exception const & e)
             {
                 std::cout << "ERROR: " << e.what();
                 throw;
