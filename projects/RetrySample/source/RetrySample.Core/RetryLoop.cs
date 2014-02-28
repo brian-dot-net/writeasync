@@ -30,6 +30,7 @@ namespace RetrySample
         public async Task<RetryContext> ExecuteAsync()
         {
             RetryContext context = new RetryContext();
+            bool shouldRetry;
             TimeSpan startTime = this.Timer.Elapsed;
             do
             {
@@ -45,9 +46,10 @@ namespace RetrySample
 
                 context.ElapsedTime = this.Timer.Elapsed - startTime;
                 context.Succeeded = this.Succeeded(context);
+                shouldRetry = this.ShouldRetry(context);
                 ++context.Iteration;
             }
-            while (!context.Succeeded && this.ShouldRetry(context));
+            while (!context.Succeeded && shouldRetry);
 
             return context;
         }

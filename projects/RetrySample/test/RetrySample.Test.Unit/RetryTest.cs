@@ -37,7 +37,7 @@ namespace RetrySample.Test.Unit
         {
             int count = 0;
             RetryLoop loop = new RetryLoop(r => Task.FromResult(++count));
-            loop.ShouldRetry = r => r.Iteration < 2;
+            loop.ShouldRetry = r => r.Iteration < 1;
             loop.Succeeded = r => false;
 
             Task<RetryContext> task = loop.ExecuteAsync();
