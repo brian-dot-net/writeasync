@@ -34,6 +34,7 @@
   <ItemGroup>
     <Compile Include="ElapsedTimer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RetryContextExtensions.cs" />
     <Compile Include="RetryContext.cs" />
     <Compile Include="IElapsedTimer.cs" />
     <Compile Include="RetryLoop.cs" />

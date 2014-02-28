@@ -266,6 +266,24 @@ namespace RetrySample.Test.Unit
             Assert.Equal(3, nullCount);
         }
 
+        [Fact]
+        public void Add_async_extension_awaits_and_adds_result()
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+            RetryLoop loop = new RetryLoop(r => r.AddAsync("Result", tcs.Task));
+
+            Task<RetryContext> task = loop.ExecuteAsync();
+
+            Assert.False(task.IsCompleted);
+
+            tcs.SetResult("xyz");
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            RetryContext context = task.Result;
+            string result = context.Get<string>("Result");
+            Assert.Equal("xyz", result);
+        }
+
         private sealed class ElapsedTimerStub : IElapsedTimer
         {
             public ElapsedTimerStub()
