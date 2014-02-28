@@ -21,7 +21,7 @@ namespace RetrySample.Test.Unit
         public void Execute_runs_func_once_returns_context()
         {
             int count = 0;
-            RetryLoop loop = new RetryLoop(() => Task.FromResult(++count));
+            RetryLoop loop = new RetryLoop(r => Task.FromResult(++count));
 
             Task<RetryContext> task = loop.ExecuteAsync();
 
@@ -36,7 +36,7 @@ namespace RetrySample.Test.Unit
         public void Execute_runs_func_until_condition_false_returns_context()
         {
             int count = 0;
-            RetryLoop loop = new RetryLoop(() => Task.FromResult(++count));
+            RetryLoop loop = new RetryLoop(r => Task.FromResult(++count));
             loop.Condition = r => r.Iteration < 2;
 
             Task<RetryContext> task = loop.ExecuteAsync();
@@ -50,20 +50,21 @@ namespace RetrySample.Test.Unit
         [Fact]
         public void Execute_runs_func_returns_context_with_elapsed_time()
         {
-            int count = 0;
-            RetryLoop loop = new RetryLoop(() => Task.FromResult(++count));
+            TimeSpan elapsed = TimeSpan.MaxValue;
+            RetryLoop loop = new RetryLoop(r => Task.FromResult(elapsed = r.ElapsedTime));
             ElapsedTimerStub timer = new ElapsedTimerStub();
             loop.Timer = timer;
 
-            timer.ElapsedTimes.Enqueue(TimeSpan.FromSeconds(5.0d));
+            timer.ElapsedTimes.Enqueue(TimeSpan.FromSeconds(1.0d));
+            timer.ElapsedTimes.Enqueue(TimeSpan.FromSeconds(2.5d));
+            timer.ElapsedTimes.Enqueue(TimeSpan.FromSeconds(4.0d));
             Task<RetryContext> task = loop.ExecuteAsync();
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
-            Assert.Equal(1, count);
+            Assert.Equal(TimeSpan.FromSeconds(1.5d), elapsed);
             RetryContext context = task.Result;
             Assert.Equal(1, context.Iteration);
-            timer.ElapsedTimes.Enqueue(TimeSpan.FromSeconds(13.0d));
-            Assert.Equal(TimeSpan.FromSeconds(8.0d), context.ElapsedTime);
+            Assert.Equal(TimeSpan.FromSeconds(3.0d), context.ElapsedTime);
         }
 
         private sealed class ElapsedTimerStub : IElapsedTimer

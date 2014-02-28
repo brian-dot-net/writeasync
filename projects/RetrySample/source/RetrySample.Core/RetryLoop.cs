@@ -12,9 +12,9 @@ namespace RetrySample
 
     public class RetryLoop
     {
-        private readonly Func<Task> func;
+        private readonly Func<RetryContext, Task> func;
 
-        public RetryLoop(Func<Task> func)
+        public RetryLoop(Func<RetryContext, Task> func)
         {
             this.func = func;
             this.Condition = r => false;
@@ -31,7 +31,7 @@ namespace RetrySample
             RetryContext context = new RetryContext(this.Timer);
             do
             {
-                await this.func();
+                await this.func(context);
                 ++context.Iteration;
             }
             while (condition(context));
