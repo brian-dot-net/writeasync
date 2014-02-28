@@ -108,6 +108,27 @@ namespace RetrySample.Test.Unit
             Assert.True(context.Succeeded);
         }
 
+        [Fact]
+        public void Execute_func_throws_sync_exception_caught_and_set_in_context()
+        {
+            InvalidTimeZoneException exception = new InvalidTimeZoneException("Expected.");
+            Func<RetryContext, Task> func = delegate(RetryContext r)
+            {
+                throw exception;
+            };
+            RetryLoop loop = new RetryLoop(func);
+
+            Task<RetryContext> task = loop.ExecuteAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            RetryContext context = task.Result;
+            Assert.Equal(1, context.Iteration);
+            Assert.False(context.Succeeded);
+            Assert.NotNull(context.Exception);
+            Assert.Equal(1, context.Exception.InnerExceptions.Count);
+            Assert.Same(exception, context.Exception.InnerExceptions[0]);
+        }
+
         private sealed class ElapsedTimerStub : IElapsedTimer
         {
             public ElapsedTimerStub()

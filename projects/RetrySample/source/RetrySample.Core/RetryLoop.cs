@@ -17,7 +17,7 @@ namespace RetrySample
         {
             this.func = func;
             this.ShouldRetry = r => false;
-            this.Succeeded = r => true;
+            this.Succeeded = r => r.Exception == null;
             this.Timer = new ElapsedTimer();
         }
 
@@ -34,7 +34,15 @@ namespace RetrySample
             do
             {
                 context.ElapsedTime = this.Timer.Elapsed - startTime;
-                await this.func(context);
+                try
+                {
+                    await this.func(context);
+                }
+                catch (Exception e)
+                {
+                    context.Exception = new AggregateException(e);
+                }
+
                 context.ElapsedTime = this.Timer.Elapsed - startTime;
                 context.Succeeded = this.Succeeded(context);
                 ++context.Iteration;

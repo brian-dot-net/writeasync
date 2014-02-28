@@ -19,5 +19,7 @@ namespace RetrySample
         public TimeSpan ElapsedTime { get; set; }
 
         public bool Succeeded { get; set; }
+
+        public AggregateException Exception { get; set; }
     }
 }
