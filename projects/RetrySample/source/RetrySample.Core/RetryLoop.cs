@@ -28,11 +28,14 @@ namespace RetrySample
         public async Task<RetryContext> ExecuteAsync()
         {
             Func<RetryContext, bool> condition = this.Condition.Compile();
-            RetryContext context = new RetryContext(this.Timer);
+            RetryContext context = new RetryContext();
+            TimeSpan startTime = this.Timer.Elapsed;
             do
             {
+                context.ElapsedTime = this.Timer.Elapsed - startTime;
                 await this.func(context);
                 ++context.Iteration;
+                context.ElapsedTime = this.Timer.Elapsed - startTime;
             }
             while (condition(context));
 
