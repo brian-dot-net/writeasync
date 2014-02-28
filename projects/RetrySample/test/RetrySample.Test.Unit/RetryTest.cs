@@ -33,7 +33,7 @@ namespace RetrySample.Test.Unit
         }
 
         [Fact]
-        public void Execute_runs_func_until_condition_false_returns_context()
+        public void Execute_runs_func_until_should_not_retry_returns_context()
         {
             int count = 0;
             RetryLoop loop = new RetryLoop(r => Task.FromResult(++count));
@@ -60,10 +60,10 @@ namespace RetrySample.Test.Unit
 
             RetryLoop loop = new RetryLoop(func);
 
-            TimeSpan conditionElapsed = TimeSpan.MaxValue;
+            TimeSpan shouldRetryElapsed = TimeSpan.MaxValue;
             loop.ShouldRetry = delegate(RetryContext r)
             {
-                conditionElapsed = r.ElapsedTime;
+                shouldRetryElapsed = r.ElapsedTime;
                 return false;
             };
 
@@ -87,7 +87,7 @@ namespace RetrySample.Test.Unit
             RetryContext context = task.Result;
             Assert.Equal(1, context.Iteration);
             Assert.Equal(TimeSpan.FromSeconds(3.0d), succeededElapsed);
-            Assert.Equal(TimeSpan.FromSeconds(3.0d), conditionElapsed);
+            Assert.Equal(TimeSpan.FromSeconds(3.0d), shouldRetryElapsed);
             Assert.Equal(TimeSpan.FromSeconds(3.0d), context.ElapsedTime);
         }
 
