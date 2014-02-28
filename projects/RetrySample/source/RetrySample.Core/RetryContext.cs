@@ -10,10 +10,20 @@ namespace RetrySample
 
     public class RetryContext
     {
-        public RetryContext()
+        private readonly IElapsedTimer timer;
+        private readonly TimeSpan startTime;
+
+        public RetryContext(IElapsedTimer timer)
         {
+            this.timer = timer;
+            this.startTime = this.timer.Elapsed;
         }
 
         public int Iteration { get; set; }
+
+        public TimeSpan ElapsedTime
+        {
+            get { return this.timer.Elapsed - this.startTime; }
+        }
     }
 }

@@ -32,8 +32,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ElapsedTimer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RetryContext.cs" />
+    <Compile Include="IElapsedTimer.cs" />
     <Compile Include="RetryLoop.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,6 +6,8 @@
 
 namespace RetrySample.Test.Unit
 {
+    using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -27,6 +29,7 @@ namespace RetrySample.Test.Unit
             Assert.Equal(1, count);
             RetryContext context = task.Result;
             Assert.Equal(1, context.Iteration);
+            Assert.NotEqual(TimeSpan.Zero, context.ElapsedTime);
         }
 
         [Fact]
@@ -42,6 +45,40 @@ namespace RetrySample.Test.Unit
             Assert.Equal(2, count);
             RetryContext context = task.Result;
             Assert.Equal(2, context.Iteration);
+        }
+
+        [Fact]
+        public void Execute_runs_func_returns_context_with_elapsed_time()
+        {
+            int count = 0;
+            RetryLoop loop = new RetryLoop(() => Task.FromResult(++count));
+            ElapsedTimerStub timer = new ElapsedTimerStub();
+            loop.Timer = timer;
+
+            timer.ElapsedTimes.Enqueue(TimeSpan.FromSeconds(5.0d));
+            Task<RetryContext> task = loop.ExecuteAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(1, count);
+            RetryContext context = task.Result;
+            Assert.Equal(1, context.Iteration);
+            timer.ElapsedTimes.Enqueue(TimeSpan.FromSeconds(13.0d));
+            Assert.Equal(TimeSpan.FromSeconds(8.0d), context.ElapsedTime);
+        }
+
+        private sealed class ElapsedTimerStub : IElapsedTimer
+        {
+            public ElapsedTimerStub()
+            {
+                this.ElapsedTimes = new Queue<TimeSpan>();
+            }
+
+            public Queue<TimeSpan> ElapsedTimes { get; private set; }
+
+            public TimeSpan Elapsed
+            {
+                get { return this.ElapsedTimes.Dequeue(); }
+            }
         }
     }
 }

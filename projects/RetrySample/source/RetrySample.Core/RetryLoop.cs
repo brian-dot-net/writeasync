@@ -18,14 +18,17 @@ namespace RetrySample
         {
             this.func = func;
             this.Condition = r => false;
+            this.Timer = new ElapsedTimer();
         }
 
         public Expression<Func<RetryContext, bool>> Condition { get; set; }
 
+        public IElapsedTimer Timer { get; set; }
+
         public async Task<RetryContext> ExecuteAsync()
         {
             Func<RetryContext, bool> condition = this.Condition.Compile();
-            RetryContext context = new RetryContext();
+            RetryContext context = new RetryContext(this.Timer);
             do
             {
                 await this.func();
