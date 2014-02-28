@@ -16,15 +16,17 @@ namespace RetrySample.Test.Unit
         }
 
         [Fact]
-        public void Execute_runs_func_once()
+        public void Execute_runs_func_once_returns_context()
         {
             int count = 0;
             RetryLoop loop = new RetryLoop(() => Task.FromResult(++count));
 
-            Task task = loop.ExecuteAsync();
+            Task<RetryContext> task = loop.ExecuteAsync();
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal(1, count);
+            RetryContext context = task.Result;
+            Assert.Equal(1, context.Iteration);
         }
     }
 }

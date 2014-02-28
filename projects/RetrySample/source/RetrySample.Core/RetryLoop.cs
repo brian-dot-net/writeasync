@@ -18,9 +18,11 @@ namespace RetrySample
             this.func = func;
         }
 
-        public Task ExecuteAsync()
+        public async Task<RetryContext> ExecuteAsync()
         {
-            return this.func();
+            RetryContext context = new RetryContext() { Iteration = 1 };
+            await this.func();
+            return context;
         }
     }
 }
