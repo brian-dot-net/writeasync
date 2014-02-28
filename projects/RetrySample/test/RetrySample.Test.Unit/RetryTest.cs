@@ -244,6 +244,28 @@ namespace RetrySample.Test.Unit
             Assert.Null(z);
         }
 
+        [Fact]
+        public void Execute_exception_cleared_on_next_iteration()
+        {
+            int nullCount = 0;
+            Func<RetryContext, Task> func = delegate(RetryContext r)
+            {
+                if (r.Exception == null)
+                {
+                    ++nullCount;
+                }
+
+                throw new InvalidTimeZoneException("Expected.");
+            };
+            RetryLoop loop = new RetryLoop(func);
+            loop.ShouldRetry = r => r.Iteration < 2;
+
+            Task<RetryContext> task = loop.ExecuteAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(3, nullCount);
+        }
+
         private sealed class ElapsedTimerStub : IElapsedTimer
         {
             public ElapsedTimerStub()

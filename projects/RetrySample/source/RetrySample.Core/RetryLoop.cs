@@ -44,6 +44,7 @@ namespace RetrySample
                         await this.BeforeRetry(context);
                     }
 
+                    context.Exception = null;
                     context.ElapsedTime = this.Timer.Elapsed - startTime;
                     await this.func(context);
                 }
