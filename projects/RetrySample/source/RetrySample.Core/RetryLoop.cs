@@ -37,14 +37,14 @@ namespace RetrySample
             TimeSpan startTime = this.Timer.Elapsed;
             do
             {
-                if (shouldRetry)
-                {
-                    await this.BeforeRetry(context);
-                }
-
-                context.ElapsedTime = this.Timer.Elapsed - startTime;
                 try
                 {
+                    if (shouldRetry)
+                    {
+                        await this.BeforeRetry(context);
+                    }
+
+                    context.ElapsedTime = this.Timer.Elapsed - startTime;
                     await this.func(context);
                 }
                 catch (Exception e)
