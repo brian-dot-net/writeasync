@@ -196,6 +196,28 @@ namespace RetrySample.Test.Unit
             Assert.Same(exception, context.Exception.InnerExceptions[0]);
         }
 
+        [Fact]
+        public void Execute_before_retry_throws_async_exception_caught_and_set_in_context()
+        {
+            RetryLoop loop = new RetryLoop(r => Task.FromResult(false));
+            loop.Succeeded = r => false;
+            loop.ShouldRetry = r => r.Iteration < 1;
+            InvalidTimeZoneException exception = new InvalidTimeZoneException("Expected.");
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            tcs.SetException(exception);
+            loop.BeforeRetry = r => tcs.Task;
+
+            Task<RetryContext> task = loop.ExecuteAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            RetryContext context = task.Result;
+            Assert.Equal(2, context.Iteration);
+            Assert.False(context.Succeeded);
+            Assert.NotNull(context.Exception);
+            Assert.Equal(1, context.Exception.InnerExceptions.Count);
+            Assert.Same(exception, context.Exception.InnerExceptions[0]);
+        }
+
         private sealed class ElapsedTimerStub : IElapsedTimer
         {
             public ElapsedTimerStub()
