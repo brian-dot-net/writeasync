@@ -38,6 +38,7 @@ namespace RetrySample.Test.Unit
             int count = 0;
             RetryLoop loop = new RetryLoop(r => Task.FromResult(++count));
             loop.Condition = r => r.Iteration < 2;
+            loop.Succeeded = r => false;
 
             Task<RetryContext> task = loop.ExecuteAsync();
 
@@ -65,6 +66,23 @@ namespace RetrySample.Test.Unit
             RetryContext context = task.Result;
             Assert.Equal(1, context.Iteration);
             Assert.Equal(TimeSpan.FromSeconds(3.0d), context.ElapsedTime);
+        }
+
+        [Fact]
+        public void Execute_runs_func_until_succeeded()
+        {
+            int count = 0;
+            RetryLoop loop = new RetryLoop(r => Task.FromResult(++count));
+            loop.Succeeded = r => r.Iteration == 1;
+            loop.Condition = r => true;
+
+            Task<RetryContext> task = loop.ExecuteAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            RetryContext context = task.Result;
+            Assert.Equal(2, context.Iteration);
+            Assert.Equal(2, count);
+            Assert.True(context.Succeeded);
         }
 
         private sealed class ElapsedTimerStub : IElapsedTimer

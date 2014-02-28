@@ -17,5 +17,7 @@ namespace RetrySample
         public int Iteration { get; set; }
 
         public TimeSpan ElapsedTime { get; set; }
+
+        public bool Succeeded { get; set; }
     }
 }
