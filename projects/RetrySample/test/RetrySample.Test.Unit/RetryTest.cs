@@ -218,6 +218,32 @@ namespace RetrySample.Test.Unit
             Assert.Same(exception, context.Exception.InnerExceptions[0]);
         }
 
+        [Fact]
+        public void Can_add_and_get_results_from_context()
+        {
+            RetryContext context = new RetryContext();
+            context.Add("a", 1);
+            context.Add("b", "Two");
+            object c1 = new object();
+            context.Add("c", c1);
+
+            int a2 = context.Get<int>("a");
+            string b2 = context.Get<string>("b");
+            object c2 = context.Get<object>("c");
+
+            Assert.Equal(1, a2);
+            Assert.Equal("Two", b2);
+            Assert.Same(c2, c1);
+
+            object x = context.Get<object>("x");
+            int y = context.Get<int>("y");
+            string z = context.Get<string>("z");
+
+            Assert.Null(x);
+            Assert.Equal(0, y);
+            Assert.Null(z);
+        }
+
         private sealed class ElapsedTimerStub : IElapsedTimer
         {
             public ElapsedTimerStub()
