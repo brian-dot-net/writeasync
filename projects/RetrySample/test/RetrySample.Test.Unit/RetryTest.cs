@@ -51,8 +51,29 @@ namespace RetrySample.Test.Unit
         [Fact]
         public void Execute_runs_func_returns_context_with_elapsed_time()
         {
-            TimeSpan elapsed = TimeSpan.MaxValue;
-            RetryLoop loop = new RetryLoop(r => Task.FromResult(elapsed = r.ElapsedTime));
+            TimeSpan funcElapsed = TimeSpan.MaxValue;
+            Func<RetryContext, Task> func = delegate(RetryContext r)
+            {
+                funcElapsed = r.ElapsedTime;
+                return Task.FromResult(false);
+            };
+
+            RetryLoop loop = new RetryLoop(func);
+
+            TimeSpan conditionElapsed = TimeSpan.MaxValue;
+            loop.Condition = delegate(RetryContext r)
+            {
+                conditionElapsed = r.ElapsedTime;
+                return false;
+            };
+
+            TimeSpan succeededElapsed = TimeSpan.MaxValue;
+            loop.Succeeded = delegate(RetryContext r)
+            {
+                succeededElapsed = r.ElapsedTime;
+                return false;
+            };
+
             ElapsedTimerStub timer = new ElapsedTimerStub();
             loop.Timer = timer;
 
@@ -62,9 +83,11 @@ namespace RetrySample.Test.Unit
             Task<RetryContext> task = loop.ExecuteAsync();
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
-            Assert.Equal(TimeSpan.FromSeconds(1.5d), elapsed);
+            Assert.Equal(TimeSpan.FromSeconds(1.5d), funcElapsed);
             RetryContext context = task.Result;
             Assert.Equal(1, context.Iteration);
+            Assert.Equal(TimeSpan.FromSeconds(3.0d), succeededElapsed);
+            Assert.Equal(TimeSpan.FromSeconds(3.0d), conditionElapsed);
             Assert.Equal(TimeSpan.FromSeconds(3.0d), context.ElapsedTime);
         }
 
