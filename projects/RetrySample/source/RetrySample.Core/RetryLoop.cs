@@ -16,12 +16,12 @@ namespace RetrySample
         public RetryLoop(Func<RetryContext, Task> func)
         {
             this.func = func;
-            this.Condition = r => false;
+            this.ShouldRetry = r => false;
             this.Succeeded = r => true;
             this.Timer = new ElapsedTimer();
         }
 
-        public Func<RetryContext, bool> Condition { get; set; }
+        public Func<RetryContext, bool> ShouldRetry { get; set; }
 
         public Func<RetryContext, bool> Succeeded { get; set; }
 
@@ -39,7 +39,7 @@ namespace RetrySample
                 context.Succeeded = this.Succeeded(context);
                 ++context.Iteration;
             }
-            while (!context.Succeeded && this.Condition(context));
+            while (!context.Succeeded && this.ShouldRetry(context));
 
             return context;
         }

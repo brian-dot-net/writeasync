@@ -37,7 +37,7 @@ namespace RetrySample.Test.Unit
         {
             int count = 0;
             RetryLoop loop = new RetryLoop(r => Task.FromResult(++count));
-            loop.Condition = r => r.Iteration < 2;
+            loop.ShouldRetry = r => r.Iteration < 2;
             loop.Succeeded = r => false;
 
             Task<RetryContext> task = loop.ExecuteAsync();
@@ -61,7 +61,7 @@ namespace RetrySample.Test.Unit
             RetryLoop loop = new RetryLoop(func);
 
             TimeSpan conditionElapsed = TimeSpan.MaxValue;
-            loop.Condition = delegate(RetryContext r)
+            loop.ShouldRetry = delegate(RetryContext r)
             {
                 conditionElapsed = r.ElapsedTime;
                 return false;
@@ -97,7 +97,7 @@ namespace RetrySample.Test.Unit
             int count = 0;
             RetryLoop loop = new RetryLoop(r => Task.FromResult(++count));
             loop.Succeeded = r => r.Iteration == 1;
-            loop.Condition = r => true;
+            loop.ShouldRetry = r => true;
 
             Task<RetryContext> task = loop.ExecuteAsync();
 
