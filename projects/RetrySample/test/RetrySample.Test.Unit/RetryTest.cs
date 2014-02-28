@@ -148,6 +148,31 @@ namespace RetrySample.Test.Unit
             Assert.Same(exception, context.Exception.InnerExceptions[0]);
         }
 
+        [Fact]
+        public void Execute_invokes_before_retry_func_after_iteration()
+        {
+            RetryLoop loop = new RetryLoop(r => Task.FromResult(false));
+            loop.Succeeded = r => false;
+            loop.ShouldRetry = r => r.Iteration < 1;
+            int count = 0;
+            int iteration = 0;
+            loop.BeforeRetry = delegate(RetryContext r)
+            {
+                ++count;
+                iteration = r.Iteration;
+                return Task.FromResult(false);
+            };
+
+            Task<RetryContext> task = loop.ExecuteAsync();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            RetryContext context = task.Result;
+            Assert.Equal(2, context.Iteration);
+            Assert.False(context.Succeeded);
+            Assert.Equal(1, count);
+            Assert.Equal(1, iteration);
+        }
+
         private sealed class ElapsedTimerStub : IElapsedTimer
         {
             public ElapsedTimerStub()
