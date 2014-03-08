@@ -46,6 +46,16 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Equal(1234, task.Result);
         }
 
+        [Fact]
+        public void Set_result_after_one_sync_step_completes_sync()
+        {
+            SetResultAfterOneStepOperation op = new SetResultAfterOneStepOperation(1234);
+            Task<int> task = op.Start();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(1234, task.Result);
+        }
+
         private sealed class SetResultInCtorOperation : AsyncOperation<int>
         {
             public SetResultInCtorOperation(int result)
@@ -94,6 +104,22 @@ namespace AsyncEnumSample.Test.Unit
                 {
                     this.Result = this.result;
                 }
+            }
+        }
+
+        private sealed class SetResultAfterOneStepOperation : AsyncOperation<int>
+        {
+            private readonly int result;
+
+            public SetResultAfterOneStepOperation(int result)
+            {
+                this.result = result;
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return new Step();
+                this.Result = this.result;
             }
         }
     }

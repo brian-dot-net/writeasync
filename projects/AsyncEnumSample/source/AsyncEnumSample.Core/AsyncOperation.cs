@@ -26,7 +26,7 @@ namespace AsyncEnumSample
             IEnumerator<Step> steps = this.Steps();
             while (steps.MoveNext())
             {
-                throw new NotImplementedException();
+                steps.Current.Invoke();
             }
 
             this.tcs.SetResult(this.Result);
@@ -37,6 +37,10 @@ namespace AsyncEnumSample
 
         protected struct Step
         {
+            public Task Invoke()
+            {
+                return null;
+            }
         }
     }
 }
