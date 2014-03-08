@@ -6,6 +6,8 @@
 
 namespace AsyncEnumSample.Test.Unit
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Xunit;
 
     public class AsyncOperationTest
@@ -15,8 +17,26 @@ namespace AsyncEnumSample.Test.Unit
         }
 
         [Fact]
-        public void Todo()
+        public void Set_result_in_ctor_and_break_completes_sync()
         {
+            SetResultInCtorOperation op = new SetResultInCtorOperation(1234);
+            Task<int> task = op.Start();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(1234, task.Result);
+        }
+
+        private sealed class SetResultInCtorOperation : AsyncOperation<int>
+        {
+            public SetResultInCtorOperation(int result)
+            {
+                this.Result = result;
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield break;
+            }
         }
     }
 }
