@@ -36,6 +36,16 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Equal(1234, task.Result);
         }
 
+        [Fact]
+        public void Set_result_in_finally_and_break_completes_sync()
+        {
+            SetResultInFinallyOperation op = new SetResultInFinallyOperation(1234);
+            Task<int> task = op.Start();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(1234, task.Result);
+        }
+
         private sealed class SetResultInCtorOperation : AsyncOperation<int>
         {
             public SetResultInCtorOperation(int result)
@@ -62,6 +72,28 @@ namespace AsyncEnumSample.Test.Unit
             {
                 this.Result = this.result;
                 yield break;
+            }
+        }
+
+        private sealed class SetResultInFinallyOperation : AsyncOperation<int>
+        {
+            private readonly int result;
+
+            public SetResultInFinallyOperation(int result)
+            {
+                this.result = result;
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                try
+                {
+                    yield break;
+                }
+                finally
+                {
+                    this.Result = this.result;
+                }
             }
         }
     }
