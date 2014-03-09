@@ -456,10 +456,22 @@ namespace AsyncEnumSample.Test.Unit
         public void Throws_sync_no_matching_exception_handler_on_sync_exception()
         {
             InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
-            NoMatchingHandlerSyncOperation op = new NoMatchingHandlerSyncOperation(1234, expected);
+            NoMatchingHandlerSyncOperation op = new NoMatchingHandlerSyncOperation(expected);
             InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => op.Start());
 
             Assert.Same(expected, actual);
+        }
+
+        [Fact]
+        public void Completes_successfully_on_matching_exception_handler_on_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            SecondMatchingHandlerSyncOperation op = new SecondMatchingHandlerSyncOperation(1234, expected);
+            Task<int> task = op.Start();
+
+            Assert.True(task.IsCompleted);
+            Assert.Equal(1234, task.Result);
+            Assert.Same(expected, op.CaughtException);
         }
 
         private static class Legacy
@@ -1336,12 +1348,10 @@ namespace AsyncEnumSample.Test.Unit
 
         private sealed class NoMatchingHandlerSyncOperation : TestAsyncOperation
         {
-            private readonly int result;
             private readonly Exception exception;
 
-            public NoMatchingHandlerSyncOperation(int result, Exception exception)
+            public NoMatchingHandlerSyncOperation(Exception exception)
             {
-                this.result = result;
                 this.exception = exception;
             }
 
@@ -1352,17 +1362,46 @@ namespace AsyncEnumSample.Test.Unit
                     thisPtr => thisPtr.Throw(),
                     Catch<ArgumentException>.AndHandle(this, (thisPtr, e) => true),
                     Catch<ArgumentNullException>.AndHandle(this, (thisPtr, e) => true));
-                this.Result = this.result;
-            }
-
-            private static void Invalid()
-            {
-                throw new InvalidOperationException("This shouldn't happen.");
             }
 
             private Task Throw()
             {
                 throw this.exception;
+            }
+        }
+
+        private sealed class SecondMatchingHandlerSyncOperation : TestAsyncOperation
+        {
+            private readonly int result;
+            private readonly Exception exception;
+
+            public SecondMatchingHandlerSyncOperation(int result, Exception exception)
+            {
+                this.result = result;
+                this.exception = exception;
+            }
+
+            public Exception CaughtException { get; private set; }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    thisPtr => thisPtr.Throw(),
+                    Catch<ArgumentException>.AndHandle(this, (thisPtr, e) => true),
+                    Catch<InvalidTimeZoneException>.AndHandle(this, (thisPtr, e) => thisPtr.Handle(e)));
+                this.Result = this.result;
+            }
+
+            private Task Throw()
+            {
+                throw this.exception;
+            }
+
+            private bool Handle(InvalidTimeZoneException e)
+            {
+                this.CaughtException = e;
+                return true;
             }
         }
     }
