@@ -149,7 +149,7 @@ namespace AsyncEnumSample.Test.Unit
 
             protected override IEnumerator<Step> Steps()
             {
-                yield return new Step();
+                yield return Step.Await(this, thisPtr => Step.TaskFromResult(false));
                 this.Result = this.result;
             }
         }
@@ -180,7 +180,7 @@ namespace AsyncEnumSample.Test.Unit
 
             protected override IEnumerator<Step> Steps()
             {
-                yield return new Step();
+                yield return Step.Await(false, r => Step.TaskFromResult(r));
                 throw this.exception;
             }
         }

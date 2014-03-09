@@ -37,9 +37,50 @@ namespace AsyncEnumSample
 
         protected struct Step
         {
+            private readonly Func<Task> doAsync;
+
+            private Step(Func<Task> doAsync)
+            {
+                this.doAsync = doAsync;
+            }
+
+            public static Task<T> TaskFromResult<T>(T result)
+            {
+                TaskCompletionSource<T> resultTask = new TaskCompletionSource<T>();
+                resultTask.SetResult(result);
+                return resultTask.Task;
+            }
+
+            public static Step Await<TState>(TState state, Func<TState, Task> doAsync)
+            {
+                return new AsyncCall<TState>(state, doAsync).Step;
+            }
+
             public Task Invoke()
             {
-                return null;
+                return this.doAsync();
+            }
+
+            private sealed class AsyncCall<TState>
+            {
+                private readonly TState state;
+                private readonly Func<TState, Task> doAsync;
+
+                public AsyncCall(TState state, Func<TState, Task> doAsync)
+                {
+                    this.state = state;
+                    this.doAsync = doAsync;
+                }
+
+                public Step Step
+                {
+                    get { return new Step(this.DoAsync); }
+                }
+
+                private Task DoAsync()
+                {
+                    return this.doAsync(this.state);
+                }
             }
         }
     }
