@@ -28,19 +28,9 @@ namespace AsyncEnumSample
         {
             this.tcs = new TaskCompletionSource<TResult>();
             this.steps = this.Steps();
-            try
-            {
-                this.moveNext = this.MoveNext;
-                this.MoveNext(null);
-                return this.tcs.Task;
-            }
-            catch (Exception)
-            {
-                using (this.steps)
-                {
-                    throw;
-                }
-            }
+            this.moveNext = this.MoveNext;
+            this.MoveNext(null);
+            return this.tcs.Task;
         }
 
         protected abstract IEnumerator<Step> Steps();
@@ -74,13 +64,13 @@ namespace AsyncEnumSample
             }
             catch (Exception e)
             {
-                if (task == null)
-                {
-                    throw;
-                }
-
                 using (this.steps)
                 {
+                    if (task == null)
+                    {
+                        throw;
+                    }
+
                     AggregateException ae = e as AggregateException;
                     if (ae != null)
                     {
