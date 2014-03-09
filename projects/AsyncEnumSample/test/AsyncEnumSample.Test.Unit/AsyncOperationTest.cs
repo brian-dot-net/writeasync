@@ -181,6 +181,27 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Same(expected, task.Exception.InnerExceptions[0]);
         }
 
+        [Fact]
+        public void Completes_with_async_exception_after_two_async_steps_with_async_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            TwoAsyncStepOperation op = new TwoAsyncStepOperation();
+            Task<int> task = op.Start();
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete(null);
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete(expected);
+
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
+            Assert.Equal(1, task.Exception.InnerExceptions.Count);
+            Assert.Same(expected, task.Exception.InnerExceptions[0]);
+        }
+
         private sealed class SetResultInCtorOperation : AsyncOperation<int>
         {
             public SetResultInCtorOperation(int result)
