@@ -79,7 +79,10 @@ namespace AsyncEnumSample
                     throw;
                 }
 
-                this.tcs.SetException(e.InnerExceptions);
+                using (this.steps)
+                {
+                    this.tcs.SetException(e.InnerExceptions);
+                }
             }
             catch (Exception e)
             {
@@ -87,7 +90,7 @@ namespace AsyncEnumSample
                 {
                     throw;
                 }
-
+                
                 this.tcs.SetException(e);
             }
         }

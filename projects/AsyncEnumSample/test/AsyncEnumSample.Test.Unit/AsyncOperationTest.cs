@@ -238,10 +238,28 @@ namespace AsyncEnumSample.Test.Unit
 
             Assert.False(task.IsCompleted);
 
-            op.Complete();
+            op.Complete(null);
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal(1234, task.Result);
+        }
+
+        [Fact]
+        public void Completes_with_async_exception_and_runs_finally_after_one_step_completes_with_async_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            OneAsyncStepWithFinallyOperation op = new OneAsyncStepWithFinallyOperation(1234);
+            Task<int> task = op.Start();
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete(expected);
+
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
+            Assert.Equal(1, task.Exception.InnerExceptions.Count);
+            Assert.Same(expected, task.Exception.InnerExceptions[0]);
+            Assert.Equal(1234, op.ResultAccessor);
         }
 
         private sealed class SetResultInCtorOperation : AsyncOperation<int>
@@ -618,9 +636,21 @@ namespace AsyncEnumSample.Test.Unit
                 this.tcs = new TaskCompletionSource<bool>();
             }
 
-            public void Complete()
+            public int ResultAccessor
             {
-                this.tcs.SetResult(false);
+                get { return this.Result; }
+            }
+
+            public void Complete(Exception exception)
+            {
+                if (exception == null)
+                {
+                    this.tcs.SetResult(false);
+                }
+                else
+                {
+                    this.tcs.SetException(exception);
+                }
             }
 
             protected override IEnumerator<Step> Steps()
