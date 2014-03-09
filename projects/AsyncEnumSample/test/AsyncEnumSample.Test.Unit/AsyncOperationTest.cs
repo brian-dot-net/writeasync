@@ -164,6 +164,23 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Equal(1234, task.Result);
         }
 
+        [Fact]
+        public void Completes_with_async_exception_after_one_async_step_with_async_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            TwoAsyncStepOperation op = new TwoAsyncStepOperation();
+            Task<int> task = op.Start();
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete(expected);
+
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
+            Assert.Equal(1, task.Exception.InnerExceptions.Count);
+            Assert.Same(expected, task.Exception.InnerExceptions[0]);
+        }
+
         private sealed class SetResultInCtorOperation : AsyncOperation<int>
         {
             public SetResultInCtorOperation(int result)
@@ -442,6 +459,36 @@ namespace AsyncEnumSample.Test.Unit
                     this,
                     thisPtr => thisPtr.tcs.Task,
                     (thisPtr, r) => thisPtr.Result = r);
+            }
+        }
+
+        private sealed class TwoAsyncStepOperation : AsyncOperation<int>
+        {
+            private TaskCompletionSource<bool> tcs;
+
+            public TwoAsyncStepOperation()
+            {
+            }
+
+            public void Complete(Exception exception)
+            {
+                if (exception != null)
+                {
+                    this.tcs.SetException(exception);
+                }
+                else
+                {
+                    this.tcs.SetResult(false);
+                }
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                this.tcs = new TaskCompletionSource<bool>();
+                yield return Step.Await(this, thisPtr => thisPtr.tcs.Task);
+                
+                this.tcs = new TaskCompletionSource<bool>();
+                yield return Step.Await(this, thisPtr => thisPtr.tcs.Task);
             }
         }
     }

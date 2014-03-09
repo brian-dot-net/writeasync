@@ -37,6 +37,12 @@ namespace AsyncEnumSample
 
         private void MoveNext(Task task)
         {
+            if ((task != null) && (task.Exception != null))
+            {
+                this.tcs.SetException(task.Exception.Flatten().InnerExceptions);
+                return;
+            }
+
             while (this.steps.MoveNext())
             {
                 Task nextTask = this.steps.Current.Invoke();
