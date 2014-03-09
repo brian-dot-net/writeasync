@@ -484,6 +484,16 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Same(expected, actual);
         }
 
+        [Fact]
+        public void Throws_sync_on_throw_from_handler_on_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowFromHandlerSyncOperation op = new ThrowFromHandlerSyncOperation(expected);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => op.Start());
+
+            Assert.Same(expected, actual);
+        }
+
         private static class Legacy
         {
             public static AsyncResult BeginOp(AsyncCallback callback, object state)
@@ -1434,6 +1444,34 @@ namespace AsyncEnumSample.Test.Unit
             }
 
             private Task Throw()
+            {
+                throw this.exception;
+            }
+        }
+
+        private sealed class ThrowFromHandlerSyncOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+
+            public ThrowFromHandlerSyncOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    thisPtr => Throw(),
+                    Catch<ArgumentException>.AndHandle(this, (thisPtr, e) => thisPtr.ThrowFromHandler()));
+            }
+
+            private static Task Throw()
+            {
+                throw new ArgumentException("Shouldn't see this.");
+            }
+
+            private bool ThrowFromHandler()
             {
                 throw this.exception;
             }
