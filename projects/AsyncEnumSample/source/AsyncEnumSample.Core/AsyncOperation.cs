@@ -131,9 +131,9 @@ namespace AsyncEnumSample
                 return exceptionTask.Task;
             }
 
-            public static Step Await<TState>(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end)
+            public static Step Await<TState>(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end, params IExceptionHandler[] handlers)
             {
-                return Await(new LegacyState<TState>(state, begin, end), l => Task.Factory.FromAsync((c, s) => LegacyBegin<TState>(c, s), r => LegacyEnd<TState>(r), l));
+                return Await(new LegacyState<TState>(state, begin, end), l => Task.Factory.FromAsync((c, s) => LegacyBegin<TState>(c, s), r => LegacyEnd<TState>(r), l), handlers);
             }
 
             public static Step Await<TState>(TState state, Func<TState, Task> doAsync, params IExceptionHandler[] handlers)
