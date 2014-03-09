@@ -263,10 +263,28 @@ namespace AsyncEnumSample.Test.Unit
         }
 
         [Fact]
-        public void Completes_with_async_exception_and_runs_finally_after_one_step_completes_async_then_throws_sync_exception()
+        public void Completes_with_async_exception_and_runs_finally_after_one_step_completes_async_then_throws_sync_exception_on_end()
         {
             InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
             ThrowOnEndOfOneAsyncStepWithFinallyOperation op = new ThrowOnEndOfOneAsyncStepWithFinallyOperation(expected);
+            Task<int> task = op.Start();
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete();
+
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
+            Assert.Equal(1, task.Exception.InnerExceptions.Count);
+            Assert.Same(expected, task.Exception.InnerExceptions[0]);
+            Assert.True(op.RanFinally);
+        }
+
+        [Fact]
+        public void Completes_with_async_exception_and_runs_finally_after_one_step_completes_async_then_throws_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowAfterAsyncStepWithFinallyOperation op = new ThrowAfterAsyncStepWithFinallyOperation(expected);
             Task<int> task = op.Start();
 
             Assert.False(task.IsCompleted);
@@ -719,6 +737,38 @@ namespace AsyncEnumSample.Test.Unit
                 if (result == 1)
                 {
                     throw this.exception;
+                }
+            }
+        }
+
+        private sealed class ThrowAfterAsyncStepWithFinallyOperation : AsyncOperation<int>
+        {
+            private readonly Exception exception;
+            private readonly TaskCompletionSource<bool> tcs;
+
+            public ThrowAfterAsyncStepWithFinallyOperation(Exception exception)
+            {
+                this.exception = exception;
+                this.tcs = new TaskCompletionSource<bool>();
+            }
+
+            public bool RanFinally { get; private set; }
+
+            public void Complete()
+            {
+                this.tcs.SetResult(false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                try
+                {
+                    yield return Step.Await(this, thisPtr => thisPtr.tcs.Task);
+                    throw this.exception;
+                }
+                finally
+                {
+                    this.RanFinally = true;
                 }
             }
         }
