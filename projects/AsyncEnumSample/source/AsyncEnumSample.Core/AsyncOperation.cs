@@ -27,9 +27,9 @@ namespace AsyncEnumSample
             while (steps.MoveNext())
             {
                 Task task = steps.Current.Invoke();
-                if (task.Exception != null)
+                if (task.IsFaulted)
                 {
-                    throw task.Exception;
+                    throw task.Exception.Flatten();
                 }
             }
 
@@ -55,6 +55,18 @@ namespace AsyncEnumSample
                 return resultTask.Task;
             }
 
+            public static Task TaskFromException(Exception exception)
+            {
+                return TaskFromException<bool>(exception);
+            }
+
+            public static Task<T> TaskFromException<T>(Exception exception)
+            {
+                TaskCompletionSource<T> exceptionTask = new TaskCompletionSource<T>();
+                exceptionTask.SetException(exception);
+                return exceptionTask.Task;
+            }
+
             public static Step Await<TState>(TState state, Func<TState, Task> doAsync)
             {
                 return Await(Tuple.Create(state, doAsync), t => DoWithFakeReturnAsync(t.Item1, t.Item2), (t, r) => { });
@@ -72,7 +84,17 @@ namespace AsyncEnumSample
 
             private static Task<bool> DoWithFakeReturnAsync<TState>(TState state, Func<TState, Task> doAsync)
             {
-                return doAsync(state).ContinueWith(t => false, TaskContinuationOptions.ExecuteSynchronously);
+                return doAsync(state).ContinueWith(t => ObserveException(t), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.AttachedToParent);
+            }
+
+            private static bool ObserveException(Task task)
+            {
+                if (task.Exception != null)
+                {
+                    throw task.Exception;
+                }
+
+                return false;
             }
 
             private sealed class AsyncCall<TState, TCallResult>
