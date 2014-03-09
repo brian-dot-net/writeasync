@@ -230,6 +230,20 @@ namespace AsyncEnumSample.Test.Unit
             Assert.True(op.RanFinally);
         }
 
+        [Fact]
+        public void Completes_async_and_runs_finally_after_one_step_completes_async()
+        {
+            OneAsyncStepWithFinallyOperation op = new OneAsyncStepWithFinallyOperation(1234);
+            Task<int> task = op.Start();
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(1234, task.Result);
+        }
+
         private sealed class SetResultInCtorOperation : AsyncOperation<int>
         {
             public SetResultInCtorOperation(int result)
@@ -590,6 +604,35 @@ namespace AsyncEnumSample.Test.Unit
             private Task Throw()
             {
                 throw this.exception;
+            }
+        }
+
+        private sealed class OneAsyncStepWithFinallyOperation : AsyncOperation<int>
+        {
+            private readonly int result;
+            private readonly TaskCompletionSource<bool> tcs;
+
+            public OneAsyncStepWithFinallyOperation(int result)
+            {
+                this.result = result;
+                this.tcs = new TaskCompletionSource<bool>();
+            }
+
+            public void Complete()
+            {
+                this.tcs.SetResult(false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                try
+                {
+                    yield return Step.Await(this.tcs.Task, t => t);
+                }
+                finally
+                {
+                    this.Result = this.result;
+                }
             }
         }
     }
