@@ -408,6 +408,18 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Same(expected, op.CaughtException);
         }
 
+        [Fact]
+        public void Completes_successfully_after_catching_and_handling_legacy_sync_completion_throw_on_end()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowOnEndSyncAndHandleOperation op = new ThrowOnEndSyncAndHandleOperation(1234, expected);
+            Task<int> task = op.Start();
+
+            Assert.True(task.IsCompleted);
+            Assert.Equal(1234, task.Result);
+            Assert.Same(expected, op.CaughtException);
+        }
+
         private static class Legacy
         {
             public static AsyncResult BeginOp(AsyncCallback callback, object state)
@@ -1150,6 +1162,48 @@ namespace AsyncEnumSample.Test.Unit
             private IAsyncResult Throw()
             {
                 throw this.exception;
+            }
+
+            private bool Handle(Exception caughtException)
+            {
+                this.CaughtException = caughtException;
+                return true;
+            }
+        }
+
+        private sealed class ThrowOnEndSyncAndHandleOperation : TestAsyncOperation
+        {
+            private readonly int result;
+            private readonly Exception exception;
+
+            public ThrowOnEndSyncAndHandleOperation(int result, Exception exception)
+            {
+                this.result = result;
+                this.exception = exception;
+            }
+
+            public Exception CaughtException { get; private set; }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.Begin(c, s),
+                    (thisPtr, r) => Legacy.EndOp(r),
+                    Catch<Exception>.AndHandle(this, (thisPtr, e) => thisPtr.Handle(e)));
+                this.Result = this.result;
+            }
+
+            private static void Invalid()
+            {
+                throw new InvalidOperationException("This shouldn't happen.");
+            }
+
+            private IAsyncResult Begin(AsyncCallback callback, object state)
+            {
+                AsyncResult result = new AsyncResult(callback, state);
+                result.SetAsCompleted(this.exception, true);
+                return result;
             }
 
             private bool Handle(Exception caughtException)
