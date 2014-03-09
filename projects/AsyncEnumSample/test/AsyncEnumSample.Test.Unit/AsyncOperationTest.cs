@@ -322,6 +322,16 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Equal(1234, task.Result);
         }
 
+        [Fact]
+        public void Throws_sync_after_legacy_result_throws_on_begin()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowOnBeginOperation op = new ThrowOnBeginOperation(expected);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => op.Start());
+
+            Assert.Same(expected, actual);
+        }
+
         private static class Legacy
         {
             public static AsyncResult BeginOp(AsyncCallback callback, object state)
@@ -874,6 +884,29 @@ namespace AsyncEnumSample.Test.Unit
                     (thisPtr, c, s) => thisPtr.asyncResult = Legacy.BeginOp(c, s),
                     (thisPtr, r) => Legacy.EndOp(r));
                 this.Result = this.result;
+            }
+        }
+
+        private sealed class ThrowOnBeginOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+
+            public ThrowOnBeginOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.Throw(),
+                    (thisPtr, r) => Legacy.EndOp(r));
+            }
+
+            private IAsyncResult Throw()
+            {
+                throw this.exception;
             }
         }
     }
