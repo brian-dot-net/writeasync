@@ -84,7 +84,7 @@ namespace AsyncEnumSample
 
             private static Task<bool> DoWithFakeReturnAsync<TState>(TState state, Func<TState, Task> doAsync)
             {
-                return doAsync(state).ContinueWith(t => ObserveException(t), TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.AttachedToParent);
+                return doAsync(state).ContinueWith(t => ObserveException(t), TaskContinuationOptions.ExecuteSynchronously);
             }
 
             private static bool ObserveException(Task task)
