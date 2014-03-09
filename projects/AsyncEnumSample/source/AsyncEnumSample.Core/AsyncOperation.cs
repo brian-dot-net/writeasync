@@ -13,6 +13,8 @@ namespace AsyncEnumSample
     public abstract class AsyncOperation<TResult>
     {
         private TaskCompletionSource<TResult> tcs;
+        private IEnumerator<Step> steps;
+        private Action<Task> moveNext;
 
         protected AsyncOperation()
         {
@@ -23,21 +25,34 @@ namespace AsyncEnumSample
         public Task<TResult> Start()
         {
             this.tcs = new TaskCompletionSource<TResult>();
-            IEnumerator<Step> steps = this.Steps();
-            while (steps.MoveNext())
-            {
-                Task task = steps.Current.Invoke();
-                if (task.IsFaulted)
-                {
-                    throw task.Exception.Flatten();
-                }
-            }
-
-            this.tcs.SetResult(this.Result);
+            this.steps = this.Steps();
+            this.moveNext = this.MoveNext;
+            this.MoveNext(null);
             return this.tcs.Task;
         }
 
         protected abstract IEnumerator<Step> Steps();
+
+        private void MoveNext(Task task)
+        {
+            while (this.steps.MoveNext())
+            {
+                Task nextTask = this.steps.Current.Invoke();
+                switch (nextTask.Status)
+                {
+                    case TaskStatus.RanToCompletion:
+                        // no-op
+                        break;
+                    case TaskStatus.Faulted:
+                        throw nextTask.Exception.Flatten();
+                    default:
+                        nextTask.ContinueWith(this.moveNext, TaskContinuationOptions.ExecuteSynchronously);
+                        return;
+                }
+            }
+
+            this.tcs.SetResult(this.Result);
+        }
 
         protected struct Step
         {
