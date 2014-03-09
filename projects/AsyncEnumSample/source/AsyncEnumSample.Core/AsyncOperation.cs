@@ -20,7 +20,7 @@ namespace AsyncEnumSample
         {
         }
 
-        public event EventHandler SchedulingMoveNext;
+        protected event EventHandler SchedulingMoveNext;
 
         protected TResult Result { get; set; }
 
