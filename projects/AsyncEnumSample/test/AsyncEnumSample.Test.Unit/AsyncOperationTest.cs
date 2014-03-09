@@ -511,6 +511,17 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Same(expected, task.Exception.InnerExceptions[0]);
         }
 
+        [Fact]
+        public void Start_twice_throws_invalid()
+        {
+            NullOperation op = new NullOperation();
+            Task<int> task = op.Start();
+
+            Assert.True(task.IsCompleted);
+
+            Assert.Throws<InvalidOperationException>(() => op.Start());
+        }
+
         private static class Legacy
         {
             public static AsyncResult BeginOp(AsyncCallback callback, object state)
@@ -1521,6 +1532,18 @@ namespace AsyncEnumSample.Test.Unit
             private bool ThrowFromHandler()
             {
                 throw this.exception;
+            }
+        }
+
+        private sealed class NullOperation : TestAsyncOperation
+        {
+            public NullOperation()
+            {
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield break;
             }
         }
     }

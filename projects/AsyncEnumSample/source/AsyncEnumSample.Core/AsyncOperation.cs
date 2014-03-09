@@ -33,6 +33,11 @@ namespace AsyncEnumSample
 
         public Task<TResult> Start()
         {
+            if (this.tcs != null)
+            {
+                throw new InvalidOperationException("The operation is already started.");
+            }
+
             this.tcs = new TaskCompletionSource<TResult>();
             this.steps = this.Steps();
             this.moveNext = this.MoveNext;
