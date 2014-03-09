@@ -56,6 +56,11 @@ namespace AsyncEnumSample
                 return new AsyncCall<TState>(state, doAsync).Step;
             }
 
+            public static Step Await<TState, TCallResult>(TState state, Func<TState, Task<TCallResult>> doAsync, Action<TState, TCallResult> afterCall)
+            {
+                return new AsyncCall<TState, TCallResult>(state, doAsync, afterCall).Step;
+            }
+
             public Task Invoke()
             {
                 return this.doAsync();
@@ -80,6 +85,37 @@ namespace AsyncEnumSample
                 private Task DoAsync()
                 {
                     return this.doAsync(this.state);
+                }
+            }
+
+            private sealed class AsyncCall<TState, TCallResult>
+            {
+                private readonly TState state;
+                private readonly Func<TState, Task<TCallResult>> doAsync;
+                private readonly Action<TState, TCallResult> afterCall;
+
+                public AsyncCall(TState state, Func<TState, Task<TCallResult>> doAsync, Action<TState, TCallResult> afterCall)
+                {
+                    this.state = state;
+                    this.doAsync = doAsync;
+                    this.afterCall = afterCall;
+                }
+
+                public Step Step
+                {
+                    get { return new Step(this.DoAsync); }
+                }
+
+                private Task DoAsync()
+                {
+                    return this.doAsync(this.state).ContinueWith<TCallResult>(this.AfterCall, TaskContinuationOptions.ExecuteSynchronously);
+                }
+
+                private TCallResult AfterCall(Task<TCallResult> task)
+                {
+                    TCallResult result = task.Result;
+                    this.afterCall(this.state, result);
+                    return result;
                 }
             }
         }
