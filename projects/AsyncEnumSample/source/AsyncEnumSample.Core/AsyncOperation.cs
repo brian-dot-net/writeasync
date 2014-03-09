@@ -72,7 +72,7 @@ namespace AsyncEnumSample
 
                 this.tcs.SetResult(this.Result);
             }
-            catch (AggregateException e)
+            catch (Exception e)
             {
                 if (task == null)
                 {
@@ -81,17 +81,16 @@ namespace AsyncEnumSample
 
                 using (this.steps)
                 {
-                    this.tcs.SetException(e.InnerExceptions);
+                    AggregateException ae = e as AggregateException;
+                    if (ae != null)
+                    {
+                        this.tcs.SetException(ae.InnerExceptions);
+                    }
+                    else
+                    {
+                        this.tcs.SetException(e);
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                if (task == null)
-                {
-                    throw;
-                }
-                
-                this.tcs.SetException(e);
             }
         }
 
