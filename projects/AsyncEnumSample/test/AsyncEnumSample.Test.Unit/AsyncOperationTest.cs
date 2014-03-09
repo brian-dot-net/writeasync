@@ -219,6 +219,17 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Same(expected, task.Exception.InnerExceptions[0]);
         }
 
+        [Fact]
+        public void Throws_sync_and_runs_finally_after_one_step_throws_sync()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowDuringAsyncStepWithFinallyOperation op = new ThrowDuringAsyncStepWithFinallyOperation(expected);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => op.Start());
+
+            Assert.Same(expected, actual);
+            Assert.True(op.RanFinally);
+        }
+
         private sealed class SetResultInCtorOperation : AsyncOperation<int>
         {
             public SetResultInCtorOperation(int result)
@@ -549,6 +560,35 @@ namespace AsyncEnumSample.Test.Unit
             protected override IEnumerator<Step> Steps()
             {
                 yield return Step.Await(this, thisPtr => thisPtr.tcs.Task);
+                throw this.exception;
+            }
+        }
+
+        private sealed class ThrowDuringAsyncStepWithFinallyOperation : AsyncOperation<int>
+        {
+            private readonly Exception exception;
+
+            public ThrowDuringAsyncStepWithFinallyOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            public bool RanFinally { get; private set; }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                try
+                {
+                    yield return Step.Await(this, thisPtr => thisPtr.Throw());
+                }
+                finally
+                {
+                    this.RanFinally = true;
+                }
+            }
+
+            private Task Throw()
+            {
                 throw this.exception;
             }
         }

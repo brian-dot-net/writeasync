@@ -28,9 +28,19 @@ namespace AsyncEnumSample
         {
             this.tcs = new TaskCompletionSource<TResult>();
             this.steps = this.Steps();
-            this.moveNext = this.MoveNext;
-            this.MoveNext(null);
-            return this.tcs.Task;
+            try
+            {
+                this.moveNext = this.MoveNext;
+                this.MoveNext(null);
+                return this.tcs.Task;
+            }
+            catch (Exception)
+            {
+                using (this.steps)
+                {
+                    throw;
+                }
+            }
         }
 
         protected abstract IEnumerator<Step> Steps();
