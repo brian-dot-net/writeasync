@@ -202,6 +202,23 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Same(expected, task.Exception.InnerExceptions[0]);
         }
 
+        [Fact]
+        public void Completes_with_async_exception_after_one_async_step_and_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowAfterAsyncStepOperation op = new ThrowAfterAsyncStepOperation(expected);
+            Task<int> task = op.Start();
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete();
+
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
+            Assert.Equal(1, task.Exception.InnerExceptions.Count);
+            Assert.Same(expected, task.Exception.InnerExceptions[0]);
+        }
+
         private sealed class SetResultInCtorOperation : AsyncOperation<int>
         {
             public SetResultInCtorOperation(int result)
@@ -510,6 +527,29 @@ namespace AsyncEnumSample.Test.Unit
                 
                 this.tcs = new TaskCompletionSource<bool>();
                 yield return Step.Await(this, thisPtr => thisPtr.tcs.Task);
+            }
+        }
+
+        private sealed class ThrowAfterAsyncStepOperation : AsyncOperation<int>
+        {
+            private readonly Exception exception;
+            private readonly TaskCompletionSource<bool> tcs;
+
+            public ThrowAfterAsyncStepOperation(Exception exception)
+            {
+                this.exception = exception;
+                this.tcs = new TaskCompletionSource<bool>();
+            }
+
+            public void Complete()
+            {
+                this.tcs.SetResult(false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(this, thisPtr => thisPtr.tcs.Task);
+                throw this.exception;
             }
         }
     }

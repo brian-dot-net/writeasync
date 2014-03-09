@@ -37,29 +37,49 @@ namespace AsyncEnumSample
 
         private void MoveNext(Task task)
         {
-            if ((task != null) && (task.Exception != null))
+            try
             {
-                this.tcs.SetException(task.Exception.Flatten().InnerExceptions);
-                return;
-            }
-
-            while (this.steps.MoveNext())
-            {
-                Task nextTask = this.steps.Current.Invoke();
-                switch (nextTask.Status)
+                if ((task != null) && (task.Exception != null))
                 {
-                    case TaskStatus.RanToCompletion:
-                        // no-op
-                        break;
-                    case TaskStatus.Faulted:
-                        throw nextTask.Exception.Flatten();
-                    default:
-                        this.ScheduleMoveNext(nextTask);
-                        return;
+                    throw task.Exception.Flatten();
                 }
-            }
 
-            this.tcs.SetResult(this.Result);
+                while (this.steps.MoveNext())
+                {
+                    Task nextTask = this.steps.Current.Invoke();
+                    switch (nextTask.Status)
+                    {
+                        case TaskStatus.RanToCompletion:
+                            // no-op
+                            break;
+                        case TaskStatus.Faulted:
+                            throw nextTask.Exception.Flatten();
+                        default:
+                            this.ScheduleMoveNext(nextTask);
+                            return;
+                    }
+                }
+
+                this.tcs.SetResult(this.Result);
+            }
+            catch (AggregateException e)
+            {
+                if (task == null)
+                {
+                    throw;
+                }
+
+                this.tcs.SetException(e.InnerExceptions);
+            }
+            catch (Exception e)
+            {
+                if (task == null)
+                {
+                    throw;
+                }
+
+                this.tcs.SetException(e);
+            }
         }
 
         private void ScheduleMoveNext(Task nextTask)
