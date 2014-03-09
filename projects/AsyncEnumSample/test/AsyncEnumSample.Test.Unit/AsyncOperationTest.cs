@@ -262,6 +262,24 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Equal(1234, op.ResultAccessor);
         }
 
+        [Fact]
+        public void Completes_with_async_exception_and_runs_finally_after_one_step_completes_async_then_throws_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowOnEndOfOneAsyncStepWithFinallyOperation op = new ThrowOnEndOfOneAsyncStepWithFinallyOperation(expected);
+            Task<int> task = op.Start();
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete();
+
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
+            Assert.Equal(1, task.Exception.InnerExceptions.Count);
+            Assert.Same(expected, task.Exception.InnerExceptions[0]);
+            Assert.True(op.RanFinally);
+        }
+
         private sealed class SetResultInCtorOperation : AsyncOperation<int>
         {
             public SetResultInCtorOperation(int result)
@@ -662,6 +680,45 @@ namespace AsyncEnumSample.Test.Unit
                 finally
                 {
                     this.Result = this.result;
+                }
+            }
+        }
+
+        private sealed class ThrowOnEndOfOneAsyncStepWithFinallyOperation : AsyncOperation<int>
+        {
+            private readonly Exception exception;
+            private readonly TaskCompletionSource<int> tcs;
+
+            public ThrowOnEndOfOneAsyncStepWithFinallyOperation(Exception exception)
+            {
+                this.exception = exception;
+                this.tcs = new TaskCompletionSource<int>();
+            }
+
+            public bool RanFinally { get; private set; }
+
+            public void Complete()
+            {
+                this.tcs.SetResult(1);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                try
+                {
+                    yield return Step.Await(this, thisPtr => thisPtr.tcs.Task, (thisPtr, r) => thisPtr.Throw(r));
+                }
+                finally
+                {
+                    this.RanFinally = true;
+                }
+            }
+
+            private void Throw(int result)
+            {
+                if (result == 1)
+                {
+                    throw this.exception;
                 }
             }
         }
