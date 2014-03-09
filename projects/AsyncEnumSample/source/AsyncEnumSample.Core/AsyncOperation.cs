@@ -22,6 +22,11 @@ namespace AsyncEnumSample
 
         protected event EventHandler SchedulingMoveNext;
 
+        protected interface IExceptionHandler
+        {
+            bool Handle(Exception exception);
+        }
+
         protected TResult Result { get; set; }
 
         protected bool RunMoveNextSynchronously { get; set; }
@@ -131,14 +136,14 @@ namespace AsyncEnumSample
                 return Await(new LegacyState<TState>(state, begin, end), l => Task.Factory.FromAsync((c, s) => LegacyBegin<TState>(c, s), r => LegacyEnd<TState>(r), l));
             }
 
-            public static Step Await<TState>(TState state, Func<TState, Task> doAsync)
+            public static Step Await<TState>(TState state, Func<TState, Task> doAsync, params IExceptionHandler[] handlers)
             {
-                return Await(Tuple.Create(state, doAsync), t => DoWithFakeReturnAsync(t.Item1, t.Item2), (t, r) => { });
+                return Await(Tuple.Create(state, doAsync), t => DoWithFakeReturnAsync(t.Item1, t.Item2), (t, r) => { }, handlers);
             }
 
-            public static Step Await<TState, TCallResult>(TState state, Func<TState, Task<TCallResult>> doAsync, Action<TState, TCallResult> afterCall)
+            public static Step Await<TState, TCallResult>(TState state, Func<TState, Task<TCallResult>> doAsync, Action<TState, TCallResult> afterCall, params IExceptionHandler[] handlers)
             {
-                return new AsyncCall<TState, TCallResult>(state, doAsync, afterCall).Step;
+                return new AsyncCall<TState, TCallResult>(state, doAsync, afterCall, handlers).Step;
             }
 
             public Task Invoke()
@@ -199,15 +204,19 @@ namespace AsyncEnumSample
 
             private sealed class AsyncCall<TState, TCallResult>
             {
+                private static readonly Task CompletedTask = TaskFromResult(false);
+
                 private readonly TState state;
                 private readonly Func<TState, Task<TCallResult>> doAsync;
                 private readonly Action<TState, TCallResult> afterCall;
+                private readonly IExceptionHandler[] handlers;
 
-                public AsyncCall(TState state, Func<TState, Task<TCallResult>> doAsync, Action<TState, TCallResult> afterCall)
+                public AsyncCall(TState state, Func<TState, Task<TCallResult>> doAsync, Action<TState, TCallResult> afterCall, IExceptionHandler[] handlers)
                 {
                     this.state = state;
                     this.doAsync = doAsync;
                     this.afterCall = afterCall;
+                    this.handlers = handlers;
                 }
 
                 public Step Step
@@ -217,7 +226,31 @@ namespace AsyncEnumSample
 
                 private Task DoAsync()
                 {
-                    return this.doAsync(this.state).ContinueWith<TCallResult>(this.AfterCall, TaskContinuationOptions.ExecuteSynchronously);
+                    try
+                    {
+                        return this.doAsync(this.state).ContinueWith<TCallResult>(this.AfterCall, TaskContinuationOptions.ExecuteSynchronously);
+                    }
+                    catch (Exception e)
+                    {
+                        bool handled = false;
+                        foreach (IExceptionHandler handler in this.handlers)
+                        {
+                            if (handler.Handle(e))
+                            {
+                                handled = true;
+                                break;
+                            }
+                        }
+
+                        if (handled)
+                        {
+                            return CompletedTask;
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
                 }
 
                 private TCallResult AfterCall(Task<TCallResult> task)
@@ -225,6 +258,38 @@ namespace AsyncEnumSample
                     TCallResult result = task.Result;
                     this.afterCall(this.state, result);
                     return result;
+                }
+            }
+        }
+
+        protected static class Catch<TException> where TException : Exception
+        {
+            public static IExceptionHandler AndHandle<TState>(TState state, Func<TState, TException, bool> handler)
+            {
+                return new ExceptionHandler<TState>(state, handler);
+            }
+
+            private sealed class ExceptionHandler<TState> : IExceptionHandler
+            {
+                private readonly TState state;
+                private readonly Func<TState, TException, bool> handler;
+
+                public ExceptionHandler(TState state, Func<TState, TException, bool> handler)
+                {
+                    this.state = state;
+                    this.handler = handler;
+                }
+
+                public bool Handle(Exception exception)
+                {
+                    bool handled = false;
+                    TException e = exception as TException;
+                    if (e != null)
+                    {
+                        handled = this.handler(this.state, e);
+                    }
+
+                    return handled;
                 }
             }
         }
