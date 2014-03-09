@@ -26,7 +26,11 @@ namespace AsyncEnumSample
             IEnumerator<Step> steps = this.Steps();
             while (steps.MoveNext())
             {
-                steps.Current.Invoke();
+                Task task = steps.Current.Invoke();
+                if (task.Exception != null)
+                {
+                    throw task.Exception;
+                }
             }
 
             this.tcs.SetResult(this.Result);
