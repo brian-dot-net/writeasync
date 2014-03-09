@@ -53,7 +53,7 @@ namespace AsyncEnumSample
 
             public static Step Await<TState>(TState state, Func<TState, Task> doAsync)
             {
-                return new AsyncCall<TState>(state, doAsync).Step;
+                return Await(Tuple.Create(state, doAsync), t => DoWithFakeReturnAsync(t.Item1, t.Item2), (t, r) => { });
             }
 
             public static Step Await<TState, TCallResult>(TState state, Func<TState, Task<TCallResult>> doAsync, Action<TState, TCallResult> afterCall)
@@ -66,26 +66,9 @@ namespace AsyncEnumSample
                 return this.doAsync();
             }
 
-            private sealed class AsyncCall<TState>
+            private static Task<bool> DoWithFakeReturnAsync<TState>(TState state, Func<TState, Task> doAsync)
             {
-                private readonly TState state;
-                private readonly Func<TState, Task> doAsync;
-
-                public AsyncCall(TState state, Func<TState, Task> doAsync)
-                {
-                    this.state = state;
-                    this.doAsync = doAsync;
-                }
-
-                public Step Step
-                {
-                    get { return new Step(this.DoAsync); }
-                }
-
-                private Task DoAsync()
-                {
-                    return this.doAsync(this.state);
-                }
+                return doAsync(state).ContinueWith(t => false, TaskContinuationOptions.ExecuteSynchronously);
             }
 
             private sealed class AsyncCall<TState, TCallResult>
