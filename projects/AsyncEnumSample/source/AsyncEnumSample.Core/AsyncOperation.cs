@@ -24,6 +24,8 @@ namespace AsyncEnumSample
 
         protected TResult Result { get; set; }
 
+        protected bool RunMoveNextSynchronously { get; set; }
+        
         public Task<TResult> Start()
         {
             this.tcs = new TaskCompletionSource<TResult>();
@@ -92,7 +94,8 @@ namespace AsyncEnumSample
                 handler(this, EventArgs.Empty);
             }
 
-            nextTask.ContinueWith(this.moveNext, TaskContinuationOptions.ExecuteSynchronously);
+            TaskContinuationOptions options = this.RunMoveNextSynchronously ? TaskContinuationOptions.ExecuteSynchronously : TaskContinuationOptions.None;
+            nextTask.ContinueWith(this.moveNext, options);
         }
 
         protected struct Step

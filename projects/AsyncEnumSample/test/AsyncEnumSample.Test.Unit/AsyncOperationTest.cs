@@ -8,6 +8,7 @@ namespace AsyncEnumSample.Test.Unit
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Threading.Tasks;
     using Xunit;
 
@@ -298,7 +299,24 @@ namespace AsyncEnumSample.Test.Unit
             Assert.True(op.RanFinally);
         }
 
-        private sealed class SetResultInCtorOperation : AsyncOperation<int>
+        [Fact]
+        public void Race_with_completion_does_not_cause_infinite_stack_recursion()
+        {
+            RaceWithCompletionOperation op = new RaceWithCompletionOperation(1000);
+            Task<int> task = op.Start();
+
+            Assert.NotEqual(TaskStatus.Faulted, task.Status);
+        }
+
+        private abstract class TestAsyncOperation : AsyncOperation<int>
+        {
+            protected TestAsyncOperation()
+            {
+                this.RunMoveNextSynchronously = true;
+            }
+        }
+
+        private sealed class SetResultInCtorOperation : TestAsyncOperation
         {
             public SetResultInCtorOperation(int result)
             {
@@ -311,7 +329,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class SetResultInEnumeratorOperation : AsyncOperation<int>
+        private sealed class SetResultInEnumeratorOperation : TestAsyncOperation
         {
             private readonly int result;
 
@@ -327,7 +345,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class SetResultInFinallyOperation : AsyncOperation<int>
+        private sealed class SetResultInFinallyOperation : TestAsyncOperation
         {
             private readonly int result;
 
@@ -349,7 +367,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class SetResultAfterOneStepOperation : AsyncOperation<int>
+        private sealed class SetResultAfterOneStepOperation : TestAsyncOperation
         {
             private readonly int result;
 
@@ -365,7 +383,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowBeforeYieldOperation : AsyncOperation<int>
+        private sealed class ThrowBeforeYieldOperation : TestAsyncOperation
         {
             private readonly Exception exception;
 
@@ -380,7 +398,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowAfterOneStepOperation : AsyncOperation<int>
+        private sealed class ThrowAfterOneStepOperation : TestAsyncOperation
         {
             private readonly Exception exception;
 
@@ -396,7 +414,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowInFinallyOperation : AsyncOperation<int>
+        private sealed class ThrowInFinallyOperation : TestAsyncOperation
         {
             private readonly Exception exception;
 
@@ -418,7 +436,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class SetResultDuringOneStepOperation : AsyncOperation<int>
+        private sealed class SetResultDuringOneStepOperation : TestAsyncOperation
         {
             private readonly int result;
 
@@ -436,7 +454,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowDuringOneStepOperation : AsyncOperation<int>
+        private sealed class ThrowDuringOneStepOperation : TestAsyncOperation
         {
             private readonly Exception exception;
 
@@ -464,7 +482,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowOnEndOfOneStepOperation : AsyncOperation<int>
+        private sealed class ThrowOnEndOfOneStepOperation : TestAsyncOperation
         {
             private readonly Exception exception;
 
@@ -490,7 +508,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowDuringOneStepVoidOperation : AsyncOperation<int>
+        private sealed class ThrowDuringOneStepVoidOperation : TestAsyncOperation
         {
             private readonly Exception exception;
 
@@ -510,7 +528,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowAsyncDuringOneStepVoidOperation : AsyncOperation<int>
+        private sealed class ThrowAsyncDuringOneStepVoidOperation : TestAsyncOperation
         {
             private readonly Exception exception;
 
@@ -525,7 +543,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowAsyncDuringOneStepOperation : AsyncOperation<int>
+        private sealed class ThrowAsyncDuringOneStepOperation : TestAsyncOperation
         {
             private readonly Exception exception;
 
@@ -556,7 +574,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class OneAsyncStepOperation : AsyncOperation<int>
+        private sealed class OneAsyncStepOperation : TestAsyncOperation
         {
             private readonly TaskCompletionSource<int> tcs;
 
@@ -579,7 +597,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class TwoAsyncStepOperation : AsyncOperation<int>
+        private sealed class TwoAsyncStepOperation : TestAsyncOperation
         {
             private TaskCompletionSource<bool> tcs;
 
@@ -609,7 +627,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowAfterAsyncStepOperation : AsyncOperation<int>
+        private sealed class ThrowAfterAsyncStepOperation : TestAsyncOperation
         {
             private readonly Exception exception;
             private readonly TaskCompletionSource<bool> tcs;
@@ -632,7 +650,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowDuringAsyncStepWithFinallyOperation : AsyncOperation<int>
+        private sealed class ThrowDuringAsyncStepWithFinallyOperation : TestAsyncOperation
         {
             private readonly Exception exception;
 
@@ -661,7 +679,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class OneAsyncStepWithFinallyOperation : AsyncOperation<int>
+        private sealed class OneAsyncStepWithFinallyOperation : TestAsyncOperation
         {
             private readonly int result;
             private readonly TaskCompletionSource<bool> tcs;
@@ -702,7 +720,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowOnEndOfOneAsyncStepWithFinallyOperation : AsyncOperation<int>
+        private sealed class ThrowOnEndOfOneAsyncStepWithFinallyOperation : TestAsyncOperation
         {
             private readonly Exception exception;
             private readonly TaskCompletionSource<int> tcs;
@@ -741,7 +759,7 @@ namespace AsyncEnumSample.Test.Unit
             }
         }
 
-        private sealed class ThrowAfterAsyncStepWithFinallyOperation : AsyncOperation<int>
+        private sealed class ThrowAfterAsyncStepWithFinallyOperation : TestAsyncOperation
         {
             private readonly Exception exception;
             private readonly TaskCompletionSource<bool> tcs;
@@ -770,6 +788,39 @@ namespace AsyncEnumSample.Test.Unit
                 {
                     this.RanFinally = true;
                 }
+            }
+        }
+
+        private sealed class RaceWithCompletionOperation : AsyncOperation<int>
+        {
+            private readonly int iterationCount;
+
+            private TaskCompletionSource<bool> tcs;
+
+            public RaceWithCompletionOperation(int iterationCount)
+            {
+                this.iterationCount = iterationCount;
+                this.SchedulingMoveNext += (o, e) => this.Complete();
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                for (int i = 0; i < this.iterationCount; ++i)
+                {
+                    this.tcs = new TaskCompletionSource<bool>();
+                    yield return Step.Await(this.tcs.Task, t => t);
+                }
+            }
+
+            private void Complete()
+            {
+                StackTrace stackTrace = new StackTrace(false);
+                if (stackTrace.FrameCount > 100)
+                {
+                    throw new InvalidOperationException("Stack too deep!");
+                }
+
+                this.tcs.SetResult(false);
             }
         }
     }
