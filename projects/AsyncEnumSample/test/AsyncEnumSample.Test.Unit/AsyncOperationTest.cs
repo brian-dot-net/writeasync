@@ -308,6 +308,33 @@ namespace AsyncEnumSample.Test.Unit
             Assert.NotEqual(TaskStatus.Faulted, task.Status);
         }
 
+        [Fact]
+        public void Completes_async_after_legacy_result_completes_async()
+        {
+            OneLegacyAsyncStepOperation op = new OneLegacyAsyncStepOperation(1234);
+            Task<int> task = op.Start();
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete();
+
+            Assert.Equal(TaskStatus.RanToCompletion, task.Status);
+            Assert.Equal(1234, task.Result);
+        }
+
+        private static class Legacy
+        {
+            public static AsyncResult BeginOp(AsyncCallback callback, object state)
+            {
+                return new AsyncResult(callback, state);
+            }
+
+            public static void EndOp(IAsyncResult result)
+            {
+                ((AsyncResult)result).EndInvoke();
+            }
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -821,6 +848,32 @@ namespace AsyncEnumSample.Test.Unit
                 }
 
                 this.tcs.SetResult(false);
+            }
+        }
+
+        private sealed class OneLegacyAsyncStepOperation : TestAsyncOperation
+        {
+            private readonly int result;
+
+            private AsyncResult asyncResult;
+
+            public OneLegacyAsyncStepOperation(int result)
+            {
+                this.result = result;
+            }
+
+            public void Complete()
+            {
+                this.asyncResult.SetAsCompleted(null, false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.asyncResult = Legacy.BeginOp(c, s),
+                    (thisPtr, r) => Legacy.EndOp(r));
+                this.Result = this.result;
             }
         }
     }

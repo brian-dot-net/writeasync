@@ -25,7 +25,7 @@ namespace AsyncEnumSample
         protected TResult Result { get; set; }
 
         protected bool RunMoveNextSynchronously { get; set; }
-        
+
         public Task<TResult> Start()
         {
             this.tcs = new TaskCompletionSource<TResult>();
@@ -126,6 +126,11 @@ namespace AsyncEnumSample
                 return exceptionTask.Task;
             }
 
+            public static Step Await<TState>(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end)
+            {
+                return Await(new LegacyState<TState>(state, begin, end), l => Task.Factory.FromAsync((c, s) => LegacyBegin<TState>(c, s), r => LegacyEnd<TState>(r), l));
+            }
+
             public static Step Await<TState>(TState state, Func<TState, Task> doAsync)
             {
                 return Await(Tuple.Create(state, doAsync), t => DoWithFakeReturnAsync(t.Item1, t.Item2), (t, r) => { });
@@ -141,6 +146,18 @@ namespace AsyncEnumSample
                 return this.doAsync();
             }
 
+            private static IAsyncResult LegacyBegin<TState>(AsyncCallback callback, object state)
+            {
+                LegacyState<TState> legacy = (LegacyState<TState>)state;
+                return legacy.Begin(callback, state);
+            }
+
+            private static void LegacyEnd<TState>(IAsyncResult result)
+            {
+                LegacyState<TState> legacy = (LegacyState<TState>)result.AsyncState;
+                legacy.End(result);
+            }
+
             private static Task<bool> DoWithFakeReturnAsync<TState>(TState state, Func<TState, Task> doAsync)
             {
                 return doAsync(state).ContinueWith(t => ObserveException(t), TaskContinuationOptions.ExecuteSynchronously);
@@ -154,6 +171,30 @@ namespace AsyncEnumSample
                 }
 
                 return false;
+            }
+
+            private sealed class LegacyState<TState>
+            {
+                private readonly TState state;
+                private readonly Func<TState, AsyncCallback, object, IAsyncResult> begin;
+                private readonly Action<TState, IAsyncResult> end;
+
+                public LegacyState(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end)
+                {
+                    this.state = state;
+                    this.begin = begin;
+                    this.end = end;
+                }
+
+                public IAsyncResult Begin(AsyncCallback callback, object state)
+                {
+                    return this.begin(this.state, callback, state);
+                }
+
+                public void End(IAsyncResult result)
+                {
+                    this.end(this.state, result);
+                }
             }
 
             private sealed class AsyncCall<TState, TCallResult>
