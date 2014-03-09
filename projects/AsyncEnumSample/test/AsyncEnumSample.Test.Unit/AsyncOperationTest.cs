@@ -316,7 +316,7 @@ namespace AsyncEnumSample.Test.Unit
 
             Assert.False(task.IsCompleted);
 
-            op.Complete();
+            op.Complete(null);
 
             Assert.Equal(TaskStatus.RanToCompletion, task.Status);
             Assert.Equal(1234, task.Result);
@@ -341,6 +341,23 @@ namespace AsyncEnumSample.Test.Unit
 
             Assert.Equal(1, ae.InnerExceptions.Count);
             Assert.Same(expected, ae.InnerExceptions[0]);
+        }
+
+        [Fact]
+        public void Throws_async_after_legacy_result_completes_and_throws_on_end()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            OneLegacyAsyncStepOperation op = new OneLegacyAsyncStepOperation(-1);
+            Task<int> task = op.Start();
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete(expected);
+
+            Assert.True(task.IsFaulted);
+            Assert.NotNull(task.Exception);
+            Assert.Equal(1, task.Exception.InnerExceptions.Count);
+            Assert.Same(expected, task.Exception.InnerExceptions[0]);
         }
 
         private static class Legacy
@@ -883,9 +900,9 @@ namespace AsyncEnumSample.Test.Unit
                 this.result = result;
             }
 
-            public void Complete()
+            public void Complete(Exception exception)
             {
-                this.asyncResult.SetAsCompleted(null, false);
+                this.asyncResult.SetAsCompleted(exception, false);
             }
 
             protected override IEnumerator<Step> Steps()
