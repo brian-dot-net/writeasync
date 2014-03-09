@@ -494,6 +494,23 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Same(expected, actual);
         }
 
+        [Fact]
+        public void Throws_async_on_throw_from_handler_on_async_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowFromHandlerAsyncOperation op = new ThrowFromHandlerAsyncOperation(expected);
+            Task<int> task = op.Start();
+
+            Assert.False(task.IsCompleted);
+
+            op.Complete();
+
+            Assert.True(task.IsFaulted);
+            Assert.NotNull(task.Exception);
+            Assert.Equal(1, task.Exception.InnerExceptions.Count);
+            Assert.Same(expected, task.Exception.InnerExceptions[0]);
+        }
+
         private static class Legacy
         {
             public static AsyncResult BeginOp(AsyncCallback callback, object state)
@@ -1469,6 +1486,36 @@ namespace AsyncEnumSample.Test.Unit
             private static Task Throw()
             {
                 throw new ArgumentException("Shouldn't see this.");
+            }
+
+            private bool ThrowFromHandler()
+            {
+                throw this.exception;
+            }
+        }
+
+        private sealed class ThrowFromHandlerAsyncOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+            private readonly TaskCompletionSource<bool> tcs;
+
+            public ThrowFromHandlerAsyncOperation(Exception exception)
+            {
+                this.exception = exception;
+                this.tcs = new TaskCompletionSource<bool>();
+            }
+
+            public void Complete()
+            {
+                this.tcs.SetException(new ArgumentException("Shouldn't see this."));
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    thisPtr => thisPtr.tcs.Task,
+                    Catch<ArgumentException>.AndHandle(this, (thisPtr, e) => thisPtr.ThrowFromHandler()));
             }
 
             private bool ThrowFromHandler()
