@@ -332,6 +332,17 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Same(expected, actual);
         }
 
+        [Fact]
+        public void Throws_sync_after_legacy_result_completes_sync_and_throws_on_end()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowOnEndSyncOperation op = new ThrowOnEndSyncOperation(expected);
+            AggregateException ae = Assert.Throws<AggregateException>(() => op.Start());
+
+            Assert.Equal(1, ae.InnerExceptions.Count);
+            Assert.Same(expected, ae.InnerExceptions[0]);
+        }
+
         private static class Legacy
         {
             public static AsyncResult BeginOp(AsyncCallback callback, object state)
@@ -907,6 +918,31 @@ namespace AsyncEnumSample.Test.Unit
             private IAsyncResult Throw()
             {
                 throw this.exception;
+            }
+        }
+
+        private sealed class ThrowOnEndSyncOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+
+            public ThrowOnEndSyncOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.Begin(c, s),
+                    (thisPtr, r) => Legacy.EndOp(r));
+            }
+
+            private IAsyncResult Begin(AsyncCallback callback, object state)
+            {
+                AsyncResult result = new AsyncResult(callback, state);
+                result.SetAsCompleted(this.exception, true);
+                return result;
             }
         }
     }
