@@ -224,6 +224,22 @@ namespace AsyncEnumSample
                     get { return new Step(this.DoAsync); }
                 }
 
+                private static Exception Unpack(AggregateException ae)
+                {
+                    if (ae == null)
+                    {
+                        return null;
+                    }
+
+                    ae = ae.Flatten();
+                    if (ae.InnerExceptions.Count == 1)
+                    {
+                        return ae.InnerExceptions[0];
+                    }
+
+                    return ae;
+                }
+
                 private Task DoAsync()
                 {
                     try
@@ -232,16 +248,7 @@ namespace AsyncEnumSample
                     }
                     catch (Exception e)
                     {
-                        bool handled = false;
-                        foreach (IExceptionHandler handler in this.handlers)
-                        {
-                            if (handler.Handle(e))
-                            {
-                                handled = true;
-                                break;
-                            }
-                        }
-
+                        bool handled = this.Handle(e);
                         if (handled)
                         {
                             return CompletedTask;
@@ -253,10 +260,37 @@ namespace AsyncEnumSample
                     }
                 }
 
+                private bool Handle(Exception exception)
+                {
+                    bool handled = false;
+                    if (exception != null)
+                    {
+                        foreach (IExceptionHandler handler in this.handlers)
+                        {
+                            if (handler.Handle(exception))
+                            {
+                                handled = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    return handled;
+                }
+
                 private TCallResult AfterCall(Task<TCallResult> task)
                 {
-                    TCallResult result = task.Result;
-                    this.afterCall(this.state, result);
+                    TCallResult result;
+                    if (this.Handle(Unpack(task.Exception)))
+                    {
+                        result = default(TCallResult);
+                    }
+                    else
+                    {
+                        result = task.Result;
+                        this.afterCall(this.state, result);
+                    }
+
                     return result;
                 }
             }

@@ -372,6 +372,18 @@ namespace AsyncEnumSample.Test.Unit
             Assert.Same(expected, op.CaughtException);
         }
 
+        [Fact]
+        public void Completes_successfully_after_catching_and_handling_async_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowAsyncAndHandleOperation op = new ThrowAsyncAndHandleOperation(1234, expected);
+            Task<int> task = op.Start();
+
+            Assert.True(task.IsCompleted);
+            Assert.Equal(1234, task.Result);
+            Assert.Same(expected, op.CaughtException);
+        }
+
         private static class Legacy
         {
             public static AsyncResult BeginOp(AsyncCallback callback, object state)
@@ -993,6 +1005,40 @@ namespace AsyncEnumSample.Test.Unit
                 yield return Step.Await(
                     this, 
                     thisPtr => thisPtr.Throw(),
+                    Catch<Exception>.AndHandle(this, (thisPtr, e) => thisPtr.Handle(e)));
+                this.Result = this.result;
+            }
+
+            private Task Throw()
+            {
+                throw this.exception;
+            }
+
+            private bool Handle(Exception caughtException)
+            {
+                this.CaughtException = caughtException;
+                return true;
+            }
+        }
+
+        private sealed class ThrowAsyncAndHandleOperation : TestAsyncOperation
+        {
+            private readonly int result;
+            private readonly Exception exception;
+
+            public ThrowAsyncAndHandleOperation(int result, Exception exception)
+            {
+                this.result = result;
+                this.exception = exception;
+            }
+
+            public Exception CaughtException { get; private set; }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    thisPtr => Step.TaskFromException(thisPtr.exception),
                     Catch<Exception>.AndHandle(this, (thisPtr, e) => thisPtr.Handle(e)));
                 this.Result = this.result;
             }
