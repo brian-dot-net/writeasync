@@ -20,6 +20,8 @@ namespace AsyncEnumSample
         {
         }
 
+        public event EventHandler SchedulingMoveNext;
+
         protected TResult Result { get; set; }
 
         public Task<TResult> Start()
@@ -46,12 +48,23 @@ namespace AsyncEnumSample
                     case TaskStatus.Faulted:
                         throw nextTask.Exception.Flatten();
                     default:
-                        nextTask.ContinueWith(this.moveNext, TaskContinuationOptions.ExecuteSynchronously);
+                        this.ScheduleMoveNext(nextTask);
                         return;
                 }
             }
 
             this.tcs.SetResult(this.Result);
+        }
+
+        private void ScheduleMoveNext(Task nextTask)
+        {
+            EventHandler handler = this.SchedulingMoveNext;
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
+            }
+
+            nextTask.ContinueWith(this.moveNext, TaskContinuationOptions.ExecuteSynchronously);
         }
 
         protected struct Step
