@@ -80,6 +80,16 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Same(expected, actual);
         }
 
+        [Fact]
+        public void Throw_in_finally_throws_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowInFinallyOperation op = new ThrowInFinallyOperation(expected);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => op.Start(null, null));
+
+            Assert.Same(expected, actual);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -182,6 +192,28 @@ namespace AsyncEnum35Sample.Test.Unit
             {
                 yield return new Step();
                 throw this.exception;
+            }
+        }
+
+        private sealed class ThrowInFinallyOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+
+            public ThrowInFinallyOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                try
+                {
+                    yield break;
+                }
+                finally
+                {
+                    throw this.exception;
+                }
             }
         }
     }
