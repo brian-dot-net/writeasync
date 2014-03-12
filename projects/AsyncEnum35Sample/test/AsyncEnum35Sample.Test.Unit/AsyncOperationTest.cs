@@ -75,7 +75,7 @@ namespace AsyncEnum35Sample.Test.Unit
         {
             InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
             ThrowAfterOneStepOperation op = new ThrowAfterOneStepOperation(expected);
-            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => op.Start());
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => op.Start(null, null));
 
             Assert.Same(expected, actual);
         }
