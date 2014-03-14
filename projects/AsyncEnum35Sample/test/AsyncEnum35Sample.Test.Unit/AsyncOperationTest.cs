@@ -191,6 +191,17 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Same(expected, actual);
         }
 
+        [Fact]
+        public void Throws_sync_and_runs_finally_after_one_step_throws_sync()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowDuringAsyncStepWithFinallyOperation op = new ThrowDuringAsyncStepWithFinallyOperation(expected);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => op.Start(null, null));
+
+            Assert.Same(expected, actual);
+            Assert.True(op.RanFinally);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -475,6 +486,43 @@ namespace AsyncEnum35Sample.Test.Unit
                     this,
                     (thisPtr, c, s) => thisPtr.result = new AsyncResult<bool>(c, s),
                     (thisPtr, r) => ((AsyncResult<bool>)r).EndInvoke());
+                throw this.exception;
+            }
+        }
+
+        private sealed class ThrowDuringAsyncStepWithFinallyOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+
+            public ThrowDuringAsyncStepWithFinallyOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            public bool RanFinally { get; private set; }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                try
+                {
+                    yield return Step.Await(
+                        this,
+                        (thisPtr, c, s) => thisPtr.Throw(),
+                        (thisPtr, r) => Invalid());
+                }
+                finally
+                {
+                    this.RanFinally = true;
+                }
+            }
+
+            private static void Invalid()
+            {
+                throw new InvalidOperationException("This shouldn't happen.");
+            }
+
+            private IAsyncResult Throw()
+            {
                 throw this.exception;
             }
         }

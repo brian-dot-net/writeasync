@@ -75,13 +75,16 @@ namespace AsyncEnum35Sample
             }
             catch (Exception e)
             {
-                if (result == null)
+                using (this.steps)
                 {
-                    throw;
-                }
-                else
-                {
-                    this.result.SetAsCompleted(e, !this.anyStepCompletedAsync);
+                    if (result == null)
+                    {
+                        throw;
+                    }
+                    else
+                    {
+                        this.result.SetAsCompleted(e, !this.anyStepCompletedAsync);
+                    }
                 }
             }
         }
