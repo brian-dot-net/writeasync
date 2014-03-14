@@ -9,7 +9,7 @@ namespace AsyncEnum35Sample
     using System;
     using System.Threading;
 
-    internal sealed class AsyncResult<TResult> : IAsyncResult
+    public class AsyncResult<TResult> : IAsyncResult
     {
         private const int StatePending = 0;
         private const int StateCompletedSynchronously = 1;
