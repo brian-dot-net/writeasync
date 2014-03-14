@@ -235,6 +235,24 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Equal(1234, op.ResultAccessor);
         }
 
+        [Fact]
+        public void Completes_with_async_exception_and_runs_finally_after_one_step_completes_async_then_throws_sync_exception_on_end()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowOnEndOfOneAsyncStepWithFinallyOperation op = new ThrowOnEndOfOneAsyncStepWithFinallyOperation(expected);
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.False(result.IsCompleted);
+
+            op.Complete();
+
+            Assert.True(result.IsCompleted);
+            Assert.False(result.CompletedSynchronously);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => OneAsyncStepWithFinallyOperation.End(result));
+            Assert.Same(expected, actual);
+            Assert.True(op.RanFinally);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -600,6 +618,40 @@ namespace AsyncEnum35Sample.Test.Unit
                 finally
                 {
                     this.Result = this.result;
+                }
+            }
+        }
+
+        private sealed class ThrowOnEndOfOneAsyncStepWithFinallyOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+
+            private AsyncResult<int> result;
+
+            public ThrowOnEndOfOneAsyncStepWithFinallyOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            public bool RanFinally { get; private set; }
+
+            public void Complete()
+            {
+                this.result.SetAsCompleted(this.exception, false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                try
+                {
+                    yield return Step.Await(
+                        this,
+                        (thisPtr, c, s) => thisPtr.result = new AsyncResult<int>(c, s),
+                        (thisPtr, r) => ((AsyncResult<int>)r).EndInvoke());
+                }
+                finally
+                {
+                    this.RanFinally = true;
                 }
             }
         }
