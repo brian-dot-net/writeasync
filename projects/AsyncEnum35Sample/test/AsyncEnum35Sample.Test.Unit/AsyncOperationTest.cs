@@ -148,8 +148,29 @@ namespace AsyncEnum35Sample.Test.Unit
             op.Complete(expected);
             
             Assert.True(result.IsCompleted);
-
+            Assert.False(result.CompletedSynchronously);
             InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => OneAsyncStepOperation.End(result));
+            Assert.Same(expected, actual);
+        }
+
+        [Fact]
+        public void Completes_with_async_exception_after_two_async_steps_with_async_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            TwoAsyncStepOperation op = new TwoAsyncStepOperation();
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.False(result.IsCompleted);
+
+            op.Complete(1234);
+
+            Assert.False(result.IsCompleted);
+
+            op.Complete(expected);
+
+            Assert.True(result.IsCompleted);
+            Assert.False(result.CompletedSynchronously);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => TwoAsyncStepOperation.End(result));
             Assert.Same(expected, actual);
         }
 
@@ -378,6 +399,37 @@ namespace AsyncEnum35Sample.Test.Unit
 
             protected override IEnumerator<Step> Steps()
             {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.result = new AsyncResult<int>(c, s),
+                    (thisPtr, r) => thisPtr.Result = ((AsyncResult<int>)r).EndInvoke());
+            }
+        }
+
+        private sealed class TwoAsyncStepOperation : TestAsyncOperation
+        {
+            private AsyncResult<int> result;
+
+            public TwoAsyncStepOperation()
+            {
+            }
+
+            public void Complete(int result)
+            {
+                this.result.SetAsCompleted(result, false);
+            }
+
+            public void Complete(Exception exception)
+            {
+                this.result.SetAsCompleted(exception, false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.result = new AsyncResult<int>(c, s),
+                    (thisPtr, r) => thisPtr.Result = ((AsyncResult<int>)r).EndInvoke());
                 yield return Step.Await(
                     this,
                     (thisPtr, c, s) => thisPtr.result = new AsyncResult<int>(c, s),
