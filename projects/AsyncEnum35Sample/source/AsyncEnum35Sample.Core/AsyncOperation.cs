@@ -13,6 +13,9 @@ namespace AsyncEnum35Sample
     {
         private AsyncResult<TResult> result;
         private IEnumerator<Step> steps;
+        private AsyncCallback moveNext;
+        private Step currentStep;
+        private bool anyStepCompletedAsync;
 
         protected AsyncOperation()
         {
@@ -29,18 +32,45 @@ namespace AsyncEnum35Sample
         {
             this.result = new AsyncResult<TResult>(callback, state);
             this.steps = this.Steps();
-            while (this.steps.MoveNext())
-            {
-                Step step = this.steps.Current;
-                IAsyncResult result = step.BeginInvoke();
-                step.EndInvoke(result);
-            }
-
-            this.result.SetAsCompleted(this.Result, true);
+            this.moveNext = MoveNext;
+            this.MoveNextInner(null);
             return this.result;
         }
 
         protected abstract IEnumerator<Step> Steps();
+
+        private static void MoveNext(IAsyncResult result)
+        {
+            if (!result.CompletedSynchronously)
+            {
+                ((AsyncOperation<TResult>)result.AsyncState).MoveNextInner(result);
+            }
+        }
+
+        private void MoveNextInner(IAsyncResult result)
+        {
+            if (result != null)
+            {
+                this.anyStepCompletedAsync = true;
+                this.currentStep.EndInvoke(result);
+            }
+
+            while (this.steps.MoveNext())
+            {
+                this.currentStep = this.steps.Current;
+                IAsyncResult nextResult = this.currentStep.BeginInvoke(this.moveNext, this);
+                if (nextResult.CompletedSynchronously)
+                {
+                    this.currentStep.EndInvoke(nextResult);
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            this.result.SetAsCompleted(this.Result, !this.anyStepCompletedAsync);
+        }
 
         protected struct Step
         {
@@ -58,9 +88,9 @@ namespace AsyncEnum35Sample
                 return new AsyncCall<TState>(state, begin, end).Step;
             }
 
-            public IAsyncResult BeginInvoke()
+            public IAsyncResult BeginInvoke(AsyncCallback callback, object state)
             {
-                return this.begin(null, null);
+                return this.begin(callback, state);
             }
 
             public void EndInvoke(IAsyncResult result)

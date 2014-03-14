@@ -121,6 +121,21 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Same(expected, actual);
         }
 
+        [Fact]
+        public void Completes_async_after_one_async_step()
+        {
+            OneAsyncStepOperation op = new OneAsyncStepOperation();
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.False(result.IsCompleted);
+
+            op.Complete(1234);
+
+            Assert.True(result.IsCompleted);
+            Assert.False(result.CompletedSynchronously);
+            Assert.Equal(1234, OneAsyncStepOperation.End(result));
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -323,6 +338,28 @@ namespace AsyncEnum35Sample.Test.Unit
                 {
                     throw this.exception;
                 }
+            }
+        }
+
+        private sealed class OneAsyncStepOperation : TestAsyncOperation
+        {
+            private AsyncResult<int> result;
+
+            public OneAsyncStepOperation()
+            {
+            }
+
+            public void Complete(int result)
+            {
+                this.result.SetAsCompleted(result, false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.result = new AsyncResult<int>(c, s),
+                    (thisPtr, r) => thisPtr.Result = ((AsyncResult<int>)r).EndInvoke());
             }
         }
     }

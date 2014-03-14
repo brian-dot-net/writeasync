@@ -4,11 +4,11 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace AsyncEnum35Sample.Test.Unit
+namespace AsyncEnum35Sample
 {
     using System;
 
-    internal sealed class CompletedAsyncResult<TResult> : AsyncResult<TResult>
+    public sealed class CompletedAsyncResult<TResult> : AsyncResult<TResult>
     {
         public CompletedAsyncResult(TResult result, AsyncCallback callback, object state)
             : base(callback, state)
