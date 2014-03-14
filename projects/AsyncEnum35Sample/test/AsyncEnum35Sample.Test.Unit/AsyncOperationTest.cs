@@ -210,11 +210,29 @@ namespace AsyncEnum35Sample.Test.Unit
 
             Assert.False(result.IsCompleted);
 
-            op.Complete();
+            op.Complete(null);
 
             Assert.True(result.IsCompleted);
             Assert.False(result.CompletedSynchronously);
             Assert.Equal(1234, OneAsyncStepWithFinallyOperation.End(result));
+        }
+
+        [Fact]
+        public void Completes_with_async_exception_and_runs_finally_after_one_step_completes_with_async_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            OneAsyncStepWithFinallyOperation op = new OneAsyncStepWithFinallyOperation(1234);
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.False(result.IsCompleted);
+
+            op.Complete(expected);
+
+            Assert.True(result.IsCompleted);
+            Assert.False(result.CompletedSynchronously);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => OneAsyncStepWithFinallyOperation.End(result));
+            Assert.Same(expected, actual);
+            Assert.Equal(1234, op.ResultAccessor);
         }
 
         private abstract class TestAsyncOperation : AsyncOperation<int>
@@ -553,9 +571,21 @@ namespace AsyncEnum35Sample.Test.Unit
                 this.result = result;
             }
 
-            public void Complete()
+            public int ResultAccessor
             {
-                this.asyncResult.SetAsCompleted(false, false);
+                get { return this.Result; }
+            }
+
+            public void Complete(Exception exception)
+            {
+                if (exception == null)
+                {
+                    this.asyncResult.SetAsCompleted(false, false);
+                }
+                else
+                {
+                    this.asyncResult.SetAsCompleted(exception, false);
+                }
             }
 
             protected override IEnumerator<Step> Steps()
