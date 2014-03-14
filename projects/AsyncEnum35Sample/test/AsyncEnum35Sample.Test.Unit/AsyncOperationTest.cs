@@ -391,6 +391,16 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Same(expected, actual);
         }
 
+        [Fact]
+        public void Throws_sync_on_throw_from_handler_on_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowFromHandlerSyncOperation op = new ThrowFromHandlerSyncOperation(expected);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => op.Start(null, null));
+
+            Assert.Same(expected, actual);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -1027,6 +1037,40 @@ namespace AsyncEnum35Sample.Test.Unit
             }
 
             private IAsyncResult Throw()
+            {
+                throw this.exception;
+            }
+        }
+
+        private sealed class ThrowFromHandlerSyncOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+
+            public ThrowFromHandlerSyncOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => Throw(),
+                    (thisPtr, r) => Invalid(),
+                    Catch<ArgumentException>.AndHandle(this, (thisPtr, e) => thisPtr.ThrowFromHandler()));
+            }
+
+            private static void Invalid()
+            {
+                throw new InvalidOperationException("This shouldn't happen.");
+            }
+
+            private static IAsyncResult Throw()
+            {
+                throw new ArgumentException("Shouldn't see this.");
+            }
+
+            private bool ThrowFromHandler()
             {
                 throw this.exception;
             }
