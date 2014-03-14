@@ -332,6 +332,19 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Same(callbackResult, returnedResult);
         }
 
+        [Fact]
+        public void Completes_successfully_after_catching_and_handling_exception_on_begin()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowOnBeginAndHandleOperation op = new ThrowOnBeginAndHandleOperation(1234, expected);
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.True(result.IsCompleted);
+            Assert.True(result.CompletedSynchronously);
+            Assert.Equal(1234, ThrowOnBeginAndHandleOperation.End(result));
+            Assert.Same(expected, op.CaughtException);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -794,6 +807,46 @@ namespace AsyncEnum35Sample.Test.Unit
                         throw new InvalidOperationException("Stack too deep!");
                     }
                 }
+            }
+        }
+
+        private sealed class ThrowOnBeginAndHandleOperation : TestAsyncOperation
+        {
+            private readonly int result;
+            private readonly Exception exception;
+
+            public ThrowOnBeginAndHandleOperation(int result, Exception exception)
+            {
+                this.result = result;
+                this.exception = exception;
+            }
+
+            public Exception CaughtException { get; private set; }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.Throw(),
+                    (thisPtr, r) => Invalid(),
+                    Catch<Exception>.AndHandle(this, (thisPtr, e) => thisPtr.Handle(e)));
+                this.Result = this.result;
+            }
+
+            private static void Invalid()
+            {
+                throw new InvalidOperationException("This shouldn't happen.");
+            }
+
+            private IAsyncResult Throw()
+            {
+                throw this.exception;
+            }
+
+            private bool Handle(Exception caughtException)
+            {
+                this.CaughtException = caughtException;
+                return true;
             }
         }
     }

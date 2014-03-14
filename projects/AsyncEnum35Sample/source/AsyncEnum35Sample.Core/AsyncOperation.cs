@@ -21,6 +21,11 @@ namespace AsyncEnum35Sample
         {
         }
 
+        protected interface IExceptionHandler
+        {
+            bool Handle(Exception exception);
+        }
+
         protected TResult Result { get; set; }
 
         public static TResult End(IAsyncResult result)
@@ -61,7 +66,11 @@ namespace AsyncEnum35Sample
                 {
                     this.currentStep = this.steps.Current;
                     IAsyncResult nextResult = this.currentStep.BeginInvoke(this.moveNext, this);
-                    if (nextResult.CompletedSynchronously)
+                    if (nextResult == null)
+                    {
+                        // No-op; exception was caught and handled.
+                    }
+                    else if (nextResult.CompletedSynchronously)
                     {
                         this.currentStep.EndInvoke(nextResult);
                     }
@@ -102,7 +111,12 @@ namespace AsyncEnum35Sample
 
             public static Step Await<TState>(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end)
             {
-                return new AsyncCall<TState>(state, begin, end).Step;
+                return Await(state, begin, end, null);
+            }
+
+            public static Step Await<TState>(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end, IExceptionHandler handler)
+            {
+                return new AsyncCall<TState>(state, begin, end, handler).Step;
             }
 
             public IAsyncResult BeginInvoke(AsyncCallback callback, object state)
@@ -120,12 +134,14 @@ namespace AsyncEnum35Sample
                 private readonly TState state;
                 private readonly Func<TState, AsyncCallback, object, IAsyncResult> begin;
                 private readonly Action<TState, IAsyncResult> end;
+                private readonly IExceptionHandler handler;
 
-                public AsyncCall(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end)
+                public AsyncCall(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end, IExceptionHandler handler)
                 {
                     this.state = state;
                     this.begin = begin;
                     this.end = end;
+                    this.handler = handler;
                 }
 
                 public Step Step
@@ -135,12 +151,58 @@ namespace AsyncEnum35Sample
 
                 public IAsyncResult BeginInvoke(AsyncCallback callback, object state)
                 {
-                    return this.begin(this.state, callback, state);
+                    try
+                    {
+                        return this.begin(this.state, callback, state);
+                    }
+                    catch (Exception e)
+                    {
+                        if ((this.handler != null) && this.handler.Handle(e))
+                        {
+                            return null;
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
                 }
 
                 public void EndInvoke(IAsyncResult result)
                 {
                     this.end(this.state, result);
+                }
+            }
+        }
+
+        protected static class Catch<TException> where TException : Exception
+        {
+            public static IExceptionHandler AndHandle<TState>(TState state, Func<TState, TException, bool> handler)
+            {
+                return new ExceptionHandler<TState>(state, handler);
+            }
+
+            private sealed class ExceptionHandler<TState> : IExceptionHandler
+            {
+                private readonly TState state;
+                private readonly Func<TState, TException, bool> handler;
+
+                public ExceptionHandler(TState state, Func<TState, TException, bool> handler)
+                {
+                    this.state = state;
+                    this.handler = handler;
+                }
+
+                public bool Handle(Exception exception)
+                {
+                    bool handled = false;
+                    TException e = exception as TException;
+                    if (e != null)
+                    {
+                        handled = this.handler(this.state, e);
+                    }
+
+                    return handled;
                 }
             }
         }
