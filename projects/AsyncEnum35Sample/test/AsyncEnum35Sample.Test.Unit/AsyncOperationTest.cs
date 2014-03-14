@@ -305,6 +305,33 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Same(callbackResult, returnedResult);
         }
 
+        [Fact]
+        public void Invokes_callback_on_async_completion()
+        {
+            OneAsyncStepOperation op = new OneAsyncStepOperation();
+            object state = new object();
+            IAsyncResult returnedResult = null;
+            IAsyncResult callbackResult = null;
+            AsyncCallback callback = delegate(IAsyncResult r)
+            {
+                callbackResult = r;
+                Assert.NotNull(returnedResult);
+                Assert.Same(state, r.AsyncState);
+                Assert.Equal(1234, OneAsyncStepOperation.End(r));
+            };
+
+            returnedResult = op.Start(callback, state);
+
+            Assert.Null(callbackResult);
+            Assert.False(returnedResult.IsCompleted);
+
+            op.Complete(1234);
+
+            Assert.True(returnedResult.IsCompleted);
+            Assert.False(returnedResult.CompletedSynchronously);
+            Assert.Same(callbackResult, returnedResult);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
