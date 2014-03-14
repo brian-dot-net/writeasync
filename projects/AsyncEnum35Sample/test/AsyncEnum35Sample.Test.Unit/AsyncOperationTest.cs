@@ -345,6 +345,19 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Same(expected, op.CaughtException);
         }
 
+        [Fact]
+        public void Completes_successfully_after_catching_and_handling_exception_on_end()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowOnEndAndHandleOperation op = new ThrowOnEndAndHandleOperation(1234, expected);
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.True(result.IsCompleted);
+            Assert.True(result.CompletedSynchronously);
+            Assert.Equal(1234, ThrowOnEndAndHandleOperation.End(result));
+            Assert.Same(expected, op.CaughtException);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -840,6 +853,42 @@ namespace AsyncEnum35Sample.Test.Unit
 
             private IAsyncResult Throw()
             {
+                throw this.exception;
+            }
+
+            private bool Handle(Exception caughtException)
+            {
+                this.CaughtException = caughtException;
+                return true;
+            }
+        }
+
+        private sealed class ThrowOnEndAndHandleOperation : TestAsyncOperation
+        {
+            private readonly int result;
+            private readonly Exception exception;
+
+            public ThrowOnEndAndHandleOperation(int result, Exception exception)
+            {
+                this.result = result;
+                this.exception = exception;
+            }
+
+            public Exception CaughtException { get; private set; }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => new CompletedAsyncResult<bool>(false, c, s),
+                    (thisPtr, r) => thisPtr.EndAndThrow(r),
+                    Catch<Exception>.AndHandle(this, (thisPtr, e) => thisPtr.Handle(e)));
+                this.Result = this.result;
+            }
+
+            private IAsyncResult EndAndThrow(IAsyncResult result)
+            {
+                ((CompletedAsyncResult<bool>)result).EndInvoke();
                 throw this.exception;
             }
 

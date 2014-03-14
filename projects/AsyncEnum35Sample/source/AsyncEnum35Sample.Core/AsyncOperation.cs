@@ -170,7 +170,17 @@ namespace AsyncEnum35Sample
 
                 public void EndInvoke(IAsyncResult result)
                 {
-                    this.end(this.state, result);
+                    try
+                    {
+                        this.end(this.state, result);
+                    }
+                    catch (Exception e)
+                    {
+                        if ((this.handler == null) || !this.handler.Handle(e))
+                        {
+                            throw;
+                        }
+                    }
                 }
             }
         }
