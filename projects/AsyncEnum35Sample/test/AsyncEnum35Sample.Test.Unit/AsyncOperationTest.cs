@@ -401,6 +401,23 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Same(expected, actual);
         }
 
+        [Fact]
+        public void Throws_async_on_throw_from_handler_on_async_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowFromHandlerAsyncOperation op = new ThrowFromHandlerAsyncOperation(expected);
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.False(result.IsCompleted);
+
+            op.Complete();
+
+            Assert.True(result.IsCompleted);
+            Assert.False(result.CompletedSynchronously);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => ThrowFromHandlerAsyncOperation.End(result));
+            Assert.Same(expected, actual);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -1068,6 +1085,37 @@ namespace AsyncEnum35Sample.Test.Unit
             private static IAsyncResult Throw()
             {
                 throw new ArgumentException("Shouldn't see this.");
+            }
+
+            private bool ThrowFromHandler()
+            {
+                throw this.exception;
+            }
+        }
+
+        private sealed class ThrowFromHandlerAsyncOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+
+            private AsyncResult<bool> result;
+
+            public ThrowFromHandlerAsyncOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            public void Complete()
+            {
+                this.result.SetAsCompleted(new ArgumentException("Shouldn't see this."), false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.result = new AsyncResult<bool>(c, s),
+                    (thisPtr, r) => ((AsyncResult<bool>)thisPtr.result).EndInvoke(),
+                    Catch<ArgumentException>.AndHandle(this, (thisPtr, e) => thisPtr.ThrowFromHandler()));
             }
 
             private bool ThrowFromHandler()
