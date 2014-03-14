@@ -174,6 +174,23 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Same(expected, actual);
         }
 
+        [Fact]
+        public void Completes_with_async_exception_after_one_async_step_and_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowAfterAsyncStepOperation op = new ThrowAfterAsyncStepOperation(expected);
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.False(result.IsCompleted);
+
+            op.Complete();
+
+            Assert.True(result.IsCompleted);
+            Assert.False(result.CompletedSynchronously);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => ThrowAfterAsyncStepOperation.End(result));
+            Assert.Same(expected, actual);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -434,6 +451,31 @@ namespace AsyncEnum35Sample.Test.Unit
                     this,
                     (thisPtr, c, s) => thisPtr.result = new AsyncResult<int>(c, s),
                     (thisPtr, r) => thisPtr.Result = ((AsyncResult<int>)r).EndInvoke());
+            }
+        }
+
+        private sealed class ThrowAfterAsyncStepOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+            private AsyncResult<bool> result;
+
+            public ThrowAfterAsyncStepOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            public void Complete()
+            {
+                this.result.SetAsCompleted(false, false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.result = new AsyncResult<bool>(c, s),
+                    (thisPtr, r) => ((AsyncResult<bool>)r).EndInvoke());
+                throw this.exception;
             }
         }
     }
