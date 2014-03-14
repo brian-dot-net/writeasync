@@ -248,7 +248,25 @@ namespace AsyncEnum35Sample.Test.Unit
 
             Assert.True(result.IsCompleted);
             Assert.False(result.CompletedSynchronously);
-            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => OneAsyncStepWithFinallyOperation.End(result));
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => ThrowOnEndOfOneAsyncStepWithFinallyOperation.End(result));
+            Assert.Same(expected, actual);
+            Assert.True(op.RanFinally);
+        }
+
+        [Fact]
+        public void Completes_with_async_exception_and_runs_finally_after_one_step_completes_async_then_throws_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowAfterAsyncStepWithFinallyOperation op = new ThrowAfterAsyncStepWithFinallyOperation(expected);
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.False(result.IsCompleted);
+
+            op.Complete();
+
+            Assert.True(result.IsCompleted);
+            Assert.False(result.CompletedSynchronously);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => ThrowAfterAsyncStepWithFinallyOperation.End(result));
             Assert.Same(expected, actual);
             Assert.True(op.RanFinally);
         }
@@ -648,6 +666,41 @@ namespace AsyncEnum35Sample.Test.Unit
                         this,
                         (thisPtr, c, s) => thisPtr.result = new AsyncResult<int>(c, s),
                         (thisPtr, r) => ((AsyncResult<int>)r).EndInvoke());
+                }
+                finally
+                {
+                    this.RanFinally = true;
+                }
+            }
+        }
+
+        private sealed class ThrowAfterAsyncStepWithFinallyOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+
+            private AsyncResult<bool> result;
+
+            public ThrowAfterAsyncStepWithFinallyOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            public bool RanFinally { get; private set; }
+
+            public void Complete()
+            {
+                this.result.SetAsCompleted(false, false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                try
+                {
+                    yield return Step.Await(
+                        this,
+                        (thisPtr, c, s) => thisPtr.result = new AsyncResult<bool>(c, s),
+                        (thisPtr, r) => ((AsyncResult<bool>)r).EndInvoke());
+                    throw this.exception;
                 }
                 finally
                 {
