@@ -101,6 +101,16 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Equal(1234, SetResultDuringOneStepOperation.End(result));
         }
 
+        [Fact]
+        public void Throw_during_one_sync_step_throws_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            ThrowDuringOneStepOperation op = new ThrowDuringOneStepOperation(expected);
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => op.Start(null, null));
+
+            Assert.Same(expected, actual);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -249,6 +259,34 @@ namespace AsyncEnum35Sample.Test.Unit
                     this,
                     (thisPtr, c, s) => new CompletedAsyncResult<int>(thisPtr.result, c, s),
                     (thisPtr, r) => thisPtr.Result = CompletedAsyncResult<int>.End(r));
+            }
+        }
+
+        private sealed class ThrowDuringOneStepOperation : TestAsyncOperation
+        {
+            private readonly Exception exception;
+
+            public ThrowDuringOneStepOperation(Exception exception)
+            {
+                this.exception = exception;
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.ThrowSync(),
+                    (thisPtr, r) => thisPtr.Invalid());
+            }
+
+            private IAsyncResult ThrowSync()
+            {
+                throw this.exception;
+            }
+
+            private void Invalid()
+            {
+                throw new InvalidOperationException("This shouldn't happen.");
             }
         }
     }
