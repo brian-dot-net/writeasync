@@ -368,6 +368,19 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Same(expected, actual);
         }
 
+        [Fact]
+        public void Completes_successfully_on_matching_exception_handler_on_sync_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            SecondMatchingHandlerSyncOperation op = new SecondMatchingHandlerSyncOperation(1234, expected);
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.True(result.IsCompleted);
+            Assert.True(result.CompletedSynchronously);
+            Assert.Equal(1234, SecondMatchingHandlerSyncOperation.End(result));
+            Assert.Same(expected, op.CaughtException);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -935,6 +948,47 @@ namespace AsyncEnum35Sample.Test.Unit
             private IAsyncResult Throw()
             {
                 throw this.exception;
+            }
+        }
+
+        private sealed class SecondMatchingHandlerSyncOperation : TestAsyncOperation
+        {
+            private readonly int result;
+            private readonly Exception exception;
+
+            public SecondMatchingHandlerSyncOperation(int result, Exception exception)
+            {
+                this.result = result;
+                this.exception = exception;
+            }
+
+            public Exception CaughtException { get; private set; }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                yield return Step.Await(
+                    this,
+                    (thisPtr, c, s) => thisPtr.Throw(),
+                    (thisPtr, r) => Invalid(),
+                    Catch<ArgumentException>.AndHandle(this, (thisPtr, e) => true),
+                    Catch<InvalidTimeZoneException>.AndHandle(this, (thisPtr, e) => thisPtr.Handle(e)));
+                this.Result = this.result;
+            }
+
+            private static void Invalid()
+            {
+                throw new InvalidOperationException("This shouldn't happen.");
+            }
+
+            private IAsyncResult Throw()
+            {
+                throw this.exception;
+            }
+
+            private bool Handle(InvalidTimeZoneException e)
+            {
+                this.CaughtException = e;
+                return true;
             }
         }
     }

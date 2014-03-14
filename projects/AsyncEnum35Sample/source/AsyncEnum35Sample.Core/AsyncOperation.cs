@@ -109,12 +109,7 @@ namespace AsyncEnum35Sample
                 this.end = end;
             }
 
-            public static Step Await<TState>(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end)
-            {
-                return Await(state, begin, end, null);
-            }
-
-            public static Step Await<TState>(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end, IExceptionHandler handler)
+            public static Step Await<TState>(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end, params IExceptionHandler[] handler)
             {
                 return new AsyncCall<TState>(state, begin, end, handler).Step;
             }
@@ -134,14 +129,14 @@ namespace AsyncEnum35Sample
                 private readonly TState state;
                 private readonly Func<TState, AsyncCallback, object, IAsyncResult> begin;
                 private readonly Action<TState, IAsyncResult> end;
-                private readonly IExceptionHandler handler;
+                private readonly IExceptionHandler[] handlers;
 
-                public AsyncCall(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end, IExceptionHandler handler)
+                public AsyncCall(TState state, Func<TState, AsyncCallback, object, IAsyncResult> begin, Action<TState, IAsyncResult> end, IExceptionHandler[] handlers)
                 {
                     this.state = state;
                     this.begin = begin;
                     this.end = end;
-                    this.handler = handler;
+                    this.handlers = handlers;
                 }
 
                 public Step Step
@@ -157,7 +152,7 @@ namespace AsyncEnum35Sample
                     }
                     catch (Exception e)
                     {
-                        if ((this.handler != null) && this.handler.Handle(e))
+                        if (this.Handle(e))
                         {
                             return null;
                         }
@@ -176,11 +171,24 @@ namespace AsyncEnum35Sample
                     }
                     catch (Exception e)
                     {
-                        if ((this.handler == null) || !this.handler.Handle(e))
+                        if (!this.Handle(e))
                         {
                             throw;
                         }
                     }
+                }
+
+                private bool Handle(Exception exception)
+                {
+                    foreach (IExceptionHandler handler in this.handlers)
+                    {
+                        if (handler.Handle(exception))
+                        {
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
             }
         }
