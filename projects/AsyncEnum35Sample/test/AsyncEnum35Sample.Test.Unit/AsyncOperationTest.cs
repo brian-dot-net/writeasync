@@ -282,6 +282,29 @@ namespace AsyncEnum35Sample.Test.Unit
             MultipleSyncCompletionOperation.End(result);
         }
 
+        [Fact]
+        public void Invokes_callback_on_sync_completion()
+        {
+            SetResultAfterOneStepOperation op = new SetResultAfterOneStepOperation(1234);
+            object state = new object();
+            IAsyncResult returnedResult = null;
+            IAsyncResult callbackResult = null;
+            AsyncCallback callback = delegate(IAsyncResult r)
+            {
+                callbackResult = r;
+                Assert.Null(returnedResult);
+                Assert.Same(state, r.AsyncState);
+                Assert.Equal(1234, SetResultAfterOneStepOperation.End(r));
+            };
+
+            returnedResult = op.Start(callback, state);
+
+            Assert.NotNull(callbackResult);
+            Assert.True(returnedResult.IsCompleted);
+            Assert.True(returnedResult.CompletedSynchronously);
+            Assert.Same(callbackResult, returnedResult);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
