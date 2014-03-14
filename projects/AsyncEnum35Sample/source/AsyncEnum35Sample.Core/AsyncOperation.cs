@@ -49,27 +49,41 @@ namespace AsyncEnum35Sample
 
         private void MoveNextInner(IAsyncResult result)
         {
-            if (result != null)
+            try
             {
-                this.anyStepCompletedAsync = true;
-                this.currentStep.EndInvoke(result);
-            }
-
-            while (this.steps.MoveNext())
-            {
-                this.currentStep = this.steps.Current;
-                IAsyncResult nextResult = this.currentStep.BeginInvoke(this.moveNext, this);
-                if (nextResult.CompletedSynchronously)
+                if (result != null)
                 {
-                    this.currentStep.EndInvoke(nextResult);
+                    this.anyStepCompletedAsync = true;
+                    this.currentStep.EndInvoke(result);
+                }
+
+                while (this.steps.MoveNext())
+                {
+                    this.currentStep = this.steps.Current;
+                    IAsyncResult nextResult = this.currentStep.BeginInvoke(this.moveNext, this);
+                    if (nextResult.CompletedSynchronously)
+                    {
+                        this.currentStep.EndInvoke(nextResult);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                this.result.SetAsCompleted(this.Result, !this.anyStepCompletedAsync);
+            }
+            catch (Exception e)
+            {
+                if (result == null)
+                {
+                    throw;
                 }
                 else
                 {
-                    return;
+                    this.result.SetAsCompleted(e, !this.anyStepCompletedAsync);
                 }
             }
-
-            this.result.SetAsCompleted(this.Result, !this.anyStepCompletedAsync);
         }
 
         protected struct Step

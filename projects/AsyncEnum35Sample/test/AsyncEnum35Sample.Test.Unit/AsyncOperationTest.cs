@@ -136,6 +136,23 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.Equal(1234, OneAsyncStepOperation.End(result));
         }
 
+        [Fact]
+        public void Completes_with_async_exception_after_one_async_step_with_async_exception()
+        {
+            InvalidTimeZoneException expected = new InvalidTimeZoneException("Expected.");
+            OneAsyncStepOperation op = new OneAsyncStepOperation();
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.False(result.IsCompleted);
+
+            op.Complete(expected);
+            
+            Assert.True(result.IsCompleted);
+
+            InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => OneAsyncStepOperation.End(result));
+            Assert.Same(expected, actual);
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -352,6 +369,11 @@ namespace AsyncEnum35Sample.Test.Unit
             public void Complete(int result)
             {
                 this.result.SetAsCompleted(result, false);
+            }
+
+            public void Complete(Exception exception)
+            {
+                this.result.SetAsCompleted(exception, false);
             }
 
             protected override IEnumerator<Step> Steps()
