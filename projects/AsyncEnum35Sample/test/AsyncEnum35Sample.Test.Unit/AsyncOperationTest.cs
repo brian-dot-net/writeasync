@@ -8,6 +8,7 @@ namespace AsyncEnum35Sample.Test.Unit
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using Xunit;
 
     public class AsyncOperationTest
@@ -269,6 +270,16 @@ namespace AsyncEnum35Sample.Test.Unit
             InvalidTimeZoneException actual = Assert.Throws<InvalidTimeZoneException>(() => ThrowAfterAsyncStepWithFinallyOperation.End(result));
             Assert.Same(expected, actual);
             Assert.True(op.RanFinally);
+        }
+
+        [Fact]
+        public void Multiple_successive_sync_completion_does_not_cause_infinite_stack_recursion()
+        {
+            MultipleSyncCompletionOperation op = new MultipleSyncCompletionOperation(1000);
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.True(result.IsCompleted);
+            MultipleSyncCompletionOperation.End(result);
         }
 
         private abstract class TestAsyncOperation : AsyncOperation<int>
@@ -705,6 +716,33 @@ namespace AsyncEnum35Sample.Test.Unit
                 finally
                 {
                     this.RanFinally = true;
+                }
+            }
+        }
+
+        private sealed class MultipleSyncCompletionOperation : TestAsyncOperation
+        {
+            private readonly int iterationCount;
+
+            public MultipleSyncCompletionOperation(int iterationCount)
+            {
+                this.iterationCount = iterationCount;
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                for (int i = 0; i < this.iterationCount; ++i)
+                {
+                    yield return Step.Await(
+                        false, 
+                        (t, c, s) => new CompletedAsyncResult<bool>(t, c, s),
+                        (t, r) => CompletedAsyncResult<bool>.End(r));
+
+                    StackTrace stackTrace = new StackTrace(false);
+                    if (stackTrace.FrameCount > 100)
+                    {
+                        throw new InvalidOperationException("Stack too deep!");
+                    }
                 }
             }
         }
