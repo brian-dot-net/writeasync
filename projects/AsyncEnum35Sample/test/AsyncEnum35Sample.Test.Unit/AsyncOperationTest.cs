@@ -202,6 +202,21 @@ namespace AsyncEnum35Sample.Test.Unit
             Assert.True(op.RanFinally);
         }
 
+        [Fact]
+        public void Completes_async_and_runs_finally_after_one_step_completes_async()
+        {
+            OneAsyncStepWithFinallyOperation op = new OneAsyncStepWithFinallyOperation(1234);
+            IAsyncResult result = op.Start(null, null);
+
+            Assert.False(result.IsCompleted);
+
+            op.Complete();
+
+            Assert.True(result.IsCompleted);
+            Assert.False(result.CompletedSynchronously);
+            Assert.Equal(1234, OneAsyncStepWithFinallyOperation.End(result));
+        }
+
         private abstract class TestAsyncOperation : AsyncOperation<int>
         {
             protected TestAsyncOperation()
@@ -524,6 +539,38 @@ namespace AsyncEnum35Sample.Test.Unit
             private IAsyncResult Throw()
             {
                 throw this.exception;
+            }
+        }
+
+        private sealed class OneAsyncStepWithFinallyOperation : TestAsyncOperation
+        {
+            private readonly int result;
+
+            private AsyncResult<bool> asyncResult;
+
+            public OneAsyncStepWithFinallyOperation(int result)
+            {
+                this.result = result;
+            }
+
+            public void Complete()
+            {
+                this.asyncResult.SetAsCompleted(false, false);
+            }
+
+            protected override IEnumerator<Step> Steps()
+            {
+                try
+                {
+                    yield return Step.Await(
+                        this,
+                        (thisPtr, c, s) => thisPtr.asyncResult = new AsyncResult<bool>(c, s),
+                        (thisPtr, r) => ((AsyncResult<bool>)r).EndInvoke());
+                }
+                finally
+                {
+                    this.Result = this.result;
+                }
             }
         }
     }
