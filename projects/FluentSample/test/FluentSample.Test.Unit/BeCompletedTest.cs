@@ -162,7 +162,7 @@ namespace FluentSample.Test.Unit
 
             Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>().WithMessage("Expected failure.");
 
-            act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown*");
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown, but found a*System.InvalidOperationException with message \"Unexpected failure.\"*");
         }
 
         [TestMethod]
