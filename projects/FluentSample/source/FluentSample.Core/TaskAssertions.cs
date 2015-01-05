@@ -39,6 +39,10 @@ namespace FluentSample
             return this.AssertCondition(t => t.IsFaulted, "faulted", because, reasonArgs);
         }
 
+        public void BePending()
+        {
+        }
+
         private TaskAssertions AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
         {
             string failureMessage = "Expected task to be " + expectedState + "{reason} but was {0}.";

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BeCompletedSuccessfullyTest.cs" />
+    <Compile Include="BePendingTest.cs" />
     <Compile Include="BeFaultedTest.cs" />
     <Compile Include="TaskBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
