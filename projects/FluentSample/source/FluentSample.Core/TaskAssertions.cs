@@ -21,20 +21,12 @@ namespace FluentSample
 
         public void BeCompleted(string because = "", params object[] reasonArgs)
         {
-            this.AssertCondition("completed", because, reasonArgs);
+            this.AssertCondition(t => t.IsCompleted, "completed", because, reasonArgs);
         }
 
         public void BeCompletedSuccessfully(string because = "", params object[] reasonArgs)
         {
-            Execute.Assertion
-                .ForCondition(this.subject != null)
-                .BecauseOf(because, reasonArgs)
-                .FailWith("Expected task to be completed successfully{reason} but was {0}.", this.subject);
-
-            Execute.Assertion
-                .ForCondition(this.subject.Status == TaskStatus.RanToCompletion)
-                .BecauseOf(because, reasonArgs)
-                .FailWith("Expected task to be completed successfully{reason} but was {0}.", this.subject.Status);
+            this.AssertCondition(t => t.IsCompleted && !t.IsFaulted, "completed successfully", because, reasonArgs);
         }
 
         public void BeFaulted(string because = "", params object[] reasonArgs)
@@ -50,7 +42,7 @@ namespace FluentSample
                 .FailWith("Expected task to be faulted{reason} but was {0}.", this.subject.Status);
         }
 
-        private void AssertCondition(string expectedState, string because, object[] reasonArgs)
+        private void AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
         {
             string failureMessage = "Expected task to be " + expectedState + "{reason} but was {0}.";
             Execute.Assertion
@@ -58,7 +50,7 @@ namespace FluentSample
                 .BecauseOf(because, reasonArgs)
                 .FailWith(failureMessage, this.subject);
             Execute.Assertion
-                .ForCondition(this.subject.IsCompleted)
+                .ForCondition(predicate(this.subject))
                 .BecauseOf(because, reasonArgs)
                 .FailWith(failureMessage, this.subject.Status);
         }
