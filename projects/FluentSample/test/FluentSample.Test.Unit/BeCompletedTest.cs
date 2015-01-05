@@ -28,7 +28,7 @@ namespace FluentSample.Test.Unit
         [TestMethod]
         public void PendingTaskShouldFail()
         {
-            Task task = new TaskCompletionSource<bool>().Task;
+            Task task = PendingTask();
 
             Action act = () => task.Should().BeCompleted();
 
@@ -60,6 +60,11 @@ namespace FluentSample.Test.Unit
         private static Task CompletedTask()
         {
             return Task.FromResult(false);
+        }
+
+        private static Task PendingTask()
+        {
+            return new TaskCompletionSource<bool>().Task;
         }
     }
 }
