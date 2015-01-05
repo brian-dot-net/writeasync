@@ -160,7 +160,7 @@ namespace FluentSample.Test.Unit
         {
             Task task = TaskBuilder.Faulted(new InvalidOperationException("Unexpected failure."));
 
-            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>().WithMessage("Expected failure.");
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>();
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown, but found a*System.InvalidOperationException with message \"Unexpected failure.\"*");
         }
@@ -170,7 +170,7 @@ namespace FluentSample.Test.Unit
         {
             Task task = TaskBuilder.Completed();
 
-            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>().WithMessage("Expected failure.");
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>();
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown, but no exception was thrown.");
         }
@@ -180,7 +180,7 @@ namespace FluentSample.Test.Unit
         {
             Task task = TaskBuilder.Completed();
 
-            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>(because: "I said so").WithMessage("Expected failure.");
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>(because: "I said so");
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown because I said so, but no exception was thrown.");
         }
