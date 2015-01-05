@@ -144,5 +144,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldNotThrow();
         }
+
+        [TestMethod]
+        public void WithExceptionShouldPassIfAtLeastOneExceptionMatches()
+        {
+            Task task = TaskBuilder.Faulted(new InvalidCastException("Expected failure."), new InvalidProgramException("Other expected failure."));
+
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>().WithMessage("Expected failure.");
+
+            act.ShouldNotThrow();
+        }
     }
 }

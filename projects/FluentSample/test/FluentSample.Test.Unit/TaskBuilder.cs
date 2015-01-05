@@ -21,9 +21,9 @@ namespace FluentSample.Test.Unit
             return TaskResultBuilder.Pending();
         }
 
-        public static Task Faulted()
+        public static Task Faulted(params Exception[] exceptions)
         {
-            return TaskResultBuilder.Faulted();
+            return TaskResultBuilder.Faulted(exceptions);
         }
 
         public static Task Canceled()

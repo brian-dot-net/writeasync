@@ -21,10 +21,15 @@ namespace FluentSample.Test.Unit
             return new TaskCompletionSource<bool>().Task;
         }
 
-        public static Task<bool> Faulted()
+        public static Task<bool> Faulted(params Exception[] exceptions)
         {
+            if (exceptions.Length == 0)
+            {
+                exceptions = new Exception[] { new InvalidCastException("Expected failure.") };
+            }
+
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            tcs.SetException(new InvalidCastException("Expected failure."));
+            tcs.SetException(exceptions);
             return tcs.Task;
         }
 
