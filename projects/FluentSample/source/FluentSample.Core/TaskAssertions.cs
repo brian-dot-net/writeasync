@@ -78,7 +78,11 @@ namespace FluentSample
 
         private void Throw()
         {
-            throw this.subject.Exception;
+            Exception exception = this.subject.Exception;
+            if (exception != null)
+            {
+                throw exception;
+            }
         }
     }
 }

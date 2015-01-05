@@ -164,5 +164,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown*");
         }
+
+        [TestMethod]
+        public void WithExceptionShouldFailOnNullException()
+        {
+            Task task = TaskBuilder.Completed();
+
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>().WithMessage("Expected failure.");
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown, but no exception was thrown.");
+        }
     }
 }
