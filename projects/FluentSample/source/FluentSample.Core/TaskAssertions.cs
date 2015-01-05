@@ -43,5 +43,9 @@ namespace FluentSample
                 .BecauseOf(because, reasonArgs)
                 .FailWith("Expected task to be completed successfully{reason} but was {0}.", this.subject.Status);
         }
+
+        public void BeFaulted()
+        {
+        }
     }
 }
