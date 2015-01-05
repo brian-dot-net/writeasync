@@ -6,7 +6,6 @@
 
 namespace FluentSample
 {
-    using System;
     using System.Threading.Tasks;
     using FluentAssertions.Execution;
 
@@ -28,6 +27,13 @@ namespace FluentSample
             Execute.Assertion
                 .ForCondition(this.subject.IsCompleted)
                 .FailWith("Expected task to be completed but was {0}.", this.subject.Status);
+        }
+
+        public void BeCompletedSuccessfully()
+        {
+            Execute.Assertion
+                .ForCondition(this.subject != null)
+                .FailWith("Expected task to be completed successfully but was {0}.", this.subject);
         }
     }
 }
