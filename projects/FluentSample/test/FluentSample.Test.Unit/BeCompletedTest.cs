@@ -134,5 +134,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldNotThrow();
         }
+
+        [TestMethod]
+        public void ShouldAllowChainingWithTypedException()
+        {
+            Task task = TaskBuilder.Faulted();
+
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>().WithMessage("Expected failure.");
+
+            act.ShouldNotThrow();
+        }
     }
 }

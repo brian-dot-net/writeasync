@@ -8,7 +8,9 @@ namespace FluentSample
 {
     using System;
     using System.Threading.Tasks;
+    using FluentAssertions;
     using FluentAssertions.Execution;
+    using FluentAssertions.Specialized;
 
     public class TaskAssertions
     {
@@ -54,6 +56,12 @@ namespace FluentSample
             return this.AssertCondition(t => t.IsCanceled, "canceled", because, reasonArgs);
         }
 
+        public ExceptionAssertions<TException> WithException<TException>() where TException : Exception
+        {
+            Action act = this.Throw;
+            return act.ShouldThrow<TException>();
+        }
+
         private TaskAssertions AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
         {
             string failureMessage = "Expected task to be " + expectedState + "{reason} but was {0}.";
@@ -66,6 +74,11 @@ namespace FluentSample
                 .BecauseOf(because, reasonArgs)
                 .FailWith(failureMessage, this.subject.Status);
             return this;
+        }
+
+        private void Throw()
+        {
+            throw this.subject.Exception;
         }
     }
 }
