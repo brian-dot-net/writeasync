@@ -104,5 +104,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldNotThrow();
         }
+
+        [TestMethod]
+        public void ShouldAllowChainingWithAnd()
+        {
+            Task task = TaskBuilder.Pending();
+
+            Action act = () => task.Should().BePending().And.BePending();
+
+            act.ShouldNotThrow();
+        }
     }
 }
