@@ -34,5 +34,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be pending but was RanToCompletion.");
         }
+
+        [TestMethod]
+        public void FaultedTaskShouldFail()
+        {
+            Task task = TaskBuilder.Faulted();
+
+            Action act = () => task.Should().BePending();
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be pending but was Faulted.");
+        }
     }
 }
