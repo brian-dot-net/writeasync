@@ -39,9 +39,9 @@ namespace FluentSample
             return this.AssertCondition(t => t.IsFaulted, "faulted", because, reasonArgs);
         }
 
-        public void BePending(string because = "")
+        public void BePending(string because = "", params object[] reasonArgs)
         {
-            this.AssertCondition(t => !t.IsCompleted, "pending", because, new object[0]);
+            this.AssertCondition(t => !t.IsCompleted, "pending", because, reasonArgs);
         }
 
         private TaskAssertions AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)

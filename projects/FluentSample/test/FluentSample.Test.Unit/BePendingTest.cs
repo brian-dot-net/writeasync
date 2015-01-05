@@ -74,5 +74,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be pending because I said so but was <null>.");
         }
+
+        [TestMethod]
+        public void NullTaskShouldFailWithReasonFormatted()
+        {
+            Task task = null;
+
+            Action act = () => task.Should().BePending("I said {0}", "so");
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be pending because I said so but was <null>.");
+        }
     }
 }
