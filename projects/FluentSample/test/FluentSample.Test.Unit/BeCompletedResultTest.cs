@@ -134,5 +134,45 @@ namespace FluentSample.Test.Unit
 
             act.ShouldNotThrow();
         }
+
+        [TestMethod]
+        public void ShouldAllowChainingWithTypedException()
+        {
+            Task<bool> task = TaskResultBuilder.Faulted();
+
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>().WithMessage("Expected failure.");
+
+            act.ShouldNotThrow();
+        }
+
+        [TestMethod]
+        public void WithExceptionShouldPassIfAtLeastOneExceptionMatches()
+        {
+            Task<bool> task = TaskResultBuilder.Faulted(new InvalidCastException("Expected failure."), new InvalidProgramException("Other expected failure."));
+
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>().WithMessage("Expected failure.");
+
+            act.ShouldNotThrow();
+        }
+
+        [TestMethod]
+        public void WithExceptionShouldFailIfNoExceptionMatches()
+        {
+            Task<bool> task = TaskResultBuilder.Faulted(new InvalidOperationException("Unexpected failure."));
+
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>().WithMessage("Expected failure.");
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown, but found a*System.InvalidOperationException with message \"Unexpected failure.\"*");
+        }
+
+        [TestMethod]
+        public void WithExceptionShouldFailOnNullException()
+        {
+            Task<bool> task = TaskResultBuilder.Completed();
+
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>().WithMessage("Expected failure.");
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown, but no exception was thrown.");
+        }
     }
 }
