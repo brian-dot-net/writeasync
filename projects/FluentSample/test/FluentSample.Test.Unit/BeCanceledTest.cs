@@ -66,6 +66,16 @@ namespace FluentSample.Test.Unit
         }
 
         [TestMethod]
+        public void FaultedTaskShouldFailWithReasonFormatted()
+        {
+            Task task = TaskBuilder.Faulted();
+
+            Action act = () => task.Should().BeCanceled("I said {0}", "so");
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be canceled because I said so but was Faulted.");
+        }
+
+        [TestMethod]
         public void NullTaskShouldFail()
         {
             Task task = null;
