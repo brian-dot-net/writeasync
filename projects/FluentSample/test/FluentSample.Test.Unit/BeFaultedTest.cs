@@ -56,6 +56,16 @@ namespace FluentSample.Test.Unit
         }
 
         [TestMethod]
+        public void NullTaskShouldFailWithReason()
+        {
+            Task task = null;
+
+            Action act = () => task.Should().BeFaulted(because: "I said so");
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be faulted because I said so but was <null>.");
+        }
+
+        [TestMethod]
         public void CompletedTaskShouldFail()
         {
             Task task = TaskBuilder.Completed();

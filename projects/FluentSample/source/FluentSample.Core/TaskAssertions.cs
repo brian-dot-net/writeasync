@@ -48,7 +48,8 @@ namespace FluentSample
         {
             Execute.Assertion
                 .ForCondition(this.subject != null)
-                .FailWith("Expected task to be faulted but was {0}.", this.subject);
+                .BecauseOf(because)
+                .FailWith("Expected task to be faulted{reason} but was {0}.", this.subject);
 
             Execute.Assertion
                 .ForCondition(this.subject.IsFaulted)
