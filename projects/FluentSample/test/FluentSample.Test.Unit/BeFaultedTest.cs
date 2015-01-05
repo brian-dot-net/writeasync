@@ -86,6 +86,16 @@ namespace FluentSample.Test.Unit
         }
 
         [TestMethod]
+        public void CanceledTaskShouldFail()
+        {
+            Task task = TaskBuilder.Canceled();
+
+            Action act = () => task.Should().BeFaulted();
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be faulted but was Canceled.");
+        }
+
+        [TestMethod]
         public void ShouldAllowChaining()
         {
             Task task = TaskBuilder.Faulted();
