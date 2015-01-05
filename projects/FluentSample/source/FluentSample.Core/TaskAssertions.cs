@@ -18,16 +18,16 @@ namespace FluentSample
             this.subject = subject;
         }
 
-        public void BeCompleted(string because = "")
+        public void BeCompleted(string because = "", params object[] reasonArgs)
         {
             Execute.Assertion
                 .ForCondition(this.subject != null)
-                .BecauseOf(because)
+                .BecauseOf(because, reasonArgs)
                 .FailWith("Expected task to be completed{reason} but was {0}.", this.subject);
 
             Execute.Assertion
                 .ForCondition(this.subject.IsCompleted)
-                .BecauseOf(because)
+                .BecauseOf(because, reasonArgs)
                 .FailWith("Expected task to be completed{reason} but was {0}.", this.subject.Status);
         }
 
