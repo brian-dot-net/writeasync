@@ -24,6 +24,11 @@ namespace FluentSample
             get { return this; }
         }
 
+        public Task Which
+        {
+            get { return this.subject; }
+        }
+
         public TaskAssertions BeCompleted(string because = "", params object[] reasonArgs)
         {
             return this.AssertCondition(t => t.IsCompleted, "completed", because, reasonArgs);
