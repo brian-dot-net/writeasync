@@ -18,7 +18,7 @@ namespace FluentSample.Test.Unit
         [TestMethod]
         public void CompletedTaskShouldPass()
         {
-            Task task = Task.FromResult(false);
+            Task task = CompletedTask();
 
             Action act = () => task.Should().BeCompleted();
 
@@ -55,6 +55,11 @@ namespace FluentSample.Test.Unit
             Action act = () => task.Should().BeCompleted();
 
             act.ShouldNotThrow();
+        }
+
+        private static Task CompletedTask()
+        {
+            return Task.FromResult(false);
         }
     }
 }
