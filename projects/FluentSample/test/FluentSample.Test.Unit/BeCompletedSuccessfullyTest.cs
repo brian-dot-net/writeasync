@@ -94,5 +94,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be completed successfully but was Faulted.");
         }
+
+        [TestMethod]
+        public void ShouldAllowChaining()
+        {
+            Task task = TaskBuilder.Completed();
+
+            Action act = () => task.Should().BeCompletedSuccessfully().BeCompletedSuccessfully();
+
+            act.ShouldNotThrow();
+        }
     }
 }
