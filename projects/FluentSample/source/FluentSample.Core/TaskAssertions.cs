@@ -44,9 +44,9 @@ namespace FluentSample
             return this.AssertCondition(t => !t.IsCompleted, "pending", because, reasonArgs);
         }
 
-        public void BeCanceled()
+        public void BeCanceled(string because = "")
         {
-            this.AssertCondition(t => t.IsCanceled, "canceled", string.Empty, new object[0]);
+            this.AssertCondition(t => t.IsCanceled, "canceled", because, new object[0]);
         }
 
         private TaskAssertions AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
