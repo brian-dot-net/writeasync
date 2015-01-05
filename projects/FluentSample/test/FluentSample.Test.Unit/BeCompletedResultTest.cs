@@ -184,5 +184,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown because I said so, but no exception was thrown.");
         }
+
+        [TestMethod]
+        public void WithExceptionShouldFailOnNullExceptionWithReasonFormatted()
+        {
+            Task<bool> task = TaskResultBuilder.Completed();
+
+            Action act = () => task.Should().BeCompleted().WithException<InvalidCastException>("I said {0}", "so");
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected a <System.InvalidCastException> to be thrown because I said so, but no exception was thrown.");
+        }
     }
 }
