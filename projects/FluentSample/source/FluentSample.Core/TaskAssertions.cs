@@ -29,12 +29,12 @@ namespace FluentSample
             this.AssertCondition(t => t.IsCompleted && !t.IsFaulted, "completed successfully", because, reasonArgs);
         }
 
-        public void BeFaulted(string because = "", params object[] reasonArgs)
+        public TaskAssertions BeFaulted(string because = "", params object[] reasonArgs)
         {
-            this.AssertCondition(t => t.IsFaulted, "faulted", because, reasonArgs);
+            return this.AssertCondition(t => t.IsFaulted, "faulted", because, reasonArgs);
         }
 
-        private void AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
+        private TaskAssertions AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
         {
             string failureMessage = "Expected task to be " + expectedState + "{reason} but was {0}.";
             Execute.Assertion
@@ -45,6 +45,7 @@ namespace FluentSample
                 .ForCondition(predicate(this.subject))
                 .BecauseOf(because, reasonArgs)
                 .FailWith(failureMessage, this.subject.Status);
+            return this;
         }
     }
 }

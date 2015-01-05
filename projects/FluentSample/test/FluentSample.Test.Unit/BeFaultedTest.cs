@@ -84,5 +84,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be faulted but was RanToCompletion.");
         }
+
+        [TestMethod]
+        public void ShouldAllowChaining()
+        {
+            Task task = TaskBuilder.Faulted();
+
+            Action act = () => task.Should().BeFaulted().BeFaulted();
+
+            act.ShouldNotThrow();
+        }
     }
 }
