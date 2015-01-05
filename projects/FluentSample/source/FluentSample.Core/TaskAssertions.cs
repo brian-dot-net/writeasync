@@ -56,10 +56,10 @@ namespace FluentSample
             return this.AssertCondition(t => t.IsCanceled, "canceled", because, reasonArgs);
         }
 
-        public ExceptionAssertions<TException> WithException<TException>() where TException : Exception
+        public ExceptionAssertions<TException> WithException<TException>(string because = "") where TException : Exception
         {
             Action act = this.Throw;
-            return act.ShouldThrow<TException>();
+            return act.ShouldThrow<TException>(because);
         }
 
         private TaskAssertions AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
