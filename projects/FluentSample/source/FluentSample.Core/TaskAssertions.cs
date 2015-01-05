@@ -31,7 +31,7 @@ namespace FluentSample
 
         public TaskAssertions BeCompletedSuccessfully(string because = "", params object[] reasonArgs)
         {
-            return this.AssertCondition(t => t.IsCompleted && !t.IsFaulted, "completed successfully", because, reasonArgs);
+            return this.AssertCondition(t => t.IsCompleted && !t.IsFaulted && !t.IsCanceled, "completed successfully", because, reasonArgs);
         }
 
         public TaskAssertions BeFaulted(string because = "", params object[] reasonArgs)
