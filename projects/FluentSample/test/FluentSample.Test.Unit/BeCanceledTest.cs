@@ -24,5 +24,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldNotThrow();
         }
+
+        [TestMethod]
+        public void CompletedTaskShouldFail()
+        {
+            Task task = TaskBuilder.Completed();
+
+            Action act = () => task.Should().BeCanceled();
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be canceled but was RanToCompletion.");
+        }
     }
 }

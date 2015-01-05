@@ -46,6 +46,7 @@ namespace FluentSample
 
         public void BeCanceled()
         {
+            this.AssertCondition(t => t.IsCanceled, "canceled", string.Empty, new object[0]);
         }
 
         private TaskAssertions AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
