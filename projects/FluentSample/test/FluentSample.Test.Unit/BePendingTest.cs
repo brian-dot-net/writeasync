@@ -124,5 +124,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldNotThrow();
         }
+
+        [TestMethod]
+        public void ShouldAllowChainingWithWhich()
+        {
+            Task task = TaskBuilder.Pending();
+
+            Action act = () => task.Should().BePending().Which.IsCompleted.Should().BeFalse();
+
+            act.ShouldNotThrow();
+        }
     }
 }
