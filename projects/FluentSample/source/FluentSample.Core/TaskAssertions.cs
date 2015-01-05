@@ -36,7 +36,7 @@ namespace FluentSample
                 .FailWith("Expected task to be completed successfully but was {0}.", this.subject);
 
             Execute.Assertion
-                .ForCondition(this.subject.IsCompleted)
+                .ForCondition(this.subject.Status == TaskStatus.RanToCompletion)
                 .FailWith("Expected task to be completed successfully but was {0}.", this.subject.Status);
         }
     }

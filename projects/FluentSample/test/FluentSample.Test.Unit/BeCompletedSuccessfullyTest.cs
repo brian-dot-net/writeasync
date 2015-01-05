@@ -44,5 +44,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be completed successfully but was <null>.");
         }
+
+        [TestMethod]
+        public void FaultedTaskShouldFail()
+        {
+            Task task = TaskBuilder.Faulted();
+
+            Action act = () => task.Should().BeCompletedSuccessfully();
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be completed successfully but was Faulted.");
+        }
     }
 }
