@@ -16,7 +16,7 @@ namespace FluentSample.Test.Unit
     public class BeCompletedTest
     {
         [TestMethod]
-        public void CompletedTaskShouldPassBeCompleted()
+        public void CompletedTaskShouldPass()
         {
             Task task = Task.FromResult(false);
 
@@ -26,7 +26,7 @@ namespace FluentSample.Test.Unit
         }
 
         [TestMethod]
-        public void PendingTaskShouldFailBeCompleted()
+        public void PendingTaskShouldFail()
         {
             Task task = new TaskCompletionSource<bool>().Task;
 
@@ -36,7 +36,7 @@ namespace FluentSample.Test.Unit
         }
 
         [TestMethod]
-        public void NullTaskShouldFailBeCompleted()
+        public void NullTaskShouldFail()
         {
             Task task = null;
 
@@ -46,7 +46,7 @@ namespace FluentSample.Test.Unit
         }
 
         [TestMethod]
-        public void FaultedTaskShouldPassBeCompleted()
+        public void FaultedTaskShouldPass()
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             tcs.SetException(new InvalidCastException("Expected failure."));
