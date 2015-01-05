@@ -96,6 +96,16 @@ namespace FluentSample.Test.Unit
         }
 
         [TestMethod]
+        public void CanceledTaskShouldPass()
+        {
+            Task task = TaskBuilder.Canceled();
+
+            Action act = () => task.Should().BeCompleted();
+
+            act.ShouldNotThrow();
+        }
+        
+        [TestMethod]
         public void ShouldAllowChaining()
         {
             Task task = TaskBuilder.Faulted();
