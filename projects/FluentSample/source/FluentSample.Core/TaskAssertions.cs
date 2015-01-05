@@ -12,46 +12,46 @@ namespace FluentSample
     using FluentAssertions.Execution;
     using FluentAssertions.Specialized;
 
-    public class TaskAssertions
+    public class TaskAssertions<TTask> where TTask : Task
     {
-        private readonly Task subject;
+        private readonly TTask subject;
 
-        public TaskAssertions(Task subject)
+        public TaskAssertions(TTask subject)
         {
             this.subject = subject;
         }
 
-        public TaskAssertions And
+        public TaskAssertions<TTask> And
         {
             get { return this; }
         }
 
-        public Task Which
+        public TTask Which
         {
             get { return this.subject; }
         }
 
-        public TaskAssertions BeCompleted(string because = "", params object[] reasonArgs)
+        public TaskAssertions<TTask> BeCompleted(string because = "", params object[] reasonArgs)
         {
             return this.AssertCondition(t => t.IsCompleted, "completed", because, reasonArgs);
         }
 
-        public TaskAssertions BeCompletedSuccessfully(string because = "", params object[] reasonArgs)
+        public TaskAssertions<TTask> BeCompletedSuccessfully(string because = "", params object[] reasonArgs)
         {
             return this.AssertCondition(t => t.IsCompleted && !t.IsFaulted && !t.IsCanceled, "completed successfully", because, reasonArgs);
         }
 
-        public TaskAssertions BeFaulted(string because = "", params object[] reasonArgs)
+        public TaskAssertions<TTask> BeFaulted(string because = "", params object[] reasonArgs)
         {
             return this.AssertCondition(t => t.IsFaulted, "faulted", because, reasonArgs);
         }
 
-        public TaskAssertions BePending(string because = "", params object[] reasonArgs)
+        public TaskAssertions<TTask> BePending(string because = "", params object[] reasonArgs)
         {
             return this.AssertCondition(t => !t.IsCompleted, "pending", because, reasonArgs);
         }
 
-        public TaskAssertions BeCanceled(string because = "", params object[] reasonArgs)
+        public TaskAssertions<TTask> BeCanceled(string because = "", params object[] reasonArgs)
         {
             return this.AssertCondition(t => t.IsCanceled, "canceled", because, reasonArgs);
         }
@@ -62,7 +62,7 @@ namespace FluentSample
             return act.ShouldThrow<TException>(because, reasonArgs);
         }
 
-        private TaskAssertions AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
+        private TaskAssertions<TTask> AssertCondition(Predicate<TTask> predicate, string expectedState, string because, object[] reasonArgs)
         {
             string failureMessage = "Expected task to be " + expectedState + "{reason} but was {0}.";
             Execute.Assertion
