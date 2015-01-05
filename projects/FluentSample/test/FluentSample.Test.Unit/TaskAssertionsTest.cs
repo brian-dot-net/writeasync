@@ -34,5 +34,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be completed but was WaitingForActivation.");
         }
+
+        [TestMethod]
+        public void NullTaskShouldFailBeCompleted()
+        {
+            Task task = null;
+
+            Action act = () => task.Should().BeCompleted();
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be completed but was <null>.");
+        }
     }
 }
