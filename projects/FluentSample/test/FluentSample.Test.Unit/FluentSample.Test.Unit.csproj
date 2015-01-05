@@ -45,6 +45,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BeCanceledResultTest.cs" />
     <Compile Include="BeCompletedSuccessfullyTest.cs" />
     <Compile Include="BeCanceledTest.cs" />
     <Compile Include="BePendingTest.cs" />
