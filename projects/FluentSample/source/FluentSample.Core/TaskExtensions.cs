@@ -10,9 +10,9 @@ namespace FluentSample
 
     public static class TaskExtensions
     {
-        public static TaskAssertions Should<TResult>(this Task<TResult> subject)
+        public static TaskAssertions<TResult> Should<TResult>(this Task<TResult> subject)
         {
-            return new TaskAssertions(subject);
+            return new TaskAssertions<TResult>(subject);
         }
 
         public static TaskAssertions Should(this Task subject)
