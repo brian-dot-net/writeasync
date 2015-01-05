@@ -104,5 +104,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be canceled because I said so but was <null>.");
         }
+
+        [TestMethod]
+        public void ShouldAllowChaining()
+        {
+            Task task = TaskBuilder.Canceled();
+
+            Action act = () => task.Should().BeCanceled().BeCanceled();
+
+            act.ShouldNotThrow();
+        }
     }
 }
