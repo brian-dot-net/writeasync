@@ -21,7 +21,7 @@ namespace FluentSample
 
         public void BeCompleted(string because = "", params object[] reasonArgs)
         {
-            this.AssertCondition(because, reasonArgs);
+            this.AssertCondition("completed", because, reasonArgs);
         }
 
         public void BeCompletedSuccessfully(string because = "", params object[] reasonArgs)
@@ -50,17 +50,17 @@ namespace FluentSample
                 .FailWith("Expected task to be faulted{reason} but was {0}.", this.subject.Status);
         }
 
-        private void AssertCondition(string because, object[] reasonArgs)
+        private void AssertCondition(string expectedState, string because, object[] reasonArgs)
         {
+            string failureMessage = "Expected task to be " + expectedState + "{reason} but was {0}.";
             Execute.Assertion
                 .ForCondition(this.subject != null)
                 .BecauseOf(because, reasonArgs)
-                .FailWith("Expected task to be completed{reason} but was {0}.", this.subject);
-
+                .FailWith(failureMessage, this.subject);
             Execute.Assertion
                 .ForCondition(this.subject.IsCompleted)
                 .BecauseOf(because, reasonArgs)
-                .FailWith("Expected task to be completed{reason} but was {0}.", this.subject.Status);
+                .FailWith(failureMessage, this.subject.Status);
         }
     }
 }
