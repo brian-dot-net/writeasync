@@ -34,5 +34,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be canceled but was RanToCompletion.");
         }
+
+        [TestMethod]
+        public void PendingTaskShouldFail()
+        {
+            Task task = TaskBuilder.Pending();
+
+            Action act = () => task.Should().BeCanceled();
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be canceled but was WaitingForActivation.");
+        }
     }
 }
