@@ -76,6 +76,16 @@ namespace FluentSample.Test.Unit
         }
 
         [TestMethod]
+        public void CanceledTaskShouldFail()
+        {
+            Task task = TaskBuilder.Canceled();
+
+            Action act = () => task.Should().BePending();
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be pending but was Canceled.");
+        }
+
+        [TestMethod]
         public void NullTaskShouldFailWithReason()
         {
             Task task = null;
