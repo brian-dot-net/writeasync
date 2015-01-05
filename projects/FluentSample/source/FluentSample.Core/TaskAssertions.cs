@@ -41,6 +41,7 @@ namespace FluentSample
 
         public void BePending()
         {
+            this.AssertCondition(t => !t.IsCompleted, "pending", string.Empty, new object[0]);
         }
 
         private TaskAssertions AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
