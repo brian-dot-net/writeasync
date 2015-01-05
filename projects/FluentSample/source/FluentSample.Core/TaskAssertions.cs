@@ -31,16 +31,16 @@ namespace FluentSample
                 .FailWith("Expected task to be completed{reason} but was {0}.", this.subject.Status);
         }
 
-        public void BeCompletedSuccessfully(string because = "")
+        public void BeCompletedSuccessfully(string because = "", params object[] reasonArgs)
         {
             Execute.Assertion
                 .ForCondition(this.subject != null)
-                .BecauseOf(because)
+                .BecauseOf(because, reasonArgs)
                 .FailWith("Expected task to be completed successfully{reason} but was {0}.", this.subject);
 
             Execute.Assertion
                 .ForCondition(this.subject.Status == TaskStatus.RanToCompletion)
-                .BecauseOf(because)
+                .BecauseOf(because, reasonArgs)
                 .FailWith("Expected task to be completed successfully{reason} but was {0}.", this.subject.Status);
         }
     }
