@@ -18,7 +18,7 @@ namespace FluentSample
             this.subject = subject;
         }
 
-        public void BeCompleted()
+        public void BeCompleted(string because = "")
         {
             Execute.Assertion
                 .ForCondition(this.subject != null)
@@ -26,7 +26,8 @@ namespace FluentSample
 
             Execute.Assertion
                 .ForCondition(this.subject.IsCompleted)
-                .FailWith("Expected task to be completed but was {0}.", this.subject.Status);
+                .BecauseOf(because)
+                .FailWith("Expected task to be completed{reason} but was {0}.", this.subject.Status);
         }
 
         public void BeCompletedSuccessfully()
