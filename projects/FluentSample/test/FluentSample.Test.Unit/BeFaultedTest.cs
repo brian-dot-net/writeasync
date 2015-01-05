@@ -24,5 +24,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldNotThrow();
         }
+
+        [TestMethod]
+        public void PendingTaskShouldFail()
+        {
+            Task task = TaskBuilder.Pending();
+
+            Action act = () => task.Should().BeFaulted();
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be faulted but was WaitingForActivation.");
+        }
     }
 }
