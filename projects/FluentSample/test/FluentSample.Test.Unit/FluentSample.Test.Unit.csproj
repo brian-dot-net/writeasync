@@ -49,6 +49,7 @@
     <Compile Include="BeCanceledTest.cs" />
     <Compile Include="BePendingTest.cs" />
     <Compile Include="BeFaultedTest.cs" />
+    <Compile Include="TaskResultBuilder.cs" />
     <Compile Include="TaskBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BeCompletedTest.cs" />
