@@ -31,15 +31,7 @@ namespace FluentSample
 
         public void BeFaulted(string because = "", params object[] reasonArgs)
         {
-            Execute.Assertion
-                .ForCondition(this.subject != null)
-                .BecauseOf(because, reasonArgs)
-                .FailWith("Expected task to be faulted{reason} but was {0}.", this.subject);
-
-            Execute.Assertion
-                .ForCondition(this.subject.IsFaulted)
-                .BecauseOf(because, reasonArgs)
-                .FailWith("Expected task to be faulted{reason} but was {0}.", this.subject.Status);
+            this.AssertCondition(t => t.IsFaulted, "faulted", because, reasonArgs);
         }
 
         private void AssertCondition(Predicate<Task> predicate, string expectedState, string because, object[] reasonArgs)
