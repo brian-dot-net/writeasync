@@ -6,6 +6,7 @@
 
 namespace FluentSample
 {
+    using System;
     using System.Threading.Tasks;
     using FluentAssertions.Execution;
 
@@ -20,15 +21,7 @@ namespace FluentSample
 
         public void BeCompleted(string because = "", params object[] reasonArgs)
         {
-            Execute.Assertion
-                .ForCondition(this.subject != null)
-                .BecauseOf(because, reasonArgs)
-                .FailWith("Expected task to be completed{reason} but was {0}.", this.subject);
-
-            Execute.Assertion
-                .ForCondition(this.subject.IsCompleted)
-                .BecauseOf(because, reasonArgs)
-                .FailWith("Expected task to be completed{reason} but was {0}.", this.subject.Status);
+            this.AssertCondition(because, reasonArgs);
         }
 
         public void BeCompletedSuccessfully(string because = "", params object[] reasonArgs)
@@ -55,6 +48,19 @@ namespace FluentSample
                 .ForCondition(this.subject.IsFaulted)
                 .BecauseOf(because, reasonArgs)
                 .FailWith("Expected task to be faulted{reason} but was {0}.", this.subject.Status);
+        }
+
+        private void AssertCondition(string because, object[] reasonArgs)
+        {
+            Execute.Assertion
+                .ForCondition(this.subject != null)
+                .BecauseOf(because, reasonArgs)
+                .FailWith("Expected task to be completed{reason} but was {0}.", this.subject);
+
+            Execute.Assertion
+                .ForCondition(this.subject.IsCompleted)
+                .BecauseOf(because, reasonArgs)
+                .FailWith("Expected task to be completed{reason} but was {0}.", this.subject.Status);
         }
     }
 }
