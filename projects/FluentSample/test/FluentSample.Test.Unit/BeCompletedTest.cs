@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="TaskAssertionsTest.cs" company="Brian Rogers">
+// <copyright file="BeCompletedTest.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -13,7 +13,7 @@ namespace FluentSample.Test.Unit
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class TaskAssertionsTest
+    public class BeCompletedTest
     {
         [TestMethod]
         public void CompletedTaskShouldPassBeCompleted()
