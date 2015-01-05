@@ -44,5 +44,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be pending but was Faulted.");
         }
+
+        [TestMethod]
+        public void NullTaskShouldFail()
+        {
+            Task task = null;
+
+            Action act = () => task.Should().BePending();
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be pending but was <null>.");
+        }
     }
 }
