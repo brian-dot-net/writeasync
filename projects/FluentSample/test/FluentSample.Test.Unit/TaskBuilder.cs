@@ -27,5 +27,12 @@ namespace FluentSample.Test.Unit
             tcs.SetException(new InvalidCastException("Expected failure."));
             return tcs.Task;
         }
+
+        public static Task Canceled()
+        {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            tcs.SetCanceled();
+            return tcs.Task;
+        }
     }
 }
