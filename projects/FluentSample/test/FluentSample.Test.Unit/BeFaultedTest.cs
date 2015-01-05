@@ -36,6 +36,16 @@ namespace FluentSample.Test.Unit
         }
 
         [TestMethod]
+        public void PendingTaskShouldFailWithReason()
+        {
+            Task task = TaskBuilder.Pending();
+
+            Action act = () => task.Should().BeFaulted(because: "I said so");
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be faulted because I said so but was WaitingForActivation.");
+        }
+
+        [TestMethod]
         public void NullTaskShouldFail()
         {
             Task task = null;

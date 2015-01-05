@@ -44,7 +44,7 @@ namespace FluentSample
                 .FailWith("Expected task to be completed successfully{reason} but was {0}.", this.subject.Status);
         }
 
-        public void BeFaulted()
+        public void BeFaulted(string because = "")
         {
             Execute.Assertion
                 .ForCondition(this.subject != null)
@@ -52,7 +52,8 @@ namespace FluentSample
 
             Execute.Assertion
                 .ForCondition(this.subject.IsFaulted)
-                .FailWith("Expected task to be faulted but was {0}.", this.subject.Status);
+                .BecauseOf(because)
+                .FailWith("Expected task to be faulted{reason} but was {0}.", this.subject.Status);
         }
     }
 }
