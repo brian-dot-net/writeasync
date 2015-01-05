@@ -13,26 +13,22 @@ namespace FluentSample.Test.Unit
     {
         public static Task Completed()
         {
-            return Task.FromResult(false);
+            return TaskResultBuilder.Completed();
         }
 
         public static Task Pending()
         {
-            return new TaskCompletionSource<bool>().Task;
+            return TaskResultBuilder.Pending();
         }
 
         public static Task Faulted()
         {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            tcs.SetException(new InvalidCastException("Expected failure."));
-            return tcs.Task;
+            return TaskResultBuilder.Faulted();
         }
 
         public static Task Canceled()
         {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            tcs.SetCanceled();
-            return tcs.Task;
+            return TaskResultBuilder.Canceled();
         }
     }
 }
