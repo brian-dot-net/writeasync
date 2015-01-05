@@ -44,5 +44,17 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be completed but was <null>.");
         }
+
+        [TestMethod]
+        public void FaultedTaskShouldPassBeCompleted()
+        {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            tcs.SetException(new InvalidCastException("Expected failure."));
+            Task task = tcs.Task;
+
+            Action act = () => task.Should().BeCompleted();
+
+            act.ShouldNotThrow();
+        }
     }
 }
