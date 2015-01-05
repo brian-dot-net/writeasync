@@ -84,5 +84,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be canceled because I said so but was <null>.");
         }
+
+        [TestMethod]
+        public void NullTaskShouldFailWithReasonFormatted()
+        {
+            Task task = null;
+
+            Action act = () => task.Should().BeCanceled("I said {0}", "so");
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be canceled because I said so but was <null>.");
+        }
     }
 }
