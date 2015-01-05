@@ -44,5 +44,15 @@ namespace FluentSample.Test.Unit
 
             act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be canceled but was WaitingForActivation.");
         }
+
+        [TestMethod]
+        public void FaultedTaskShouldFail()
+        {
+            Task task = TaskBuilder.Faulted();
+
+            Action act = () => task.Should().BeCanceled();
+
+            act.ShouldThrow<AssertFailedException>().WithMessage("Expected task to be canceled but was Faulted.");
+        }
     }
 }
