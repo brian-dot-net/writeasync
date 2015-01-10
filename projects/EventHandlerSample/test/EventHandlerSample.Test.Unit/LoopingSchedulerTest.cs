@@ -7,6 +7,7 @@
 namespace EventHandlerSample.Test.Unit
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,7 +27,7 @@ namespace EventHandlerSample.Test.Unit
             tcs.SetException(exception);
             LoopingScheduler scheduler = new LoopingScheduler(() => tcs.Task);
             
-            Task task = scheduler.RunAsync();
+            Task task = scheduler.RunAsync(TimeSpan.MaxValue);
 
             task.IsCompleted.Should().BeTrue();
             task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
@@ -48,11 +49,32 @@ namespace EventHandlerSample.Test.Unit
             int invokeCount = 0;
             LoopingScheduler scheduler = new LoopingScheduler(() => tasks[invokeCount++]);
 
-            Task task = scheduler.RunAsync();
+            Task task = scheduler.RunAsync(TimeSpan.MaxValue);
 
             task.IsCompleted.Should().BeTrue();
             task.Exception.Should().NotBeNull();
             task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
+            invokeCount.Should().Be(3);
+        }
+
+        [TestMethod]
+        public void RunRaisesPausedAfterFinitePauseInterval()
+        {
+            Exception exception = new InvalidOperationException("Expected.");
+            int invokeCount = 0;
+            LoopingScheduler scheduler = new LoopingScheduler(() => Task.FromResult(++invokeCount));
+            scheduler.GetElapsed = () => TimeSpan.FromSeconds(invokeCount);
+            scheduler.Paused += delegate
+            {
+                throw exception;
+            };
+
+            Task task = scheduler.RunAsync(TimeSpan.FromSeconds(1.0d));
+
+            task.IsCompleted.Should().BeTrue();
+            task.Exception.Should().NotBeNull();
+            task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
+            invokeCount.Should().Be(1);
         }
     }
 }
