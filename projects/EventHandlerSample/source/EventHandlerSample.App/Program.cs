@@ -12,9 +12,11 @@ namespace EventHandlerSample
     {
         private static void Main(string[] args)
         {
-            Class1 c = new Class1("world");
-            string name = c.DoAsync().Result;
-            Console.WriteLine("Hello, {0}!", name);
+            using (WorldClock worldClock = new WorldClock())
+            {
+                DateTime now = worldClock.GetTimeAsync().Result;
+                Console.WriteLine(now);
+            }
         }
     }
 }
