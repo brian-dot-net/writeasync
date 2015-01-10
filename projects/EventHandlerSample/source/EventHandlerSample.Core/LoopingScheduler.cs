@@ -23,7 +23,7 @@ namespace EventHandlerSample
             this.GetElapsed = InitialGetElapsed;
         }
 
-        public event EventHandler Paused;
+        public event EventHandler<AsyncEventArgs> Paused;
 
         public Func<TimeSpan> GetElapsed { get; set; }
 
@@ -33,7 +33,7 @@ namespace EventHandlerSample
             while (true)
             {
                 await this.doAsync();
-                start = this.CheckPauseInterval(start, pauseInterval);
+                start = await this.CheckPauseIntervalAsync(start, pauseInterval);
             }
         }
 
@@ -42,23 +42,28 @@ namespace EventHandlerSample
             return DefaultStopwatch.Elapsed;
         }
 
-        private TimeSpan CheckPauseInterval(TimeSpan start, TimeSpan pauseInterval)
+        private async Task<TimeSpan> CheckPauseIntervalAsync(TimeSpan start, TimeSpan pauseInterval)
         {
             TimeSpan elapsed = this.GetElapsed() - start;
             if (elapsed >= pauseInterval)
             {
                 start = elapsed;
-                this.Raise(this.Paused);
+                await this.RaiseAsync(this.Paused);
             }
 
             return start;
         }
 
-        private void Raise(EventHandler handler)
+        private async Task RaiseAsync(EventHandler<AsyncEventArgs> handler)
         {
             if (handler != null)
             {
-                handler(this, EventArgs.Empty);
+                AsyncEventArgs e = new AsyncEventArgs();
+                handler(this, e);
+                foreach (Func<Task> nextAsync in e.Tasks)
+                {
+                    await nextAsync();
+                }
             }
         }
     }
