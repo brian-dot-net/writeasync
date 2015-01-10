@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Class1.cs" company="Brian Rogers">
+// <copyright file="LoopingScheduler.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -9,11 +9,11 @@ namespace EventHandlerSample
     using System;
     using System.Threading.Tasks;
 
-    public class Class1
+    public class LoopingScheduler
     {
         private readonly string name;
 
-        public Class1(string name)
+        public LoopingScheduler(string name)
         {
             this.name = name;
         }

@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="Test1.cs" company="Brian Rogers">
+// <copyright file="LoopingSchedulerTest.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 //-----------------------------------------------------------------------
@@ -11,16 +11,16 @@ namespace EventHandlerSample.Test.Unit
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class Test1
+    public class LoopingSchedulerTest
     {
-        public Test1()
+        public LoopingSchedulerTest()
         {
         }
 
         [TestMethod]
         public void ShouldReturnNameAfterCompletingSync()
         {
-            Class1 c = new Class1("MyName");
+            LoopingScheduler c = new LoopingScheduler("MyName");
             
             Task<string> task = c.DoAsync();
 
