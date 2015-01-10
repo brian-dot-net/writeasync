@@ -11,16 +11,16 @@ namespace EventHandlerSample
 
     public class LoopingScheduler
     {
-        private readonly string name;
+        private readonly Func<Task> doAsync;
 
-        public LoopingScheduler(string name)
+        public LoopingScheduler(Func<Task> doAsync)
         {
-            this.name = name;
+            this.doAsync = doAsync;
         }
 
-        public Task<string> DoAsync()
+        public Task RunAsync()
         {
-            return Task.FromResult(this.name);
+            return this.doAsync();
         }
     }
 }

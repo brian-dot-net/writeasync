@@ -6,6 +6,7 @@
 
 namespace EventHandlerSample.Test.Unit
 {
+    using System;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,14 +19,17 @@ namespace EventHandlerSample.Test.Unit
         }
 
         [TestMethod]
-        public void ShouldReturnNameAfterCompletingSync()
+        public void RunThrowsOnFirstException()
         {
-            LoopingScheduler c = new LoopingScheduler("MyName");
+            Exception exception = new InvalidOperationException("Expected.");
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            tcs.SetException(exception);
+            LoopingScheduler scheduler = new LoopingScheduler(() => tcs.Task);
             
-            Task<string> task = c.DoAsync();
+            Task task = scheduler.RunAsync();
 
             task.IsCompleted.Should().BeTrue();
-            task.Result.Should().Be("MyName");
+            task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
         }
     }
 }
