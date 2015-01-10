@@ -18,9 +18,12 @@ namespace EventHandlerSample
             this.doAsync = doAsync;
         }
 
-        public Task RunAsync()
+        public async Task RunAsync()
         {
-            return this.doAsync();
+            while (true)
+            {
+                await this.doAsync();
+            }
         }
     }
 }
