@@ -118,7 +118,7 @@ namespace EventHandlerSample.Test.Unit
         }
 
         [TestMethod]
-        public void RunRaisesPausedTwiceOnTwoElapsedPauseIntervals()
+        public void RunRaisesPausedTwiceOnTwoElapsedPauseIntervalsOfTwoSeconds()
         {
             Exception exception = new InvalidOperationException("Expected.");
             int pauseInvokeCount = 0;
@@ -133,12 +133,12 @@ namespace EventHandlerSample.Test.Unit
                 }
             };
 
-            Task task = scheduler.RunAsync(TimeSpan.FromSeconds(1.0d));
+            Task task = scheduler.RunAsync(TimeSpan.FromSeconds(2.0d));
 
             task.IsCompleted.Should().BeTrue();
             task.Exception.Should().NotBeNull();
             task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
-            invokeCount.Should().Be(2);
+            invokeCount.Should().Be(4);
             pauseInvokeCount.Should().Be(2);
         }
     }

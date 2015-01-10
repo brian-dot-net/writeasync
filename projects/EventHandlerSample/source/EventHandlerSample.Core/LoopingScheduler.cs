@@ -35,6 +35,7 @@ namespace EventHandlerSample
                 TimeSpan elapsed = this.GetElapsed() - start;
                 if (elapsed >= pauseInterval)
                 {
+                    start = elapsed;
                     EventHandler handler = this.Paused;
                     handler(this, EventArgs.Empty);
                 }
