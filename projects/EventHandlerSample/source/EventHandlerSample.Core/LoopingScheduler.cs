@@ -12,14 +12,15 @@ namespace EventHandlerSample
 
     public class LoopingScheduler
     {
+        private static readonly Stopwatch DefaultStopwatch = Stopwatch.StartNew();
+        private static readonly Func<TimeSpan> InitialGetElapsed = DefaultGetElapsed;
+
         private readonly Func<Task> doAsync;
-        private readonly Stopwatch stopwatch;
 
         public LoopingScheduler(Func<Task> doAsync)
         {
             this.doAsync = doAsync;
-            this.stopwatch = Stopwatch.StartNew();
-            this.GetElapsed = this.DefaultGetElapsed;
+            this.GetElapsed = InitialGetElapsed;
         }
 
         public event EventHandler Paused;
@@ -34,6 +35,11 @@ namespace EventHandlerSample
                 await this.doAsync();
                 start = this.CheckPauseInterval(start, pauseInterval);
             }
+        }
+
+        private static TimeSpan DefaultGetElapsed()
+        {
+            return DefaultStopwatch.Elapsed;
         }
 
         private TimeSpan CheckPauseInterval(TimeSpan start, TimeSpan pauseInterval)
@@ -54,11 +60,6 @@ namespace EventHandlerSample
             {
                 handler(this, EventArgs.Empty);
             }
-        }
-
-        private TimeSpan DefaultGetElapsed()
-        {
-            return this.stopwatch.Elapsed;
         }
     }
 }
