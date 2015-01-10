@@ -174,6 +174,35 @@ namespace EventHandlerSample.Test.Unit
             invokeCount.Should().Be(1);
         }
 
+        [TestMethod]
+        public void RunSchedulesTwoPausesOnRequestAfterFinitePauseInterval()
+        {
+            int scheduleCount = 0;
+            Exception exception = new InvalidOperationException("Expected.");
+            Func<Task> doAsync = delegate
+            {
+                if (scheduleCount > 0)
+                {
+                    throw exception;
+                }
+
+                return Task.FromResult(false);
+            };
+            LoopingScheduler scheduler = new LoopingScheduler(doAsync);
+            int elapsedCount = 0;
+            scheduler.GetElapsed = () => TimeSpan.FromSeconds(elapsedCount++);
+            scheduler.Paused += delegate(object sender, AsyncEventArgs e)
+            {
+                e.Tasks.Add(() => Task.FromResult(++scheduleCount));
+                e.Tasks.Add(() => Task.FromResult(++scheduleCount));
+            };
+
+            Task task = scheduler.RunAsync(TimeSpan.FromSeconds(1.0d));
+
+            AssertTaskThrows(task, exception);
+            scheduleCount.Should().Be(2);
+        }
+
         private static void AssertTaskThrows(Task task, Exception expected)
         {
             task.IsCompleted.Should().BeTrue();
