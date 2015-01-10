@@ -76,5 +76,25 @@ namespace EventHandlerSample.Test.Unit
             task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
             invokeCount.Should().Be(1);
         }
+
+        [TestMethod]
+        public void RunRaisesPausedAfterFinitePauseIntervalTwoIterationsLater()
+        {
+            Exception exception = new InvalidOperationException("Expected.");
+            int invokeCount = 0;
+            LoopingScheduler scheduler = new LoopingScheduler(() => Task.FromResult(++invokeCount));
+            scheduler.GetElapsed = () => TimeSpan.FromSeconds(invokeCount);
+            scheduler.Paused += delegate
+            {
+                throw exception;
+            };
+
+            Task task = scheduler.RunAsync(TimeSpan.FromSeconds(2.0d));
+
+            task.IsCompleted.Should().BeTrue();
+            task.Exception.Should().NotBeNull();
+            task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
+            invokeCount.Should().Be(2);
+        }
     }
 }
