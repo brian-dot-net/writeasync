@@ -91,6 +91,31 @@ namespace EventHandlerSample.Test.Unit
         }
 
         [TestMethod]
+        public void TimeSpentDuringPauseNotCountedForNextPauseInterval()
+        {
+            Exception exception = new InvalidOperationException("Expected.");
+            int elapsedSeconds = 0;
+            int invokeCount = 0;
+            int pauseCount = 0;
+            LoopingScheduler scheduler = new LoopingScheduler(() => Task.FromResult(++elapsedSeconds * ++invokeCount));
+            scheduler.GetElapsed = () => TimeSpan.FromSeconds(elapsedSeconds);
+            scheduler.Paused += delegate
+            {
+                ++pauseCount;
+                if (++elapsedSeconds >= 5)
+                {
+                    throw exception;
+                }
+            };
+
+            Task task = scheduler.RunAsync(TimeSpan.FromSeconds(2.0d));
+
+            AssertTaskThrows(task, exception);
+            invokeCount.Should().Be(4);
+            pauseCount.Should().Be(2);
+        }
+
+        [TestMethod]
         public void RunRaisesPausedAfterFinitePauseIntervalRelativeToNonZeroElapsedTwoIterationsLater()
         {
             Exception exception = new InvalidOperationException("Expected.");

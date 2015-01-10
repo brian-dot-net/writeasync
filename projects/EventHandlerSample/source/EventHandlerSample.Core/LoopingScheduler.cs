@@ -47,8 +47,8 @@ namespace EventHandlerSample
             TimeSpan elapsed = this.GetElapsed() - start;
             if (elapsed >= pauseInterval)
             {
-                start = elapsed;
                 await this.RaiseAsync(this.Paused);
+                start = this.GetElapsed();
             }
 
             return start;
