@@ -26,7 +26,7 @@ namespace EventHandlerSample.Test.Unit
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             tcs.SetException(exception);
             LoopingScheduler scheduler = new LoopingScheduler(() => tcs.Task);
-            
+
             Task task = scheduler.RunAsync(TimeSpan.MaxValue);
 
             AssertTaskThrows(task, exception);
@@ -107,6 +107,34 @@ namespace EventHandlerSample.Test.Unit
                     throw exception;
                 }
             };
+
+            Task task = scheduler.RunAsync(TimeSpan.FromSeconds(2.0d));
+
+            AssertTaskThrows(task, exception);
+            invokeCount.Should().Be(4);
+            pauseCount.Should().Be(2);
+        }
+
+        [TestMethod]
+        public void TimeSpentDuringAsyncPauseNotCountedForNextPauseInterval()
+        {
+            Exception exception = new InvalidOperationException("Expected.");
+            int elapsedSeconds = 0;
+            int invokeCount = 0;
+            int pauseCount = 0;
+            LoopingScheduler scheduler = new LoopingScheduler(() => Task.FromResult(++elapsedSeconds * ++invokeCount));
+            scheduler.GetElapsed = () => TimeSpan.FromSeconds(elapsedSeconds);
+            Func<Task> pauseAsync = delegate
+            {
+                ++pauseCount;
+                if (++elapsedSeconds >= 5)
+                {
+                    throw exception;
+                }
+
+                return Task.FromResult(false);
+            };
+            scheduler.Paused += (o, e) => e.Tasks.Add(pauseAsync);
 
             Task task = scheduler.RunAsync(TimeSpan.FromSeconds(2.0d));
 
