@@ -131,6 +131,29 @@ namespace EventHandlerSample.Test.Unit
             pauseInvokeCount.Should().Be(2);
         }
 
+        [TestMethod]
+        public void RunDoesNotThrowNullRefOnElapsedPauseIntervalIfZeroSubscribers()
+        {
+            Exception exception = new InvalidOperationException("Expected.");
+            int invokeCount = 0;
+            Func<Task> doAsync = delegate
+            {
+                if (++invokeCount == 2)
+                {
+                    throw exception;
+                }
+
+                return Task.FromResult(false);
+            };
+            LoopingScheduler scheduler = new LoopingScheduler(doAsync);
+            scheduler.GetElapsed = () => TimeSpan.FromSeconds(invokeCount);
+
+            Task task = scheduler.RunAsync(TimeSpan.FromSeconds(1.0d));
+
+            AssertTaskThrows(task, exception);
+            invokeCount.Should().Be(2);
+        }
+
         private static void AssertTaskThrows(Task task, Exception expected)
         {
             task.IsCompleted.Should().BeTrue();

@@ -36,9 +36,16 @@ namespace EventHandlerSample
                 if (elapsed >= pauseInterval)
                 {
                     start = elapsed;
-                    EventHandler handler = this.Paused;
-                    handler(this, EventArgs.Empty);
+                    this.Raise(this.Paused);
                 }
+            }
+        }
+
+        private void Raise(EventHandler handler)
+        {
+            if (handler != null)
+            {
+                handler(this, EventArgs.Empty);
             }
         }
 
