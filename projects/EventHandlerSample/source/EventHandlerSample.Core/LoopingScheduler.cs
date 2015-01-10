@@ -32,13 +32,20 @@ namespace EventHandlerSample
             while (true)
             {
                 await this.doAsync();
-                TimeSpan elapsed = this.GetElapsed() - start;
-                if (elapsed >= pauseInterval)
-                {
-                    start = elapsed;
-                    this.Raise(this.Paused);
-                }
+                start = this.CheckPauseInterval(start, pauseInterval);
             }
+        }
+
+        private TimeSpan CheckPauseInterval(TimeSpan start, TimeSpan pauseInterval)
+        {
+            TimeSpan elapsed = this.GetElapsed() - start;
+            if (elapsed >= pauseInterval)
+            {
+                start = elapsed;
+                this.Raise(this.Paused);
+            }
+
+            return start;
         }
 
         private void Raise(EventHandler handler)
