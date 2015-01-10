@@ -28,10 +28,12 @@ namespace EventHandlerSample
 
         public async Task RunAsync(TimeSpan pauseInterval)
         {
+            TimeSpan start = this.GetElapsed();
             while (true)
             {
                 await this.doAsync();
-                if (this.GetElapsed() >= pauseInterval)
+                TimeSpan elapsed = this.GetElapsed() - start;
+                if (elapsed >= pauseInterval)
                 {
                     EventHandler handler = this.Paused;
                     handler(this, EventArgs.Empty);
