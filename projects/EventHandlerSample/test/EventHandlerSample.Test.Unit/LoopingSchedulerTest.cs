@@ -50,9 +50,7 @@ namespace EventHandlerSample.Test.Unit
 
             Task task = scheduler.RunAsync(TimeSpan.MaxValue);
 
-            task.IsCompleted.Should().BeTrue();
-            task.Exception.Should().NotBeNull();
-            task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
+            AssertTaskThrows(task, exception);
             invokeCount.Should().Be(3);
         }
 
@@ -70,9 +68,7 @@ namespace EventHandlerSample.Test.Unit
 
             Task task = scheduler.RunAsync(TimeSpan.FromSeconds(1.0d));
 
-            task.IsCompleted.Should().BeTrue();
-            task.Exception.Should().NotBeNull();
-            task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
+            AssertTaskThrows(task, exception);
             invokeCount.Should().Be(1);
         }
 
@@ -90,9 +86,7 @@ namespace EventHandlerSample.Test.Unit
 
             Task task = scheduler.RunAsync(TimeSpan.FromSeconds(2.0d));
 
-            task.IsCompleted.Should().BeTrue();
-            task.Exception.Should().NotBeNull();
-            task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
+            AssertTaskThrows(task, exception);
             invokeCount.Should().Be(2);
         }
 
@@ -110,9 +104,7 @@ namespace EventHandlerSample.Test.Unit
 
             Task task = scheduler.RunAsync(TimeSpan.FromSeconds(2.0d));
 
-            task.IsCompleted.Should().BeTrue();
-            task.Exception.Should().NotBeNull();
-            task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
+            AssertTaskThrows(task, exception);
             invokeCount.Should().Be(2);
         }
 
@@ -134,9 +126,7 @@ namespace EventHandlerSample.Test.Unit
 
             Task task = scheduler.RunAsync(TimeSpan.FromSeconds(2.0d));
 
-            task.IsCompleted.Should().BeTrue();
-            task.Exception.Should().NotBeNull();
-            task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
+            AssertTaskThrows(task, exception);
             invokeCount.Should().Be(4);
             pauseInvokeCount.Should().Be(2);
         }
