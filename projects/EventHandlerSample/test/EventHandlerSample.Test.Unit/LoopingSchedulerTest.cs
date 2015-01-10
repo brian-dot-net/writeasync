@@ -29,8 +29,7 @@ namespace EventHandlerSample.Test.Unit
             
             Task task = scheduler.RunAsync(TimeSpan.MaxValue);
 
-            task.IsCompleted.Should().BeTrue();
-            task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
+            AssertTaskThrows(task, exception);
         }
 
         [TestMethod]
@@ -140,6 +139,13 @@ namespace EventHandlerSample.Test.Unit
             task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(exception);
             invokeCount.Should().Be(4);
             pauseInvokeCount.Should().Be(2);
+        }
+
+        private static void AssertTaskThrows(Task task, Exception expected)
+        {
+            task.IsCompleted.Should().BeTrue();
+            task.Exception.Should().NotBeNull();
+            task.Exception.InnerExceptions.Should().HaveCount(1).And.Contain(expected);
         }
     }
 }
