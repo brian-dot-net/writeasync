@@ -1,0 +1,5 @@
+LIBRARY WatchdogThread
+EXPORTS
+   InitializeWatchdog
+   SignalWatchdog
+   DestroyWatchdog

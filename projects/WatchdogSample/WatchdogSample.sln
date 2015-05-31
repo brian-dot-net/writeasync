@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WatchdogThreadLib", "Watchd
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WatchdogThreadLibTest", "WatchdogThreadLibTest\WatchdogThreadLibTest.vcxproj", "{B6350212-9275-4D75-80D0-DDAC64AC1985}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WatchdogThread", "WatchdogThread\WatchdogThread.vcxproj", "{975DC1E7-0FD2-446B-814C-686743F194A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{B6350212-9275-4D75-80D0-DDAC64AC1985}.Debug|x64.Build.0 = Debug|x64
 		{B6350212-9275-4D75-80D0-DDAC64AC1985}.Release|x64.ActiveCfg = Release|x64
 		{B6350212-9275-4D75-80D0-DDAC64AC1985}.Release|x64.Build.0 = Release|x64
+		{975DC1E7-0FD2-446B-814C-686743F194A9}.Debug|x64.ActiveCfg = Debug|x64
+		{975DC1E7-0FD2-446B-814C-686743F194A9}.Debug|x64.Build.0 = Debug|x64
+		{975DC1E7-0FD2-446B-814C-686743F194A9}.Release|x64.ActiveCfg = Release|x64
+		{975DC1E7-0FD2-446B-814C-686743F194A9}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
