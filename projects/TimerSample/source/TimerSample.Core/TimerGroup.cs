@@ -29,9 +29,10 @@ namespace TimerSample
         public void Remove(Guid id)
         {
             Timer timer;
-            this.timers.TryGetValue(id, out timer);
-            using (timer)
+            if (this.timers.TryGetValue(id, out timer))
             {
+                this.timers.Remove(id);
+                Cancel(timer);
             }
         }
 
@@ -41,13 +42,21 @@ namespace TimerSample
             GC.SuppressFinalize(this);
         }
 
+        private static void Cancel(Timer timer)
+        {
+            using (timer)
+            {
+                timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            }
+        }
+
         private void Dispose(bool disposing)
         {
             if (disposing)
             {
                 foreach (Timer timer in this.timers.Values)
                 {
-                    timer.Dispose();
+                    Cancel(timer);
                 }
             }
         }
