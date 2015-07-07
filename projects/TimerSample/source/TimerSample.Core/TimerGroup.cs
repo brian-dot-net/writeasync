@@ -12,27 +12,29 @@ namespace TimerSample
 
     public sealed class TimerGroup : IDisposable
     {
-        private readonly Dictionary<Guid, Timer> timers;
+        private readonly Dictionary<Guid, PeriodicAction> actions;
 
         public TimerGroup()
         {
-            this.timers = new Dictionary<Guid, Timer>();
+            this.actions = new Dictionary<Guid, PeriodicAction>();
         }
 
         public Guid Add(TimeSpan interval, Action action)
         {
             Guid id = Guid.NewGuid();
-            this.timers.Add(id, new Timer(o => action(), null, interval, interval));
+            this.actions.Add(id, new PeriodicAction(interval, action));
             return id;
         }
 
         public void Remove(Guid id)
         {
-            Timer timer;
-            if (this.timers.TryGetValue(id, out timer))
+            PeriodicAction action;
+            if (this.actions.TryGetValue(id, out action))
             {
-                this.timers.Remove(id);
-                Cancel(timer);
+                using (action)
+                {
+                    this.actions.Remove(id);
+                }
             }
         }
 
@@ -42,21 +44,39 @@ namespace TimerSample
             GC.SuppressFinalize(this);
         }
 
-        private static void Cancel(Timer timer)
-        {
-            using (timer)
-            {
-                timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-            }
-        }
-
         private void Dispose(bool disposing)
         {
             if (disposing)
             {
-                foreach (Timer timer in this.timers.Values)
+                foreach (PeriodicAction action in this.actions.Values)
                 {
-                    Cancel(timer);
+                    using (action)
+                    {
+                    }
+                }
+            }
+        }
+
+        private sealed class PeriodicAction : IDisposable
+        {
+            private readonly Timer timer;
+
+            public PeriodicAction(TimeSpan interval, Action action)
+            {
+                this.timer = new Timer(o => action(), null, interval, interval);
+            }
+
+            public void Dispose()
+            {
+                this.Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            private void Dispose(bool disposing)
+            {
+                using (this.timer)
+                {
+                    this.timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
                 }
             }
         }
