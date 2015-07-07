@@ -12,16 +12,23 @@ namespace TimerSample
 
     public class TimerGroup
     {
-        private readonly List<Timer> timers;
+        private readonly Dictionary<Guid, Timer> timers;
 
         public TimerGroup()
         {
-            this.timers = new List<Timer>();
+            this.timers = new Dictionary<Guid, Timer>();
         }
 
-        public void Add(TimeSpan interval, Action action)
+        public Guid Add(TimeSpan interval, Action action)
         {
-            this.timers.Add(new Timer(o => action(), null, interval, interval));
+            Guid id = Guid.NewGuid();
+            this.timers.Add(id, new Timer(o => action(), null, interval, interval));
+            return id;
+        }
+
+        public void Remove(Guid id)
+        {
+            this.timers[id].Dispose();
         }
     }
 }
