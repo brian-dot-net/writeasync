@@ -10,7 +10,7 @@ namespace TimerSample
     using System.Collections.Generic;
     using System.Threading;
 
-    public class TimerGroup
+    public sealed class TimerGroup : IDisposable
     {
         private readonly Dictionary<Guid, Timer> timers;
 
@@ -29,6 +29,23 @@ namespace TimerSample
         public void Remove(Guid id)
         {
             this.timers[id].Dispose();
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                foreach (Timer timer in this.timers.Values)
+                {
+                    timer.Dispose();
+                }
+            }
         }
     }
 }
