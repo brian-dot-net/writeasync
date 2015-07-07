@@ -28,7 +28,11 @@ namespace TimerSample
 
         public void Remove(Guid id)
         {
-            this.timers[id].Dispose();
+            Timer timer;
+            this.timers.TryGetValue(id, out timer);
+            using (timer)
+            {
+            }
         }
 
         public void Dispose()

@@ -134,5 +134,13 @@ namespace TimerSample.Test.Unit
             Assert.AreEqual(1, invokeCount1);
             Assert.AreEqual(0, invokeCount2);
         }
+
+        [TestMethod]
+        public void ShouldIgnoreInvalidIdOnRemove()
+        {
+            TimerGroup timers = new TimerGroup();
+
+            timers.Remove(Guid.Empty);
+        }
     }
 }
