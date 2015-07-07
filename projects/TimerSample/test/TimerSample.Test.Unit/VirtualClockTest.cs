@@ -14,7 +14,7 @@ namespace TimerSample.Test.Unit
     public class VirtualClockTest
     {
         [TestMethod]
-        public void ShouldInvokeCreatedActionOnSleepEndpointOfInterval()
+        public void ShouldInvokeCreatedActionOnSleepAfterEndpointOfInterval()
         {
             VirtualClock clock = new VirtualClock();
             int invokeCount = 0;
@@ -24,7 +24,7 @@ namespace TimerSample.Test.Unit
 
             Assert.AreEqual(0, invokeCount);
 
-            clock.Sleep(interval);
+            clock.Sleep(interval + TimeSpan.FromTicks(interval.Ticks / 4));
 
             Assert.AreEqual(1, invokeCount);
 
@@ -34,7 +34,7 @@ namespace TimerSample.Test.Unit
         }
 
         [TestMethod]
-        public void ShouldInvokeCreatedActionOnSleepPastEndpointOfInterval()
+        public void ShouldNotInvokeCreatedActionOnSleepAtEndpointOfInterval()
         {
             VirtualClock clock = new VirtualClock();
             int invokeCount = 0;
@@ -44,13 +44,33 @@ namespace TimerSample.Test.Unit
 
             Assert.AreEqual(0, invokeCount);
 
-            clock.Sleep(interval + TimeSpan.FromTicks(interval.Ticks / 2));
+            clock.Sleep(interval);
 
-            Assert.AreEqual(1, invokeCount);
+            Assert.AreEqual(0, invokeCount);
 
             clock.Sleep(interval);
 
-            Assert.AreEqual(2, invokeCount);
+            Assert.AreEqual(1, invokeCount);
+        }
+
+        [TestMethod]
+        public void ShouldNotInvokeCreatedActionOnSleepAtBeginningOfInterval()
+        {
+            VirtualClock clock = new VirtualClock();
+            int invokeCount = 0;
+            TimeSpan interval = TimeSpan.FromSeconds(1.0d);
+
+            clock.CreateAction(interval, () => ++invokeCount);
+
+            Assert.AreEqual(0, invokeCount);
+
+            clock.Sleep(interval);
+
+            Assert.AreEqual(0, invokeCount);
+            
+            clock.Sleep(TimeSpan.FromTicks(interval.Ticks / 4));
+
+            Assert.AreEqual(1, invokeCount);
         }
     }
 }
