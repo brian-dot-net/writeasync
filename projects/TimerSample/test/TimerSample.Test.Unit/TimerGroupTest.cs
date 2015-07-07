@@ -46,5 +46,34 @@ namespace TimerSample.Test.Unit
 
             Assert.AreEqual(2, invokeCount);
         }
+
+        [TestMethod]
+        public void ShouldScheduleMultipleActionsPeriodicallyOnSeparateIntervalsAfterAdd()
+        {
+            TimerGroup timers = new TimerGroup();
+
+            int invokeCount1 = 0;
+            int invokeCount2 = 0;
+            timers.Add(TimeSpan.FromSeconds(1.0d), () => ++invokeCount1);
+            timers.Add(TimeSpan.FromSeconds(1.5d), () => ++invokeCount2);
+
+            Assert.AreEqual(0, invokeCount1);
+            Assert.AreEqual(0, invokeCount2);
+
+            Thread.Sleep(TimeSpan.FromSeconds(1.1d));
+
+            Assert.AreEqual(1, invokeCount1);
+            Assert.AreEqual(0, invokeCount2);
+
+            Thread.Sleep(TimeSpan.FromSeconds(1.0d));
+
+            Assert.AreEqual(2, invokeCount1);
+            Assert.AreEqual(1, invokeCount2);
+
+            Thread.Sleep(TimeSpan.FromSeconds(1.0d));
+
+            Assert.AreEqual(3, invokeCount1);
+            Assert.AreEqual(2, invokeCount2);
+        }
     }
 }
