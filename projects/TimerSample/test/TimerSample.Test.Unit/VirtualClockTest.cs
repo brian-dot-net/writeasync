@@ -112,5 +112,23 @@ namespace TimerSample.Test.Unit
 
             Assert.AreEqual(2, invokeCount);
         }
+
+        [TestMethod]
+        public void ShouldNotInvokeCreatedActionIfCurrentTimeMinusCreationTimeIsLessThanInterval()
+        {
+            VirtualClock clock = new VirtualClock();
+            int invokeCount = 0;
+            TimeSpan interval = TimeSpan.FromSeconds(1.0d);
+
+            clock.Sleep(interval + interval - TimeSpan.FromTicks(interval.Ticks / 4));
+            
+            clock.CreateAction(interval, () => ++invokeCount);
+
+            Assert.AreEqual(0, invokeCount);
+
+            clock.Sleep(TimeSpan.FromTicks(interval.Ticks / 2));
+
+            Assert.AreEqual(0, invokeCount);
+        }
     }
 }
