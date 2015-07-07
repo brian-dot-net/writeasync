@@ -17,12 +17,15 @@ namespace TimerSample
         public TimerGroup()
         {
             this.actions = new Dictionary<Guid, PeriodicAction>();
+            this.Create = (i, a) => new PeriodicAction(i, a);
         }
+
+        private Func<TimeSpan, Action, PeriodicAction> Create { get; set; }
 
         public Guid Add(TimeSpan interval, Action action)
         {
             Guid id = Guid.NewGuid();
-            this.actions.Add(id, new PeriodicAction(interval, action));
+            this.actions.Add(id, this.Create(interval, action));
             return id;
         }
 
