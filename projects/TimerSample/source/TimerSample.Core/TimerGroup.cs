@@ -17,7 +17,7 @@ namespace TimerSample
         public TimerGroup()
         {
             this.actions = new Dictionary<Guid, PeriodicAction>();
-            this.Create = (i, a) => new PeriodicAction(i, a);
+            this.Create = (i, a) => new TimerBasedAction(i, a);
         }
 
         private Func<TimeSpan, Action, PeriodicAction> Create { get; set; }
@@ -60,28 +60,29 @@ namespace TimerSample
             }
         }
 
-        private sealed class PeriodicAction : IDisposable
+private sealed class TimerBasedAction : PeriodicAction
+{
+    private readonly Timer timer;
+
+    public TimerBasedAction(TimeSpan interval, Action action)
+        : base(interval, action)
+    {
+        this.timer = new Timer(o => action(), null, interval, interval);
+    }
+
+    public override void Dispose()
+    {
+        this.Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        using (this.timer)
         {
-            private readonly Timer timer;
-
-            public PeriodicAction(TimeSpan interval, Action action)
-            {
-                this.timer = new Timer(o => action(), null, interval, interval);
-            }
-
-            public void Dispose()
-            {
-                this.Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-
-            private void Dispose(bool disposing)
-            {
-                using (this.timer)
-                {
-                    this.timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-                }
-            }
+            this.timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
+    }
+}
     }
 }
