@@ -72,5 +72,25 @@ namespace TimerSample.Test.Unit
 
             Assert.AreEqual(1, invokeCount);
         }
+
+        [TestMethod]
+        public void ShouldInvokeCreatedActionOnSleepForVerySmallContainedInterval()
+        {
+            VirtualClock clock = new VirtualClock();
+            int invokeCount = 0;
+            TimeSpan interval = TimeSpan.FromSeconds(1.0d);
+
+            clock.CreateAction(interval, () => ++invokeCount);
+
+            Assert.AreEqual(0, invokeCount);
+
+            clock.Sleep(interval - TimeSpan.FromTicks(interval.Ticks / 8));
+
+            Assert.AreEqual(0, invokeCount);
+
+            clock.Sleep(TimeSpan.FromTicks(interval.Ticks / 4));
+
+            Assert.AreEqual(1, invokeCount);
+        }
     }
 }
