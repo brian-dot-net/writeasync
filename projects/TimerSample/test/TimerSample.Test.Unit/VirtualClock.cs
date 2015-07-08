@@ -11,29 +11,40 @@ namespace TimerSample.Test.Unit
 
     internal sealed class VirtualClock
     {
+        private readonly List<VirtualAction> actions;
+        
         private TimeSpan currentTime;
-        private VirtualAction action;
 
         public VirtualClock()
         {
+            this.actions = new List<VirtualAction>();
         }
 
         public PeriodicAction CreateAction(TimeSpan interval, Action action)
         {
-            return this.action = new VirtualAction(interval, action, this.currentTime);
+            VirtualAction newAction = new VirtualAction(interval, action, this.currentTime);
+            this.actions.Add(newAction);
+            return newAction;
         }
 
         public void Sleep(TimeSpan interval)
         {
             TimeSpan start = this.currentTime;
             TimeSpan end = start + interval;
-            
-            if (this.action != null)
+
+            List<Tuple<TimeSpan, VirtualAction>> actionsToInvoke = new List<Tuple<TimeSpan, VirtualAction>>();
+            foreach (VirtualAction action in this.actions)
             {
-                foreach (TimeSpan deadline in this.action.DeadlinesBetween(start, end))
+                foreach (TimeSpan deadline in action.DeadlinesBetween(start, end))
                 {
-                    this.action.Invoke();
+                    actionsToInvoke.Add(Tuple.Create(deadline, action));
                 }
+            }
+
+            actionsToInvoke.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+            foreach (Tuple<TimeSpan, VirtualAction> t in actionsToInvoke)
+            {
+                t.Item2.Invoke();
             }
 
             this.currentTime = end;
