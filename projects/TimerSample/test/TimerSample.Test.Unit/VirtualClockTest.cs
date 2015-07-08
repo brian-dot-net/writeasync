@@ -215,5 +215,24 @@ namespace TimerSample.Test.Unit
 
             CollectionAssert.AreEqual(new string[] { "B" }, invocations.ToArray());
         }
+
+        [TestMethod]
+        public void ShouldFailOnDoubleDisposeOfAction()
+        {
+            VirtualClock clock = new VirtualClock();
+
+            PeriodicAction action = clock.CreateAction(TimeSpan.FromSeconds(1.0d), () => { });
+
+            action.Dispose();
+
+            try
+            {
+                action.Dispose();
+                Assert.Fail("Expected exception was not thrown.");
+            }
+            catch (InvalidOperationException)
+            {
+            }
+        }
     }
 }

@@ -92,6 +92,11 @@ namespace TimerSample.Test.Unit
 
             public override void Dispose()
             {
+                if (this.canceled)
+                {
+                    throw new InvalidOperationException("Action is already canceled/disposed.");
+                }
+
                 this.canceled = true;
             }
         }
