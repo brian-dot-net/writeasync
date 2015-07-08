@@ -60,29 +60,29 @@ namespace TimerSample
             }
         }
 
-private sealed class TimerBasedAction : PeriodicAction
-{
-    private readonly Timer timer;
-
-    public TimerBasedAction(TimeSpan interval, Action action)
-        : base(interval, action)
-    {
-        this.timer = new Timer(o => action(), null, interval, interval);
-    }
-
-    public override void Dispose()
-    {
-        this.Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    private void Dispose(bool disposing)
-    {
-        using (this.timer)
+        private sealed class TimerBasedAction : PeriodicAction
         {
-            this.timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            private readonly Timer timer;
+
+            public TimerBasedAction(TimeSpan interval, Action action)
+                : base(interval, action)
+            {
+                this.timer = new Timer(o => action(), null, interval, interval);
+            }
+
+            public override void Dispose()
+            {
+                this.Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            private void Dispose(bool disposing)
+            {
+                using (this.timer)
+                {
+                    this.timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+                }
+            }
         }
-    }
-}
     }
 }
