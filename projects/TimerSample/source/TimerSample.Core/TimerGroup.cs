@@ -20,7 +20,7 @@ namespace TimerSample
             this.Create = (i, a) => new TimerBasedAction(i, a);
         }
 
-        private Func<TimeSpan, Action, PeriodicAction> Create { get; set; }
+        public Func<TimeSpan, Action, PeriodicAction> Create { get; set; }
 
         public Guid Add(TimeSpan interval, Action action)
         {

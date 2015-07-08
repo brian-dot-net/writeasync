@@ -16,14 +16,17 @@ namespace TimerSample.Test.Unit
         [TestMethod]
         public void ShouldScheduleActionOnIntervalAfterAdd()
         {
+            VirtualClock clock = new VirtualClock();
             using (TimerGroup timers = new TimerGroup())
             {
+                timers.Create = clock.CreateAction;
+
                 int invokeCount = 0;
                 timers.Add(TimeSpan.FromSeconds(1.0d), () => ++invokeCount);
 
                 Assert.AreEqual(0, invokeCount);
 
-                Thread.Sleep(TimeSpan.FromSeconds(1.1d));
+                clock.Sleep(TimeSpan.FromSeconds(1.1d));
 
                 Assert.AreEqual(1, invokeCount);
             }

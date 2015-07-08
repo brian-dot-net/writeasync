@@ -12,7 +12,7 @@ namespace TimerSample.Test.Unit
     internal sealed class VirtualClock
     {
         private readonly List<VirtualAction> actions;
-        
+
         private TimeSpan currentTime;
 
         public VirtualClock()
