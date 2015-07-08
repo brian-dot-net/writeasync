@@ -56,6 +56,8 @@ namespace TimerSample.Test.Unit
             private readonly Action action;
             private readonly TimeSpan creationTime;
 
+            private bool canceled;
+
             public VirtualAction(TimeSpan interval, Action action, TimeSpan creationTime)
                 : base(interval, action)
             {
@@ -82,12 +84,15 @@ namespace TimerSample.Test.Unit
 
             public void Invoke()
             {
-                this.action();
+                if (!this.canceled)
+                {
+                    this.action();
+                }
             }
 
             public override void Dispose()
             {
-                throw new NotImplementedException();
+                this.canceled = true;
             }
         }
     }

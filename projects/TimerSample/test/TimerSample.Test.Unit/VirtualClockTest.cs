@@ -190,5 +190,30 @@ namespace TimerSample.Test.Unit
 
             CollectionAssert.AreEqual(new string[] { "A", "A", "B", "A" }, invocations.ToArray());
         }
+
+        [TestMethod]
+        public void ShouldNotInvokeRemovedAction()
+        {
+            VirtualClock clock = new VirtualClock();
+            TimeSpan interval1 = TimeSpan.FromSeconds(2.0d);
+            TimeSpan interval2 = TimeSpan.FromSeconds(4.0d);
+            List<string> invocations = new List<string>();
+
+            clock.Sleep(TimeSpan.FromTicks(interval1.Ticks / 2));
+
+            PeriodicAction action1 = clock.CreateAction(interval1, () => invocations.Add("A"));
+
+            clock.Sleep(TimeSpan.FromTicks(interval1.Ticks / 2));
+
+            PeriodicAction action2 = clock.CreateAction(interval2, () => invocations.Add("B"));
+
+            CollectionAssert.AreEqual(new string[0], invocations.ToArray());
+
+            action1.Dispose();
+
+            clock.Sleep(interval1 + interval2);
+
+            CollectionAssert.AreEqual(new string[] { "B" }, invocations.ToArray());
+        }
     }
 }
