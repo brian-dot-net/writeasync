@@ -6,6 +6,7 @@ namespace FileSystemSample
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
 
     public sealed class FakeFileSystem : IFileSystem
     {
@@ -85,9 +86,13 @@ namespace FileSystemSample
 
                     private IEnumerable<IFile> GetMatching(string pattern)
                     {
+                        Regex regex = new Regex(pattern.Replace("*", ".*"));
                         foreach (KeyValuePair<PathPart, FakeFile> kv in this.fakeFiles)
                         {
-                            yield return kv.Value;
+                            if (regex.IsMatch(kv.ToString()))
+                            {
+                                yield return kv.Value;
+                            }
                         }
                     }
 

@@ -74,6 +74,18 @@ namespace FileSystemSample.Test
             ShouldGetTwoFiles(dir, @"*\Dir1\another.txt", @"*\Dir1\onefile.txt");
         }
 
+        [TestMethod]
+        public void ShouldGetTwoMatchingSuffixFilesFromDirectoryWithThreeFiles()
+        {
+            IFileSystem fs = this.Create();
+            IDirectory dir = this.CreateDir(fs, "Dir1");
+            CreateFile(dir, "onefile.txt");
+            CreateFile(dir, "b.z");
+            CreateFile(dir, "another.txt");
+
+            ShouldGetTwoMatchingFiles("*.txt", dir, @"*\Dir1\another.txt", @"*\Dir1\onefile.txt");
+        }
+
         private static void ShouldGetNoFiles(IDirectory dir)
         {
             IFile[] files = dir.GetFiles("*");
@@ -90,7 +102,12 @@ namespace FileSystemSample.Test
 
         private static void ShouldGetTwoFiles(IDirectory dir, string expectedMatch0, string expectedMatch1)
         {
-            IFile[] files = dir.GetFiles("*");
+            ShouldGetTwoMatchingFiles("*", dir, expectedMatch0, expectedMatch1);
+        }
+
+        private static void ShouldGetTwoMatchingFiles(string pattern, IDirectory dir, string expectedMatch0, string expectedMatch1)
+        {
+            IFile[] files = dir.GetFiles(pattern);
 
             string[] paths = files.Select(f => f.Path.ToString()).OrderBy(p => p).ToArray();
             paths.Should().HaveCount(2);
