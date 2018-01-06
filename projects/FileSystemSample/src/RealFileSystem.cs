@@ -22,6 +22,11 @@ namespace FileSystemSample
                 return new RealFile(this.Path.Combine(name));
             }
 
+            public IFile[] GetFiles(string pattern)
+            {
+                return new IFile[0];
+            }
+
             private sealed class RealFile : IFile
             {
                 public RealFile(FullPath path)

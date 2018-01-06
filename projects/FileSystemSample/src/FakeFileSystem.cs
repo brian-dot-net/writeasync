@@ -55,6 +55,11 @@ namespace FileSystemSample
 
                 public IFile CreateFile(PathPart name) => this.fakeFiles.Create(name);
 
+                public IFile[] GetFiles(string pattern)
+                {
+                    return new IFile[0];
+                }
+
                 private sealed class FakeFiles
                 {
                     private readonly Dictionary<PathPart, FakeFile> fakeFiles;

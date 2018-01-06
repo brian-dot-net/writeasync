@@ -9,5 +9,7 @@ namespace FileSystemSample
         FullPath Path { get; }
 
         IFile CreateFile(PathPart name);
+
+        IFile[] GetFiles(string pattern);
     }
 }

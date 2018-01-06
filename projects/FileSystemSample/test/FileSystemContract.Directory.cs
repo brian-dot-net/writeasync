@@ -42,5 +42,21 @@ namespace FileSystemSample.Test
             dir2.Path.Should().Be(dir1.Path);
             dir2.Path.ToString().Should().MatchEquivalentOf(@"*\StillThere");
         }
+
+        [TestMethod]
+        public void ShouldGetNoFilesFromEmptyDirectory()
+        {
+            IFileSystem fs = this.Create();
+            IDirectory dir1 = this.CreateDir(fs, "NoFiles");
+
+            this.ShouldGetNoFiles(dir1);
+        }
+
+        private void ShouldGetNoFiles(IDirectory dir)
+        {
+            IFile[] files = dir.GetFiles("*");
+
+            files.Should().BeEmpty();
+        }
     }
 }
