@@ -18,5 +18,17 @@ namespace FileSystemSample.Test
 
             dir.Path.ToString().Should().Match(@"*\TotallyNew");
         }
+
+        [TestMethod]
+        public void ShouldGetDirectoryIfAlreadyExists()
+        {
+            IFileSystem fs = this.Create();
+            IDirectory dir1 = this.CreateDir(fs, "StillThere");
+
+            IDirectory dir2 = this.CreateDir(fs, "StillThere");
+
+            dir2.Path.Should().Be(dir1.Path);
+            dir2.Path.ToString().Should().Match(@"*\StillThere");
+        }
     }
 }
