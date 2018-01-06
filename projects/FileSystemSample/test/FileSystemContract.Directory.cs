@@ -58,9 +58,20 @@ namespace FileSystemSample.Test
         {
             IFileSystem fs = this.Create();
             IDirectory dir = this.CreateDir(fs, "Dir1");
-            IFile file = CreateFile(dir, "onefile.txt");
+            CreateFile(dir, "onefile.txt");
 
             ShouldGetOneFile(dir, @"*\Dir1\onefile.txt");
+        }
+
+        [TestMethod]
+        public void ShouldGetTwoFilesFromDirectoryWithTwoFiles()
+        {
+            IFileSystem fs = this.Create();
+            IDirectory dir = this.CreateDir(fs, "Dir1");
+            CreateFile(dir, "onefile.txt");
+            CreateFile(dir, "another.txt");
+
+            ShouldGetTwoFiles(dir, @"*\Dir1\another.txt", @"*\Dir1\onefile.txt");
         }
 
         private static void ShouldGetNoFiles(IDirectory dir)
@@ -75,6 +86,16 @@ namespace FileSystemSample.Test
             IFile[] files = dir.GetFiles("*");
 
             files.Should().ContainSingle().Which.Path.ToString().Should().Match(expectedMatch);
+        }
+
+        private static void ShouldGetTwoFiles(IDirectory dir, string expectedMatch0, string expectedMatch1)
+        {
+            IFile[] files = dir.GetFiles("*");
+
+            string[] paths = files.Select(f => f.Path.ToString()).OrderBy(p => p).ToArray();
+            paths.Should().HaveCount(2);
+            paths[0].Should().Match(expectedMatch0);
+            paths[1].Should().Match(expectedMatch1);
         }
     }
 }
