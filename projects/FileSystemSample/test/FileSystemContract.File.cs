@@ -4,6 +4,7 @@
 
 namespace FileSystemSample.Test
 {
+    using System;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -41,6 +42,28 @@ namespace FileSystemSample.Test
 
             file2.Path.Should().Be(file1.Path);
             file2.Path.ToString().Should().MatchEquivalentOf(@"*Parent\NotNew.txt");
+        }
+
+        [TestMethod]
+        public void ShouldFailCreateOnInvalidNames()
+        {
+            IFileSystem fs = this.Create();
+
+            this.FailCreateFile(fs, null, "*<null>*");
+            this.FailCreateFile(fs, string.Empty, "*<empty>*");
+            this.FailCreateFile(fs, "fwd/slash", "*'fwd/slash'*");
+            this.FailCreateFile(fs, "|pipe", "*'|pipe'*");
+            this.FailCreateFile(fs, "asterisk*", "*'asterisk**'*");
+            this.FailCreateFile(fs, "<less-than", "*'<less-than'*");
+            this.FailCreateFile(fs, "greater>than", "*'greater>than'*");
+            this.FailCreateFile(fs, "back\\slash", "*'back\\slash'*");
+        }
+
+        private void FailCreateFile(IFileSystem fs, string badName, string expectedError)
+        {
+            Action act = () => this.CreateFile(fs, "Dir", badName);
+
+            act.ShouldThrow<ArgumentException>().WithMessage(expectedError).Which.ParamName.Should().Be("name");
         }
     }
 }
