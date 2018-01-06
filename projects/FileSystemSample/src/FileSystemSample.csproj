@@ -34,6 +34,11 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RealFileSystem.cs" />
+    <Compile Include="FullPath.cs" />
+    <Compile Include="IDirectory.cs" />
+    <Compile Include="FakeFileSystem.cs" />
+    <Compile Include="IFileSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
