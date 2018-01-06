@@ -119,7 +119,7 @@ namespace FileSystemSample
 
                             sb.Append('$');
                             System.Console.WriteLine(sb.ToString());
-                            return new Regex(sb.ToString());
+                            return new Regex(sb.ToString(), RegexOptions.IgnoreCase);
                         }
 
                         private static void AppendRegex(StringBuilder sb, char c)
