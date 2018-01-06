@@ -17,11 +17,14 @@ namespace FileSystemSample.Test
 
         protected abstract IFileSystem Create();
 
+        private static IFile CreateFile(IDirectory dir, string fileName) => dir.CreateFile(new PathPart(fileName));
+
         private IDirectory CreateDir(IFileSystem fs, string name) => fs.Create(this.Root.Combine(new PathPart(name)));
 
         private IFile CreateFile(IFileSystem fs, string dirName, string fileName)
         {
-            return this.CreateDir(fs, dirName).CreateFile(new PathPart(fileName));
+            IDirectory dir = this.CreateDir(fs, dirName);
+            return CreateFile(dir, fileName);
         }
     }
 }

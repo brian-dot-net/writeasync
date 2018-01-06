@@ -4,6 +4,7 @@
 
 namespace FileSystemSample.Test
 {
+    using System.Linq;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -47,16 +48,33 @@ namespace FileSystemSample.Test
         public void ShouldGetNoFilesFromEmptyDirectory()
         {
             IFileSystem fs = this.Create();
-            IDirectory dir1 = this.CreateDir(fs, "NoFiles");
+            IDirectory dir = this.CreateDir(fs, "NoFiles");
 
-            this.ShouldGetNoFiles(dir1);
+            ShouldGetNoFiles(dir);
         }
 
-        private void ShouldGetNoFiles(IDirectory dir)
+        [TestMethod]
+        public void ShouldGetOneFileFromDirectoryWithOneFile()
+        {
+            IFileSystem fs = this.Create();
+            IDirectory dir = this.CreateDir(fs, "Dir1");
+            IFile file = CreateFile(dir, "onefile.txt");
+
+            ShouldGetOneFile(dir, @"*\Dir1\onefile.txt");
+        }
+
+        private static void ShouldGetNoFiles(IDirectory dir)
         {
             IFile[] files = dir.GetFiles("*");
 
             files.Should().BeEmpty();
+        }
+
+        private static void ShouldGetOneFile(IDirectory dir, string expectedMatch)
+        {
+            IFile[] files = dir.GetFiles("*");
+
+            files.Should().ContainSingle().Which.Path.ToString().Should().Match(expectedMatch);
         }
     }
 }

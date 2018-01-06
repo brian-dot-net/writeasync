@@ -5,6 +5,7 @@
 namespace FileSystemSample
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     public sealed class FakeFileSystem : IFileSystem
     {
@@ -55,10 +56,7 @@ namespace FileSystemSample
 
                 public IFile CreateFile(PathPart name) => this.fakeFiles.Create(name);
 
-                public IFile[] GetFiles(string pattern)
-                {
-                    return new IFile[0];
-                }
+                public IFile[] GetFiles(string pattern) => this.fakeFiles.Get(pattern);
 
                 private sealed class FakeFiles
                 {
@@ -81,6 +79,16 @@ namespace FileSystemSample
                         }
 
                         return file;
+                    }
+
+                    public IFile[] Get(string pattern) => this.GetMatching(pattern).ToArray();
+
+                    private IEnumerable<IFile> GetMatching(string pattern)
+                    {
+                        foreach (KeyValuePair<PathPart, FakeFile> kv in this.fakeFiles)
+                        {
+                            yield return kv.Value;
+                        }
                     }
 
                     private sealed class FakeFile : IFile
