@@ -73,11 +73,24 @@ namespace FileSystemSample.Test
         public void ShouldReadJustWrittenFile()
         {
             IFileSystem fs = this.Create();
-            IFile file = this.CreateFile(fs, "Parent", "Empty.txt");
+            IFile file = this.CreateFile(fs, "Parent", "Text.txt");
 
             this.Write(file, "some text");
 
             this.Read(file).Should().Be("some text");
+        }
+
+        [TestMethod]
+        public void ShouldClearFileOnRecreate()
+        {
+            IFileSystem fs = this.Create();
+            IFile file1 = this.CreateFile(fs, "Parent", "Old.txt");
+            this.Write(file1, "old-old-old-old-old-old");
+
+            IFile file2 = this.CreateFile(fs, "Parent", "Old.txt");
+
+            string empty = this.Read(file1);
+            this.Read(file2).Should().Be(empty);
         }
 
         private void FailCreateFile(IFileSystem fs, string badName, string expectedError)
