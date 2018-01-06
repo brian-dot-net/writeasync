@@ -93,6 +93,18 @@ namespace FileSystemSample.Test
             this.Read(file2).Should().Be(empty);
         }
 
+        [TestMethod]
+        public void ShouldOverwriteOnEachWrite()
+        {
+            IFileSystem fs = this.Create();
+            IFile file = this.CreateFile(fs, "Parent", "Old.txt");
+            this.Write(file, "old-old-old-old-old-old");
+
+            this.Write(file, "NEW!");
+
+            this.Read(file).Should().Be("NEW!");
+        }
+
         private void FailCreateFile(IFileSystem fs, string badName, string expectedError)
         {
             Action act = () => this.CreateFile(fs, "Dir", badName);
