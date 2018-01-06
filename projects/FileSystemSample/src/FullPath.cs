@@ -4,9 +4,10 @@
 
 namespace FileSystemSample
 {
+    using System;
     using System.IO;
 
-    public struct FullPath
+    public struct FullPath : IEquatable<FullPath>
     {
         private readonly string path;
 
@@ -18,6 +19,21 @@ namespace FileSystemSample
         public FullPath Combine(string name)
         {
             return new FullPath(Path.Combine(this.path, name));
+        }
+
+        public override int GetHashCode()
+        {
+            return this.path.ToUpperInvariant().GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals((FullPath)obj);
+        }
+
+        public bool Equals(FullPath other)
+        {
+            return string.Equals(this.path, other.path, StringComparison.OrdinalIgnoreCase);
         }
 
         public override string ToString()

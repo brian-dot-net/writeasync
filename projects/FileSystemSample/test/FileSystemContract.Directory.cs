@@ -30,5 +30,17 @@ namespace FileSystemSample.Test
             dir2.Path.Should().Be(dir1.Path);
             dir2.Path.ToString().Should().Match(@"*\StillThere");
         }
+
+        [TestMethod]
+        public void ShouldGetDirectoryIfAlreadyExistsIgnoreCase()
+        {
+            IFileSystem fs = this.Create();
+            IDirectory dir1 = this.CreateDir(fs, "StillThere");
+
+            IDirectory dir2 = this.CreateDir(fs, "sTILLtHERE");
+
+            dir2.Path.Should().Be(dir1.Path);
+            dir2.Path.ToString().Should().MatchEquivalentOf(@"*\StillThere");
+        }
     }
 }
