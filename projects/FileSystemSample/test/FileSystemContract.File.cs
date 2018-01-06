@@ -30,5 +30,17 @@ namespace FileSystemSample.Test
             file2.Path.Should().Be(file1.Path);
             file2.Path.ToString().Should().Match(@"*Parent\NotNew.txt");
         }
+
+        [TestMethod]
+        public void ShouldGetFileIfAlreadyExistsIgnoreCase()
+        {
+            IFileSystem fs = this.Create();
+            IFile file1 = this.CreateFile(fs, "Parent", "NotNew.txt");
+
+            IFile file2 = this.CreateFile(fs, "Parent", "nOTnEW.TXT");
+
+            file2.Path.Should().Be(file1.Path);
+            file2.Path.ToString().Should().MatchEquivalentOf(@"*Parent\NotNew.txt");
+        }
     }
 }
