@@ -16,9 +16,9 @@ namespace FileSystemSample
             this.path = new DirectoryInfo(path).FullName;
         }
 
-        public FullPath Combine(string name)
+        public FullPath Combine(PathPart name)
         {
-            return new FullPath(Path.Combine(this.path, name));
+            return new FullPath(Path.Combine(this.path, name.ToString()));
         }
 
         public override int GetHashCode()

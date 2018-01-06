@@ -1,13 +1,11 @@
-﻿// <copyright file="IDirectory.cs" company="Brian Rogers">
+﻿// <copyright file="IFile.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
 namespace FileSystemSample
 {
-    public interface IDirectory
+    public interface IFile
     {
         FullPath Path { get; }
-
-        IFile CreateFile(PathPart name);
     }
 }

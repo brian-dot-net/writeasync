@@ -4,8 +4,6 @@
 
 namespace FileSystemSample
 {
-    using System.IO;
-
     public sealed class RealFileSystem : IFileSystem
     {
         public IDirectory Create(FullPath name) => new RealDirectory(name);
@@ -14,11 +12,25 @@ namespace FileSystemSample
         {
             public RealDirectory(FullPath path)
             {
-                Directory.CreateDirectory(path.ToString());
                 this.Path = path;
             }
 
             public FullPath Path { get; private set; }
+
+            public IFile CreateFile(PathPart name)
+            {
+                return new RealFile(this.Path.Combine(name));
+            }
+
+            private sealed class RealFile : IFile
+            {
+                public RealFile(FullPath path)
+                {
+                    this.Path = path;
+                }
+
+                public FullPath Path { get; private set; }
+            }
         }
     }
 }

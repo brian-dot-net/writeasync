@@ -55,6 +55,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileSystemContract.File.cs" />
     <Compile Include="RealFileSystemTest.cs" />
     <Compile Include="FakeFileSystemTest.cs" />
     <Compile Include="FileSystemContract.Directory.cs" />
