@@ -79,11 +79,23 @@ namespace FileSystemSample.Test
         {
             IFileSystem fs = this.Create();
             IDirectory dir = this.CreateDir(fs, "Dir1");
-            CreateFile(dir, "onefile.txt");
-            CreateFile(dir, "b.z");
-            CreateFile(dir, "another.txt");
+            CreateFile(dir, "File1.txt");
+            CreateFile(dir, "File3.z");
+            CreateFile(dir, "File2.txt");
 
-            ShouldGetTwoMatchingFiles("*.txt", dir, @"*\Dir1\another.txt", @"*\Dir1\onefile.txt");
+            ShouldGetTwoMatchingFiles("*.txt", dir, @"*\Dir1\File1.txt", @"*\Dir1\File2.txt");
+        }
+
+        [TestMethod]
+        public void ShouldGetTwoMatchingPrefixFilesFromDirectoryWithThreeFiles()
+        {
+            IFileSystem fs = this.Create();
+            IDirectory dir = this.CreateDir(fs, "Dir1");
+            CreateFile(dir, "File1.txt");
+            CreateFile(dir, "XFile3.txt");
+            CreateFile(dir, "File2.txt");
+
+            ShouldGetTwoMatchingFiles("File*", dir, @"*\Dir1\File1.txt", @"*\Dir1\File2.txt");
         }
 
         private static void ShouldGetNoFiles(IDirectory dir)

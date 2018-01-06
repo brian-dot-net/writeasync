@@ -6,6 +6,7 @@ namespace FileSystemSample
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Text.RegularExpressions;
 
     public sealed class FakeFileSystem : IFileSystem
@@ -84,15 +85,53 @@ namespace FileSystemSample
 
                     public IFile[] Get(string pattern) => this.GetMatching(pattern).ToArray();
 
-                    private IEnumerable<IFile> GetMatching(string pattern)
+                    private IEnumerable<IFile> GetMatching(string rawPattern)
                     {
-                        Regex regex = new Regex(pattern.Replace("*", ".*"));
+                        PathPattern pattern = new PathPattern(rawPattern);
                         foreach (KeyValuePair<PathPart, FakeFile> kv in this.fakeFiles)
                         {
-                            if (regex.IsMatch(kv.ToString()))
+                            if (pattern.Matches(kv.Key))
                             {
                                 yield return kv.Value;
                             }
+                        }
+                    }
+
+                    private sealed class PathPattern
+                    {
+                        private readonly Regex regex;
+
+                        public PathPattern(string rawPattern)
+                        {
+                            this.regex = AsRegex(rawPattern);
+                        }
+
+                        public bool Matches(PathPart path) => this.regex.IsMatch(path.ToString());
+
+                        private static Regex AsRegex(string rawPattern)
+                        {
+                            StringBuilder sb = new StringBuilder();
+                            sb.Append('^');
+                            foreach (char c in rawPattern)
+                            {
+                                AppendRegex(sb, c);
+                            }
+
+                            sb.Append('$');
+                            System.Console.WriteLine(sb.ToString());
+                            return new Regex(sb.ToString());
+                        }
+
+                        private static void AppendRegex(StringBuilder sb, char c)
+                        {
+                            switch (c)
+                            {
+                                case '*':
+                                    sb.Append('.');
+                                    break;
+                            }
+
+                            sb.Append(c);
                         }
                     }
 
