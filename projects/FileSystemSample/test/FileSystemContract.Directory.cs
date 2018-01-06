@@ -134,6 +134,18 @@ namespace FileSystemSample.Test
             ShouldGetTwoMatchingFiles("?b?.txt", dir, @"*\Dir1\Abc.txt", @"*\Dir1\Bbc.txt");
         }
 
+        [TestMethod]
+        public void ShouldGetTwoMatchingInnerWildCharFilesFromDirectoryWithThreeFiles()
+        {
+            IFileSystem fs = this.Create();
+            IDirectory dir = this.CreateDir(fs, "Dir1");
+            CreateFile(dir, "AbcdefgA.txt");
+            CreateFile(dir, "CbbbbbbA.txt");
+            CreateFile(dir, "AbbbbbbA.txt");
+
+            ShouldGetTwoMatchingFiles("A??????A.txt", dir, @"*\Dir1\AbbbbbbA.txt", @"*\Dir1\AbcdefgA.txt");
+        }
+
         private static void ShouldGetNoFiles(IDirectory dir)
         {
             IFile[] files = dir.GetFiles("*");
