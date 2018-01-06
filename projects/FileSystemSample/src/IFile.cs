@@ -4,8 +4,12 @@
 
 namespace FileSystemSample
 {
+    using System.IO;
+
     public interface IFile
     {
         FullPath Path { get; }
+
+        Stream OpenRead();
     }
 }

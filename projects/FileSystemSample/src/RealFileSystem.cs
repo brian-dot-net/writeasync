@@ -45,6 +45,11 @@ namespace FileSystemSample
                         return new RealFile(path);
                     }
                 }
+
+                public Stream OpenRead()
+                {
+                    return new MemoryStream();
+                }
             }
         }
     }

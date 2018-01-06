@@ -4,6 +4,9 @@
 
 namespace FileSystemSample.Test
 {
+    using System.IO;
+    using System.Threading.Tasks;
+    using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
@@ -12,6 +15,8 @@ namespace FileSystemSample.Test
         protected FileSystemContract()
         {
         }
+
+        protected virtual bool MustBlock { get => false; }
 
         protected abstract FullPath Root { get; }
 
@@ -25,6 +30,25 @@ namespace FileSystemSample.Test
         {
             IDirectory dir = this.CreateDir(fs, dirName);
             return CreateFile(dir, fileName);
+        }
+
+        private string Read(IFile file)
+        {
+            using (StreamReader reader = new StreamReader(file.OpenRead()))
+            {
+                return this.ResultOf(reader.ReadToEndAsync());
+            }
+        }
+
+        private TResult ResultOf<TResult>(Task<TResult> task)
+        {
+            if (this.MustBlock)
+            {
+                task.Wait();
+            }
+
+            task.IsCompleted.Should().BeTrue(because: "task should complete sync");
+            return task.Result;
         }
     }
 }

@@ -13,6 +13,8 @@ namespace FileSystemSample.Test
     {
         private FullPath root;
 
+        protected override bool MustBlock => true;
+
         protected override FullPath Root => this.root;
 
         [TestInitialize]

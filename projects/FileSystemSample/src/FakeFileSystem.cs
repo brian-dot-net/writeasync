@@ -5,6 +5,7 @@
 namespace FileSystemSample
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -152,6 +153,11 @@ namespace FileSystemSample
                         }
 
                         public FullPath Path { get; private set; }
+
+                        public Stream OpenRead()
+                        {
+                            return new MemoryStream();
+                        }
                     }
                 }
             }

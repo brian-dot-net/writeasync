@@ -59,6 +59,16 @@ namespace FileSystemSample.Test
             this.FailCreateFile(fs, "back\\slash", "*'back\\slash'*");
         }
 
+        [TestMethod]
+        public void ShouldReadEmptyFile()
+        {
+            IFileSystem fs = this.Create();
+
+            IFile file = this.CreateFile(fs, "Parent", "Empty.txt");
+
+            this.Read(file).Should().Be(string.Empty);
+        }
+
         private void FailCreateFile(IFileSystem fs, string badName, string expectedError)
         {
             Action act = () => this.CreateFile(fs, "Dir", badName);
