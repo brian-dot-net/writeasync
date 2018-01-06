@@ -146,6 +146,18 @@ namespace FileSystemSample.Test
             ShouldGetTwoMatchingFiles("A??????A.txt", dir, @"*\Dir1\AbbbbbbA.txt", @"*\Dir1\AbcdefgA.txt");
         }
 
+        [TestMethod]
+        public void ShouldGetTwoMatchingStarAndQFilesFromDirectoryWithThreeFiles()
+        {
+            IFileSystem fs = this.Create();
+            IDirectory dir = this.CreateDir(fs, "Dir1");
+            CreateFile(dir, "ab.txt");
+            CreateFile(dir, "cd.txt");
+            CreateFile(dir, "ag.txt");
+
+            ShouldGetTwoMatchingFiles("a?.*", dir, @"*\Dir1\ab.txt", @"*\Dir1\ag.txt");
+        }
+
         private static void ShouldGetNoFiles(IDirectory dir)
         {
             IFile[] files = dir.GetFiles("*");
