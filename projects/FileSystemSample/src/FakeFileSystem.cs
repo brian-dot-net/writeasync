@@ -128,13 +128,19 @@ namespace FileSystemSample
                             {
                                 case '.':
                                     sb.Append('\\');
+                                    sb.Append(c);
                                     break;
                                 case '*':
                                     sb.Append('.');
+                                    sb.Append(c);
+                                    break;
+                                case '?':
+                                    sb.Append('.');
+                                    break;
+                                default:
+                                    sb.Append(c);
                                     break;
                             }
-
-                            sb.Append(c);
                         }
                     }
 
