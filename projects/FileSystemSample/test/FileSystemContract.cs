@@ -32,6 +32,14 @@ namespace FileSystemSample.Test
             return CreateFile(dir, fileName);
         }
 
+        private void Write(IFile file, string text)
+        {
+            using (StreamWriter writer = new StreamWriter(file.OpenWrite()))
+            {
+                this.Wait(writer.WriteAsync(text));
+            }
+        }
+
         private string Read(IFile file)
         {
             using (StreamReader reader = new StreamReader(file.OpenRead()))
@@ -42,13 +50,18 @@ namespace FileSystemSample.Test
 
         private TResult ResultOf<TResult>(Task<TResult> task)
         {
+            this.Wait(task);
+            return task.Result;
+        }
+
+        private void Wait(Task task)
+        {
             if (this.MustBlock)
             {
                 task.Wait();
             }
 
-            task.IsCompleted.Should().BeTrue(because: "task should complete sync");
-            return task.Result;
+            task.IsCompleted.Should().BeTrue(because: "task should complete synchronously");
         }
     }
 }

@@ -11,5 +11,7 @@ namespace FileSystemSample
         FullPath Path { get; }
 
         Stream OpenRead();
+
+        Stream OpenWrite();
     }
 }

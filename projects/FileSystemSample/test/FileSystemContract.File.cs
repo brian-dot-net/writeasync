@@ -69,6 +69,17 @@ namespace FileSystemSample.Test
             this.Read(file).Should().Be(string.Empty);
         }
 
+        [TestMethod]
+        public void ShouldReadJustWrittenFile()
+        {
+            IFileSystem fs = this.Create();
+            IFile file = this.CreateFile(fs, "Parent", "Empty.txt");
+
+            this.Write(file, "some text");
+
+            this.Read(file).Should().Be("some text");
+        }
+
         private void FailCreateFile(IFileSystem fs, string badName, string expectedError)
         {
             Action act = () => this.CreateFile(fs, "Dir", badName);

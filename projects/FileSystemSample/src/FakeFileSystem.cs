@@ -4,6 +4,7 @@
 
 namespace FileSystemSample
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -147,16 +148,66 @@ namespace FileSystemSample
 
                     private sealed class FakeFile : IFile
                     {
+                        private Buffer buffer;
+
                         public FakeFile(FullPath path)
                         {
                             this.Path = path;
+                            this.buffer = new Buffer();
                         }
 
                         public FullPath Path { get; private set; }
 
                         public Stream OpenRead()
                         {
-                            return new MemoryStream();
+                            return this.buffer.OpenRead();
+                        }
+
+                        public Stream OpenWrite()
+                        {
+                            return this.buffer.OpenWrite();
+                        }
+
+                        private sealed class Buffer
+                        {
+                            private byte[] buffer;
+
+                            public Buffer()
+                            {
+                                this.buffer = new byte[0];
+                            }
+
+                            public Stream OpenRead()
+                            {
+                                return new MemoryStream(this.buffer, false);
+                            }
+
+                            public Stream OpenWrite()
+                            {
+                                return new WriteStream(b => this.buffer = b);
+                            }
+
+                            private sealed class WriteStream : MemoryStream
+                            {
+                                private readonly Action<byte[]> onClose;
+
+                                public WriteStream(Action<byte[]> onClose)
+                                {
+                                    this.onClose = onClose;
+                                }
+
+                                public override void Close()
+                                {
+                                    try
+                                    {
+                                        this.onClose(this.ToArray());
+                                    }
+                                    finally
+                                    {
+                                        base.Close();
+                                    }
+                                }
+                            }
                         }
                     }
                 }

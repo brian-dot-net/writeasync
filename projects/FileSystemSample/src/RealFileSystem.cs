@@ -48,7 +48,12 @@ namespace FileSystemSample
 
                 public Stream OpenRead()
                 {
-                    return new MemoryStream();
+                    return new FileStream(this.Path.ToString(), FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
+                }
+
+                public Stream OpenWrite()
+                {
+                    return new FileStream(this.Path.ToString(), FileMode.Open, FileAccess.Write, FileShare.None, 4096, true);
                 }
             }
         }
