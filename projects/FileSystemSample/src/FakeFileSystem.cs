@@ -226,6 +226,7 @@ namespace FileSystemSample
                             private sealed class WrappedStream : MemoryStream
                             {
                                 private readonly Action<byte[]> onClose;
+                                private readonly bool canRead;
 
                                 public WrappedStream(Action<byte[]> onClose)
                                 {
@@ -236,6 +237,21 @@ namespace FileSystemSample
                                     : base(buffer, false)
                                 {
                                     this.onClose = onClose;
+                                    this.canRead = true;
+                                }
+
+                                public override bool CanRead => this.canRead;
+
+                                public override int Read(byte[] buffer, int offset, int count)
+                                {
+                                    this.EnsureRead();
+                                    return base.Read(buffer, offset, count);
+                                }
+
+                                public override int ReadByte()
+                                {
+                                    this.EnsureRead();
+                                    return base.ReadByte();
                                 }
 
                                 public override void Close()
@@ -247,6 +263,14 @@ namespace FileSystemSample
                                     finally
                                     {
                                         base.Close();
+                                    }
+                                }
+
+                                private void EnsureRead()
+                                {
+                                    if (!this.canRead)
+                                    {
+                                        throw new NotSupportedException("Stream does not support reading.");
                                     }
                                 }
                             }

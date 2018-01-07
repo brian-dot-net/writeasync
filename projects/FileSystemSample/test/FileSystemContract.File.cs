@@ -215,12 +215,34 @@ namespace FileSystemSample.Test
             }
         }
 
+        [TestMethod]
+        public void ShouldFailReadForWriteStream()
+        {
+            IFileSystem fs = this.Create();
+            IFile file = this.CreateFile(fs, "Parent", "FailRead.txt");
+
+            using (Stream write = file.OpenWrite())
+            {
+                FailRead(() => write.BeginRead(new byte[] { 0 }, 0, 1, null, null));
+                FailRead(() => write.Read(new byte[] { 0 }, 0, 1));
+                FailRead(() => write.ReadByte());
+                FailReadTask(() => write.ReadAsync(new byte[] { 0 }, 0, 1));
+            }
+        }
+
         private static void FailWrite(Action act)
         {
             act.ShouldThrow<NotSupportedException>().WithMessage("Stream does not support writing.");
         }
 
         private static void FailWriteTask(Func<Task> writeAsync) => FailWrite(() => writeAsync().Wait());
+
+        private static void FailRead(Action act)
+        {
+            act.ShouldThrow<NotSupportedException>().WithMessage("Stream does not support reading.");
+        }
+
+        private static void FailReadTask(Func<Task> readAsync) => FailRead(() => readAsync().Wait());
 
         private static void FailOpen(Action act, string expectedMatch)
         {
