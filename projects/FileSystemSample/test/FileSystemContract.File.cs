@@ -184,6 +184,21 @@ namespace FileSystemSample.Test
             read2.Should().Be("not empty");
         }
 
+        [TestMethod]
+        public void ShouldAllowWriteReadWriteRead()
+        {
+            IFileSystem fs = this.Create();
+            IFile file = this.CreateFile(fs, "Parent", "WriteReadWriteRead.txt");
+
+            this.WriteAll(file, "first");
+            string read1 = this.ReadToEnd(file);
+            this.WriteAll(file, "second");
+            string read2 = this.ReadToEnd(file);
+
+            read1.Should().Be("first");
+            read2.Should().Be("second");
+        }
+
         private static void FailOpen(Action act, string expectedMatch)
         {
             act.ShouldThrow<FileSystemException>()
