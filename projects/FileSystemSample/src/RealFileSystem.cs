@@ -46,16 +46,15 @@ namespace FileSystemSample
                     }
                 }
 
-                public Stream OpenRead()
-                {
-                    return new FileStream(this.Path.ToString(), FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
-                }
+                public Stream OpenRead() => this.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
 
-                public Stream OpenWrite()
+                public Stream OpenWrite() => this.Open(FileMode.Truncate, FileAccess.Write, FileShare.None);
+
+                private Stream Open(FileMode mode, FileAccess access, FileShare share)
                 {
                     try
                     {
-                        return new FileStream(this.Path.ToString(), FileMode.Truncate, FileAccess.Write, FileShare.None, 4096, true);
+                        return new FileStream(this.Path.ToString(), mode, access, share, 4096, true);
                     }
                     catch (IOException e)
                     {

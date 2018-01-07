@@ -160,7 +160,14 @@ namespace FileSystemSample
 
                         public Stream OpenRead()
                         {
-                            return this.buffer.OpenRead();
+                            try
+                            {
+                                return this.buffer.OpenRead();
+                            }
+                            catch (IOException e)
+                            {
+                                throw FileSystemError.AlreadyOpen(this.Path, e);
+                            }
                         }
 
                         public Stream OpenWrite()
@@ -187,6 +194,11 @@ namespace FileSystemSample
 
                             public Stream OpenRead()
                             {
+                                if (this.write != 0)
+                                {
+                                    throw new IOException("Cannot read.");
+                                }
+
                                 return new MemoryStream(this.buffer, false);
                             }
 

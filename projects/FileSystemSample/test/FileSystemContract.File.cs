@@ -130,6 +130,23 @@ namespace FileSystemSample.Test
             this.FailMultipleWriters("Write.txt", true);
         }
 
+        [TestMethod]
+        public void ShouldFailReadWhenAlreadyWriting()
+        {
+            IFileSystem fs = this.Create();
+            IFile file1 = this.CreateFile(fs, "Parent", "WriteRead.txt");
+            IFile file2 = this.CreateFile(fs, "Parent", "WriteRead.txt");
+
+            using (Stream write1 = file1.OpenWrite())
+            {
+                Action act = () => file2.OpenRead();
+
+                act.ShouldThrow<FileSystemException>()
+                    .WithMessage(@"* '*\WriteRead.txt' is already opened.")
+                    .WithInnerException<IOException>();
+            }
+        }
+
         private void FailMultipleWriters(string name, bool changeCase = false)
         {
             IFileSystem fs = this.Create();
