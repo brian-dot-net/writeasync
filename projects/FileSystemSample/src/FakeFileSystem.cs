@@ -185,7 +185,8 @@ namespace FileSystemSample
                         private sealed class Buffer
                         {
                             private byte[] buffer;
-                            private int write;
+                            private bool writing;
+                            private int readers;
 
                             public Buffer()
                             {
@@ -194,36 +195,45 @@ namespace FileSystemSample
 
                             public Stream OpenRead()
                             {
-                                if (this.write != 0)
+                                if (this.writing)
                                 {
                                     throw new IOException("Cannot read.");
                                 }
 
-                                return new MemoryStream(this.buffer, false);
+                                ++this.readers;
+                                return new WrappedStream(this.OnCloseReader, this.buffer);
                             }
 
                             public Stream OpenWrite()
                             {
-                                if (this.write != 0)
+                                if (this.writing || (this.readers != 0))
                                 {
                                     throw new IOException("Cannot write.");
                                 }
 
-                                ++this.write;
-                                return new WriteStream(this.OnCloseWriter);
+                                this.writing = true;
+                                return new WrappedStream(this.OnCloseWriter);
                             }
 
                             private void OnCloseWriter(byte[] newBuffer)
                             {
                                 this.buffer = newBuffer;
-                                --this.write;
+                                this.writing = false;
                             }
 
-                            private sealed class WriteStream : MemoryStream
+                            private void OnCloseReader(byte[] newBuffer) => --this.readers;
+
+                            private sealed class WrappedStream : MemoryStream
                             {
                                 private readonly Action<byte[]> onClose;
 
-                                public WriteStream(Action<byte[]> onClose)
+                                public WrappedStream(Action<byte[]> onClose)
+                                {
+                                    this.onClose = onClose;
+                                }
+
+                                public WrappedStream(Action<byte[]> onClose, byte[] buffer)
+                                    : base(buffer, false)
                                 {
                                     this.onClose = onClose;
                                 }

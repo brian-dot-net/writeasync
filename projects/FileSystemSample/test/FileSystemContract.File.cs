@@ -147,6 +147,23 @@ namespace FileSystemSample.Test
             }
         }
 
+        [TestMethod]
+        public void ShouldFailWriteWhenAlreadyReading()
+        {
+            IFileSystem fs = this.Create();
+            IFile file1 = this.CreateFile(fs, "Parent", "ReadWrite.txt");
+            IFile file2 = this.CreateFile(fs, "Parent", "ReadWrite.txt");
+
+            using (Stream write1 = file1.OpenRead())
+            {
+                Action act = () => file2.OpenWrite();
+
+                act.ShouldThrow<FileSystemException>()
+                    .WithMessage(@"* '*\ReadWrite.txt' is already opened.")
+                    .WithInnerException<IOException>();
+            }
+        }
+
         private void FailMultipleWriters(string name, bool changeCase = false)
         {
             IFileSystem fs = this.Create();
