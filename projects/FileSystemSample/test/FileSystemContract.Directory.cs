@@ -170,6 +170,19 @@ namespace FileSystemSample.Test
             ShouldGetTwoMatchingFiles("A?.*", dir, @"*\Dir1\ab.txt", @"*\Dir1\ag.txt");
         }
 
+        [TestMethod]
+        public void ShouldGetExistingFileAndReadContents()
+        {
+            IFileSystem fs = this.Create();
+            IDirectory dir = this.CreateDir(fs, "Parent");
+            IFile file1 = CreateFile(dir, "a.txt");
+            this.WriteAll(file1, "remember me");
+
+            IFile file2 = GetOneFile(dir);
+
+            this.ReadToEnd(file2).Should().Be("remember me");
+        }
+
         private static void ShouldGetNoFiles(IDirectory dir)
         {
             IFile[] files = dir.GetFiles("*");
@@ -177,11 +190,16 @@ namespace FileSystemSample.Test
             files.Should().BeEmpty();
         }
 
-        private static void ShouldGetOneFile(IDirectory dir, string expectedMatch)
+        private static IFile GetOneFile(IDirectory dir)
         {
             IFile[] files = dir.GetFiles("*");
 
-            files.Should().ContainSingle().Which.Path.ToString().Should().Match(expectedMatch);
+            return files.Should().ContainSingle().Which;
+        }
+
+        private static void ShouldGetOneFile(IDirectory dir, string expectedMatch)
+        {
+            GetOneFile(dir).Path.ToString().Should().Match(expectedMatch);
         }
 
         private static void ShouldGetTwoFiles(IDirectory dir, string expectedMatch0, string expectedMatch1)
