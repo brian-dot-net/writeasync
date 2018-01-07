@@ -139,11 +139,7 @@ namespace FileSystemSample.Test
 
             using (Stream write1 = file1.OpenWrite())
             {
-                Action act = () => file2.OpenRead();
-
-                act.ShouldThrow<FileSystemException>()
-                    .WithMessage(@"* '*\WriteRead.txt' is already opened.")
-                    .WithInnerException<IOException>();
+                FailOpen(() => file2.OpenRead(), @"* '*\WriteRead.txt' is already opened.");
             }
         }
 
@@ -156,11 +152,7 @@ namespace FileSystemSample.Test
 
             using (Stream read1 = file1.OpenRead())
             {
-                Action act = () => file2.OpenWrite();
-
-                act.ShouldThrow<FileSystemException>()
-                    .WithMessage(@"* '*\ReadWrite.txt' is already opened.")
-                    .WithInnerException<IOException>();
+                FailOpen(() => file2.OpenWrite(), @"* '*\ReadWrite.txt' is already opened.");
             }
         }
 
@@ -174,12 +166,29 @@ namespace FileSystemSample.Test
             using (Stream read1 = file1.OpenRead())
             using (Stream read2 = file1.OpenRead())
             {
-                Action act = () => file2.OpenWrite();
-
-                act.ShouldThrow<FileSystemException>()
-                    .WithMessage(@"* '*\ReadReadWrite.txt' is already opened.")
-                    .WithInnerException<IOException>();
+                FailOpen(() => file2.OpenWrite(), @"* '*\ReadReadWrite.txt' is already opened.");
             }
+        }
+
+        [TestMethod]
+        public void ShouldAllowReadWriteRead()
+        {
+            IFileSystem fs = this.Create();
+            IFile file = this.CreateFile(fs, "Parent", "ReadWriteRead.txt");
+
+            string read1 = this.ReadToEnd(file);
+            this.WriteAll(file, "not empty");
+            string read2 = this.ReadToEnd(file);
+
+            read1.Should().BeEmpty();
+            read2.Should().Be("not empty");
+        }
+
+        private static void FailOpen(Action act, string expectedMatch)
+        {
+            act.ShouldThrow<FileSystemException>()
+                .WithMessage(expectedMatch)
+                .WithInnerException<IOException>();
         }
 
         private void FailMultipleWriters(string name, bool changeCase = false)
