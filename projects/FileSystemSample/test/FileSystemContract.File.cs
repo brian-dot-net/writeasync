@@ -5,6 +5,7 @@
 namespace FileSystemSample.Test
 {
     using System;
+    using System.IO;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -66,7 +67,7 @@ namespace FileSystemSample.Test
 
             IFile file = this.CreateFile(fs, "Parent", "Empty.txt");
 
-            this.Read(file).Should().Be(string.Empty);
+            this.ReadToEnd(file).Should().Be(string.Empty);
         }
 
         [TestMethod]
@@ -75,9 +76,9 @@ namespace FileSystemSample.Test
             IFileSystem fs = this.Create();
             IFile file = this.CreateFile(fs, "Parent", "Text.txt");
 
-            this.Write(file, "some text");
+            this.WriteAll(file, "some text");
 
-            this.Read(file).Should().Be("some text");
+            this.ReadToEnd(file).Should().Be("some text");
         }
 
         [TestMethod]
@@ -85,12 +86,12 @@ namespace FileSystemSample.Test
         {
             IFileSystem fs = this.Create();
             IFile file1 = this.CreateFile(fs, "Parent", "Old.txt");
-            this.Write(file1, "old-old-old-old-old-old");
+            this.WriteAll(file1, "old-old-old-old-old-old");
 
             IFile file2 = this.CreateFile(fs, "Parent", "Old.txt");
 
-            string empty = this.Read(file1);
-            this.Read(file2).Should().Be(empty);
+            string empty = this.ReadToEnd(file1);
+            this.ReadToEnd(file2).Should().Be(empty);
         }
 
         [TestMethod]
@@ -98,11 +99,32 @@ namespace FileSystemSample.Test
         {
             IFileSystem fs = this.Create();
             IFile file = this.CreateFile(fs, "Parent", "Old.txt");
-            this.Write(file, "old-old-old-old-old-old");
+            this.WriteAll(file, "old-old-old-old-old-old");
 
-            this.Write(file, "NEW!");
+            this.WriteAll(file, "NEW!");
 
-            this.Read(file).Should().Be("NEW!");
+            this.ReadToEnd(file).Should().Be("NEW!");
+        }
+
+        [TestMethod]
+        public void ShouldAllowMultipleReaders()
+        {
+            IFileSystem fs = this.Create();
+            IFile file1 = this.CreateFile(fs, "Parent", "Read.txt");
+            IFile file2 = this.CreateFile(fs, "Parent", "Read.txt");
+            this.WriteAll(file2, "read me");
+
+            string text1;
+            string text2;
+            using (Stream read1 = file1.OpenRead())
+            using (Stream read2 = file2.OpenRead())
+            {
+                text1 = this.ReadToEnd(read1);
+                text2 = this.ReadToEnd(read2);
+            }
+
+            text1.Should().Be(text2);
+            text2.Should().Be("read me");
         }
 
         private void FailCreateFile(IFileSystem fs, string badName, string expectedError)

@@ -32,7 +32,7 @@ namespace FileSystemSample.Test
             return CreateFile(dir, fileName);
         }
 
-        private void Write(IFile file, string text)
+        private void WriteAll(IFile file, string text)
         {
             using (StreamWriter writer = new StreamWriter(file.OpenWrite()))
             {
@@ -40,9 +40,11 @@ namespace FileSystemSample.Test
             }
         }
 
-        private string Read(IFile file)
+        private string ReadToEnd(IFile file) => this.ReadToEnd(file.OpenRead());
+
+        private string ReadToEnd(Stream input)
         {
-            using (StreamReader reader = new StreamReader(file.OpenRead()))
+            using (StreamReader reader = new StreamReader(input))
             {
                 return this.ResultOf(reader.ReadToEndAsync());
             }
