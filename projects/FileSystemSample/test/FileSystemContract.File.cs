@@ -154,12 +154,30 @@ namespace FileSystemSample.Test
             IFile file1 = this.CreateFile(fs, "Parent", "ReadWrite.txt");
             IFile file2 = this.CreateFile(fs, "Parent", "ReadWrite.txt");
 
-            using (Stream write1 = file1.OpenRead())
+            using (Stream read1 = file1.OpenRead())
             {
                 Action act = () => file2.OpenWrite();
 
                 act.ShouldThrow<FileSystemException>()
                     .WithMessage(@"* '*\ReadWrite.txt' is already opened.")
+                    .WithInnerException<IOException>();
+            }
+        }
+
+        [TestMethod]
+        public void ShouldFailWriteWhenAlreadyReadingTwice()
+        {
+            IFileSystem fs = this.Create();
+            IFile file1 = this.CreateFile(fs, "Parent", "ReadReadWrite.txt");
+            IFile file2 = this.CreateFile(fs, "Parent", "ReadReadWrite.txt");
+
+            using (Stream read1 = file1.OpenRead())
+            using (Stream read2 = file1.OpenRead())
+            {
+                Action act = () => file2.OpenWrite();
+
+                act.ShouldThrow<FileSystemException>()
+                    .WithMessage(@"* '*\ReadReadWrite.txt' is already opened.")
                     .WithInnerException<IOException>();
             }
         }
