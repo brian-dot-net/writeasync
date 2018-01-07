@@ -121,8 +121,19 @@ namespace FileSystemSample.Test
         [TestMethod]
         public void ShouldFailMultipleWriters()
         {
+            this.FailMultipleWriters("Write.txt");
+        }
+
+        [TestMethod]
+        public void ShouldFailMultipleWritersIgnoreCase()
+        {
+            this.FailMultipleWriters("Write.txt", true);
+        }
+
+        private void FailMultipleWriters(string name, bool changeCase = false)
+        {
             IFileSystem fs = this.Create();
-            IFile file1 = this.CreateFile(fs, "Parent", "Write.txt");
+            IFile file1 = this.CreateFile(fs, "Parent", changeCase ? "Write.txt" : "wRITE.TXT");
             IFile file2 = this.CreateFile(fs, "Parent", "Write.txt");
 
             using (Stream write1 = file1.OpenWrite())
