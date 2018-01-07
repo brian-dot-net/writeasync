@@ -109,9 +109,20 @@ namespace FileSystemSample.Test
         [TestMethod]
         public void ShouldAllowMultipleReaders()
         {
+            this.AllowMultipleReaders("Read.txt");
+        }
+
+        [TestMethod]
+        public void ShouldAllowMultipleReadersIgnoreCase()
+        {
+            this.AllowMultipleReaders("Read.txt", "rEAD.TXT");
+        }
+
+        private void AllowMultipleReaders(string name1, string name2 = null)
+        {
             IFileSystem fs = this.Create();
-            IFile file1 = this.CreateFile(fs, "Parent", "Read.txt");
-            IFile file2 = this.CreateFile(fs, "Parent", "Read.txt");
+            IFile file1 = this.CreateFile(fs, "Parent", name1);
+            IFile file2 = this.CreateFile(fs, "Parent", name2 ?? name1);
             this.WriteAll(file2, "read me");
 
             string text1;

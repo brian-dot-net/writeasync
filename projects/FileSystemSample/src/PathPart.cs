@@ -7,7 +7,7 @@ namespace FileSystemSample
     using System;
     using System.IO;
 
-    public struct PathPart
+    public struct PathPart : IEquatable<PathPart>
     {
         private readonly string name;
 
@@ -16,10 +16,21 @@ namespace FileSystemSample
             this.name = Validate(name);
         }
 
-        public override string ToString()
+        public override string ToString() => this.name;
+
+        public override bool Equals(object obj)
         {
-            return this.name;
+            if (!(obj is PathPart))
+            {
+                return false;
+            }
+
+            return this.Equals((PathPart)obj);
         }
+
+        public override int GetHashCode() => this.name.ToUpperInvariant().GetHashCode();
+
+        public bool Equals(PathPart other) => string.Equals(this.name, other.name, StringComparison.OrdinalIgnoreCase);
 
         private static string Validate(string name)
         {
