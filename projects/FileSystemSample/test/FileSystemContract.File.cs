@@ -6,6 +6,7 @@ namespace FileSystemSample.Test
 {
     using System;
     using System.IO;
+    using System.Threading.Tasks;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -198,6 +199,28 @@ namespace FileSystemSample.Test
             read1.Should().Be("first");
             read2.Should().Be("second");
         }
+
+        [TestMethod]
+        public void ShouldFailWriteForReadStream()
+        {
+            IFileSystem fs = this.Create();
+            IFile file = this.CreateFile(fs, "Parent", "FailWrite.txt");
+
+            using (Stream read = file.OpenRead())
+            {
+                FailWrite(() => read.BeginWrite(new byte[] { 0 }, 0, 1, null, null));
+                FailWrite(() => read.Write(new byte[] { 0 }, 0, 1));
+                FailWrite(() => read.WriteByte(0));
+                FailWriteTask(() => read.WriteAsync(new byte[] { 0 }, 0, 1));
+            }
+        }
+
+        private static void FailWrite(Action act)
+        {
+            act.ShouldThrow<NotSupportedException>().WithMessage("Stream does not support writing.");
+        }
+
+        private static void FailWriteTask(Func<Task> writeAsync) => FailWrite(() => writeAsync().Wait());
 
         private static void FailOpen(Action act, string expectedMatch)
         {
