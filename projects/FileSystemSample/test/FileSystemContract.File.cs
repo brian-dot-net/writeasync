@@ -118,6 +118,23 @@ namespace FileSystemSample.Test
             this.AllowMultipleReaders("Read.txt", "rEAD.TXT");
         }
 
+        [TestMethod]
+        public void ShouldFailMultipleWriters()
+        {
+            IFileSystem fs = this.Create();
+            IFile file1 = this.CreateFile(fs, "Parent", "Write.txt");
+            IFile file2 = this.CreateFile(fs, "Parent", "Write.txt");
+
+            using (Stream write1 = file1.OpenWrite())
+            {
+                Action act = () => file2.OpenWrite();
+
+                act.ShouldThrow<FileSystemException>()
+                    .WithMessage(@"* '*\Write.txt' is already opened.")
+                    .WithInnerException<IOException>();
+            }
+        }
+
         private void AllowMultipleReaders(string name1, string name2 = null)
         {
             IFileSystem fs = this.Create();

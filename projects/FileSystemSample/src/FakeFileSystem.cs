@@ -165,12 +165,20 @@ namespace FileSystemSample
 
                         public Stream OpenWrite()
                         {
-                            return this.buffer.OpenWrite();
+                            try
+                            {
+                                return this.buffer.OpenWrite();
+                            }
+                            catch (IOException e)
+                            {
+                                throw FileSystemError.AlreadyOpen(this.Path, e);
+                            }
                         }
 
                         private sealed class Buffer
                         {
                             private byte[] buffer;
+                            private int write;
 
                             public Buffer()
                             {
@@ -184,7 +192,19 @@ namespace FileSystemSample
 
                             public Stream OpenWrite()
                             {
-                                return new WriteStream(b => this.buffer = b);
+                                if (this.write != 0)
+                                {
+                                    throw new IOException("Cannot write.");
+                                }
+
+                                ++this.write;
+                                return new WriteStream(this.OnCloseWriter);
+                            }
+
+                            private void OnCloseWriter(byte[] newBuffer)
+                            {
+                                this.buffer = newBuffer;
+                                --this.write;
                             }
 
                             private sealed class WriteStream : MemoryStream

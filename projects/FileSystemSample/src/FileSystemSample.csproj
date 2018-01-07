@@ -34,6 +34,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileSystemError.cs" />
+    <Compile Include="FileSystemException.cs" />
     <Compile Include="IFile.cs" />
     <Compile Include="PathPart.cs" />
     <Compile Include="RealFileSystem.cs" />

@@ -53,7 +53,14 @@ namespace FileSystemSample
 
                 public Stream OpenWrite()
                 {
-                    return new FileStream(this.Path.ToString(), FileMode.Truncate, FileAccess.Write, FileShare.None, 4096, true);
+                    try
+                    {
+                        return new FileStream(this.Path.ToString(), FileMode.Truncate, FileAccess.Write, FileShare.None, 4096, true);
+                    }
+                    catch (IOException e)
+                    {
+                        throw FileSystemError.AlreadyOpen(this.Path, e);
+                    }
                 }
             }
         }
