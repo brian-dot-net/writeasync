@@ -5,11 +5,11 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{154293B8-6003-48A9-AEC9-18578572FBD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gwbas2cs", "src\gwbas2cs\gwbas2cs.csproj", "{25C0DFB4-EF35-4D03-9CCE-F9122E1E6ED7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GWBas2CS", "src\GWBas2CS\GWBas2CS.csproj", "{25C0DFB4-EF35-4D03-9CCE-F9122E1E6ED7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{03FBB861-3CAA-4635-8D32-A7B4F6DFEE31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gwbas2cs.Test", "test\gwbas2cs.Test\gwbas2cs.Test.csproj", "{6A56EFCB-E5D6-4288-A3E5-87E07C7E7712}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GWBas2CS.Test", "test\GWBas2CS.Test\GWBas2CS.Test.csproj", "{6A56EFCB-E5D6-4288-A3E5-87E07C7E7712}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

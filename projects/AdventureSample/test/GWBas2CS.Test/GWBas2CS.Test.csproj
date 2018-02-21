@@ -13,6 +13,6 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\gwbas2cs\gwbas2cs.csproj" />
+    <ProjectReference Include="..\..\src\GWBas2CS\GWBas2CS.csproj" />
   </ItemGroup>
 </Project>
