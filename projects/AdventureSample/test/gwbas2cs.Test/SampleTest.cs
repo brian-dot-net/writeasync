@@ -1,4 +1,8 @@
-namespace gwbas2cs.Test
+// <copyright file="SampleTest.cs" company="Brian Rogers">
+// Copyright (c) Brian Rogers. All rights reserved.
+// </copyright>
+
+namespace GWBas2CS.Test
 {
     using FluentAssertions;
     using Xunit;

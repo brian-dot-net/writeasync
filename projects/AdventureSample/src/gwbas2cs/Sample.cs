@@ -1,4 +1,8 @@
-﻿namespace gwbas2cs
+﻿// <copyright file="Sample.cs" company="Brian Rogers">
+// Copyright (c) Brian Rogers. All rights reserved.
+// </copyright>
+
+namespace GWBas2CS
 {
     public sealed class Sample
     {
