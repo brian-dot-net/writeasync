@@ -1,0 +1,3 @@
+10 REM My first BASIC program
+20 PRINT "HELLO, WORLD!"
+30 GOTO 20
