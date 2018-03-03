@@ -57,7 +57,8 @@ internal sealed class MyProg
     private bool Main()
     {
         L10:
-            goto L10;
+            ;
+        goto L10;
         return false;
     }
 }";
@@ -90,6 +91,44 @@ internal sealed class MyProg
     private bool Main()
     {
         PRINT(""An expression"");
+        return false;
+    }
+}";
+
+            string actual = Translate("MyProg", Input);
+
+            actual.Should().Be(Expected);
+        }
+
+        [Fact]
+        public void WithCommentPrintAndGotoStatement()
+        {
+            const string Input = @"10 REM My first BASIC program
+20 PRINT ""HELLO, WORLD!""
+30 GOTO 20";
+            const string Expected = @"using System;
+
+internal sealed class MyProg
+{
+    public void Run()
+    {
+        while (this.Main())
+        {
+        }
+    }
+
+    private static void PRINT(string expression)
+    {
+        Console.WriteLine(expression);
+    }
+
+    private bool Main()
+    {
+        // My first BASIC program
+        L20:
+            ;
+        PRINT(""HELLO, WORLD!"");
+        goto L20;
         return false;
     }
 }";

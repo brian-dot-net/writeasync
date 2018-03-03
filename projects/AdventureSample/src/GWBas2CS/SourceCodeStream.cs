@@ -21,23 +21,7 @@ namespace GWBas2CS
         public async Task TranslateAsync(string name, Stream output)
         {
             BasicProgram program = new BasicProgram(name);
-
-            string line = await this.reader.ReadLineAsync();
-            string[] numberAndStatement = line.Split(new char[] { ' ' }, 2);
-            string[] keywordAndRest = numberAndStatement[1].Split(new char[] { ' ' }, 2);
-
-            switch (keywordAndRest[0])
-            {
-                case "REM":
-                    program.AddComment(keywordAndRest[1]);
-                    break;
-                case "PRINT":
-                    program.AddPrint(keywordAndRest[1].Substring(1, keywordAndRest[1].Length - 2));
-                    break;
-                default:
-                    program.AddGoto(int.Parse(keywordAndRest[1]));
-                    break;
-            }
+            await this.TranslateInnerAsync(program);
 
             string outputCode = program.ToString();
 
@@ -48,6 +32,35 @@ namespace GWBas2CS
         public void Dispose()
         {
             this.reader.Close();
+        }
+
+        private async Task TranslateInnerAsync(BasicProgram program)
+        {
+            while (true)
+            {
+                string line = await this.reader.ReadLineAsync();
+                if (line == null)
+                {
+                    return;
+                }
+
+                string[] numberAndStatement = line.Split(new char[] { ' ' }, 2);
+                int lineNumber = int.Parse(numberAndStatement[0]);
+                string[] keywordAndRest = numberAndStatement[1].Split(new char[] { ' ' }, 2);
+
+                switch (keywordAndRest[0])
+                {
+                    case "REM":
+                        program.AddComment(lineNumber, keywordAndRest[1]);
+                        break;
+                    case "PRINT":
+                        program.AddPrint(lineNumber, keywordAndRest[1].Substring(1, keywordAndRest[1].Length - 2));
+                        break;
+                    default:
+                        program.AddGoto(lineNumber, int.Parse(keywordAndRest[1]));
+                        break;
+                }
+            }
         }
     }
 }
