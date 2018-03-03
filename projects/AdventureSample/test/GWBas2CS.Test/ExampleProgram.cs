@@ -40,6 +40,34 @@ internal sealed class MyProg
         }
 
         [Fact]
+        public void WithOneGotoStatement()
+        {
+            const string Input = "10 GOTO 10";
+            const string Expected = @"using System;
+
+internal sealed class MyProg
+{
+    public void Run()
+    {
+        while (this.Main())
+        {
+        }
+    }
+
+    private bool Main()
+    {
+        L10:
+            goto L10;
+        return false;
+    }
+}";
+
+            string actual = Translate("MyProg", Input);
+
+            actual.Should().Be(Expected);
+        }
+
+        [Fact]
         public void WithOnePrintStatement()
         {
             const string Input = "10 PRINT \"An expression\"";

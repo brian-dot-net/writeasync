@@ -31,8 +31,11 @@ namespace GWBas2CS
                 case "REM":
                     program.AddComment(keywordAndRest[1]);
                     break;
-                default:
+                case "PRINT":
                     program.AddPrint(keywordAndRest[1].Substring(1, keywordAndRest[1].Length - 2));
+                    break;
+                default:
+                    program.AddGoto(int.Parse(keywordAndRest[1]));
                     break;
             }
 

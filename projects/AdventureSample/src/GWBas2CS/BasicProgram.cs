@@ -42,6 +42,13 @@ namespace GWBas2CS
             this.intrinsics.Add(printMethod);
         }
 
+        public void AddGoto(int destination)
+        {
+            string label = "L" + destination;
+            var gotoStatement = SyntaxFactory.GotoStatement(SyntaxKind.GotoStatement, SyntaxFactory.IdentifierName(label));
+            this.mainStatements.Add(SyntaxFactory.LabeledStatement(label, gotoStatement));
+        }
+
         public override string ToString()
         {
             var usingDirectives = this.generator.NamespaceImportDeclaration("System");
