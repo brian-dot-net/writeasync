@@ -22,14 +22,46 @@ internal sealed class MyProg
 {
     public void Run()
     {
-        while (this.RunCore())
+        while (this.Main())
         {
         }
     }
 
-    private bool RunCore()
+    private bool Main()
     {
         // A comment
+        return false;
+    }
+}";
+
+            string actual = Translate("MyProg", Input);
+
+            actual.Should().Be(Expected);
+        }
+
+        [Fact]
+        public void WithOnePrintStatement()
+        {
+            const string Input = "10 PRINT \"An expression\"";
+            const string Expected = @"using System;
+
+internal sealed class MyProg
+{
+    public void Run()
+    {
+        while (this.Main())
+        {
+        }
+    }
+
+    private static void PRINT(string expression)
+    {
+        Console.WriteLine(expression);
+    }
+
+    private bool Main()
+    {
+        PRINT(""An expression"");
         return false;
     }
 }";

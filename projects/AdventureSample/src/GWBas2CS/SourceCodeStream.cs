@@ -25,9 +25,16 @@ namespace GWBas2CS
             string line = await this.reader.ReadLineAsync();
             string[] numberAndStatement = line.Split(new char[] { ' ' }, 2);
             string[] keywordAndRest = numberAndStatement[1].Split(new char[] { ' ' }, 2);
-            string comment = keywordAndRest[1];
 
-            program.AddComment(comment);
+            switch (keywordAndRest[0])
+            {
+                case "REM":
+                    program.AddComment(keywordAndRest[1]);
+                    break;
+                default:
+                    program.AddPrint(keywordAndRest[1].Substring(1, keywordAndRest[1].Length - 2));
+                    break;
+            }
 
             string outputCode = program.ToString();
 

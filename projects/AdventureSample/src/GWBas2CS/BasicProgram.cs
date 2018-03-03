@@ -12,12 +12,18 @@ namespace GWBas2CS
     internal sealed class BasicProgram
     {
         private readonly string name;
+        private readonly SyntaxGenerator generator;
+        private readonly List<SyntaxNode> mainStatements;
+        private readonly List<SyntaxNode> intrinsics;
 
         private SyntaxTrivia commentNode;
 
         public BasicProgram(string name)
         {
             this.name = name;
+            this.generator = SyntaxGenerator.GetGenerator(new AdhocWorkspace(), LanguageNames.CSharp);
+            this.mainStatements = new List<SyntaxNode>();
+            this.intrinsics = new List<SyntaxNode>();
         }
 
         public void AddComment(string comment)
@@ -25,33 +31,48 @@ namespace GWBas2CS
             this.commentNode = SyntaxFactory.Comment("// " + comment);
         }
 
+        public void AddPrint(string expression)
+        {
+            var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName("PRINT"), this.generator.LiteralExpression(expression));
+            this.mainStatements.Add(callPrint);
+            var callConsoleWriteLine = this.generator.MemberAccessExpression(this.generator.IdentifierName("Console"), "WriteLine");
+            SyntaxNode[] printStatements = new SyntaxNode[] { this.generator.InvocationExpression(callConsoleWriteLine, this.generator.IdentifierName("expression")) };
+            SyntaxNode[] parameters = new SyntaxNode[] { this.generator.ParameterDeclaration("expression", type: this.generator.TypeExpression(SpecialType.System_String)) };
+            var printMethod = this.generator.MethodDeclaration("PRINT", accessibility: Accessibility.Private, modifiers: DeclarationModifiers.Static, parameters: parameters, statements: printStatements);
+            this.intrinsics.Add(printMethod);
+        }
+
         public override string ToString()
         {
-            var workspace = new AdhocWorkspace();
-            var generator = SyntaxGenerator.GetGenerator(workspace, LanguageNames.CSharp);
-            var usingDirectives = generator.NamespaceImportDeclaration("System");
+            var usingDirectives = this.generator.NamespaceImportDeclaration("System");
 
             List<SyntaxNode> classMembers = new List<SyntaxNode>();
 
-            var runCoreMember = generator.MemberAccessExpression(generator.ThisExpression(), "RunCore");
-            var callRunCore = generator.InvocationExpression(runCoreMember);
+            var runCoreMember = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Main");
+            var callRunCore = this.generator.InvocationExpression(runCoreMember);
             List<SyntaxNode> runStatements = new List<SyntaxNode>();
-            var whileLoop = generator.WhileStatement(callRunCore, null);
+            var whileLoop = this.generator.WhileStatement(callRunCore, null);
             runStatements.Add(whileLoop);
-            var runMethod = generator.MethodDeclaration("Run", accessibility: Accessibility.Public, statements: runStatements);
+            var runMethod = this.generator.MethodDeclaration("Run", accessibility: Accessibility.Public, statements: runStatements);
 
             classMembers.Add(runMethod);
 
-            List<SyntaxNode> runCoreStatements = new List<SyntaxNode>();
-            var lastStatement = generator.ReturnStatement(generator.LiteralExpression(false));
-            runCoreStatements.Add(lastStatement.WithLeadingTrivia(this.commentNode));
-            var boolType = generator.TypeExpression(SpecialType.System_Boolean);
-            var runCoreMethod = generator.MethodDeclaration("RunCore", accessibility: Accessibility.Private, returnType: boolType, statements: runCoreStatements);
+            var lastStatement = this.generator.ReturnStatement(this.generator.LiteralExpression(false));
+            if (this.commentNode != null)
+            {
+                lastStatement = lastStatement.WithLeadingTrivia(this.commentNode);
+            }
 
-            classMembers.Add(runCoreMethod);
+            this.mainStatements.Add(lastStatement);
 
-            var classDecl = generator.ClassDeclaration(this.name, accessibility: Accessibility.Internal, modifiers: DeclarationModifiers.Sealed, members: classMembers);
-            return generator.CompilationUnit(usingDirectives, classDecl).NormalizeWhitespace().ToString();
+            var boolType = this.generator.TypeExpression(SpecialType.System_Boolean);
+            var mainMethod = this.generator.MethodDeclaration("Main", accessibility: Accessibility.Private, returnType: boolType, statements: this.mainStatements);
+
+            classMembers.AddRange(this.intrinsics);
+            classMembers.Add(mainMethod);
+
+            var classDecl = this.generator.ClassDeclaration(this.name, accessibility: Accessibility.Internal, modifiers: DeclarationModifiers.Sealed, members: classMembers);
+            return this.generator.CompilationUnit(usingDirectives, classDecl).NormalizeWhitespace().ToString();
         }
     }
 }
