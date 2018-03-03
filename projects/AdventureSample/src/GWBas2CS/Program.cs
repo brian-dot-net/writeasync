@@ -14,7 +14,7 @@ namespace GWBas2CS
         {
             if (args.Length != 2)
             {
-                Console.WriteLine("Please provider an input (.bas) and output (.cs) file path.");
+                Console.WriteLine("Please provide an input (.bas) and output (.cs) file path.");
                 return 1;
             }
 
@@ -24,11 +24,16 @@ namespace GWBas2CS
 
         private static async Task MainAsync(string inputPath, string outputPath)
         {
-            using (SourceCodeStream input = new SourceCodeStream(new FileStream(inputPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true)))
-            using (Stream output = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true))
+            using (var input = new SourceCodeStream(Open(inputPath, FileMode.Open, FileAccess.Read, FileShare.Read)))
+            using (var output = Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
                 await input.TranslateAsync(Path.GetFileNameWithoutExtension(inputPath), output);
             }
+        }
+
+        private static Stream Open(string path, FileMode mode, FileAccess access, FileShare share)
+        {
+            return new FileStream(path, mode, access, share, 4096, true);
         }
     }
 }
