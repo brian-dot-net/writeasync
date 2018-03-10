@@ -11,6 +11,8 @@ namespace Four4.Test
     {
         [Theory]
         [InlineData("4", "4")]
+        [InlineData(".4", ".4")]
+        [InlineData(".4_", ".4_")]
         public void Numbers(string input, string result)
         {
             Calculation.FromString(input).Should().Be(result);
