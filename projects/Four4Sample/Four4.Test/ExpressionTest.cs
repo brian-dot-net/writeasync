@@ -16,5 +16,16 @@ namespace Four4.Test
 
             expr.ToString().Should().Be(string.Empty);
         }
+
+        [Theory]
+        [InlineData("+", "+")]
+        public void AppendToEmpty(string input, string result)
+        {
+            Expression expr = default(Expression);
+
+            expr = expr.Append(input);
+
+            expr.ToString().Should().Be(result);
+        }
     }
 }

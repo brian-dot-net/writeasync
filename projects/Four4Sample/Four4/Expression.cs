@@ -8,10 +8,12 @@ namespace Four4
 
     public struct Expression
     {
+        private readonly string text;
         private readonly NumberStack operands;
 
-        private Expression(NumberStack operands)
+        private Expression(string text, NumberStack operands)
         {
+            this.text = text;
             this.operands = operands;
         }
 
@@ -31,43 +33,43 @@ namespace Four4
 
         public override string ToString()
         {
-            return string.Empty;
+            return this.text ?? string.Empty;
         }
 
-        private Expression Append(string token)
+        public Expression Append(string token)
         {
             switch (token)
             {
                 case "+":
-                    return this.Binary((x, y) => x + y);
+                    return this.Binary(token, (x, y) => x + y);
                 case "-":
-                    return this.Binary((x, y) => x - y);
+                    return this.Binary(token, (x, y) => x - y);
                 case "*":
-                    return this.Binary((x, y) => x * y);
+                    return this.Binary(token, (x, y) => x * y);
                 case "/":
-                    return this.Binary((x, y) => x / y);
+                    return this.Binary(token, (x, y) => x / y);
                 case "!":
-                    return this.Unary(x => x.Factorial());
+                    return this.Unary(token, x => x.Factorial());
                 case "R":
-                    return this.Unary(x => x.SquareRoot());
+                    return this.Unary(token, x => x.SquareRoot());
                 default:
-                    return this.Push(Number.Parse(token));
+                    return this.Push(token, Number.Parse(token));
             }
         }
 
-        private Expression Push(Number number)
+        private Expression Push(string token, Number number)
         {
-            return new Expression(this.operands.Push(number));
+            return new Expression(token, this.operands.Push(number));
         }
 
-        private Expression Binary(Func<Number, Number, Number> op)
+        private Expression Binary(string token, Func<Number, Number, Number> op)
         {
-            return new Expression(this.operands.Apply2(op));
+            return new Expression(token, this.operands.Apply2(op));
         }
 
-        private Expression Unary(Func<Number, Number> op)
+        private Expression Unary(string token, Func<Number, Number> op)
         {
-            return new Expression(this.operands.Apply1(op));
+            return new Expression(token, this.operands.Apply1(op));
         }
 
         private struct NumberStack
