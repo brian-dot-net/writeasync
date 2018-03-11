@@ -157,6 +157,11 @@ namespace Four4
 
             public Number SquareRoot()
             {
+                if (this.denom == 0)
+                {
+                    return NaN;
+                }
+
                 double nr = Math.Sqrt(this.num);
                 if (nr != Math.Floor(nr))
                 {
