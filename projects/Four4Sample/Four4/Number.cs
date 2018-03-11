@@ -38,7 +38,7 @@ namespace Four4
 
         public bool IsValid => this.denom != 0;
 
-        public bool IsWhole => this.denom == 1;
+        public bool IsWhole => (this.num > 0) && (this.denom == 1);
 
         public static Number operator +(Number left, Number right)
         {

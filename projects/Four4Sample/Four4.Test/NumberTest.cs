@@ -26,5 +26,12 @@ namespace Four4.Test
         {
             Number.Parse(input).IsWhole.Should().BeFalse();
         }
+
+        [Theory]
+        [InlineData("4 4 - 4 -")]
+        public void NegativeNumbersAreNotWhole(string input)
+        {
+            Expression.Eval(input).IsWhole.Should().BeFalse();
+        }
     }
 }
