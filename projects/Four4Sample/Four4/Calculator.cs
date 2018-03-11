@@ -11,14 +11,13 @@ namespace Four4
     {
         public Number Eval(Number num, string input)
         {
-            Stack<Number> operands = new Stack<Number>();
-            operands.Push(num);
+            NumberStack operands = new NumberStack(num);
             return Eval(operands, input);
         }
 
-        public Number Eval(string input) => Eval(new Stack<Number>(), input);
+        public Number Eval(string input) => Eval(new NumberStack(), input);
 
-        private static Number Eval(Stack<Number> operands, string input)
+        private static Number Eval(NumberStack operands, string input)
         {
             string[] tokens = input.Split(' ');
             foreach (string token in tokens)
@@ -52,17 +51,48 @@ namespace Four4
             return operands.Pop();
         }
 
-        private static void Binary(Stack<Number> operands, Func<Number, Number, Number> op)
+        private static void Binary(NumberStack operands, Func<Number, Number, Number> op)
         {
             var y = operands.Pop();
             var x = operands.Pop();
             operands.Push(op(x, y));
         }
 
-        private static void Unary(Stack<Number> operands, Func<Number, Number> op)
+        private static void Unary(NumberStack operands, Func<Number, Number> op)
         {
             var x = operands.Pop();
             operands.Push(op(x));
+        }
+
+        private sealed class NumberStack
+        {
+            private readonly Stack<Number> stack;
+
+            public NumberStack()
+            {
+                this.stack = new Stack<Number>();
+            }
+
+            public NumberStack(Number n)
+                : this()
+            {
+                this.Push(n);
+            }
+
+            public Number Pop()
+            {
+                if (this.stack.Count == 0)
+                {
+                    return Number.NaN;
+                }
+
+                return this.stack.Pop();
+            }
+
+            public void Push(Number n)
+            {
+                this.stack.Push(n);
+            }
         }
     }
 }

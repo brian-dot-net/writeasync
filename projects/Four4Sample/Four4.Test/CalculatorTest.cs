@@ -138,6 +138,7 @@ namespace Four4.Test
         [InlineData(3, 4, "4 -", "-13/4")]
         [InlineData(0, 1, "!", "1")]
         [InlineData(0, 0, "!", "NaN")]
+        [InlineData(0, 1, "+", "NaN")]
         public void EvalNumberAndString(int num, int denom, string input, string result)
         {
             TestEval(num, denom, input, result);
