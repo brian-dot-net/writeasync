@@ -22,6 +22,7 @@ namespace Four4.Test
         [InlineData(".44", "11/25")]
         [InlineData("4.4", "22/5")]
         [InlineData("44", "44")]
+        [InlineData("4 4", "NaN")]
         public void NumbersWithTwo4s(string input, string result)
         {
             TestEval(input, result);
