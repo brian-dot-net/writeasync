@@ -19,6 +19,9 @@ namespace Four4.Test
 
         [Theory]
         [InlineData("+", "+")]
+        [InlineData("-", "-")]
+        [InlineData("!", "!")]
+        [InlineData("4", "4")]
         public void AppendToEmpty(string input, string result)
         {
             Expression expr = default(Expression);
