@@ -41,6 +41,18 @@ namespace Four4.Test
             TestAppend(expr, input, result);
         }
 
+        [Theory]
+        [InlineData("+", "44 4 +")]
+        [InlineData("-", "44 4 -")]
+        [InlineData("!", "44 4 !")]
+        [InlineData("4", "44 4 4")]
+        public void AppendToTwo(string input, string result)
+        {
+            Expression expr = default(Expression).Append("44").Append("4");
+
+            TestAppend(expr, input, result);
+        }
+
         private static void TestAppend(Expression expr, string input, string result)
         {
             expr.Append(input).ToString().Should().Be(result);
