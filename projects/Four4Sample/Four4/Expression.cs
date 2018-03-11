@@ -1,4 +1,4 @@
-﻿// <copyright file="Calculator.cs" company="Brian Rogers">
+﻿// <copyright file="Expression.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
@@ -7,7 +7,7 @@ namespace Four4
     using System;
     using System.Collections.Generic;
 
-    public static class Calculator
+    public static class Expression
     {
         public static Number Eval(Number num, string input) => Eval(new NumberStack(num), input);
 

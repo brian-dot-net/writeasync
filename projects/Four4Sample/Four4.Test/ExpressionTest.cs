@@ -1,4 +1,4 @@
-// <copyright file="CalculatorTest.cs" company="Brian Rogers">
+// <copyright file="ExpressionTest.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
@@ -7,7 +7,7 @@ namespace Four4.Test
     using FluentAssertions;
     using Xunit;
 
-    public sealed class CalculatorTest
+    public sealed class ExpressionTest
     {
         [Theory]
         [InlineData("4", "4")]
@@ -161,12 +161,12 @@ namespace Four4.Test
 
         private static void TestEval(int num, int denom, string input, string result)
         {
-            Calculator.Eval(new Number(num, denom), input).ToString().Should().Be(result, "input was ({0}/{1}) {2}", num, denom, input);
+            Expression.Eval(new Number(num, denom), input).ToString().Should().Be(result, "input was ({0}/{1}) {2}", num, denom, input);
         }
 
         private static void TestEval(string input, string result)
         {
-            Calculator.Eval(input).ToString().Should().Be(result, "input was {0}", input);
+            Expression.Eval(input).ToString().Should().Be(result, "input was {0}", input);
         }
     }
 }
