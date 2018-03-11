@@ -30,5 +30,16 @@ namespace Four4.Test
 
             expr.ToString().Should().Be(result);
         }
+
+        [Theory]
+        [InlineData("+", "4 +")]
+        public void AppendToOne(string input, string result)
+        {
+            Expression expr = default(Expression).Append("4");
+
+            expr = expr.Append(input);
+
+            expr.ToString().Should().Be(result);
+        }
     }
 }

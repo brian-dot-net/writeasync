@@ -59,17 +59,27 @@ namespace Four4
 
         private Expression Push(string token, Number number)
         {
-            return new Expression(token, this.operands.Push(number));
+            return new Expression(this.Join(token), this.operands.Push(number));
         }
 
         private Expression Binary(string token, Func<Number, Number, Number> op)
         {
-            return new Expression(token, this.operands.Apply2(op));
+            return new Expression(this.Join(token), this.operands.Apply2(op));
         }
 
         private Expression Unary(string token, Func<Number, Number> op)
         {
-            return new Expression(token, this.operands.Apply1(op));
+            return new Expression(this.Join(token), this.operands.Apply1(op));
+        }
+
+        private string Join(string token)
+        {
+            if (this.text == null)
+            {
+                return token;
+            }
+
+            return this.text + " " + token;
         }
 
         private struct NumberStack
