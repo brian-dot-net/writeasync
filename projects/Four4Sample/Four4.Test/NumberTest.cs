@@ -29,7 +29,9 @@ namespace Four4.Test
 
         [Theory]
         [InlineData("4 4 - 4 -")]
-        public void NegativeNumbersAreNotWhole(string input)
+        [InlineData("4 4 -")]
+        [InlineData("4 4 - 4 - 4 -")]
+        public void NonPositiveNumbersAreNotWhole(string input)
         {
             Expression.Eval(input).IsWhole.Should().BeFalse();
         }
