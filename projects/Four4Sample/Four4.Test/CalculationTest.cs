@@ -86,6 +86,9 @@ namespace Four4.Test
 
         [Theory]
         [InlineData("4 4 /", "1")]
+        [InlineData("4 .4 /", "10")]
+        [InlineData("44 .44 /", "100")]
+        [InlineData(".4 4 /", "1/10")]
         public void Division(string input, string result)
         {
             Calc(input, result);
