@@ -23,6 +23,9 @@ namespace Four4
                     case "-":
                         BinaryOp(operands, (x, y) => x - y);
                         break;
+                    case "*":
+                        BinaryOp(operands, (x, y) => x * y);
+                        break;
                     default:
                         operands.Push(Number.Parse(token));
                         break;
@@ -72,6 +75,13 @@ namespace Four4
             public static Number operator -(Number right)
             {
                 return new Number(-right.num, right.denom);
+            }
+
+            public static Number operator *(Number left, Number right)
+            {
+                int n = left.num * right.num;
+                int d = left.denom * right.denom;
+                return new Number(n, d);
             }
 
             public static Number Parse(string s)
