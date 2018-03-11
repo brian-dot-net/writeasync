@@ -18,5 +18,13 @@ namespace Four4.Test
         {
             Number.Parse(input).IsWhole.Should().BeTrue();
         }
+
+        [Theory]
+        [InlineData(".4")]
+        [InlineData(".4_")]
+        public void Fractions(string input)
+        {
+            Number.Parse(input).IsWhole.Should().BeFalse();
+        }
     }
 }
