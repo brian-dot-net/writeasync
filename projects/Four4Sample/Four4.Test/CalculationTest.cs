@@ -65,6 +65,8 @@ namespace Four4.Test
         [InlineData("44.4 .4 -", "44")]
         [InlineData("44 .4 - 4 -", "198/5")]
         [InlineData(".4 4 -", "-18/5")]
+        [InlineData("4 4 4 4 - - -", "0")]
+        [InlineData("4 4 4 - - 4 -", "0")]
         public void Subtraction(string input, string result)
         {
             Calculation.FromString(input).Should().Be(result);
