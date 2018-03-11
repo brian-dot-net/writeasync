@@ -157,13 +157,19 @@ namespace Four4
 
             public Number SquareRoot()
             {
-                double r = Math.Sqrt(this.num);
-                if (r != Math.Floor(r))
+                double nr = Math.Sqrt(this.num);
+                if (nr != Math.Floor(nr))
                 {
                     return NaN;
                 }
 
-                return new Number((int)r, (int)Math.Sqrt(this.denom));
+                double dr = Math.Sqrt(this.denom);
+                if (dr != Math.Floor(dr))
+                {
+                    return NaN;
+                }
+
+                return new Number((int)nr, (int)dr);
             }
 
             public override string ToString()
