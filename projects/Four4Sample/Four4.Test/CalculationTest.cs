@@ -79,6 +79,7 @@ namespace Four4.Test
         [InlineData("44 .44 *", "484/25")]
         [InlineData("4 4 * 4 4 * *", "256")]
         [InlineData("4 4 4 4 * * *", "256")]
+        [InlineData("4 4 4 - / 4 *", "NaN")]
         public void Multiplication(string input, string result)
         {
             Calc(input, result);
