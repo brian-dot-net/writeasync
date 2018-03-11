@@ -9,62 +9,71 @@ namespace Four4
 
     public sealed class Expression
     {
+        private readonly NumberStack operands;
+
         public Expression()
         {
+            this.operands = new NumberStack();
         }
 
-        public static Number Eval(string input) => Eval(new NumberStack(), input);
+        public static Number Eval(string input)
+        {
+            Expression expr = new Expression();
+            string[] tokens = input.Split(' ');
+            foreach (string token in tokens)
+            {
+                expr.Append(token);
+            }
+
+            return expr.Result();
+        }
+
+        public Number Result() => this.operands.Result();
 
         public override string ToString()
         {
             return string.Empty;
         }
 
-        private static Number Eval(NumberStack operands, string input)
+        private void Append(string token)
         {
-            string[] tokens = input.Split(' ');
-            foreach (string token in tokens)
+            switch (token)
             {
-                switch (token)
-                {
-                    case "+":
-                        Binary(operands, (x, y) => x + y);
-                        break;
-                    case "-":
-                        Binary(operands, (x, y) => x - y);
-                        break;
-                    case "*":
-                        Binary(operands, (x, y) => x * y);
-                        break;
-                    case "/":
-                        Binary(operands, (x, y) => x / y);
-                        break;
-                    case "!":
-                        Unary(operands, x => x.Factorial());
-                        break;
-                    case "R":
-                        Unary(operands, x => x.SquareRoot());
-                        break;
-                    default:
-                        operands.Push(Number.Parse(token));
-                        break;
-                }
+                case "+":
+                    this.Binary((x, y) => x + y);
+                    break;
+                case "-":
+                    this.Binary((x, y) => x - y);
+                    break;
+                case "*":
+                    this.Binary((x, y) => x * y);
+                    break;
+                case "/":
+                    this.Binary((x, y) => x / y);
+                    break;
+                case "!":
+                    this.Unary(x => x.Factorial());
+                    break;
+                case "R":
+                    this.Unary(x => x.SquareRoot());
+                    break;
+                default:
+                    this.operands.Push(Number.Parse(token));
+                    break;
             }
-
-            return operands.Result();
         }
 
-        private static void Binary(NumberStack operands, Func<Number, Number, Number> op)
+        private void Binary(Func<Number, Number, Number> op)
         {
-            var y = operands.Pop();
-            var x = operands.Pop();
-            operands.Push(op(x, y));
+            var y = this.operands.Pop();
+            var x = this.operands.Pop();
+            this.operands.Push(op(x, y));
         }
 
-        private static void Unary(NumberStack operands, Func<Number, Number> op)
+        private void Unary(Func<Number, Number> op)
         {
-            var x = operands.Pop();
-            operands.Push(op(x));
+            var x = this.operands.Pop();
+            this.operands.Push(op(x));
         }
 
         private sealed class NumberStack
@@ -74,12 +83,6 @@ namespace Four4
             public NumberStack()
             {
                 this.stack = new Stack<Number>();
-            }
-
-            public NumberStack(Number n)
-                : this()
-            {
-                this.Push(n);
             }
 
             public Number Pop()
