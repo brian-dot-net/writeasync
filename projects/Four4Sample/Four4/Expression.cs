@@ -19,6 +19,8 @@ namespace Four4
             this.operands = operands;
         }
 
+        public bool IsInRange => this.count <= 4;
+
         public static Number Eval(string input)
         {
             Expression expr = default(Expression);
@@ -60,6 +62,7 @@ namespace Four4
                 case "44":
                 case "444":
                 case "4444":
+                    return this.Push(5, token, Number.Parse(token));
                 default:
                     return this.Push(0, token, Number.Parse(token));
             }
@@ -67,7 +70,7 @@ namespace Four4
 
         private Expression Push(int add, string token, Number number)
         {
-            return new Expression(add, this.Join(token), this.operands.Push(number));
+            return new Expression(this.count + add, this.Join(token), this.operands.Push(number));
         }
 
         private Expression Binary(string token, Func<Number, Number, Number> op)

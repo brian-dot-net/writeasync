@@ -53,6 +53,17 @@ namespace Four4.Test
             TestAppend(expr, input, result);
         }
 
+        [Theory]
+        [InlineData("4444", "4")]
+        public void AppendOneTooManyDigits(string x, string y)
+        {
+            Expression expr = default(Expression).Append(x);
+
+            expr = expr.Append(y);
+
+            expr.IsInRange.Should().BeFalse();
+        }
+
         private static void TestAppend(Expression expr, string input, string result)
         {
             expr.Append(input).ToString().Should().Be(result);
