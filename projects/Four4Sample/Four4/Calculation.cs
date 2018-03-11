@@ -37,8 +37,9 @@ namespace Four4
 
             private Number(int num, int denom)
             {
-                this.num = num;
-                this.denom = denom;
+                int gcd = Gcd(num, denom);
+                this.num = num / gcd;
+                this.denom = denom / gcd;
             }
 
             public static Number operator +(Number left, Number right)
@@ -50,14 +51,24 @@ namespace Four4
 
             public static Number Parse(string s)
             {
-                switch (s)
+                if (s == ".4_")
                 {
-                    case ".4":
-                        return new Number(2, 5);
-                    case ".4_":
-                        return new Number(4, 9);
-                    default:
-                        return new Number(int.Parse(s), 1);
+                    return new Number(4, 9);
+                }
+                else if (s.StartsWith('.'))
+                {
+                    int n = s.Length - 1;
+                    int d = 1;
+                    for (int i = 0; i < n; ++i)
+                    {
+                        d *= 10;
+                    }
+
+                    return new Number(int.Parse(s.Substring(1)), d);
+                }
+                else
+                {
+                    return new Number(int.Parse(s), 1);
                 }
             }
 
@@ -70,6 +81,18 @@ namespace Four4
                 }
 
                 return value;
+            }
+
+            private static int Gcd(int a, int b)
+            {
+                while (b != 0)
+                {
+                    int t = b;
+                    b = a % b;
+                    a = t;
+                }
+
+                return a;
             }
         }
     }
