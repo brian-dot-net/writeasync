@@ -70,6 +70,7 @@ namespace Four4.Test
         [InlineData("4 4 4 4 - - -", "0")]
         [InlineData("4 4 4 - - 4 -", "0")]
         [InlineData("4 4 4 - / 4 -", "NaN")]
+        [InlineData("4 -", "NaN")]
         public void Subtraction(string input, string result)
         {
             TestEval(input, result);
