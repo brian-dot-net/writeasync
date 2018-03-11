@@ -16,7 +16,8 @@ namespace Four4
                 switch (token)
                 {
                     case "+":
-                        operands.Push(Two(operands, "+"));
+                    case "-":
+                        operands.Push(Two(operands, token));
                         break;
                     case "!":
                         operands.Push(One(operands) + "!");
