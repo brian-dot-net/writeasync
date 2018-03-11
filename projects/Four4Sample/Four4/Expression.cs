@@ -19,7 +19,11 @@ namespace Four4
             this.operands = operands;
         }
 
+        public bool IsValid => this.operands.IsValid;
+
         public int NumeralCount => this.count;
+
+        public Number Result => this.operands.Result;
 
         public static Number Eval(string input)
         {
@@ -30,7 +34,7 @@ namespace Four4
                 expr = expr.Append(token);
             }
 
-            return expr.operands.Result();
+            return expr.Result;
         }
 
         public override string ToString()
@@ -126,14 +130,37 @@ namespace Four4
                 }
             }
 
-            public Number Result()
+            public bool IsValid
             {
-                switch (this.size)
+                get
                 {
-                    case 1:
-                        return this.n1;
-                    default:
-                        return default(Number);
+                    switch (this.size)
+                    {
+                        case 1:
+                            return this.n1.IsValid;
+                        case 2:
+                            return this.n2.IsValid;
+                        case 3:
+                            return this.n3.IsValid;
+                        case 4:
+                            return this.n4.IsValid;
+                        default:
+                            return true;
+                    }
+                }
+            }
+
+            public Number Result
+            {
+                get
+                {
+                    switch (this.size)
+                    {
+                        case 1:
+                            return this.n1;
+                        default:
+                            return default(Number);
+                    }
                 }
             }
 
@@ -159,7 +186,7 @@ namespace Four4
                 switch (this.size)
                 {
                     case 0:
-                        return default(NumberStack);
+                        return new NumberStack(default(Number));
                     case 1:
                         return new NumberStack(op(this.n1));
                     case 2:
@@ -177,7 +204,7 @@ namespace Four4
                 {
                     case 0:
                     case 1:
-                        return default(NumberStack);
+                        return new NumberStack(default(Number));
                     case 2:
                         return new NumberStack(op(this.n1, this.n2));
                     case 3:
