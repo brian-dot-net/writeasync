@@ -32,6 +32,9 @@ namespace Four4
                     case "!":
                         Unary(operands, x => x.Factorial());
                         break;
+                    case "R":
+                        Unary(operands, x => x.SquareRoot());
+                        break;
                     default:
                         operands.Push(Number.Parse(token));
                         break;
@@ -150,6 +153,11 @@ namespace Four4
                 }
 
                 return new Number(fact, 1);
+            }
+
+            public Number SquareRoot()
+            {
+                return new Number((int)Math.Sqrt(this.num), (int)Math.Sqrt(this.denom));
             }
 
             public override string ToString()
