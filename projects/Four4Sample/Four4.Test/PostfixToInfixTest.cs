@@ -21,6 +21,9 @@ namespace Four4.Test
         [InlineData("4 4 -", "(4-4)")]
         [InlineData("4 4 - 4 -", "((4-4)-4)")]
         [InlineData("4 4 4 - -", "(4-(4-4))")]
+        [InlineData("4 4 *", "(4*4)")]
+        [InlineData("4 4 * 4 *", "((4*4)*4)")]
+        [InlineData("4 4 4 * *", "(4*(4*4))")]
         public void ConvertsProperly(string input, string result)
         {
             Postfix.ToInfix(input).Should().Be(result);
