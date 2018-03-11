@@ -59,10 +59,13 @@ namespace Four4
                 case ".4":
                 case ".4_":
                 case "4":
+                    return this.Push(1, token, Number.Parse(token));
                 case "44":
+                    return this.Push(2, token, Number.Parse(token));
                 case "444":
+                    return this.Push(3, token, Number.Parse(token));
                 case "4444":
-                    return this.Push(5, token, Number.Parse(token));
+                    return this.Push(4, token, Number.Parse(token));
                 default:
                     return this.Push(0, token, Number.Parse(token));
             }

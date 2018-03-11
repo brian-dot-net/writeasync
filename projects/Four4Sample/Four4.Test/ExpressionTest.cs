@@ -71,7 +71,10 @@ namespace Four4.Test
 
         private static void TestAppend(Expression expr, string input, string result)
         {
-            expr.Append(input).ToString().Should().Be(result);
+            expr = expr.Append(input);
+
+            expr.ToString().Should().Be(result);
+            expr.IsInRange.Should().BeTrue();
         }
     }
 }
