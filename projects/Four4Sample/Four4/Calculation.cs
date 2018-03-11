@@ -90,34 +90,30 @@ namespace Four4
                 {
                     return new Number(4, 9);
                 }
-                else
+
+                int p = s.IndexOf('.');
+                if (p < 0)
                 {
-                    int p = s.IndexOf('.');
-                    Number whole = new Number(0, 1);
-                    Number frac = new Number(0, 1);
-                    if (p < 0)
-                    {
-                        whole = new Number(int.Parse(s), 1);
-                    }
-                    else
-                    {
-                        if (p > 0)
-                        {
-                            whole = new Number(int.Parse(s.Substring(0, p)), 1);
-                        }
-
-                        int n = s.Length - p - 1;
-                        int d = 1;
-                        for (int i = 0; i < n; ++i)
-                        {
-                            d *= 10;
-                        }
-
-                        frac = new Number(int.Parse(s.Substring(p + 1)), d);
-                    }
-
-                    return whole + frac;
+                    return new Number(int.Parse(s), 1);
                 }
+
+                Number whole = new Number(0, 1);
+                Number frac = new Number(0, 1);
+                if (p > 0)
+                {
+                    whole = new Number(int.Parse(s.Substring(0, p)), 1);
+                }
+
+                int n = s.Length - p - 1;
+                int d = 1;
+                for (int i = 0; i < n; ++i)
+                {
+                    d *= 10;
+                }
+
+                frac = new Number(int.Parse(s.Substring(p + 1)), d);
+
+                return whole + frac;
             }
 
             public override string ToString()
