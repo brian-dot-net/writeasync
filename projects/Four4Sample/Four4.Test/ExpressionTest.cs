@@ -54,7 +54,12 @@ namespace Four4.Test
         }
 
         [Theory]
+        [InlineData("4444", ".4")]
+        [InlineData("4444", ".4_")]
         [InlineData("4444", "4")]
+        [InlineData("444", "44")]
+        [InlineData("44", "444")]
+        [InlineData("4", "4444")]
         public void AppendOneTooManyDigits(string x, string y)
         {
             Expression expr = default(Expression).Append(x);
