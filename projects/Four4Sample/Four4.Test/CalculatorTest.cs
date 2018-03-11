@@ -133,15 +133,18 @@ namespace Four4.Test
         }
 
         [Theory]
-        [InlineData(1, "5 +", "6")]
-        public void EvalNumberAndString(int num, string input, string result)
+        [InlineData(1, 1, "4 +", "5")]
+        [InlineData(1, 2, "4 +", "9/2")]
+        [InlineData(3, 4, "4 -", "-13/4")]
+        [InlineData(0, 1, "!", "1")]
+        public void EvalNumberAndString(int num, int denom, string input, string result)
         {
-            TestEval(num, input, result);
+            TestEval(num, denom, input, result);
         }
 
-        private static void TestEval(int num, string input, string result)
+        private static void TestEval(int num, int denom, string input, string result)
         {
-            new Calculator().Eval(new Number(num, 1), input).ToString().Should().Be(result, "input was ({0}) {1}", num, input);
+            new Calculator().Eval(new Number(num, denom), input).ToString().Should().Be(result, "input was ({0}/{1}) {2}", num, denom, input);
         }
 
         private static void TestEval(string input, string result)
