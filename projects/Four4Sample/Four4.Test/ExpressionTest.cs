@@ -20,6 +20,11 @@ namespace Four4.Test
 
         [Theory]
         [InlineData("4.4", "*'4.4'*")]
+        [InlineData("!!", "*'!!'*")]
+        [InlineData("", "*''*")]
+        [InlineData("B", "*'B'*")]
+        [InlineData("B.A.D.", "*'B.A.D.'*")]
+        [InlineData(" ", "*' '*")]
         public void AppendBadToken(string input, string errorPattern)
         {
             Expression expr = default(Expression);
