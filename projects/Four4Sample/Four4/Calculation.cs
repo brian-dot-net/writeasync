@@ -43,7 +43,9 @@ namespace Four4
 
             public static Number operator +(Number left, Number right)
             {
-                return new Number(left.num + right.num, 1);
+                int n = (left.num * right.denom) + (right.num * left.denom);
+                int d = left.denom * right.denom;
+                return new Number(n, d);
             }
 
             public static Number Parse(string s)
