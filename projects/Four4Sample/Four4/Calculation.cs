@@ -4,6 +4,7 @@
 
 namespace Four4
 {
+    using System;
     using System.Collections.Generic;
 
     public static class Calculation
@@ -17,9 +18,10 @@ namespace Four4
                 switch (token)
                 {
                     case "+":
-                        var y = operands.Pop();
-                        var x = operands.Pop();
-                        operands.Push(x + y);
+                        BinaryOp(operands, (x, y) => x + y);
+                        break;
+                    case "-":
+                        BinaryOp(operands, (x, y) => x - y);
                         break;
                     default:
                         operands.Push(Number.Parse(token));
@@ -28,6 +30,13 @@ namespace Four4
             }
 
             return operands.Pop().ToString();
+        }
+
+        private static void BinaryOp(Stack<Number> operands, Func<Number, Number, Number> op)
+        {
+            var y = operands.Pop();
+            var x = operands.Pop();
+            operands.Push(op(x, y));
         }
 
         private struct Number
@@ -47,6 +56,16 @@ namespace Four4
                 int n = (left.num * right.denom) + (right.num * left.denom);
                 int d = left.denom * right.denom;
                 return new Number(n, d);
+            }
+
+            public static Number operator -(Number left, Number right)
+            {
+                return left + (-right);
+            }
+
+            public static Number operator -(Number right)
+            {
+                return new Number(-right.num, right.denom);
             }
 
             public static Number Parse(string s)

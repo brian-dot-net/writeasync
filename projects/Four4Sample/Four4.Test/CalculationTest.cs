@@ -57,5 +57,12 @@ namespace Four4.Test
         {
             Calculation.FromString(input).Should().Be(result);
         }
+
+        [Theory]
+        [InlineData("4 4 -", "0")]
+        public void Subtraction(string input, string result)
+        {
+            Calculation.FromString(input).Should().Be(result);
+        }
     }
 }
