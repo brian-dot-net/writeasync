@@ -9,6 +9,13 @@ namespace Four4
 
     public sealed class Calculator
     {
+        public Number Eval(Number num, string input)
+        {
+            Stack<Number> operands = new Stack<Number>();
+            operands.Push(num);
+            return Eval(operands, input);
+        }
+
         public Number Eval(string input) => Eval(new Stack<Number>(), input);
 
         private static Number Eval(Stack<Number> operands, string input)

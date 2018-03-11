@@ -132,6 +132,18 @@ namespace Four4.Test
             TestEval(input, result);
         }
 
+        [Theory]
+        [InlineData(1, "5 +", "6")]
+        public void EvalNumberAndString(int num, string input, string result)
+        {
+            TestEval(num, input, result);
+        }
+
+        private static void TestEval(int num, string input, string result)
+        {
+            new Calculator().Eval(new Number(num, 1), input).ToString().Should().Be(result, "input was ({0}) {1}", num, input);
+        }
+
         private static void TestEval(string input, string result)
         {
             new Calculator().Eval(input).ToString().Should().Be(result, "input was {0}", input);
