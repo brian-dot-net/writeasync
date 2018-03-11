@@ -15,7 +15,7 @@ namespace Four4.Test
         [InlineData(".4_", "4/9")]
         public void NumbersWithOne4(string input, string result)
         {
-            Calculation.FromString(input).Should().Be(result, "input was {0}", input);
+            Calc(input, result);
         }
 
         [Theory]
@@ -24,7 +24,7 @@ namespace Four4.Test
         [InlineData("44", "44")]
         public void NumbersWithTwo4s(string input, string result)
         {
-            Calculation.FromString(input).Should().Be(result, "input was {0}", input);
+            Calc(input, result);
         }
 
         [Theory]
@@ -34,7 +34,7 @@ namespace Four4.Test
         [InlineData("444", "444")]
         public void NumbersWithThree4s(string input, string result)
         {
-            Calculation.FromString(input).Should().Be(result, "input was {0}", input);
+            Calc(input, result);
         }
 
         [Theory]
@@ -45,7 +45,7 @@ namespace Four4.Test
         [InlineData("4444", "4444")]
         public void NumbersWithFour4s(string input, string result)
         {
-            Calculation.FromString(input).Should().Be(result, "input was {0}", input);
+            Calc(input, result);
         }
 
         [Theory]
@@ -55,7 +55,7 @@ namespace Four4.Test
         [InlineData("4 44 + 4 +", "52")]
         public void Addition(string input, string result)
         {
-            Calculation.FromString(input).Should().Be(result);
+            Calc(input, result);
         }
 
         [Theory]
@@ -69,7 +69,12 @@ namespace Four4.Test
         [InlineData("4 4 4 - - 4 -", "0")]
         public void Subtraction(string input, string result)
         {
-            Calculation.FromString(input).Should().Be(result);
+            Calc(input, result);
+        }
+
+        private static void Calc(string input, string result)
+        {
+            Calculation.FromString(input).Should().Be(result, "input was {0}", input);
         }
     }
 }
