@@ -15,6 +15,7 @@ namespace Four4.Test
         [InlineData(".4_", "4/9")]
         [InlineData(".44", "11/25")]
         [InlineData(".444", "111/250")]
+        [InlineData(".4444", "1111/2500")]
         public void Numbers(string input, string result)
         {
             Calculation.FromString(input).Should().Be(result, "input was {0}", input);
