@@ -88,6 +88,11 @@ namespace Four4
             }
 
             int n = this.num;
+            if (n > 12)
+            {
+                return NaN;
+            }
+
             int fact = 1;
             for (int i = 2; i <= n; ++i)
             {

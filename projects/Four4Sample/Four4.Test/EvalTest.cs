@@ -94,6 +94,7 @@ namespace Four4.Test
         [InlineData("4 4 - 4 - ! !", "NaN")]
         [InlineData("!", "NaN")]
         [InlineData("4 4 !", "NaN")]
+        [InlineData("4 ! !", "NaN")]
         public void Factorial(string input, string result)
         {
             Test(input, result);
