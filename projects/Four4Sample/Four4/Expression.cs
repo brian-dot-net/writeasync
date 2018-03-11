@@ -19,7 +19,7 @@ namespace Four4
             this.operands = operands;
         }
 
-        public int Count => this.count;
+        public int NumeralCount => this.count;
 
         public static Number Eval(string input)
         {

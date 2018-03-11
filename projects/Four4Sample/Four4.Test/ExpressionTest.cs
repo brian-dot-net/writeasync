@@ -16,7 +16,7 @@ namespace Four4.Test
             Expression expr = default(Expression);
 
             expr.ToString().Should().Be(string.Empty);
-            expr.Count.Should().Be(0);
+            expr.NumeralCount.Should().Be(0);
         }
 
         [Theory]
@@ -89,7 +89,7 @@ namespace Four4.Test
 
             expr = expr.Append(y);
 
-            expr.Count.Should().Be(count);
+            expr.NumeralCount.Should().Be(count);
         }
 
         [Theory]
@@ -104,7 +104,7 @@ namespace Four4.Test
 
             expr = expr.Append(y);
 
-            expr.Count.Should().Be(count);
+            expr.NumeralCount.Should().Be(count);
         }
 
         private static void TestAppend(Expression expr, string input, string result, int count)
@@ -112,7 +112,7 @@ namespace Four4.Test
             expr = expr.Append(input);
 
             expr.ToString().Should().Be(result);
-            expr.Count.Should().Be(count);
+            expr.NumeralCount.Should().Be(count);
         }
     }
 }
