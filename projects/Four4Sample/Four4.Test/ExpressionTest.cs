@@ -79,6 +79,9 @@ namespace Four4.Test
         [InlineData("4", "4444")]
         [InlineData("4444", "44")]
         [InlineData("444", "444")]
+        [InlineData("444", "4444")]
+        [InlineData("4444", "444")]
+        [InlineData("4444", "4444")]
         public void AppendTooManyDigits(string x, string y)
         {
             Expression expr = default(Expression).Append(x);
