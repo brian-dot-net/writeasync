@@ -14,6 +14,7 @@ namespace Four4.Test
         [InlineData("44", "44")]
         [InlineData(".4_", ".4_")]
         [InlineData("4 !", "(4)!")]
+        [InlineData(".4_ R", "sqrt(.4_)")]
         public void ConvertsProperly(string input, string result)
         {
             Postfix.ToInfix(input).Should().Be(result);

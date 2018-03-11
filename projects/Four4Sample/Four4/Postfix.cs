@@ -16,7 +16,10 @@ namespace Four4
                 switch (token)
                 {
                     case "!":
-                        operands.Push("(" + operands.Pop() + ")" + token);
+                        operands.Push(One(operands) + "!");
+                        break;
+                    case "R":
+                        operands.Push("sqrt" + One(operands));
                         break;
                     default:
                         operands.Push(token);
@@ -25,6 +28,11 @@ namespace Four4
             }
 
             return operands.Pop();
+        }
+
+        private static string One(Stack<string> operands)
+        {
+            return "(" + operands.Pop() + ")";
         }
     }
 }
