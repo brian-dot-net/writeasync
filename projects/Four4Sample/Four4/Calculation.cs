@@ -49,6 +49,12 @@ namespace Four4
                 int gcd = Gcd(num, denom);
                 this.num = num / gcd;
                 this.denom = denom / gcd;
+
+                if (this.denom < 0)
+                {
+                    this.num *= -1;
+                    this.denom *= -1;
+                }
             }
 
             public static Number operator +(Number left, Number right)
