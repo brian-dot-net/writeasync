@@ -120,6 +120,7 @@ namespace Four4.Test
         [InlineData("4 R", "2")]
         [InlineData("4 4 * R", "4")]
         [InlineData("4 ! 4 ! * R", "24")]
+        [InlineData("4 4 + R", "NaN")]
         public void SquareRoot(string input, string result)
         {
             Calc(input, result);
