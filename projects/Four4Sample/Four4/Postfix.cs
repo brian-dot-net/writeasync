@@ -11,13 +11,12 @@ namespace Four4
         public static string ToInfix(string input)
         {
             Stack<string> operands = new Stack<string>();
-            Stack<string> operators = new Stack<string>();
             foreach (string token in input.Split(' '))
             {
                 switch (token)
                 {
                     case "+":
-                        operators.Push("+");
+                        operands.Push(Two(operands, "+"));
                         break;
                     case "!":
                         operands.Push(One(operands) + "!");
@@ -29,11 +28,6 @@ namespace Four4
                         operands.Push(token);
                         break;
                 }
-            }
-
-            while (operators.Count > 0)
-            {
-                operands.Push(Two(operands, operators.Pop()));
             }
 
             return operands.Pop();
