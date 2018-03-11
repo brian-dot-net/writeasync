@@ -139,6 +139,7 @@ namespace Four4.Test
         [InlineData("4 4 - 4 - R", "NaN")]
         [InlineData("4 4 - .4_ - R", "NaN")]
         [InlineData("R", "NaN")]
+        [InlineData("4 4 R", "NaN")]
         public void SquareRoot(string input, string result)
         {
             TestEval(input, result);
@@ -152,6 +153,7 @@ namespace Four4.Test
         [InlineData(0, 0, "!", "NaN")]
         [InlineData(0, 1, "+", "NaN")]
         [InlineData(0, 1, "4", "NaN")]
+        [InlineData(0, 1, "4 R", "NaN")]
         public void EvalNumberAndString(int num, int denom, string input, string result)
         {
             TestEval(num, denom, input, result);
