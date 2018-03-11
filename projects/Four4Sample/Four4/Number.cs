@@ -15,14 +15,21 @@ namespace Four4
 
         public Number(int num, int denom)
         {
-            int gcd = Gcd(num, denom);
-            this.num = num / gcd;
-            this.denom = denom / gcd;
-
-            if (this.denom < 0)
+            if (denom == 0)
             {
-                this.num *= -1;
-                this.denom *= -1;
+                this = NaN;
+            }
+            else
+            {
+                int gcd = Gcd(num, denom);
+                this.num = num / gcd;
+                this.denom = denom / gcd;
+
+                if (this.denom < 0)
+                {
+                    this.num *= -1;
+                    this.denom *= -1;
+                }
             }
         }
 
