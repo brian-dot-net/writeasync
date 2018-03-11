@@ -45,6 +45,19 @@ namespace Four4.Test
         }
 
         [Fact]
+        public void OneOperandAndOneUnaryOperator2()
+        {
+            const string Expected = @"4
+4 !";
+
+            ExpressionSearch search = new ExpressionSearch();
+            search.AddOperand("4");
+            search.AddUnary("!");
+
+            TestSearch(search, Expected);
+        }
+
+        [Fact]
         public void TwoOperandsAndOneBinaryOperator()
         {
             const string Expected = @".4
