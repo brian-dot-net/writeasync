@@ -9,11 +9,7 @@ namespace Four4
 
     public sealed class Calculator
     {
-        public Number Eval(Number num, string input)
-        {
-            NumberStack operands = new NumberStack(num);
-            return Eval(operands, input);
-        }
+        public Number Eval(Number num, string input) => Eval(new NumberStack(num), input);
 
         public Number Eval(string input) => Eval(new NumberStack(), input);
 
@@ -48,7 +44,7 @@ namespace Four4
                 }
             }
 
-            return operands.Pop();
+            return operands.Result();
         }
 
         private static void Binary(NumberStack operands, Func<Number, Number, Number> op)
@@ -89,9 +85,11 @@ namespace Four4
                 return this.stack.Pop();
             }
 
-            public void Push(Number n)
+            public void Push(Number n) => this.stack.Push(n);
+
+            public Number Result()
             {
-                this.stack.Push(n);
+                return this.Pop();
             }
         }
     }
