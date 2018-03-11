@@ -33,6 +33,9 @@ namespace Four4.Test
 
         [Theory]
         [InlineData("+", "4 +")]
+        [InlineData("-", "4 -")]
+        [InlineData("!", "4 !")]
+        [InlineData("4", "4 4")]
         public void AppendToOne(string input, string result)
         {
             Expression expr = default(Expression).Append("4");
