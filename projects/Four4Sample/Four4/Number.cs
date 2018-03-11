@@ -11,7 +11,7 @@ namespace Four4
         public const string PointFour = ".4";
         public const string PointFourRepeating = ".4_";
 
-        public static readonly Number NaN = default(Number);
+        private static readonly Number NaN = default(Number);
 
         private readonly int num;
         private readonly int denom;
