@@ -6,6 +6,7 @@ namespace Four4
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
 
     internal sealed class Program
     {
@@ -20,9 +21,11 @@ namespace Four4
 
         public void Run()
         {
+            Stopwatch stopwatch = Stopwatch.StartNew();
             this.search.Run(this.OnFound);
+            stopwatch.Stop();
 
-            Console.WriteLine("Found {0} results.", this.results.Count);
+            Console.WriteLine("Found {0} results in {1} ms.", this.results.Count, stopwatch.ElapsedMilliseconds);
 
             foreach (KeyValuePair<int, string> result in this.results)
             {
