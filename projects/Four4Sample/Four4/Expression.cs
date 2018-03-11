@@ -100,34 +100,21 @@ namespace Four4
 
         private struct NumberStack
         {
+            private static readonly Number X = default(Number);
+
             private readonly Number n1;
             private readonly Number n2;
             private readonly Number n3;
             private readonly Number n4;
             private readonly int size;
 
-            private NumberStack(Number n1, Number n2 = default(Number), Number n3 = default(Number), Number n4 = default(Number))
+            private NumberStack(Number n1, Number n2, Number n3, Number n4, int size)
             {
                 this.n1 = n1;
                 this.n2 = n2;
                 this.n3 = n3;
                 this.n4 = n4;
-                if (this.n4.IsValid)
-                {
-                    this.size = 4;
-                }
-                else if (this.n3.IsValid)
-                {
-                    this.size = 3;
-                }
-                else if (this.n2.IsValid)
-                {
-                    this.size = 2;
-                }
-                else
-                {
-                    this.size = 1;
-                }
+                this.size = size;
             }
 
             public bool IsValid
@@ -169,13 +156,13 @@ namespace Four4
                 switch (this.size)
                 {
                     case 0:
-                        return new NumberStack(n);
+                        return new NumberStack(n, X, X, X, 1);
                     case 1:
-                        return new NumberStack(this.n1, n);
+                        return new NumberStack(this.n1, n, X, X, 2);
                     case 2:
-                        return new NumberStack(this.n1, this.n2, n);
+                        return new NumberStack(this.n1, this.n2, n, X, 3);
                     case 3:
-                        return new NumberStack(this.n1, this.n2, this.n3, n);
+                        return new NumberStack(this.n1, this.n2, this.n3, n, 4);
                     default:
                         throw new InvalidOperationException("Stack full!");
                 }
@@ -186,15 +173,15 @@ namespace Four4
                 switch (this.size)
                 {
                     case 0:
-                        return new NumberStack(default(Number));
+                        return new NumberStack(X, X, X, X, 1);
                     case 1:
-                        return new NumberStack(op(this.n1));
+                        return new NumberStack(op(this.n1), X, X, X, 1);
                     case 2:
-                        return new NumberStack(this.n1, op(this.n2));
+                        return new NumberStack(this.n1, op(this.n2), X, X, 2);
                     case 3:
-                        return new NumberStack(this.n1, this.n2, op(this.n3));
+                        return new NumberStack(this.n1, this.n2, op(this.n3), X, 3);
                     default:
-                        return new NumberStack(this.n1, this.n2, this.n3, op(this.n4));
+                        return new NumberStack(this.n1, this.n2, this.n3, op(this.n4), 4);
                 }
             }
 
@@ -204,13 +191,13 @@ namespace Four4
                 {
                     case 0:
                     case 1:
-                        return new NumberStack(default(Number));
+                        return new NumberStack(X, X, X, X, 1);
                     case 2:
-                        return new NumberStack(op(this.n1, this.n2));
+                        return new NumberStack(op(this.n1, this.n2), X, X, X, 1);
                     case 3:
-                        return new NumberStack(this.n1, op(this.n2, this.n3));
+                        return new NumberStack(this.n1, op(this.n2, this.n3), X, X, 2);
                     default:
-                        return new NumberStack(this.n1, this.n2, op(this.n3, this.n4));
+                        return new NumberStack(this.n1, this.n2, op(this.n3, this.n4), X, 3);
                 }
             }
         }
