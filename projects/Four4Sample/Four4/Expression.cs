@@ -54,8 +54,8 @@ namespace Four4
                     return this.Unary(token, x => x.Factorial());
                 case "R":
                     return this.Unary(token, x => x.SquareRoot());
-                case ".4":
-                case ".4_":
+                case Number.PointFour:
+                case Number.PointFourRepeating:
                 case "4":
                     return this.Push(1, token, Number.Parse(token));
                 case "44":
