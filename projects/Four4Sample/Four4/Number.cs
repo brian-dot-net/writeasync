@@ -84,7 +84,7 @@ namespace Four4
 
         public Number Factorial()
         {
-            if ((this.num < 0) || (this.denom != 1))
+            if ((this.num < 0) || (this.denom != 1) || (this.num == 1) || (this.num == 2))
             {
                 return NaN;
             }
