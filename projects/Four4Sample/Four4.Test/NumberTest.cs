@@ -35,5 +35,17 @@ namespace Four4.Test
         {
             Expression.Eval(input).IsWhole.Should().BeFalse();
         }
+
+        [Theory]
+        [InlineData("4", 4)]
+        [InlineData("44", 44)]
+        [InlineData("444", 444)]
+        [InlineData("4444", 4444)]
+        public void CastToInt32(string input, int result)
+        {
+            int value = (int)Number.Parse(input);
+
+            value.Should().Be(result);
+        }
     }
 }
