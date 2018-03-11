@@ -74,6 +74,9 @@ namespace Four4.Test
 
         [Theory]
         [InlineData("4 4 *", "16")]
+        [InlineData("4 .4 *", "8/5")]
+        [InlineData(".4 .4 *", "4/25")]
+        [InlineData("44 .44 *", "484/25")]
         public void Multiplication(string input, string result)
         {
             Calc(input, result);
