@@ -81,7 +81,7 @@ namespace Four4
 
         private Expression Unary(string token, Func<Number, Number> op)
         {
-            return new Expression(0, this.Join(token), this.operands.Apply1(op));
+            return new Expression(this.count, this.Join(token), this.operands.Apply1(op));
         }
 
         private string Join(string token)
