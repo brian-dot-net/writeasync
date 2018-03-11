@@ -26,9 +26,7 @@ namespace Four4.Test
         {
             Expression expr = default(Expression);
 
-            expr = expr.Append(input);
-
-            expr.ToString().Should().Be(result);
+            TestAppend(expr, input, result);
         }
 
         [Theory]
@@ -40,9 +38,12 @@ namespace Four4.Test
         {
             Expression expr = default(Expression).Append("4");
 
-            expr = expr.Append(input);
+            TestAppend(expr, input, result);
+        }
 
-            expr.ToString().Should().Be(result);
+        private static void TestAppend(Expression expr, string input, string result)
+        {
+            expr.Append(input).ToString().Should().Be(result);
         }
     }
 }
