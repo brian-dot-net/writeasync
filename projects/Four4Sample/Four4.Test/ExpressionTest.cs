@@ -29,7 +29,9 @@ namespace Four4.Test
         {
             Expression expr = default(Expression);
 
-            TestBadAppend(expr, input, errorPattern);
+            Action act = () => expr.Append(input);
+
+            act.Should().Throw<ArgumentException>().WithMessage(errorPattern).Which.ParamName.Should().Be("token");
         }
 
         [Theory]
@@ -75,7 +77,9 @@ namespace Four4.Test
         [InlineData("444", "44")]
         [InlineData("44", "444")]
         [InlineData("4", "4444")]
-        public void AppendOneTooManyDigits(string x, string y)
+        [InlineData("4444", "44")]
+        [InlineData("444", "444")]
+        public void AppendTooManyDigits(string x, string y)
         {
             Expression expr = default(Expression).Append(x);
 
@@ -90,13 +94,6 @@ namespace Four4.Test
 
             expr.ToString().Should().Be(result);
             expr.IsInRange.Should().BeTrue();
-        }
-
-        private static void TestBadAppend(Expression expr, string input, string errorPattern)
-        {
-            Action act = () => expr.Append(input);
-
-            act.Should().Throw<ArgumentException>().WithMessage(errorPattern).Which.ParamName.Should().Be("token");
         }
     }
 }

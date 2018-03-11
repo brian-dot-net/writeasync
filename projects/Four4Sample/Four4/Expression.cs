@@ -30,10 +30,8 @@ namespace Four4
                 expr = expr.Append(token);
             }
 
-            return expr.Result();
+            return expr.operands.Result();
         }
-
-        public Number Result() => this.operands.Result();
 
         public override string ToString()
         {
