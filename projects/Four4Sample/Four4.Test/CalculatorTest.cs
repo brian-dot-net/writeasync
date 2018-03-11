@@ -1,4 +1,4 @@
-// <copyright file="CalculationTest.cs" company="Brian Rogers">
+// <copyright file="CalculatorTest.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
@@ -7,7 +7,7 @@ namespace Four4.Test
     using FluentAssertions;
     using Xunit;
 
-    public sealed class CalculationTest
+    public sealed class CalculatorTest
     {
         [Theory]
         [InlineData("4", "4")]
@@ -15,7 +15,7 @@ namespace Four4.Test
         [InlineData(".4_", "4/9")]
         public void NumbersWithOne4(string input, string result)
         {
-            Calc(input, result);
+            TestEval(input, result);
         }
 
         [Theory]
@@ -24,7 +24,7 @@ namespace Four4.Test
         [InlineData("44", "44")]
         public void NumbersWithTwo4s(string input, string result)
         {
-            Calc(input, result);
+            TestEval(input, result);
         }
 
         [Theory]
@@ -34,7 +34,7 @@ namespace Four4.Test
         [InlineData("444", "444")]
         public void NumbersWithThree4s(string input, string result)
         {
-            Calc(input, result);
+            TestEval(input, result);
         }
 
         [Theory]
@@ -45,7 +45,7 @@ namespace Four4.Test
         [InlineData("4444", "4444")]
         public void NumbersWithFour4s(string input, string result)
         {
-            Calc(input, result);
+            TestEval(input, result);
         }
 
         [Theory]
@@ -56,7 +56,7 @@ namespace Four4.Test
         [InlineData("4 4 4 - / 4 +", "NaN")]
         public void Addition(string input, string result)
         {
-            Calc(input, result);
+            TestEval(input, result);
         }
 
         [Theory]
@@ -71,7 +71,7 @@ namespace Four4.Test
         [InlineData("4 4 4 - / 4 -", "NaN")]
         public void Subtraction(string input, string result)
         {
-            Calc(input, result);
+            TestEval(input, result);
         }
 
         [Theory]
@@ -84,7 +84,7 @@ namespace Four4.Test
         [InlineData("4 4 4 - / 4 *", "NaN")]
         public void Multiplication(string input, string result)
         {
-            Calc(input, result);
+            TestEval(input, result);
         }
 
         [Theory]
@@ -99,7 +99,7 @@ namespace Four4.Test
         [InlineData("4 4 4 - / 4 /", "NaN")]
         public void Division(string input, string result)
         {
-            Calc(input, result);
+            TestEval(input, result);
         }
 
         [Theory]
@@ -113,7 +113,7 @@ namespace Four4.Test
         [InlineData("4 4 - 4 - ! !", "NaN")]
         public void Factorial(string input, string result)
         {
-            Calc(input, result);
+            TestEval(input, result);
         }
 
         [Theory]
@@ -129,12 +129,12 @@ namespace Four4.Test
         [InlineData("4 4 - .4_ - R", "NaN")]
         public void SquareRoot(string input, string result)
         {
-            Calc(input, result);
+            TestEval(input, result);
         }
 
-        private static void Calc(string input, string result)
+        private static void TestEval(string input, string result)
         {
-            Calculation.FromString(input).Should().Be(result, "input was {0}", input);
+            new Calculator().Eval(input).ToString().Should().Be(result, "input was {0}", input);
         }
     }
 }
