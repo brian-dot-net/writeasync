@@ -38,6 +38,8 @@ namespace Four4
 
         public bool IsValid => this.denom != 0;
 
+        public bool IsWhole => this.denom == 1;
+
         public static Number operator +(Number left, Number right)
         {
             int n = (left.num * right.denom) + (right.num * left.denom);
