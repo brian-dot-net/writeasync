@@ -67,7 +67,7 @@ namespace Four4
                 case "4444":
                     return this.Push(4, token, Number.Parse(token));
                 default:
-                    return this.Push(0, token, Number.Parse(token));
+                    throw new ArgumentException("Bad token '" + token + "'", nameof(token));
             }
         }
 

@@ -13,38 +13,11 @@ namespace Four4.Test
         [InlineData("4", "4")]
         [InlineData(".4", "2/5")]
         [InlineData(".4_", "4/9")]
-        public void NumbersWithOne4(string input, string result)
-        {
-            Test(input, result);
-        }
-
-        [Theory]
-        [InlineData(".44", "11/25")]
-        [InlineData("4.4", "22/5")]
         [InlineData("44", "44")]
         [InlineData("4 4", "NaN")]
-        public void NumbersWithTwo4s(string input, string result)
-        {
-            Test(input, result);
-        }
-
-        [Theory]
-        [InlineData(".444", "111/250")]
-        [InlineData("4.44", "111/25")]
-        [InlineData("44.4", "222/5")]
         [InlineData("444", "444")]
-        public void NumbersWithThree4s(string input, string result)
-        {
-            Test(input, result);
-        }
-
-        [Theory]
-        [InlineData(".4444", "1111/2500")]
-        [InlineData("4.444", "1111/250")]
-        [InlineData("44.44", "1111/25")]
-        [InlineData("444.4", "2222/5")]
         [InlineData("4444", "4444")]
-        public void NumbersWithFour4s(string input, string result)
+        public void Numbers(string input, string result)
         {
             Test(input, result);
         }
@@ -52,7 +25,7 @@ namespace Four4.Test
         [Theory]
         [InlineData("4 4 +", "8")]
         [InlineData("4 .4 +", "22/5")]
-        [InlineData(".4 .44 4 + +", "121/25")]
+        [InlineData(".4 44 4 + +", "242/5")]
         [InlineData("4 44 + 4 +", "52")]
         [InlineData("4 4 4 - / 4 +", "NaN")]
         [InlineData("4 +", "NaN")]
@@ -66,7 +39,7 @@ namespace Four4.Test
         [InlineData("4 4 -", "0")]
         [InlineData(".4 .4 -", "0")]
         [InlineData("4 .4 -", "18/5")]
-        [InlineData("44.4 .4 -", "44")]
+        [InlineData("44 .4 + .4 -", "44")]
         [InlineData("44 .4 - 4 -", "198/5")]
         [InlineData(".4 4 -", "-18/5")]
         [InlineData("4 4 4 4 - - -", "0")]
@@ -83,7 +56,6 @@ namespace Four4.Test
         [InlineData("4 4 *", "16")]
         [InlineData("4 .4 *", "8/5")]
         [InlineData(".4 .4 *", "4/25")]
-        [InlineData("44 .44 *", "484/25")]
         [InlineData("4 4 * 4 4 * *", "256")]
         [InlineData("4 4 4 4 * * *", "256")]
         [InlineData("4 4 4 - / 4 *", "NaN")]
@@ -97,7 +69,7 @@ namespace Four4.Test
         [Theory]
         [InlineData("4 4 /", "1")]
         [InlineData("4 .4 /", "10")]
-        [InlineData("44 .44 /", "100")]
+        [InlineData("444 .4 /", "1110")]
         [InlineData(".4 4 /", "1/10")]
         [InlineData(".4 .4 .4 / / .4 /", "1")]
         [InlineData(".4 .4 .4 .4 / / /", "1")]

@@ -4,6 +4,7 @@
 
 namespace Four4.Test
 {
+    using System;
     using FluentAssertions;
     using Xunit;
 
@@ -15,6 +16,15 @@ namespace Four4.Test
             Expression expr = default(Expression);
 
             expr.ToString().Should().Be(string.Empty);
+        }
+
+        [Theory]
+        [InlineData("4.4", "*'4.4'*")]
+        public void AppendBadToken(string input, string errorPattern)
+        {
+            Expression expr = default(Expression);
+
+            TestBadAppend(expr, input, errorPattern);
         }
 
         [Theory]
@@ -75,6 +85,13 @@ namespace Four4.Test
 
             expr.ToString().Should().Be(result);
             expr.IsInRange.Should().BeTrue();
+        }
+
+        private static void TestBadAppend(Expression expr, string input, string errorPattern)
+        {
+            Action act = () => expr.Append(input);
+
+            act.Should().Throw<ArgumentException>().WithMessage(errorPattern).Which.ParamName.Should().Be("token");
         }
     }
 }
