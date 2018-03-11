@@ -4,11 +4,27 @@
 
 namespace Four4
 {
+    using System.Collections.Generic;
+
     public static class Postfix
     {
         public static string ToInfix(string input)
         {
-            return input;
+            Stack<string> operands = new Stack<string>();
+            foreach (string token in input.Split(' '))
+            {
+                switch (token)
+                {
+                    case "!":
+                        operands.Push("(" + operands.Pop() + ")" + token);
+                        break;
+                    default:
+                        operands.Push(token);
+                        break;
+                }
+            }
+
+            return operands.Pop();
         }
     }
 }

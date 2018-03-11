@@ -11,6 +11,9 @@ namespace Four4.Test
     {
         [Theory]
         [InlineData("4", "4")]
+        [InlineData("44", "44")]
+        [InlineData(".4_", ".4_")]
+        [InlineData("4 !", "(4)!")]
         public void ConvertsProperly(string input, string result)
         {
             Postfix.ToInfix(input).Should().Be(result);
