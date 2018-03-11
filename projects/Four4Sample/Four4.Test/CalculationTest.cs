@@ -103,6 +103,7 @@ namespace Four4.Test
         [InlineData("4 4 / 4 + !", "120")]
         [InlineData("4 4 / ! ! !", "1")]
         [InlineData("4 4 - ! ! !", "1")]
+        [InlineData(".4 !", "NaN")]
         public void Factorial(string input, string result)
         {
             Calc(input, result);

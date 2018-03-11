@@ -56,6 +56,8 @@ namespace Four4
 
         private struct Number
         {
+            public static readonly Number NaN = default(Number);
+
             private readonly int num;
             private readonly int denom;
 
@@ -135,6 +137,11 @@ namespace Four4
 
             public Number Factorial()
             {
+                if (this.denom != 1)
+                {
+                    return Number.NaN;
+                }
+
                 int n = this.num;
                 int fact = 1;
                 for (int i = 2; i <= n; ++i)
@@ -147,6 +154,11 @@ namespace Four4
 
             public override string ToString()
             {
+                if (this.denom == 0)
+                {
+                    return "NaN";
+                }
+
                 string value = this.num.ToString();
                 if (this.denom != 1)
                 {
