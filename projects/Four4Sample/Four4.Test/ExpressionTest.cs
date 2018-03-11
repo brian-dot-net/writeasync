@@ -16,6 +16,7 @@ namespace Four4.Test
             Expression expr = default(Expression);
 
             expr.ToString().Should().Be(string.Empty);
+            expr.Count.Should().Be(0);
         }
 
         [Theory]
@@ -35,83 +36,83 @@ namespace Four4.Test
         }
 
         [Theory]
-        [InlineData("+", "+")]
-        [InlineData("-", "-")]
-        [InlineData("!", "!")]
-        [InlineData("4", "4")]
-        public void AppendToEmpty(string input, string result)
+        [InlineData("+", "+", 0)]
+        [InlineData("-", "-", 0)]
+        [InlineData("!", "!", 0)]
+        [InlineData("4", "4", 1)]
+        public void AppendToEmpty(string input, string result, int count)
         {
             Expression expr = default(Expression);
 
-            TestAppend(expr, input, result);
+            TestAppend(expr, input, result, count);
         }
 
         [Theory]
-        [InlineData("+", "4 +")]
-        [InlineData("-", "4 -")]
-        [InlineData("!", "4 !")]
-        [InlineData("4", "4 4")]
-        public void AppendToOne(string input, string result)
+        [InlineData("+", "4 +", 1)]
+        [InlineData("-", "4 -", 1)]
+        [InlineData("!", "4 !", 1)]
+        [InlineData("4", "4 4", 2)]
+        public void AppendToOne(string input, string result, int count)
         {
             Expression expr = default(Expression).Append("4");
 
-            TestAppend(expr, input, result);
+            TestAppend(expr, input, result, count);
         }
 
         [Theory]
-        [InlineData("+", "44 4 +")]
-        [InlineData("-", "44 4 -")]
-        [InlineData("!", "44 4 !")]
-        [InlineData("4", "44 4 4")]
-        public void AppendToTwo(string input, string result)
+        [InlineData("+", "44 4 +", 3)]
+        [InlineData("-", "44 4 -", 3)]
+        [InlineData("!", "44 4 !", 3)]
+        [InlineData("4", "44 4 4", 4)]
+        public void AppendToTwo(string input, string result, int count)
         {
             Expression expr = default(Expression).Append("44").Append("4");
 
-            TestAppend(expr, input, result);
+            TestAppend(expr, input, result, count);
         }
 
         [Theory]
-        [InlineData("4444", ".4")]
-        [InlineData("4444", ".4_")]
-        [InlineData("4444", "4")]
-        [InlineData("444", "44")]
-        [InlineData("44", "444")]
-        [InlineData("4", "4444")]
-        [InlineData("4444", "44")]
-        [InlineData("444", "444")]
-        [InlineData("444", "4444")]
-        [InlineData("4444", "444")]
-        [InlineData("4444", "4444")]
-        public void AppendTooManyDigits(string x, string y)
+        [InlineData("4444", ".4", 5)]
+        [InlineData("4444", ".4_", 5)]
+        [InlineData("4444", "4", 5)]
+        [InlineData("444", "44", 5)]
+        [InlineData("44", "444", 5)]
+        [InlineData("4", "4444", 5)]
+        [InlineData("4444", "44", 6)]
+        [InlineData("444", "444", 6)]
+        [InlineData("444", "4444", 7)]
+        [InlineData("4444", "444", 7)]
+        [InlineData("4444", "4444", 8)]
+        public void AppendTooManyDigits(string x, string y, int count)
         {
             Expression expr = default(Expression).Append(x);
 
             expr = expr.Append(y);
 
-            expr.IsInRange.Should().BeFalse();
+            expr.Count.Should().Be(count);
         }
 
         [Theory]
-        [InlineData("+", "4")]
-        [InlineData("!", "4")]
-        [InlineData("*", "44")]
-        [InlineData("R", "444")]
-        [InlineData("-", ".4_")]
-        public void AppendTooManyDigitsAfterOperator(string op, string y)
+        [InlineData("+", "4", 5)]
+        [InlineData("!", "4", 5)]
+        [InlineData("*", "44", 6)]
+        [InlineData("R", "444", 7)]
+        [InlineData("-", ".4_", 5)]
+        public void AppendTooManyDigitsAfterOperator(string op, string y, int count)
         {
             Expression expr = default(Expression).Append("4444").Append(op);
 
             expr = expr.Append(y);
 
-            expr.IsInRange.Should().BeFalse();
+            expr.Count.Should().Be(count);
         }
 
-        private static void TestAppend(Expression expr, string input, string result)
+        private static void TestAppend(Expression expr, string input, string result, int count)
         {
             expr = expr.Append(input);
 
             expr.ToString().Should().Be(result);
-            expr.IsInRange.Should().BeTrue();
+            expr.Count.Should().Be(count);
         }
     }
 }

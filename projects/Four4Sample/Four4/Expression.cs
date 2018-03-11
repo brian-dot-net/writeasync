@@ -19,7 +19,7 @@ namespace Four4
             this.operands = operands;
         }
 
-        public bool IsInRange => this.count <= 4;
+        public int Count => this.count;
 
         public static Number Eval(string input)
         {
