@@ -137,7 +137,7 @@ namespace Four4
 
             public Number Factorial()
             {
-                if (this.denom != 1)
+                if ((this.num < 0) || (this.denom != 1))
                 {
                     return Number.NaN;
                 }
