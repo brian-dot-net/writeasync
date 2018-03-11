@@ -89,6 +89,11 @@ namespace Four4
 
             public Number Result()
             {
+                if (this.stack.Count > 1)
+                {
+                    return Number.NaN;
+                }
+
                 return this.Pop();
             }
         }
