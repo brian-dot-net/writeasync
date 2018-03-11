@@ -91,6 +91,17 @@ namespace Four4.Test
             expr.IsInRange.Should().BeFalse();
         }
 
+        [Theory]
+        [InlineData("+", "4")]
+        public void AppendTooManyDigitsAfterOperator(string op, string y)
+        {
+            Expression expr = default(Expression).Append("4444").Append(op);
+
+            expr = expr.Append(y);
+
+            expr.IsInRange.Should().BeFalse();
+        }
+
         private static void TestAppend(Expression expr, string input, string result)
         {
             expr = expr.Append(input);

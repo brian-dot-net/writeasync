@@ -76,7 +76,7 @@ namespace Four4
 
         private Expression Binary(string token, Func<Number, Number, Number> op)
         {
-            return new Expression(0, this.Join(token), this.operands.Apply2(op));
+            return new Expression(this.count, this.Join(token), this.operands.Apply2(op));
         }
 
         private Expression Unary(string token, Func<Number, Number> op)
