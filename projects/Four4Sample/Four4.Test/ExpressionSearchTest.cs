@@ -12,6 +12,19 @@ namespace Four4.Test
     public sealed class ExpressionSearchTest
     {
         [Fact]
+        public void CancelSearch()
+        {
+            ExpressionSearch search = new ExpressionSearch();
+            search.AddOperand("4");
+            search.AddBinary("+");
+
+            int count = 0;
+            search.Run(e => ++count < 3);
+
+            count.Should().Be(3);
+        }
+
+        [Fact]
         public void OneOperandAndOneBinaryOperator()
         {
             const string Expected = @"4
@@ -1476,8 +1489,13 @@ namespace Four4.Test
         private static void TestSearch(ExpressionSearch search, string expected)
         {
             List<string> expressions = new List<string>();
+            Func<Expression, bool> found = e =>
+            {
+                expressions.Add(e.ToString());
+                return true;
+            };
 
-            search.Run(e => expressions.Add(e.ToString()));
+            search.Run(found);
 
             expressions.Sort();
             string.Join(Environment.NewLine, expressions).Should().Be(expected);

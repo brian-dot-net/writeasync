@@ -35,40 +35,54 @@ namespace Four4
             this.unaryOps.Add(op);
         }
 
-        public void Run(Action<Expression> each)
+        public void Run(Func<Expression, bool> each)
         {
             this.Run(default(Expression), each);
         }
 
-        private void Run(Expression expr, Action<Expression> each)
+        private bool Run(Expression expr, Func<Expression, bool> each)
         {
             if (!expr.IsValid)
             {
-                return;
+                return true;
             }
 
             if (expr.Result.IsValid)
             {
-                each(expr);
+                if (!each(expr))
+                {
+                    return false;
+                }
             }
 
             if (expr.NumeralCount < 4)
             {
                 foreach (string op in this.ops)
                 {
-                    this.Run(expr.Append(op), each);
+                    if (!this.Run(expr.Append(op), each))
+                    {
+                        return false;
+                    }
                 }
             }
 
             foreach (string bop in this.binaryOps)
             {
-                this.Run(expr.Append(bop), each);
+                if (!this.Run(expr.Append(bop), each))
+                {
+                    return false;
+                }
             }
 
             foreach (string uop in this.unaryOps)
             {
-                this.Run(expr.Append(uop), each);
+                if (!this.Run(expr.Append(uop), each))
+                {
+                    return false;
+                }
             }
+
+            return true;
         }
     }
 }
