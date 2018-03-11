@@ -53,6 +53,7 @@ namespace Four4.Test
         [InlineData("4 .4 +", "22/5")]
         [InlineData(".4 .44 4 + +", "121/25")]
         [InlineData("4 44 + 4 +", "52")]
+        [InlineData("4 4 4 - / 4 +", "NaN")]
         public void Addition(string input, string result)
         {
             Calc(input, result);
