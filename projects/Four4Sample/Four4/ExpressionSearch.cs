@@ -11,11 +11,13 @@ namespace Four4
     {
         private readonly List<string> ops;
         private readonly List<string> binaryOps;
+        private readonly List<string> unaryOps;
 
         public ExpressionSearch()
         {
             this.ops = new List<string>();
             this.binaryOps = new List<string>();
+            this.unaryOps = new List<string>();
         }
 
         public void AddOperand(string op)
@@ -26,6 +28,11 @@ namespace Four4
         public void AddBinary(string op)
         {
             this.binaryOps.Add(op);
+        }
+
+        public void AddUnary(string op)
+        {
+            this.unaryOps.Add(op);
         }
 
         public void Run(Action<Expression> each)
@@ -56,6 +63,11 @@ namespace Four4
             foreach (string bop in this.binaryOps)
             {
                 this.Run(expr.Append(bop), each);
+            }
+
+            foreach (string uop in this.unaryOps)
+            {
+                this.Run(expr.Append(uop), each);
             }
         }
     }
