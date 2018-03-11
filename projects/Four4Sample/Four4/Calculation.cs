@@ -139,7 +139,7 @@ namespace Four4
             {
                 if ((this.num < 0) || (this.denom != 1))
                 {
-                    return Number.NaN;
+                    return NaN;
                 }
 
                 int n = this.num;
