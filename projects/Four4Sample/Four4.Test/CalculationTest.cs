@@ -101,6 +101,8 @@ namespace Four4.Test
         [InlineData("4 !", "24")]
         [InlineData("4 .4 / !", "3628800")]
         [InlineData("4 4 / 4 + !", "120")]
+        [InlineData("4 4 / ! ! !", "1")]
+        [InlineData("4 4 - ! ! !", "1")]
         public void Factorial(string input, string result)
         {
             Calc(input, result);
