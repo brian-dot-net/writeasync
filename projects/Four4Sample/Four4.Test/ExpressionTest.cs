@@ -94,6 +94,9 @@ namespace Four4.Test
         [Theory]
         [InlineData("+", "4")]
         [InlineData("!", "4")]
+        [InlineData("*", "44")]
+        [InlineData("R", "444")]
+        [InlineData("-", ".4_")]
         public void AppendTooManyDigitsAfterOperator(string op, string y)
         {
             Expression expr = default(Expression).Append("4444").Append(op);
