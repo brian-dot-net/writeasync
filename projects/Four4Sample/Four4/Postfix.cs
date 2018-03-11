@@ -18,6 +18,7 @@ namespace Four4
                     case "+":
                     case "-":
                     case "*":
+                    case "/":
                         operands.Push(Two(operands, token));
                         break;
                     case "!":
