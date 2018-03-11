@@ -92,6 +92,8 @@ namespace Four4.Test
         [InlineData(".4 .4 .4 / / .4 /", "1")]
         [InlineData(".4 .4 .4 .4 / / /", "1")]
         [InlineData("4 .4 4 .4 / / /", "100")]
+        [InlineData("4 4 4 - /", "NaN")]
+        [InlineData("4 4 4 - / 4 /", "NaN")]
         public void Division(string input, string result)
         {
             Calc(input, result);
