@@ -106,7 +106,7 @@ namespace Four4
 
         public Number SquareRoot()
         {
-            if (this.denom == 0)
+            if ((this.num <= 0) || ((this.num == 1) && (this.denom == 1)))
             {
                 return NaN;
             }
