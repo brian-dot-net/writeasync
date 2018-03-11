@@ -10,9 +10,11 @@ namespace Four4
     {
         private readonly string text;
         private readonly NumberStack operands;
+        private readonly int count;
 
-        private Expression(string text, NumberStack operands)
+        private Expression(int count, string text, NumberStack operands)
         {
+            this.count = count;
             this.text = text;
             this.operands = operands;
         }
@@ -52,24 +54,30 @@ namespace Four4
                     return this.Unary(token, x => x.Factorial());
                 case "R":
                     return this.Unary(token, x => x.SquareRoot());
+                case ".4":
+                case ".4_":
+                case "4":
+                case "44":
+                case "444":
+                case "4444":
                 default:
-                    return this.Push(token, Number.Parse(token));
+                    return this.Push(0, token, Number.Parse(token));
             }
         }
 
-        private Expression Push(string token, Number number)
+        private Expression Push(int add, string token, Number number)
         {
-            return new Expression(this.Join(token), this.operands.Push(number));
+            return new Expression(add, this.Join(token), this.operands.Push(number));
         }
 
         private Expression Binary(string token, Func<Number, Number, Number> op)
         {
-            return new Expression(this.Join(token), this.operands.Apply2(op));
+            return new Expression(0, this.Join(token), this.operands.Apply2(op));
         }
 
         private Expression Unary(string token, Func<Number, Number> op)
         {
-            return new Expression(this.Join(token), this.operands.Apply1(op));
+            return new Expression(0, this.Join(token), this.operands.Apply1(op));
         }
 
         private string Join(string token)
