@@ -7,11 +7,11 @@ namespace Four4
     using System;
     using System.Collections.Generic;
 
-    public sealed class Calculator
+    public static class Calculator
     {
-        public Number Eval(Number num, string input) => Eval(new NumberStack(num), input);
+        public static Number Eval(Number num, string input) => Eval(new NumberStack(num), input);
 
-        public Number Eval(string input) => Eval(new NumberStack(), input);
+        public static Number Eval(string input) => Eval(new NumberStack(), input);
 
         private static Number Eval(NumberStack operands, string input)
         {

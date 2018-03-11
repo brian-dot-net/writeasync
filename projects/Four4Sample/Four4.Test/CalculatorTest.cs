@@ -161,12 +161,12 @@ namespace Four4.Test
 
         private static void TestEval(int num, int denom, string input, string result)
         {
-            new Calculator().Eval(new Number(num, denom), input).ToString().Should().Be(result, "input was ({0}/{1}) {2}", num, denom, input);
+            Calculator.Eval(new Number(num, denom), input).ToString().Should().Be(result, "input was ({0}/{1}) {2}", num, denom, input);
         }
 
         private static void TestEval(string input, string result)
         {
-            new Calculator().Eval(input).ToString().Should().Be(result, "input was {0}", input);
+            Calculator.Eval(input).ToString().Should().Be(result, "input was {0}", input);
         }
     }
 }
