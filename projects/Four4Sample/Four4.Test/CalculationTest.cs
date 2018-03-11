@@ -97,6 +97,13 @@ namespace Four4.Test
             Calc(input, result);
         }
 
+        [Theory]
+        [InlineData("4 !", "24")]
+        public void Factorial(string input, string result)
+        {
+            Calc(input, result);
+        }
+
         private static void Calc(string input, string result)
         {
             Calculation.FromString(input).Should().Be(result, "input was {0}", input);

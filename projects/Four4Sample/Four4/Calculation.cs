@@ -18,16 +18,19 @@ namespace Four4
                 switch (token)
                 {
                     case "+":
-                        BinaryOp(operands, (x, y) => x + y);
+                        Binary(operands, (x, y) => x + y);
                         break;
                     case "-":
-                        BinaryOp(operands, (x, y) => x - y);
+                        Binary(operands, (x, y) => x - y);
                         break;
                     case "*":
-                        BinaryOp(operands, (x, y) => x * y);
+                        Binary(operands, (x, y) => x * y);
                         break;
                     case "/":
-                        BinaryOp(operands, (x, y) => x / y);
+                        Binary(operands, (x, y) => x / y);
+                        break;
+                    case "!":
+                        Unary(operands, x => x.Factorial());
                         break;
                     default:
                         operands.Push(Number.Parse(token));
@@ -38,11 +41,17 @@ namespace Four4
             return operands.Pop().ToString();
         }
 
-        private static void BinaryOp(Stack<Number> operands, Func<Number, Number, Number> op)
+        private static void Binary(Stack<Number> operands, Func<Number, Number, Number> op)
         {
             var y = operands.Pop();
             var x = operands.Pop();
             operands.Push(op(x, y));
+        }
+
+        private static void Unary(Stack<Number> operands, Func<Number, Number> op)
+        {
+            var x = operands.Pop();
+            operands.Push(op(x));
         }
 
         private struct Number
@@ -122,6 +131,18 @@ namespace Four4
                 frac = new Number(int.Parse(s.Substring(p + 1)), d);
 
                 return whole + frac;
+            }
+
+            public Number Factorial()
+            {
+                int n = this.num;
+                int fact = 1;
+                for (int i = 2; i <= n; ++i)
+                {
+                    fact *= i;
+                }
+
+                return new Number(fact, 1);
             }
 
             public override string ToString()
