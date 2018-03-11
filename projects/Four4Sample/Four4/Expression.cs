@@ -9,8 +9,6 @@ namespace Four4
 
     public static class Expression
     {
-        public static Number Eval(Number num, string input) => Eval(new NumberStack(num), input);
-
         public static Number Eval(string input) => Eval(new NumberStack(), input);
 
         private static Number Eval(NumberStack operands, string input)

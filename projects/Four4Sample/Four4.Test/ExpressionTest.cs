@@ -145,25 +145,6 @@ namespace Four4.Test
             TestEval(input, result);
         }
 
-        [Theory]
-        [InlineData(1, 1, "4 +", "5")]
-        [InlineData(1, 2, "4 +", "9/2")]
-        [InlineData(3, 4, "4 -", "-13/4")]
-        [InlineData(0, 1, "!", "1")]
-        [InlineData(0, 0, "!", "NaN")]
-        [InlineData(0, 1, "+", "NaN")]
-        [InlineData(0, 1, "4", "NaN")]
-        [InlineData(0, 1, "4 R", "NaN")]
-        public void EvalNumberAndString(int num, int denom, string input, string result)
-        {
-            TestEval(num, denom, input, result);
-        }
-
-        private static void TestEval(int num, int denom, string input, string result)
-        {
-            Expression.Eval(new Number(num, denom), input).ToString().Should().Be(result, "input was ({0}/{1}) {2}", num, denom, input);
-        }
-
         private static void TestEval(string input, string result)
         {
             Expression.Eval(input).ToString().Should().Be(result, "input was {0}", input);
