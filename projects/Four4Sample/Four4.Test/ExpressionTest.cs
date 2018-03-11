@@ -12,7 +12,7 @@ namespace Four4.Test
         [Fact]
         public void Empty()
         {
-            Expression expr = new Expression();
+            Expression expr = default(Expression);
 
             expr.ToString().Should().Be(string.Empty);
         }

@@ -5,24 +5,23 @@
 namespace Four4
 {
     using System;
-    using System.Collections.Generic;
 
-    public sealed class Expression
+    public struct Expression
     {
         private readonly NumberStack operands;
 
-        public Expression()
+        private Expression(NumberStack operands)
         {
-            this.operands = new NumberStack();
+            this.operands = operands;
         }
 
         public static Number Eval(string input)
         {
-            Expression expr = new Expression();
+            Expression expr = default(Expression);
             string[] tokens = input.Split(' ');
             foreach (string token in tokens)
             {
-                expr.Append(token);
+                expr = expr.Append(token);
             }
 
             return expr.Result();
@@ -35,76 +34,133 @@ namespace Four4
             return string.Empty;
         }
 
-        private void Append(string token)
+        private Expression Append(string token)
         {
             switch (token)
             {
                 case "+":
-                    this.Binary((x, y) => x + y);
-                    break;
+                    return this.Binary((x, y) => x + y);
                 case "-":
-                    this.Binary((x, y) => x - y);
-                    break;
+                    return this.Binary((x, y) => x - y);
                 case "*":
-                    this.Binary((x, y) => x * y);
-                    break;
+                    return this.Binary((x, y) => x * y);
                 case "/":
-                    this.Binary((x, y) => x / y);
-                    break;
+                    return this.Binary((x, y) => x / y);
                 case "!":
-                    this.Unary(x => x.Factorial());
-                    break;
+                    return this.Unary(x => x.Factorial());
                 case "R":
-                    this.Unary(x => x.SquareRoot());
-                    break;
+                    return this.Unary(x => x.SquareRoot());
                 default:
-                    this.operands.Push(Number.Parse(token));
-                    break;
+                    return this.Push(Number.Parse(token));
             }
         }
 
-        private void Binary(Func<Number, Number, Number> op)
+        private Expression Push(Number number)
         {
-            var y = this.operands.Pop();
-            var x = this.operands.Pop();
-            this.operands.Push(op(x, y));
+            return new Expression(this.operands.Push(number));
         }
 
-        private void Unary(Func<Number, Number> op)
+        private Expression Binary(Func<Number, Number, Number> op)
         {
-            var x = this.operands.Pop();
-            this.operands.Push(op(x));
+            return new Expression(this.operands.Apply2(op));
         }
 
-        private sealed class NumberStack
+        private Expression Unary(Func<Number, Number> op)
         {
-            private readonly Stack<Number> stack;
+            return new Expression(this.operands.Apply1(op));
+        }
 
-            public NumberStack()
-            {
-                this.stack = new Stack<Number>();
-            }
+        private struct NumberStack
+        {
+            private readonly Number n1;
+            private readonly Number n2;
+            private readonly Number n3;
+            private readonly Number n4;
+            private readonly int size;
 
-            public Number Pop()
+            private NumberStack(Number n1, Number n2 = default(Number), Number n3 = default(Number), Number n4 = default(Number))
             {
-                if (this.stack.Count == 0)
+                this.n1 = n1;
+                this.n2 = n2;
+                this.n3 = n3;
+                this.n4 = n4;
+                if (this.n4.IsValid)
                 {
-                    return Number.NaN;
+                    this.size = 4;
                 }
-
-                return this.stack.Pop();
+                else if (this.n3.IsValid)
+                {
+                    this.size = 3;
+                }
+                else if (this.n2.IsValid)
+                {
+                    this.size = 2;
+                }
+                else
+                {
+                    this.size = 1;
+                }
             }
-
-            public void Push(Number n) => this.stack.Push(n);
 
             public Number Result()
             {
-                if (this.stack.Count > 1)
+                switch (this.size)
                 {
-                    return Number.NaN;
+                    case 1:
+                        return this.n1;
+                    default:
+                        return default(Number);
                 }
+            }
 
-                return this.Pop();
+            public NumberStack Push(Number n)
+            {
+                switch (this.size)
+                {
+                    case 0:
+                        return new NumberStack(n);
+                    case 1:
+                        return new NumberStack(this.n1, n);
+                    case 2:
+                        return new NumberStack(this.n1, this.n2, n);
+                    case 3:
+                        return new NumberStack(this.n1, this.n2, this.n3, n);
+                    default:
+                        throw new InvalidOperationException("Stack full!");
+                }
+            }
+
+            public NumberStack Apply1(Func<Number, Number> op)
+            {
+                switch (this.size)
+                {
+                    case 0:
+                        return default(NumberStack);
+                    case 1:
+                        return new NumberStack(op(this.n1));
+                    case 2:
+                        return new NumberStack(this.n1, op(this.n2));
+                    case 3:
+                        return new NumberStack(this.n1, this.n2, op(this.n3));
+                    default:
+                        return new NumberStack(this.n1, this.n2, this.n3, op(this.n4));
+                }
+            }
+
+            public NumberStack Apply2(Func<Number, Number, Number> op)
+            {
+                switch (this.size)
+                {
+                    case 0:
+                    case 1:
+                        return default(NumberStack);
+                    case 2:
+                        return new NumberStack(op(this.n1, this.n2));
+                    case 3:
+                        return new NumberStack(this.n1, op(this.n2, this.n3));
+                    default:
+                        return new NumberStack(this.n1, this.n2, op(this.n3, this.n4));
+                }
             }
         }
     }
