@@ -29,7 +29,7 @@ namespace Four4
 
             foreach (KeyValuePair<int, string> result in this.results)
             {
-                Console.WriteLine("{0} = {1}", result.Key, result.Value);
+                Console.WriteLine("{0} = {1}", result.Key, Postfix.ToInfix(result.Value));
             }
         }
 
