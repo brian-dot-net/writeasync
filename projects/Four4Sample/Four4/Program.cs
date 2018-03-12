@@ -5,37 +5,26 @@
 namespace Four4
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
 
     internal sealed class Program
     {
-        private readonly ExpressionSearch search;
-        private readonly SortedDictionary<int, string> results;
-
-        public Program()
-        {
-            this.search = InitSearch();
-            this.results = new SortedDictionary<int, string>();
-        }
-
-        public void Run()
-        {
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            this.search.Run(this.OnFound);
-            stopwatch.Stop();
-
-            Console.WriteLine("Found {0} results in {1} ms.", this.results.Count, stopwatch.ElapsedMilliseconds);
-
-            foreach (KeyValuePair<int, string> result in this.results)
-            {
-                Console.WriteLine("{0} = {1}", result.Key, Postfix.ToInfix(result.Value));
-            }
-        }
-
         private static void Main(string[] args)
         {
-            new Program().Run();
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            ExpressionSearch search = InitSearch();
+            Results results = new Results();
+            search.Run(e => OnFound(results, e));
+
+            stopwatch.Stop();
+
+            Console.WriteLine("Found {0} results in {1} ms.", results.Count, stopwatch.ElapsedMilliseconds);
+
+            foreach (Expression result in results)
+            {
+                Console.WriteLine("{0} = {1}", result.Result, Postfix.ToInfix(result.ToString()));
+            }
         }
 
         private static ExpressionSearch InitSearch()
@@ -56,32 +45,10 @@ namespace Four4
             return search;
         }
 
-        private bool OnFound(Expression expr)
+        private static bool OnFound(Results results, Expression expr)
         {
-            if (expr.NumeralCount != 4)
-            {
-                return true;
-            }
-
-            Number num = expr.Result;
-            if (!num.IsWhole)
-            {
-                return true;
-            }
-
-            int n = (int)num;
-            if (n > 100)
-            {
-                return true;
-            }
-
-            if (this.results.ContainsKey(n))
-            {
-                return true;
-            }
-
-            this.results.Add(n, expr.ToString());
-            return this.results.Count < 100;
+            results.Add(expr);
+            return results.Count < 100;
         }
     }
 }
