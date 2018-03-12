@@ -22,6 +22,7 @@ namespace Four4.Test
 
         [Theory]
         [InlineData("44", "44", "/")]
+        [InlineData("44", "44", "+")]
         public void ValidNumbers(string x, string y, string op)
         {
             TestAdd(x, y, op, 1);
