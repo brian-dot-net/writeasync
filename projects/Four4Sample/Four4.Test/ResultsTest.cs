@@ -11,7 +11,13 @@ namespace Four4.Test
     {
         [Theory]
         [InlineData("4", "444", "-")]
+        [InlineData("44", "44", "-")]
         public void InvalidNumbers(string x, string y, string op)
+        {
+            TestAddInvalid(x, y, op);
+        }
+
+        private static void TestAddInvalid(string x, string y, string op)
         {
             Results results = new Results();
             Expression expr = default(Expression).Append(x).Append(y).Append(op);
