@@ -8,11 +8,11 @@ namespace Four4
 
     public sealed class Results
     {
-        private readonly List<Expression> results;
+        private readonly Dictionary<int, Expression> results;
 
         public Results()
         {
-            this.results = new List<Expression>();
+            this.results = new Dictionary<int, Expression>();
         }
 
         public int Count => this.results.Count;
@@ -36,7 +36,10 @@ namespace Four4
                 return;
             }
 
-            this.results.Add(expr);
+            if (!this.results.ContainsKey(n))
+            {
+                this.results.Add(n, expr);
+            }
         }
     }
 }

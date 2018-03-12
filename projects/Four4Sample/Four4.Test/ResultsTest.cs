@@ -28,6 +28,18 @@ namespace Four4.Test
             TestAdd(x, y, op, 1);
         }
 
+        [Fact]
+        public void ExactDuplicates()
+        {
+            Results results = new Results();
+            Expression expr = default(Expression).Append("44").Append("44").Append("+");
+
+            results.Add(expr);
+            results.Add(expr);
+
+            results.Count.Should().Be(1);
+        }
+
         private static void TestAdd(string x, string y, string op, int count)
         {
             Results results = new Results();
