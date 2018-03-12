@@ -13,6 +13,7 @@ namespace Four4.Test
         [InlineData("4", "444", "-")]
         [InlineData("44", "44", "-")]
         [InlineData("4", "444", "/")]
+        [InlineData("44", "44", "*")]
         public void InvalidNumbers(string x, string y, string op)
         {
             TestAddInvalid(x, y, op);
