@@ -38,8 +38,6 @@ namespace Four4
             search.AddUnary("R");
             search.AddOperand("4");
             search.AddOperand("44");
-            search.AddOperand("444");
-            search.AddOperand("4444");
             search.AddOperand(Number.PointFour);
             search.AddOperand(Number.PointFourRepeating);
             return search;
