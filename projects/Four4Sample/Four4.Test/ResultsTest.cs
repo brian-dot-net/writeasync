@@ -40,6 +40,19 @@ namespace Four4.Test
             results.Count.Should().Be(1);
         }
 
+        [Fact]
+        public void NumericDuplicates()
+        {
+            Results results = new Results();
+            Expression expr1 = default(Expression).Append("44").Append("4").Append("4").Append("+").Append("+");
+            Expression expr2 = default(Expression).Append("4").Append("4").Append("44").Append("+").Append("+");
+
+            results.Add(expr1);
+            results.Add(expr2);
+
+            results.Count.Should().Be(1);
+        }
+
         private static void TestAdd(string x, string y, string op, int count)
         {
             Results results = new Results();
