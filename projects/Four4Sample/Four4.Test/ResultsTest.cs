@@ -4,6 +4,7 @@
 
 namespace Four4.Test
 {
+    using System.Linq;
     using FluentAssertions;
     using Xunit;
 
@@ -51,6 +52,23 @@ namespace Four4.Test
             results.Add(expr2);
 
             results.Count.Should().Be(1);
+        }
+
+        [Fact]
+        public void SortOrder()
+        {
+            Results results = new Results();
+            Expression expr1 = default(Expression).Append("44").Append("44").Append("/");
+            Expression expr44 = default(Expression).Append("44").Append("4").Append("-").Append("4").Append("+");
+
+            results.Add(expr44);
+            results.Add(expr1);
+
+            Expression[] all = results.ToArray();
+            all.Select(e => e.ToString()).Should().ContainInOrder(
+                "44 44 /",
+                "44 4 - 4 +")
+                .And.HaveCount(2);
         }
 
         private static void TestAdd(string x, string y, string op, int count)

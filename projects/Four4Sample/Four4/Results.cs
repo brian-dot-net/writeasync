@@ -4,15 +4,16 @@
 
 namespace Four4
 {
+    using System.Collections;
     using System.Collections.Generic;
 
-    public sealed class Results
+    public sealed class Results : IEnumerable<Expression>
     {
-        private readonly Dictionary<int, Expression> results;
+        private readonly IDictionary<int, Expression> results;
 
         public Results()
         {
-            this.results = new Dictionary<int, Expression>();
+            this.results = new SortedDictionary<int, Expression>();
         }
 
         public int Count => this.results.Count;
@@ -41,5 +42,9 @@ namespace Four4
                 this.results.Add(n, expr);
             }
         }
+
+        public IEnumerator<Expression> GetEnumerator() => this.results.Values.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }
