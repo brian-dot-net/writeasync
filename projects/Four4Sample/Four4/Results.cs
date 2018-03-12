@@ -4,8 +4,6 @@
 
 namespace Four4
 {
-    using System;
-
     public sealed class Results
     {
         public int Count => 0;

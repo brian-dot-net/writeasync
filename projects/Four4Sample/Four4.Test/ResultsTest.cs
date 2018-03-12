@@ -9,11 +9,12 @@ namespace Four4.Test
 
     public sealed class ResultsTest
     {
-        [Fact]
-        public void NegativeNumbers()
+        [Theory]
+        [InlineData("4", "444", "-")]
+        public void InvalidNumbers(string x, string y, string op)
         {
             Results results = new Results();
-            Expression expr = default(Expression).Append("4").Append("444").Append("-");
+            Expression expr = default(Expression).Append(x).Append(y).Append(op);
 
             results.Add(expr);
 
