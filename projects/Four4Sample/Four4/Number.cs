@@ -143,9 +143,14 @@ namespace Four4
                 return NaN;
             }
 
-            int nr = (int)Math.Pow(this.num, exp.num);
+            double nr = Math.Pow(this.num, exp.num);
+            if (nr > int.MaxValue)
+            {
+                return NaN;
+            }
+
             int dr = (int)Math.Pow(this.denom, exp.num);
-            return new Number(nr, dr);
+            return new Number((int)nr, dr);
         }
 
         public override string ToString()
