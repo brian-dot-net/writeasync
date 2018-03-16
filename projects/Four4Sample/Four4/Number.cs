@@ -133,8 +133,9 @@ namespace Four4
 
         public Number Pow(Number exp)
         {
-            int r = (int)Math.Pow(this.num, exp.num);
-            return new Number(r, 1);
+            int nr = (int)Math.Pow(this.num, exp.num);
+            int dr = (int)Math.Pow(this.denom, exp.num);
+            return new Number(nr, dr);
         }
 
         public override string ToString()
