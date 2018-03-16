@@ -133,6 +133,7 @@ namespace Four4.Test
         [InlineData("4 4 - 4 4 - ^", "NaN")]
         [InlineData("4 44 ^", "NaN")]
         [InlineData(".4 44 ^", "NaN")]
+        [InlineData("4 44 - 4 R ^", "1600")]
         public void Exponent(string input, string result)
         {
             Test(input, result);
