@@ -138,6 +138,11 @@ namespace Four4
                 return NaN;
             }
 
+            if ((this.num == 0) && (exp.num == 0))
+            {
+                return NaN;
+            }
+
             int nr = (int)Math.Pow(this.num, exp.num);
             int dr = (int)Math.Pow(this.denom, exp.num);
             return new Number(nr, dr);
