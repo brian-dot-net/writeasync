@@ -34,10 +34,11 @@ namespace Four4
             search.AddOperator("-");
             search.AddOperator("*");
             search.AddOperator("/");
+            search.AddOperator("^");
             search.AddOperator("!");
             search.AddOperator("R");
-            search.AddOperand("4");
             search.AddOperand("44");
+            search.AddOperand("4");
             search.AddOperand(Number.PointFour);
             search.AddOperand(Number.PointFourRepeating);
             return search;
