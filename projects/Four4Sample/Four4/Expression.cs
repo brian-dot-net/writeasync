@@ -55,6 +55,8 @@ namespace Four4
                     return this.Binary(token, (x, y) => x * y);
                 case "/":
                     return this.Binary(token, (x, y) => x / y);
+                case "^":
+                    return this.Binary(token, (x, y) => x.Pow(y));
                 case "!":
                     return this.Unary(token, x => x.Factorial());
                 case "R":

@@ -131,6 +131,12 @@ namespace Four4
             return new Number((int)nr, (int)dr);
         }
 
+        public Number Pow(Number exp)
+        {
+            int r = (int)Math.Pow(this.num, exp.num);
+            return new Number(r, 1);
+        }
+
         public override string ToString()
         {
             if (this.denom == 0)

@@ -125,6 +125,13 @@ namespace Four4.Test
             Test(input, result);
         }
 
+        [Theory]
+        [InlineData("4 4 ^", "256")]
+        public void Exponent(string input, string result)
+        {
+            Test(input, result);
+        }
+
         private static void Test(string input, string result)
         {
             Expression.Eval(input).ToString().Should().Be(result, "input was {0}", input);
