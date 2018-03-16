@@ -133,7 +133,7 @@ namespace Four4
 
         public Number Pow(Number exp)
         {
-            if (!exp.IsWhole)
+            if (exp.denom != 1)
             {
                 return NaN;
             }
