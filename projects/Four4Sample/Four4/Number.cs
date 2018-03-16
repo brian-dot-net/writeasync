@@ -133,6 +133,11 @@ namespace Four4
 
         public Number Pow(Number exp)
         {
+            if (!exp.IsWhole)
+            {
+                return NaN;
+            }
+
             int nr = (int)Math.Pow(this.num, exp.num);
             int dr = (int)Math.Pow(this.denom, exp.num);
             return new Number(nr, dr);
