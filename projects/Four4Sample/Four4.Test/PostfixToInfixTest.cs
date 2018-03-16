@@ -28,6 +28,7 @@ namespace Four4.Test
         [InlineData("4 4 / 4 /", "((4/4)/4)")]
         [InlineData("4 4 4 / /", "(4/(4/4))")]
         [InlineData("4 R 4 ! * 4 / 4 -", "(((sqrt(4)*(4)!)/4)-4)")]
+        [InlineData("4 4 ^ .4 4 ^ /", "((4^4)/(.4^4))")]
         public void ConvertsProperly(string input, string result)
         {
             Postfix.ToInfix(input).Should().Be(result);
