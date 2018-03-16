@@ -48,6 +48,14 @@ namespace Four4
                 }
             }
 
+            foreach (string op in this.operators)
+            {
+                if (!this.Run(expr.Append(op), each))
+                {
+                    return false;
+                }
+            }
+
             if (expr.NumeralCount < 4)
             {
                 foreach (string op in this.operands)
@@ -56,14 +64,6 @@ namespace Four4
                     {
                         return false;
                     }
-                }
-            }
-
-            foreach (string op in this.operators)
-            {
-                if (!this.Run(expr.Append(op), each))
-                {
-                    return false;
                 }
             }
 
