@@ -9,30 +9,23 @@ namespace Four4
 
     public sealed class ExpressionSearch
     {
-        private readonly List<string> ops;
-        private readonly List<string> binaryOps;
-        private readonly List<string> unaryOps;
+        private readonly List<string> operands;
+        private readonly List<string> operators;
 
         public ExpressionSearch()
         {
-            this.ops = new List<string>();
-            this.binaryOps = new List<string>();
-            this.unaryOps = new List<string>();
+            this.operands = new List<string>();
+            this.operators = new List<string>();
         }
 
         public void AddOperand(string op)
         {
-            this.ops.Add(op);
+            this.operands.Add(op);
         }
 
-        public void AddBinary(string op)
+        public void AddOperator(string op)
         {
-            this.binaryOps.Add(op);
-        }
-
-        public void AddUnary(string op)
-        {
-            this.unaryOps.Add(op);
+            this.operators.Add(op);
         }
 
         public void Run(Func<Expression, bool> each)
@@ -57,7 +50,7 @@ namespace Four4
 
             if (expr.NumeralCount < 4)
             {
-                foreach (string op in this.ops)
+                foreach (string op in this.operands)
                 {
                     if (!this.Run(expr.Append(op), each))
                     {
@@ -66,17 +59,9 @@ namespace Four4
                 }
             }
 
-            foreach (string bop in this.binaryOps)
+            foreach (string op in this.operators)
             {
-                if (!this.Run(expr.Append(bop), each))
-                {
-                    return false;
-                }
-            }
-
-            foreach (string uop in this.unaryOps)
-            {
-                if (!this.Run(expr.Append(uop), each))
+                if (!this.Run(expr.Append(op), each))
                 {
                     return false;
                 }

@@ -16,7 +16,7 @@ namespace Four4.Test
         {
             ExpressionSearch search = new ExpressionSearch();
             search.AddOperand("4");
-            search.AddBinary("+");
+            search.AddOperator("+");
 
             int count = 0;
             search.Run(e => ++count < 3);
@@ -39,7 +39,7 @@ namespace Four4.Test
 
             ExpressionSearch search = new ExpressionSearch();
             search.AddOperand("4");
-            search.AddBinary("+");
+            search.AddOperator("+");
 
             TestSearch(search, Expected);
         }
@@ -52,7 +52,7 @@ namespace Four4.Test
 
             ExpressionSearch search = new ExpressionSearch();
             search.AddOperand("4");
-            search.AddUnary("R");
+            search.AddOperator("R");
 
             TestSearch(search, Expected);
         }
@@ -65,7 +65,7 @@ namespace Four4.Test
 
             ExpressionSearch search = new ExpressionSearch();
             search.AddOperand("4");
-            search.AddUnary("!");
+            search.AddOperator("!");
 
             TestSearch(search, Expected);
         }
@@ -639,8 +639,8 @@ namespace Four4.Test
             ExpressionSearch search = new ExpressionSearch();
             search.AddOperand("4");
             search.AddOperand(".4");
-            search.AddUnary("R");
-            search.AddUnary("+");
+            search.AddOperator("R");
+            search.AddOperator("+");
 
             TestSearch(search, Expected);
         }
@@ -754,7 +754,7 @@ namespace Four4.Test
             ExpressionSearch search = new ExpressionSearch();
             search.AddOperand("4");
             search.AddOperand(".4");
-            search.AddBinary("-");
+            search.AddOperator("-");
 
             TestSearch(search, Expected);
         }
@@ -1480,8 +1480,8 @@ namespace Four4.Test
             ExpressionSearch search = new ExpressionSearch();
             search.AddOperand("4");
             search.AddOperand(".4");
-            search.AddBinary("+");
-            search.AddBinary("-");
+            search.AddOperator("+");
+            search.AddOperator("-");
 
             TestSearch(search, Expected);
         }

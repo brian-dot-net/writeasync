@@ -30,12 +30,12 @@ namespace Four4
         private static ExpressionSearch InitSearch()
         {
             ExpressionSearch search = new ExpressionSearch();
-            search.AddBinary("+");
-            search.AddBinary("-");
-            search.AddBinary("*");
-            search.AddBinary("/");
-            search.AddUnary("!");
-            search.AddUnary("R");
+            search.AddOperator("+");
+            search.AddOperator("-");
+            search.AddOperator("*");
+            search.AddOperator("/");
+            search.AddOperator("!");
+            search.AddOperator("R");
             search.AddOperand("4");
             search.AddOperand("44");
             search.AddOperand(Number.PointFour);
