@@ -5,6 +5,7 @@
 namespace Four4
 {
     using System;
+    using System.Collections.Immutable;
 
     public struct Expression
     {
@@ -100,40 +101,27 @@ namespace Four4
 
         private struct NumberStack
         {
-            private static readonly Number X = default(Number);
+            private static readonly NumberStack Invalid = new NumberStack(1, ImmutableStack.Create(default(Number)));
 
-            private readonly Number n1;
-            private readonly Number n2;
-            private readonly Number n3;
-            private readonly Number n4;
             private readonly int size;
+            private readonly ImmutableStack<Number> stack;
 
-            private NumberStack(Number n1, Number n2, Number n3, Number n4, int size)
+            private NumberStack(int size, ImmutableStack<Number> stack)
             {
-                this.n1 = n1;
-                this.n2 = n2;
-                this.n3 = n3;
-                this.n4 = n4;
                 this.size = size;
+                this.stack = stack;
             }
 
             public bool IsValid
             {
                 get
                 {
-                    switch (this.size)
+                    if (this.size == 0)
                     {
-                        case 1:
-                            return this.n1.IsValid;
-                        case 2:
-                            return this.n2.IsValid;
-                        case 3:
-                            return this.n3.IsValid;
-                        case 4:
-                            return this.n4.IsValid;
-                        default:
-                            return true;
+                        return true;
                     }
+
+                    return this.stack.Peek().IsValid;
                 }
             }
 
@@ -141,64 +129,52 @@ namespace Four4
             {
                 get
                 {
-                    switch (this.size)
+                    if (this.size == 1)
                     {
-                        case 1:
-                            return this.n1;
-                        default:
-                            return default(Number);
+                        return this.stack.Peek();
                     }
+
+                    return default(Number);
                 }
             }
 
             public NumberStack Push(Number n)
             {
-                switch (this.size)
+                if (this.size == 0)
                 {
-                    case 0:
-                        return new NumberStack(n, X, X, X, 1);
-                    case 1:
-                        return new NumberStack(this.n1, n, X, X, 2);
-                    case 2:
-                        return new NumberStack(this.n1, this.n2, n, X, 3);
-                    case 3:
-                        return new NumberStack(this.n1, this.n2, this.n3, n, 4);
-                    default:
-                        throw new InvalidOperationException("Stack full!");
+                    return new NumberStack(1, ImmutableStack.Create(n));
                 }
+
+                return new NumberStack(this.size + 1, this.stack.Push(n));
             }
 
             public NumberStack Apply1(Func<Number, Number> op)
             {
-                switch (this.size)
+                if (this.size < 1)
                 {
-                    case 0:
-                        return new NumberStack(X, X, X, X, 1);
-                    case 1:
-                        return new NumberStack(op(this.n1), X, X, X, 1);
-                    case 2:
-                        return new NumberStack(this.n1, op(this.n2), X, X, 2);
-                    case 3:
-                        return new NumberStack(this.n1, this.n2, op(this.n3), X, 3);
-                    default:
-                        return new NumberStack(this.n1, this.n2, this.n3, op(this.n4), 4);
+                    return Invalid;
                 }
+
+                Number n1;
+                var newStack = this.stack.Pop(out n1);
+                Number n = op(n1);
+                return new NumberStack(this.size, newStack.Push(n));
             }
 
             public NumberStack Apply2(Func<Number, Number, Number> op)
             {
-                switch (this.size)
+                if (this.size < 2)
                 {
-                    case 0:
-                    case 1:
-                        return new NumberStack(X, X, X, X, 1);
-                    case 2:
-                        return new NumberStack(op(this.n1, this.n2), X, X, X, 1);
-                    case 3:
-                        return new NumberStack(this.n1, op(this.n2, this.n3), X, X, 2);
-                    default:
-                        return new NumberStack(this.n1, this.n2, op(this.n3, this.n4), X, 3);
+                    return Invalid;
                 }
+
+                var newStack = this.stack;
+                Number n2;
+                newStack = newStack.Pop(out n2);
+                Number n1;
+                newStack = newStack.Pop(out n1);
+                Number n = op(n1, n2);
+                return new NumberStack(this.size - 1, newStack.Push(n));
             }
         }
     }
