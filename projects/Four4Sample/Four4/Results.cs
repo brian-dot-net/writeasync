@@ -15,11 +15,17 @@ namespace Four4
         {
             this.results = new SortedDictionary<int, Expression>();
             this.NumeralCount = 4;
+            this.Min = 1;
+            this.Max = 100;
         }
 
         public int Count => this.results.Count;
 
         public int NumeralCount { get; set; }
+
+        public int Min { get; set; }
+
+        public int Max { get; set; }
 
         public void Add(Expression expr)
         {
@@ -29,13 +35,13 @@ namespace Four4
             }
 
             Number num = expr.Result;
-            if (!num.IsWhole)
+            if (!num.IsInteger)
             {
                 return;
             }
 
             int n = (int)num;
-            if (n > 100)
+            if ((n < this.Min) || (n > this.Max))
             {
                 return;
             }

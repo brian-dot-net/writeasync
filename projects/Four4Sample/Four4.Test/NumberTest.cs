@@ -16,7 +16,7 @@ namespace Four4.Test
         [InlineData("4444")]
         public void WholeNumbers(string input)
         {
-            Parse(input).IsWhole.Should().BeTrue();
+            Parse(input).IsInteger.Should().BeTrue();
         }
 
         [Theory]
@@ -24,16 +24,16 @@ namespace Four4.Test
         [InlineData(".4_")]
         public void Fractions(string input)
         {
-            Parse(input).IsWhole.Should().BeFalse();
+            Parse(input).IsInteger.Should().BeFalse();
         }
 
         [Theory]
         [InlineData("4 4 - 4 -")]
         [InlineData("4 4 -")]
         [InlineData("4 4 - 4 - 4 -")]
-        public void NonPositiveNumbersAreNotWhole(string input)
+        public void NonPositiveNumbersAreIntegers(string input)
         {
-            Expression.Eval(input).IsWhole.Should().BeFalse();
+            Expression.Eval(input).IsInteger.Should().BeTrue();
         }
 
         [Theory]

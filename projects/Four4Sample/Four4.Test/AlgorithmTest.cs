@@ -25,12 +25,27 @@ namespace Four4.Test
             output[102].Should().BeEmpty();
         }
 
-        private static string[] Run()
+        [Fact]
+        public void RunWithOtherDigitAndDifferentMinMax()
+        {
+            string[] output = Run("3", "7", "11");
+
+            output.Should().HaveCount(8);
+            output[0].Should().Match("Solving 3 3s (min=7, max=11)...");
+            output[1].Should().Match("Found 5 results in * ms.");
+            output[2].Should().Be("7 = (((((3)!)!-((3)!)!))!+(3)!)");
+            output[3].Should().Be("8 = (((3)!/3)^3)");
+            output[4].Should().Be("9 = ((sqrt(((3)!+3)))!+3)");
+            output[5].Should().Be("10 = (sqrt(((3)!+3))/.3)");
+            output[6].Should().Be("11 = (33/3)");
+        }
+
+        private static string[] Run(params string[] args)
         {
             StringBuilder sb = new StringBuilder();
             using (StringWriter writer = new StringWriter(sb))
             {
-                new Algorithm().Run(writer);
+                new Algorithm(args).Run(writer);
             }
 
             return sb.ToString().Split(Environment.NewLine);

@@ -10,20 +10,24 @@ namespace Four4
     public sealed class Algorithm
     {
         private readonly int digit;
+        private readonly int min;
+        private readonly int max;
         private readonly ExpressionSearch search;
 
         public Algorithm(params string[] args)
         {
             this.digit = GetDigit(args);
+            this.min = GetMin(args);
+            this.max = GetMax(args);
             this.search = this.InitSearch();
         }
 
         public void Run(TextWriter writer)
         {
-            writer.WriteLine("Solving {0} {0}s (min=1, max=100)...", this.digit);
+            writer.WriteLine("Solving {0} {0}s (min={1}, max={2})...", this.digit, this.min, this.max);
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            Results results = new Results { NumeralCount = this.digit };
+            Results results = new Results { NumeralCount = this.digit, Min = this.min, Max = this.max };
             this.search.Run(e => this.OnFound(results, e));
 
             stopwatch.Stop();
@@ -49,6 +53,28 @@ namespace Four4
             }
 
             return d;
+        }
+
+        private static int GetMin(string[] args)
+        {
+            int m = 1;
+            if (args.Length > 1)
+            {
+                return int.Parse(args[1]);
+            }
+
+            return m;
+        }
+
+        private static int GetMax(string[] args)
+        {
+            int m = 100;
+            if (args.Length > 2)
+            {
+                return int.Parse(args[2]);
+            }
+
+            return m;
         }
 
         private bool OnFound(Results results, Expression expr)

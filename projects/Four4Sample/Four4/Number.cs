@@ -35,7 +35,7 @@ namespace Four4
 
         public bool IsValid => this.denom != 0;
 
-        public bool IsWhole => (this.num > 0) && (this.denom == 1);
+        public bool IsInteger => this.denom == 1;
 
         public static explicit operator int(Number right)
         {
