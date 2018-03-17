@@ -79,6 +79,23 @@ namespace Four4.Test
                 .And.HaveCount(2);
         }
 
+        [Fact]
+        public void CustomNumeralCount()
+        {
+            Results results = new Results { NumeralCount = 2 };
+            Expression exprTooFew = default(Expression).Append("4").Append("R");
+            Expression exprTooMany = default(Expression).Append("44").Append("4").Append("+");
+            Expression exprJustRight = default(Expression).Append("4").Append("4").Append("/");
+
+            results.Add(exprTooFew);
+            results.Add(exprTooMany);
+            results.Add(exprJustRight);
+
+            Expression[] all = results.ToArray();
+            all.Select(e => e.ToString()).Should().ContainInOrder(
+                "4 4 /").And.HaveCount(1);
+        }
+
         private static void TestAdd(string x, string y, string op, int count)
         {
             Results results = new Results();

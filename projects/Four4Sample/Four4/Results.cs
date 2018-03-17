@@ -14,13 +14,16 @@ namespace Four4
         public Results()
         {
             this.results = new SortedDictionary<int, Expression>();
+            this.NumeralCount = 4;
         }
 
         public int Count => this.results.Count;
 
+        public int NumeralCount { get; set; }
+
         public void Add(Expression expr)
         {
-            if (expr.NumeralCount != 4)
+            if (expr.NumeralCount != this.NumeralCount)
             {
                 return;
             }
