@@ -26,6 +26,7 @@ namespace Four4.Test
         [InlineData("B", "*'B'*")]
         [InlineData("B.A.D.", "*'B.A.D.'*")]
         [InlineData(" ", "*' '*")]
+        [InlineData(null, "*<null>*")]
         public void AppendBadToken(string input, string errorPattern)
         {
             Expression expr = default(Expression);

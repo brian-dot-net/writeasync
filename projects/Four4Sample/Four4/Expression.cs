@@ -70,9 +70,19 @@ namespace Four4
                     }
                     else
                     {
-                        throw new ArgumentException("Bad token '" + token + "'", nameof(token));
+                        throw new ArgumentException("Bad token " + ValueOf(token) + ".", nameof(token));
                     }
             }
+        }
+
+        private static string ValueOf(string token)
+        {
+            if (token == null)
+            {
+                return "<null>";
+            }
+
+            return "'" + token + "'";
         }
 
         private Expression Push(int add, string token, Number number)

@@ -75,6 +75,12 @@ namespace Four4
         {
             number = NaN;
             digits = 0;
+
+            if (s == null)
+            {
+                return false;
+            }
+
             int a = 0;
             int b = s.Length;
             int nr = 0;
