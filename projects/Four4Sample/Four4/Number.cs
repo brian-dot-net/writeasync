@@ -81,51 +81,29 @@ namespace Four4
                 return false;
             }
 
-            int a = 0;
-            int b = s.Length;
-            int nr = 0;
-            int dr = 0;
-            int f = 1;
-
-            if (b == 0)
+            digits = s.Length;
+            if (digits == 0)
             {
                 return false;
             }
 
             if (s[0] == '.')
             {
-                a = 1;
-                f = 10;
-            }
-
-            if (s[b - 1] == '_')
-            {
-                --b;
-                f = 9;
-            }
-
-            for (int i = a; i < b; ++i)
-            {
-                int d = s[i] - '0';
-                if (d != 4)
+                --digits;
+                if (s[digits] == '_')
                 {
-                    return false;
-                }
-
-                nr = (10 * nr) + d;
-                ++digits;
-                if (f != 1)
-                {
-                    dr = (dr * 10) + f;
+                    --digits;
+                    return TryParseInner(s.Substring(1, digits), Nines(digits), out number);
                 }
                 else
                 {
-                    dr = 1;
+                    return TryParseInner(s.Substring(1, digits), Tens(digits), out number);
                 }
             }
-
-            number = new Number(nr, dr);
-            return true;
+            else
+            {
+                return TryParseInner(s, 1, out number);
+            }
         }
 
         public Number Factorial()
@@ -225,6 +203,42 @@ namespace Four4
             }
 
             return a;
+        }
+
+        private static bool TryParseInner(string s, int dr, out Number number)
+        {
+            number = NaN;
+            if (dr == 0)
+            {
+                return false;
+            }
+
+            int nr;
+            if (!int.TryParse(s, out nr))
+            {
+                return false;
+            }
+
+            number = new Number(nr, dr);
+            return true;
+        }
+
+        private static int Nines(int digits)
+        {
+            switch (digits)
+            {
+                case 1: return 9;
+                default: return 0;
+            }
+        }
+
+        private static int Tens(int digits)
+        {
+            switch (digits)
+            {
+                case 1: return 10;
+                default: return 0;
+            }
         }
     }
 }
