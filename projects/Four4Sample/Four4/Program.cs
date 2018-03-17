@@ -16,7 +16,7 @@ namespace Four4
             int d = GetDigit(args);
 
             ExpressionSearch search = InitSearch(d);
-            Results results = new Results();
+            Results results = new Results { NumeralCount = d };
             search.Run(e => OnFound(results, e));
 
             stopwatch.Stop();
@@ -35,12 +35,9 @@ namespace Four4
             if ((args.Length != 0) && (args[0].Length > 0))
             {
                 char c = args[0][0];
-                switch (c)
+                if (c > '0' && c <= '9')
                 {
-                    case '3':
-                    case '4':
-                        d = c - '0';
-                        break;
+                    d = c - '0';
                 }
             }
 
