@@ -13,7 +13,7 @@ namespace Four4
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
 
-            char d = GetDigit(args);
+            int d = GetDigit(args);
 
             ExpressionSearch search = InitSearch(d);
             Results results = new Results();
@@ -29,9 +29,9 @@ namespace Four4
             }
         }
 
-        private static char GetDigit(string[] args)
+        private static int GetDigit(string[] args)
         {
-            char d = '4';
+            int d = 4;
             if ((args.Length != 0) && (args[0].Length > 0))
             {
                 char c = args[0][0];
@@ -39,7 +39,7 @@ namespace Four4
                 {
                     case '3':
                     case '4':
-                        d = c;
+                        d = c - '0';
                         break;
                 }
             }
@@ -47,10 +47,10 @@ namespace Four4
             return d;
         }
 
-        private static ExpressionSearch InitSearch(char c)
+        private static ExpressionSearch InitSearch(int n)
         {
-            string d = c.ToString();
-            ExpressionSearch search = new ExpressionSearch();
+            string d = n.ToString();
+            ExpressionSearch search = new ExpressionSearch() { NumeralCount = n };
             search.AddOperator("+");
             search.AddOperator("-");
             search.AddOperator("*");
