@@ -16,7 +16,7 @@ namespace Four4.Test
         [InlineData("4444")]
         public void WholeNumbers(string input)
         {
-            Number.Parse(input).IsWhole.Should().BeTrue();
+            Parse(input).IsWhole.Should().BeTrue();
         }
 
         [Theory]
@@ -24,7 +24,7 @@ namespace Four4.Test
         [InlineData(".4_")]
         public void Fractions(string input)
         {
-            Number.Parse(input).IsWhole.Should().BeFalse();
+            Parse(input).IsWhole.Should().BeFalse();
         }
 
         [Theory]
@@ -43,9 +43,17 @@ namespace Four4.Test
         [InlineData("4444", 4444)]
         public void CastToInt32(string input, int result)
         {
-            int value = (int)Number.Parse(input);
+            int value = (int)Parse(input);
 
             value.Should().Be(result);
+        }
+
+        private static Number Parse(string input)
+        {
+            Number number;
+            bool valid = Number.TryParse(input, out number, out int d);
+            valid.Should().BeTrue();
+            return number;
         }
     }
 }

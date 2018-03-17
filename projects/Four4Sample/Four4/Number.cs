@@ -71,17 +71,55 @@ namespace Four4
             return left * new Number(right.denom, right.num);
         }
 
-        public static Number Parse(string s)
+        public static bool TryParse(string s, out Number number, out int digits)
         {
-            switch (s)
+            number = NaN;
+            digits = 0;
+            int a = 0;
+            int b = s.Length;
+            int nr = 0;
+            int dr = 0;
+            int f = 1;
+
+            if (b == 0)
             {
-                case ".4":
-                    return new Number(2, 5);
-                case ".4_":
-                    return new Number(4, 9);
-                default:
-                    return new Number(int.Parse(s), 1);
+                return false;
             }
+
+            if (s[0] == '.')
+            {
+                a = 1;
+                f = 10;
+            }
+
+            if (s[b - 1] == '_')
+            {
+                --b;
+                f = 9;
+            }
+
+            for (int i = a; i < b; ++i)
+            {
+                int d = s[i] - '0';
+                if (d != 4)
+                {
+                    return false;
+                }
+
+                nr = (10 * nr) + d;
+                ++digits;
+                if (f != 1)
+                {
+                    dr = (dr * 10) + f;
+                }
+                else
+                {
+                    dr = 1;
+                }
+            }
+
+            number = new Number(nr, dr);
+            return true;
         }
 
         public Number Factorial()

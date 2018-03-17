@@ -62,52 +62,17 @@ namespace Four4
                 case "R":
                     return this.Unary(token, x => x.SquareRoot());
                 default:
+                    Number number;
                     int add;
-                    if (IsNumeric(token, out add))
+                    if (Number.TryParse(token, out number, out add))
                     {
-                        Number number = Number.Parse(token);
-                        return this.Push(add, token, Number.Parse(token));
+                        return this.Push(add, token, number);
                     }
                     else
                     {
                         throw new ArgumentException("Bad token '" + token + "'", nameof(token));
                     }
             }
-        }
-
-        private static bool IsNumeric(string token, out int add)
-        {
-            add = 0;
-            int n = token.Length;
-            for (int i = 0; i < n; ++i)
-            {
-                char d = token[i];
-                switch (d)
-                {
-                    case '4':
-                        ++add;
-                        break;
-                    case '.':
-                        if (i > 0)
-                        {
-                            return false;
-                        }
-
-                        break;
-                    case '_':
-                        if (i < (n - 1))
-                        {
-                            return false;
-                        }
-
-                        break;
-
-                    default:
-                        return false;
-                }
-            }
-
-            return add > 0;
         }
 
         private Expression Push(int add, string token, Number number)
