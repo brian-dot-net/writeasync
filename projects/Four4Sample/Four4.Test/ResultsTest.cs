@@ -22,6 +22,14 @@ namespace Four4.Test
         }
 
         [Theory]
+        [InlineData("44", "44", "-", "44", "-")]
+        [InlineData("44", "44", "-", "4", "-")]
+        public void TooManyNumerals(string x, string y, string op1, string z, string op2)
+        {
+            TestTooMany(x, y, op1, z, op2);
+        }
+
+        [Theory]
         [InlineData("44", "44", "/")]
         [InlineData("44", "44", "+")]
         public void ValidNumbers(string x, string y, string op)
@@ -79,6 +87,16 @@ namespace Four4.Test
             results.Add(expr);
 
             results.Count.Should().Be(count, "expr was '{0}'", expr.ToString());
+        }
+
+        private static void TestTooMany(string x, string y, string op1, string z, string op2)
+        {
+            Results results = new Results();
+            Expression expr = default(Expression).Append(x).Append(y).Append(op1).Append(z).Append(op2);
+
+            results.Add(expr);
+
+            results.Count.Should().Be(0, "expr was '{0}'", expr.ToString());
         }
     }
 }
