@@ -48,6 +48,16 @@ namespace Four4.Test
             value.Should().Be(result);
         }
 
+        [Theory]
+        [InlineData("4.4")]
+        [InlineData(".44_")]
+        [InlineData("4_4")]
+        [InlineData("4_")]
+        public void InvalidNumbers(string input)
+        {
+            Number.TryParse(input, out Number number, out int d).Should().BeFalse();
+        }
+
         private static Number Parse(string input)
         {
             Number number;
