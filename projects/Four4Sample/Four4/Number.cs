@@ -168,7 +168,7 @@ namespace Four4
             }
 
             double nr = Math.Pow(this.num, exp.num);
-            if (nr > int.MaxValue)
+            if ((nr > int.MaxValue) || (nr < int.MinValue))
             {
                 return NaN;
             }

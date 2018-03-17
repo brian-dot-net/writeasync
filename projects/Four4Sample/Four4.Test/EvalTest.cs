@@ -162,6 +162,7 @@ namespace Four4.Test
         [InlineData("3 ! ! 3 ^ .3 /", "NaN")]
         [InlineData("3 ! ! 3 ^ .3 / 3 ^", "NaN")]
         [InlineData("3 ! ! 3 ^ .3 33 - /", "NaN")]
+        [InlineData("3 ! ! .3 3 ! - / 3 ^", "NaN")]
         public void ExpressionsWith3(string input, string result)
         {
             Test(input, result);
