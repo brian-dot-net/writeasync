@@ -61,19 +61,53 @@ namespace Four4
                     return this.Unary(token, x => x.Factorial());
                 case "R":
                     return this.Unary(token, x => x.SquareRoot());
-                case Number.PointFour:
-                case Number.PointFourRepeating:
-                case "4":
-                    return this.Push(1, token, Number.Parse(token));
-                case "44":
-                    return this.Push(2, token, Number.Parse(token));
-                case "444":
-                    return this.Push(3, token, Number.Parse(token));
-                case "4444":
-                    return this.Push(4, token, Number.Parse(token));
                 default:
-                    throw new ArgumentException("Bad token '" + token + "'", nameof(token));
+                    int add;
+                    if (IsNumeric(token, out add))
+                    {
+                        Number number = Number.Parse(token);
+                        return this.Push(add, token, Number.Parse(token));
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Bad token '" + token + "'", nameof(token));
+                    }
             }
+        }
+
+        private static bool IsNumeric(string token, out int add)
+        {
+            add = 0;
+            int n = token.Length;
+            for (int i = 0; i < n; ++i)
+            {
+                char d = token[i];
+                switch (d)
+                {
+                    case '4':
+                        ++add;
+                        break;
+                    case '.':
+                        if (i > 0)
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case '_':
+                        if (i < (n - 1))
+                        {
+                            return false;
+                        }
+
+                        break;
+
+                    default:
+                        return false;
+                }
+            }
+
+            return add > 0;
         }
 
         private Expression Push(int add, string token, Number number)

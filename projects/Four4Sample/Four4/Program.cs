@@ -39,8 +39,8 @@ namespace Four4
             search.AddOperator("R");
             search.AddOperand("44");
             search.AddOperand("4");
-            search.AddOperand(Number.PointFour);
-            search.AddOperand(Number.PointFourRepeating);
+            search.AddOperand(".4");
+            search.AddOperand(".4_");
             return search;
         }
 

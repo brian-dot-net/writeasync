@@ -8,9 +8,6 @@ namespace Four4
 
     public struct Number
     {
-        public const string PointFour = ".4";
-        public const string PointFourRepeating = ".4_";
-
         private static readonly Number NaN = default(Number);
 
         private readonly int num;
@@ -78,9 +75,9 @@ namespace Four4
         {
             switch (s)
             {
-                case PointFour:
+                case ".4":
                     return new Number(2, 5);
-                case PointFourRepeating:
+                case ".4_":
                     return new Number(4, 9);
                 default:
                     return new Number(int.Parse(s), 1);
