@@ -62,7 +62,7 @@ namespace Four4
         public static Number operator *(Number left, Number right)
         {
             double nr = (double)left.num * right.num;
-            if (nr > int.MaxValue)
+            if ((nr > int.MaxValue) || (nr < int.MinValue))
             {
                 return NaN;
             }
