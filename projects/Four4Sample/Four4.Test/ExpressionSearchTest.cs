@@ -45,6 +45,21 @@ namespace Four4.Test
         }
 
         [Fact]
+        public void OneOperandAndOneBinaryOperator3()
+        {
+            const string Expected = @"3
+3 3 +
+3 3 + 3 +
+3 3 3 + +";
+
+            ExpressionSearch search = new ExpressionSearch { NumeralCount = 3 };
+            search.AddOperand("3");
+            search.AddOperator("+");
+
+            TestSearch(search, Expected);
+        }
+
+        [Fact]
         public void OneOperandAndOneUnaryOperator()
         {
             const string Expected = @"4

@@ -16,7 +16,10 @@ namespace Four4
         {
             this.operands = new List<string>();
             this.operators = new List<string>();
+            this.NumeralCount = 4;
         }
+
+        public int NumeralCount { get; set; }
 
         public void AddOperand(string op)
         {
@@ -56,7 +59,7 @@ namespace Four4
                 }
             }
 
-            if (expr.NumeralCount < 4)
+            if (expr.NumeralCount < this.NumeralCount)
             {
                 foreach (string op in this.operands)
                 {
