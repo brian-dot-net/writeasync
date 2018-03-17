@@ -61,9 +61,14 @@ namespace Four4
 
         public static Number operator *(Number left, Number right)
         {
-            int n = left.num * right.num;
+            double nr = (double)left.num * right.num;
+            if (nr > int.MaxValue)
+            {
+                return NaN;
+            }
+
             int d = left.denom * right.denom;
-            return new Number(n, d);
+            return new Number((int)nr, d);
         }
 
         public static Number operator /(Number left, Number right)

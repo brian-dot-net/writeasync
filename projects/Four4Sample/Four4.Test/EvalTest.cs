@@ -156,6 +156,16 @@ namespace Four4.Test
             Test(input, result);
         }
 
+        [Theory]
+        [InlineData("3 ! !", "720")]
+        [InlineData("3 ! ! 3 ^", "373248000")]
+        [InlineData("3 ! ! 3 ^ .3 /", "NaN")]
+        [InlineData("3 ! ! 3 ^ .3 / 3 ^", "NaN")]
+        public void ExpressionsWith3(string input, string result)
+        {
+            Test(input, result);
+        }
+
         private static void Test(string input, string result)
         {
             Expression.Eval(input).ToString().Should().Be(result, "input was {0}", input);
