@@ -40,6 +40,19 @@ namespace Four4.Test
             output[6].Should().Be("11 = (33/3)");
         }
 
+        [Fact]
+        public void RunWithMoreThan100Results()
+        {
+            string[] output = Run("4", "2", "102");
+
+            output.Should().HaveCount(104);
+            output[0].Should().Match("Solving 4 4s (min=2, max=102)...");
+            output[1].Should().Match("Found 101 results in * ms.");
+            output[2].Should().Be("2 = ((44+4)/(4)!)");
+            output[101].Should().Be("101 = ((44/.4_)+sqrt(4))");
+            output[102].Should().Be("102 = ((44+(4)!)/sqrt(.4_))");
+        }
+
         private static string[] Run(params string[] args)
         {
             StringBuilder sb = new StringBuilder();

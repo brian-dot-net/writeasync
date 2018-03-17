@@ -80,7 +80,7 @@ namespace Four4
         private bool OnFound(Results results, Expression expr)
         {
             results.Add(expr);
-            return results.Count < 100;
+            return results.Count < (this.max - this.min + 1);
         }
 
         private ExpressionSearch InitSearch()
