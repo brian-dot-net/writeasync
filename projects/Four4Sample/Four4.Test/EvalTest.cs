@@ -23,6 +23,18 @@ namespace Four4.Test
         }
 
         [Theory]
+        [InlineData("3", "3")]
+        [InlineData(".3", "3/10")]
+        [InlineData(".3_", "1/3")]
+        [InlineData("33", "33")]
+        [InlineData("3 3", "NaN")]
+        [InlineData("333", "333")]
+        public void Numbers3(string input, string result)
+        {
+            Test(input, result);
+        }
+
+        [Theory]
         [InlineData("4 4 +", "8")]
         [InlineData("4 .4 +", "22/5")]
         [InlineData(".4 44 4 + +", "242/5")]
