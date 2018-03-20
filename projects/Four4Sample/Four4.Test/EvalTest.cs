@@ -173,6 +173,7 @@ namespace Four4.Test
         [InlineData(".5 5 5 * 5 + ^ 5 5 - .5 - *")]
         [InlineData(".5 55 5 ^ / 5 +")]
         [InlineData("4 ! 4 ! 4 R / ! - .4 +")]
+        [InlineData(".5 55 5 ^ / .5 55 5 ^ / +")]
         public void BadExpressions(string input)
         {
             Test(input, "NaN");

@@ -50,8 +50,13 @@ namespace Four4
                 return NaN;
             }
 
-            int d = left.denom * right.denom;
-            return new Number((int)nr, d);
+            double dr = (double)left.denom * right.denom;
+            if (dr > int.MaxValue)
+            {
+                return NaN;
+            }
+
+            return new Number((int)nr, (int)dr);
         }
 
         public static Number operator -(Number left, Number right)
