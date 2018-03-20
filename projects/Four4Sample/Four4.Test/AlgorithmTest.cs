@@ -53,6 +53,16 @@ namespace Four4.Test
             output[102].Should().Be("102 = ((44+(4)!)/sqrt(.4_))");
         }
 
+        [Fact]
+        public void AllowHigherNumberOfDigits()
+        {
+            string[] output = Run("3", "333", "333");
+
+            output[0].Should().Match("Solving 3 3s (min=333, max=333)...");
+            output[1].Should().Match("Found 1 results in * ms.");
+            output[2].Should().Be("333 = 333");
+        }
+
         private static string[] Run(params string[] args)
         {
             StringBuilder sb = new StringBuilder();

@@ -85,7 +85,7 @@ namespace Four4
 
         private ExpressionSearch InitSearch()
         {
-            string d = this.digit.ToString();
+            char d = (char)(this.digit + '0');
             ExpressionSearch search = new ExpressionSearch() { NumeralCount = this.digit };
             search.AddOperator("+");
             search.AddOperator("-");
@@ -94,8 +94,12 @@ namespace Four4
             search.AddOperator("^");
             search.AddOperator("!");
             search.AddOperator("R");
-            search.AddOperand(d + d);
-            search.AddOperand(d);
+            for (int i = this.digit; i > 0; --i)
+            {
+                string op = new string(d, i);
+                search.AddOperand(op);
+            }
+
             search.AddOperand("." + d);
             search.AddOperand("." + d + "_");
             return search;
