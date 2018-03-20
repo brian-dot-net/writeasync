@@ -44,9 +44,14 @@ namespace Four4
 
         public static Number operator +(Number left, Number right)
         {
-            int n = (left.num * right.denom) + (right.num * left.denom);
+            double nr = ((double)left.num * right.denom) + ((double)right.num * left.denom);
+            if ((nr > int.MaxValue) || (nr < int.MinValue))
+            {
+                return NaN;
+            }
+
             int d = left.denom * right.denom;
-            return new Number(n, d);
+            return new Number((int)nr, d);
         }
 
         public static Number operator -(Number left, Number right)

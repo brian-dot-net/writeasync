@@ -159,21 +159,23 @@ namespace Four4.Test
         [Theory]
         [InlineData("3 ! !", "720")]
         [InlineData("3 ! ! 3 ^", "373248000")]
-        [InlineData("3 ! ! 3 ^ .3 /", "NaN")]
-        [InlineData("3 ! ! 3 ^ .3 / 3 ^", "NaN")]
-        [InlineData("3 ! ! 3 ^ .3 33 - /", "NaN")]
-        [InlineData("3 ! ! .3 3 ! - / 3 ^", "NaN")]
         public void ExpressionsWith3(string input, string result)
         {
             Test(input, result);
         }
 
         [Theory]
-        [InlineData(".5 5 ^ 5 ^ 5 ! /", "NaN")]
-        [InlineData(".5 5 5 * 5 + ^ 5 5 - .5 - *", "NaN")]
-        public void ExpressionsWith5(string input, string result)
+        [InlineData("3 ! ! 3 ^ .3 /")]
+        [InlineData("3 ! ! 3 ^ .3 / 3 ^")]
+        [InlineData("3 ! ! 3 ^ .3 33 - /")]
+        [InlineData("3 ! ! .3 3 ! - / 3 ^")]
+        [InlineData(".5 5 ^ 5 ^ 5 ! /")]
+        [InlineData(".5 5 5 * 5 + ^ 5 5 - .5 - *")]
+        [InlineData(".5 55 5 ^ / 5 +")]
+        [InlineData("4 ! 4 ! 4 R / ! - .4 +")]
+        public void BadExpressions(string input)
         {
-            Test(input, result);
+            Test(input, "NaN");
         }
 
         private static void Test(string input, string result)
