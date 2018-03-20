@@ -170,6 +170,7 @@ namespace Four4.Test
 
         [Theory]
         [InlineData(".5 5 ^ 5 ^ 5 ! /", "NaN")]
+        [InlineData(".5 5 5 * 5 + ^ 5 5 - .5 - *", "NaN")]
         public void ExpressionsWith5(string input, string result)
         {
             Test(input, result);
