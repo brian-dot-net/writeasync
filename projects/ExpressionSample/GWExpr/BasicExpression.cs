@@ -4,6 +4,8 @@
 
 namespace GWExpr
 {
+    using Sprache;
+
     public sealed class BasicExpression
     {
         private readonly string input;
@@ -13,7 +15,14 @@ namespace GWExpr
             this.input = input;
         }
 
-        public static BasicExpression Parse(string input) => new BasicExpression(input);
+        public static BasicExpression FromString(string input)
+        {
+            var expr =
+                from n in Parse.Number
+                select new BasicExpression(n);
+
+            return expr.Parse(input);
+        }
 
         public override string ToString() => "NumericLiteral(" + this.input + ")";
     }

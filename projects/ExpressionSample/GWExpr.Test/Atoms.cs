@@ -15,7 +15,7 @@ namespace GWExpr.Test
         [Theory]
         public void Integers(string input, string output)
         {
-            BasicExpression.Parse(input).ToString().Should().Be(output);
+            BasicExpression.FromString(input).ToString().Should().Be(output);
         }
     }
 }
