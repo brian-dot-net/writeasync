@@ -4,6 +4,7 @@
 
 namespace GWExpr
 {
+    using System;
     using Sprache;
 
     public abstract class BasicExpression
@@ -19,6 +20,8 @@ namespace GWExpr
                 select Num(int.Parse(n));
             var quote = Parse.Char('\"');
             var dollar = Parse.Char('$');
+            var leftParen = Parse.Char('(');
+            var rightParen = Parse.Char(')');
             var nonQuote = Parse.AnyChar.Except(quote);
             var stringLiteral =
                 from lq in quote
@@ -38,9 +41,17 @@ namespace GWExpr
                 stringVar
                 .Or(numericVar);
 
+            var array =
+                from v in numericVar
+                from lp in leftParen
+                from i in numericLiteral
+                from rp in rightParen
+                select Arr(v, i);
+
             var expr =
                 numericLiteral
                 .Or(stringLiteral)
+                .Or(array)
                 .Or(scalar)
                 .End();
 
@@ -54,6 +65,8 @@ namespace GWExpr
         private static BasicExpression Str(string s) => new StringLiteral(s);
 
         private static BasicExpression StrVar(string v) => new StringVariable(v);
+
+        private static BasicExpression Arr(BasicExpression v, BasicExpression i) => new ArrayVariable(v, i);
 
         private sealed class NumericLiteral : BasicExpression
         {
@@ -101,6 +114,20 @@ namespace GWExpr
             }
 
             public override string ToString() => "StringVariable(" + this.v + ")";
+        }
+
+        private sealed class ArrayVariable : BasicExpression
+        {
+            private readonly BasicExpression v;
+            private readonly BasicExpression i;
+
+            public ArrayVariable(BasicExpression v, BasicExpression i)
+            {
+                this.v = v;
+                this.i = i;
+            }
+
+            public override string ToString() => "ArrayVariable(" + this.v + ", " + this.i + ")";
         }
     }
 }

@@ -7,7 +7,7 @@ namespace GWExpr.Test
     using FluentAssertions;
     using Xunit;
 
-    public class Atoms
+    public sealed class Atoms
     {
         [InlineData("1", "NumericLiteral(1)")]
         [InlineData("22", "NumericLiteral(22)")]
