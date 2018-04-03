@@ -6,24 +6,56 @@ namespace GWExpr
 {
     using Sprache;
 
-    public sealed class BasicExpression
+    public abstract class BasicExpression
     {
-        private readonly string input;
-
-        private BasicExpression(string input)
+        protected BasicExpression()
         {
-            this.input = input;
         }
 
         public static BasicExpression FromString(string input)
         {
-            var expr =
+            var numericLiteral =
                 from n in Parse.Number
-                select new BasicExpression(n);
+                select Num(int.Parse(n));
+            var quote = Parse.Char('\"');
+            var nonQuote = Parse.AnyChar.Except(quote);
+            var stringLiteral =
+                from lq in quote
+                from c in nonQuote.Many().Text()
+                from rq in quote
+                select Str(c);
+
+            var expr = numericLiteral.Or(stringLiteral);
 
             return expr.Parse(input);
         }
 
-        public override string ToString() => "NumericLiteral(" + this.input + ")";
+        private static BasicExpression Num(int n) => new NumericLiteral(n);
+
+        private static BasicExpression Str(string s) => new StringLiteral(s);
+
+        private sealed class NumericLiteral : BasicExpression
+        {
+            private readonly int n;
+
+            public NumericLiteral(int n)
+            {
+                this.n = n;
+            }
+
+            public override string ToString() => "NumericLiteral(" + this.n + ")";
+        }
+
+        private sealed class StringLiteral : BasicExpression
+        {
+            private readonly string s;
+
+            public StringLiteral(string s)
+            {
+                this.s = s;
+            }
+
+            public override string ToString() => "StringLiteral(\"" + this.s + "\")";
+        }
     }
 }

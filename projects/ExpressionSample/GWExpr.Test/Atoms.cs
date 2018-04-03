@@ -17,5 +17,12 @@ namespace GWExpr.Test
         {
             BasicExpression.FromString(input).ToString().Should().Be(output);
         }
+
+        [InlineData("\"1\"", "StringLiteral(\"1\")")]
+        [Theory]
+        public void Strings(string input, string output)
+        {
+            BasicExpression.FromString(input).ToString().Should().Be(output);
+        }
     }
 }
