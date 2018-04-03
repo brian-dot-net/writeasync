@@ -19,6 +19,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("\"1\"", "StringLiteral(\"1\")")]
+        [InlineData("\"\"", "StringLiteral(\"\")")]
+        [InlineData("\"string with spaces\"", "StringLiteral(\"string with spaces\")")]
         [Theory]
         public void Strings(string input, string output)
         {
