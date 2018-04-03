@@ -37,6 +37,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("A$", "StringVariable(A)")]
+        [InlineData("AB$", "StringVariable(AB)")]
+        [InlineData("XYZ123$", "StringVariable(XYZ123)")]
         [Theory]
         public void StringVariables(string input, string output)
         {
