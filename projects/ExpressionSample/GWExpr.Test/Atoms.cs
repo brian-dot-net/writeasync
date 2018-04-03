@@ -28,6 +28,7 @@ namespace GWExpr.Test
         }
 
         [InlineData("A", "NumericVariable(A)")]
+        [InlineData("AB", "NumericVariable(AB)")]
         [Theory]
         public void NumericVariables(string input, string output)
         {

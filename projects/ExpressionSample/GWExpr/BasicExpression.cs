@@ -25,20 +25,21 @@ namespace GWExpr
                 from rq in quote
                 select Str(c);
             var variable =
-                from v in Parse.Letter
+                from v in Parse.Letter.AtLeastOnce().Text()
                 select NumVar(v);
 
             var expr =
                 numericLiteral
                 .Or(stringLiteral)
-                .Or(variable);
+                .Or(variable)
+                .End();
 
             return expr.Parse(input);
         }
 
         private static BasicExpression Num(int n) => new NumericLiteral(n);
 
-        private static BasicExpression NumVar(char v) => new NumericVariable(v);
+        private static BasicExpression NumVar(string v) => new NumericVariable(v);
 
         private static BasicExpression Str(string s) => new StringLiteral(s);
 
@@ -68,9 +69,9 @@ namespace GWExpr
 
         private sealed class NumericVariable : BasicExpression
         {
-            private readonly char v;
+            private readonly string v;
 
-            public NumericVariable(char v)
+            public NumericVariable(string v)
             {
                 this.v = v;
             }
