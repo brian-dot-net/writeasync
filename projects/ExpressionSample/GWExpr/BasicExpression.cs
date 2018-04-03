@@ -24,13 +24,21 @@ namespace GWExpr
                 from c in nonQuote.Many().Text()
                 from rq in quote
                 select Str(c);
+            var variable =
+                from v in Parse.Letter
+                select NumVar(v);
 
-            var expr = numericLiteral.Or(stringLiteral);
+            var expr =
+                numericLiteral
+                .Or(stringLiteral)
+                .Or(variable);
 
             return expr.Parse(input);
         }
 
         private static BasicExpression Num(int n) => new NumericLiteral(n);
+
+        private static BasicExpression NumVar(char v) => new NumericVariable(v);
 
         private static BasicExpression Str(string s) => new StringLiteral(s);
 
@@ -56,6 +64,18 @@ namespace GWExpr
             }
 
             public override string ToString() => "StringLiteral(\"" + this.s + "\")";
+        }
+
+        private sealed class NumericVariable : BasicExpression
+        {
+            private readonly char v;
+
+            public NumericVariable(char v)
+            {
+                this.v = v;
+            }
+
+            public override string ToString() => "NumericVariable(" + this.v + ")";
         }
     }
 }
