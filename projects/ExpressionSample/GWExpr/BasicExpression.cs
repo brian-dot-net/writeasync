@@ -25,7 +25,7 @@ namespace GWExpr
                 from rq in quote
                 select Str(c);
             var variable =
-                from v in Parse.Letter.AtLeastOnce().Text()
+                from v in Parse.Identifier(Parse.Letter, Parse.LetterOrDigit)
                 select NumVar(v);
 
             var expr =
