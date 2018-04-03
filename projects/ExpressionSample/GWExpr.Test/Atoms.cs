@@ -10,6 +10,8 @@ namespace GWExpr.Test
     public class Atoms
     {
         [InlineData("1", "NumericLiteral(1)")]
+        [InlineData("22", "NumericLiteral(22)")]
+        [InlineData("32000", "NumericLiteral(32000)")]
         [Theory]
         public void Integers(string input, string output)
         {
