@@ -35,5 +35,12 @@ namespace GWExpr.Test
         {
             BasicExpression.FromString(input).ToString().Should().Be(output);
         }
+
+        [InlineData("A$", "StringVariable(A)")]
+        [Theory]
+        public void StringVariables(string input, string output)
+        {
+            BasicExpression.FromString(input).ToString().Should().Be(output);
+        }
     }
 }

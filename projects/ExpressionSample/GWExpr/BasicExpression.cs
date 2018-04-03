@@ -18,20 +18,30 @@ namespace GWExpr
                 from n in Parse.Number
                 select Num(int.Parse(n));
             var quote = Parse.Char('\"');
+            var dollar = Parse.Char('$');
             var nonQuote = Parse.AnyChar.Except(quote);
             var stringLiteral =
                 from lq in quote
                 from c in nonQuote.Many().Text()
                 from rq in quote
                 select Str(c);
-            var variable =
-                from v in Parse.Identifier(Parse.Letter, Parse.LetterOrDigit)
+
+            var id = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit);
+            var stringVar =
+                from v in id
+                from d in dollar
+                select StrVar(v);
+            var numericVar =
+                from v in id
                 select NumVar(v);
+            var scalar =
+                stringVar
+                .Or(numericVar);
 
             var expr =
                 numericLiteral
                 .Or(stringLiteral)
-                .Or(variable)
+                .Or(scalar)
                 .End();
 
             return expr.Parse(input);
@@ -42,6 +52,8 @@ namespace GWExpr
         private static BasicExpression NumVar(string v) => new NumericVariable(v);
 
         private static BasicExpression Str(string s) => new StringLiteral(s);
+
+        private static BasicExpression StrVar(string v) => new StringVariable(v);
 
         private sealed class NumericLiteral : BasicExpression
         {
@@ -77,6 +89,18 @@ namespace GWExpr
             }
 
             public override string ToString() => "NumericVariable(" + this.v + ")";
+        }
+
+        private sealed class StringVariable : BasicExpression
+        {
+            private readonly string v;
+
+            public StringVariable(string v)
+            {
+                this.v = v;
+            }
+
+            public override string ToString() => "StringVariable(" + this.v + ")";
         }
     }
 }
