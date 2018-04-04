@@ -64,6 +64,15 @@ namespace GWExpr.Test
             Test(input, output);
         }
 
+        [InlineData("A$(1,B)", "ArrayVariable(StringVariable(A), NumericLiteral(1), NumericVariable(B))")]
+        [InlineData("AB$(CD123,2)", "ArrayVariable(StringVariable(AB), NumericVariable(CD123), NumericLiteral(2))")]
+        [InlineData("XY5$(ZZ,33)", "ArrayVariable(StringVariable(XY5), NumericVariable(ZZ), NumericLiteral(33))")]
+        [Theory]
+        public void StringWithLiteralAndVarIndex2D(string input, string output)
+        {
+            Test(input, output);
+        }
+
         [InlineData("A$(\"bad\")")]
         [InlineData("XYZ123(\"bad\")")]
         [Theory]
