@@ -27,6 +27,15 @@ namespace GWExpr.Test
             Test(input, output);
         }
 
+        [InlineData("A$(1)", "ArrayVariable(StringVariable(A), NumericLiteral(1))")]
+        [InlineData("AB$(1)", "ArrayVariable(StringVariable(AB), NumericLiteral(1))")]
+        [InlineData("XYZ123$(1)", "ArrayVariable(StringVariable(XYZ123), NumericLiteral(1))")]
+        [Theory]
+        public void StringWithLiteralIndex1D(string input, string output)
+        {
+            Test(input, output);
+        }
+
         private static void Test(string input, string output)
         {
             BasicExpression.FromString(input).ToString().Should().Be(output);

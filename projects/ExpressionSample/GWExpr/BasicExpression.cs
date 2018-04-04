@@ -49,7 +49,7 @@ namespace GWExpr
                 from rest in comma.Then(_ => numericLiteral).Many()
                 select head.Concat(rest);
             var array =
-                from v in numericVar
+                from v in scalar
                 from lp in leftParen
                 from i in indexList
                 from rp in rightParen
