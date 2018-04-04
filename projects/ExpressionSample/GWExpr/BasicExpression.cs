@@ -62,7 +62,14 @@ namespace GWExpr
                 .Or(scalar)
                 .End();
 
-            return expr.Parse(input);
+            try
+            {
+                return expr.Parse(input);
+            }
+            catch (ParseException e)
+            {
+                throw new FormatException("Bad expression '" + input + "'.", e);
+            }
         }
 
         private static BasicExpression Num(int n) => new NumericLiteral(n);

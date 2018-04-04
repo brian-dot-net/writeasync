@@ -4,6 +4,7 @@
 
 namespace GWExpr.Test
 {
+    using System;
     using FluentAssertions;
     using Xunit;
 
@@ -43,6 +44,16 @@ namespace GWExpr.Test
         public void StringWithLiteralIndex2D(string input, string output)
         {
             Test(input, output);
+        }
+
+        [InlineData("A$(\"bad\")")]
+        [InlineData("XYZ123(\"bad\")")]
+        [Theory]
+        public void FailNonNumericIndex(string input)
+        {
+            Action act = () => BasicExpression.FromString(input);
+
+            act.Should().Throw<FormatException>().WithMessage("*'" + input + "'*").WithInnerException<Exception>();
         }
 
         private static void Test(string input, string output)
