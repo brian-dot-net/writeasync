@@ -5,6 +5,8 @@
 namespace GWExpr
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Sprache;
 
     public abstract class BasicExpression
@@ -22,6 +24,7 @@ namespace GWExpr
             var dollar = Parse.Char('$');
             var leftParen = Parse.Char('(');
             var rightParen = Parse.Char(')');
+            var comma = Parse.Char(',');
             var nonQuote = Parse.AnyChar.Except(quote);
             var stringLiteral =
                 from lq in quote
@@ -41,10 +44,14 @@ namespace GWExpr
                 stringVar
                 .Or(numericVar);
 
+            var indexList =
+                from head in numericLiteral.Once()
+                from rest in comma.Then(_ => numericLiteral).Many()
+                select head.Concat(rest);
             var array =
                 from v in numericVar
                 from lp in leftParen
-                from i in numericLiteral
+                from i in indexList
                 from rp in rightParen
                 select Arr(v, i);
 
@@ -66,7 +73,7 @@ namespace GWExpr
 
         private static BasicExpression StrVar(string v) => new StringVariable(v);
 
-        private static BasicExpression Arr(BasicExpression v, BasicExpression i) => new ArrayVariable(v, i);
+        private static BasicExpression Arr(BasicExpression v, IEnumerable<BasicExpression> i) => new ArrayVariable(v, i);
 
         private sealed class NumericLiteral : BasicExpression
         {
@@ -119,15 +126,19 @@ namespace GWExpr
         private sealed class ArrayVariable : BasicExpression
         {
             private readonly BasicExpression v;
-            private readonly BasicExpression i;
+            private readonly BasicExpression[] i;
 
-            public ArrayVariable(BasicExpression v, BasicExpression i)
+            public ArrayVariable(BasicExpression v, IEnumerable<BasicExpression> i)
             {
                 this.v = v;
-                this.i = i;
+                this.i = i.ToArray();
             }
 
-            public override string ToString() => "ArrayVariable(" + this.v + ", " + this.i + ")";
+            public override string ToString()
+            {
+                var list = string.Join<BasicExpression>(", ", this.i);
+                return "ArrayVariable(" + this.v + ", " + list + ")";
+            }
         }
     }
 }
