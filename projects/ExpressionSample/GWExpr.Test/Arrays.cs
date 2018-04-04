@@ -19,6 +19,15 @@ namespace GWExpr.Test
             Test(input, output);
         }
 
+        [InlineData("A(B)", "ArrayVariable(NumericVariable(A), NumericVariable(B))")]
+        [InlineData("AB(CD123)", "ArrayVariable(NumericVariable(AB), NumericVariable(CD123))")]
+        [InlineData("XY5(ZZ)", "ArrayVariable(NumericVariable(XY5), NumericVariable(ZZ))")]
+        [Theory]
+        public void NumericWithVarIndex1D(string input, string output)
+        {
+            Test(input, output);
+        }
+
         [InlineData("A(1,0)", "ArrayVariable(NumericVariable(A), NumericLiteral(1), NumericLiteral(0))")]
         [InlineData("AB(1,2)", "ArrayVariable(NumericVariable(AB), NumericLiteral(1), NumericLiteral(2))")]
         [InlineData("XYZ123(250,99)", "ArrayVariable(NumericVariable(XYZ123), NumericLiteral(250), NumericLiteral(99))")]

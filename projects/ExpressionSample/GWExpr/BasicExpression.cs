@@ -44,9 +44,11 @@ namespace GWExpr
                 stringVar
                 .Or(numericVar);
 
+            var numeric = numericLiteral.Or(numericVar);
+
             var indexList =
-                from head in numericLiteral.Once()
-                from rest in comma.Then(_ => numericLiteral).Many()
+                from head in numeric.Once()
+                from rest in comma.Then(_ => numeric).Many()
                 select head.Concat(rest);
             var array =
                 from v in scalar
