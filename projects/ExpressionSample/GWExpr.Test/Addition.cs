@@ -15,12 +15,7 @@ namespace GWExpr.Test
         [Theory]
         public void Numeric(string input, string output)
         {
-            Test(input, output);
-        }
-
-        private static void Test(string input, string output)
-        {
-            BasicExpression.FromString(input).ToString().Should().Be(output);
+            Test.Good(input, output);
         }
     }
 }

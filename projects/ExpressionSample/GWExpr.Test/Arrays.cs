@@ -16,7 +16,7 @@ namespace GWExpr.Test
         [Theory]
         public void NumericWithLiteralIndex1D(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("A(B)", "Array(NumericVariable(A), NumericVariable(B))")]
@@ -25,7 +25,7 @@ namespace GWExpr.Test
         [Theory]
         public void NumericWithVarIndex1D(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("A(1,0)", "Array(NumericVariable(A), NumericLiteral(1), NumericLiteral(0))")]
@@ -34,7 +34,7 @@ namespace GWExpr.Test
         [Theory]
         public void NumericWithLiteralIndex2D(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("A(1,B)", "Array(NumericVariable(A), NumericLiteral(1), NumericVariable(B))")]
@@ -43,7 +43,7 @@ namespace GWExpr.Test
         [Theory]
         public void NumericWithLiteralAndVarIndex2D(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("A$(1)", "Array(StringVariable(A), NumericLiteral(1))")]
@@ -52,7 +52,7 @@ namespace GWExpr.Test
         [Theory]
         public void StringWithLiteralIndex1D(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("A$(1,0)", "Array(StringVariable(A), NumericLiteral(1), NumericLiteral(0))")]
@@ -61,7 +61,7 @@ namespace GWExpr.Test
         [Theory]
         public void StringWithLiteralIndex2D(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("A$(1,B)", "Array(StringVariable(A), NumericLiteral(1), NumericVariable(B))")]
@@ -70,7 +70,7 @@ namespace GWExpr.Test
         [Theory]
         public void StringWithLiteralAndVarIndex2D(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("a(1)", "Array(NumericVariable(A), NumericLiteral(1))")]
@@ -82,7 +82,7 @@ namespace GWExpr.Test
         [Theory]
         public void NameToUppercase(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("A$(\"bad\")")]
@@ -91,14 +91,7 @@ namespace GWExpr.Test
         [Theory]
         public void FailNonNumericIndex(string input)
         {
-            Action act = () => BasicExpression.FromString(input);
-
-            act.Should().Throw<FormatException>().WithMessage("*'" + input + "'*").WithInnerException<Exception>();
-        }
-
-        private static void Test(string input, string output)
-        {
-            BasicExpression.FromString(input).ToString().Should().Be(output);
+            Test.Bad(input);
         }
     }
 }

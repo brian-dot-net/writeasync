@@ -4,7 +4,6 @@
 
 namespace GWExpr.Test
 {
-    using FluentAssertions;
     using Xunit;
 
     public sealed class Atoms
@@ -15,7 +14,7 @@ namespace GWExpr.Test
         [Theory]
         public void Integers(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("\"1\"", "StringLiteral(\"1\")")]
@@ -24,7 +23,7 @@ namespace GWExpr.Test
         [Theory]
         public void Strings(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("A", "NumericVariable(A)")]
@@ -33,7 +32,7 @@ namespace GWExpr.Test
         [Theory]
         public void NumericVariables(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("A$", "StringVariable(A)")]
@@ -42,7 +41,7 @@ namespace GWExpr.Test
         [Theory]
         public void StringVariables(string input, string output)
         {
-            Test(input, output);
+            Test.Good(input, output);
         }
 
         [InlineData("a", "NumericVariable(A)")]
@@ -54,12 +53,7 @@ namespace GWExpr.Test
         [Theory]
         public void VariablesToUppercase(string input, string output)
         {
-            Test(input, output);
-        }
-
-        private static void Test(string input, string output)
-        {
-            BasicExpression.FromString(input).ToString().Should().Be(output);
+            Test.Good(input, output);
         }
     }
 }
