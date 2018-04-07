@@ -17,35 +17,9 @@ namespace GWExpr
 
         public static BasicExpression FromString(string input)
         {
-            var id = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit);
-            var stringScalarVar =
-                from v in id
-                from d in Ch.Dollar
-                select Ex.StrVar(v);
-            var numericScalarVar =
-                from v in id
-                select Ex.NumVar(v);
-            var scalarVar =
-                stringScalarVar
-                .Or(numericScalarVar);
-
-            var numeric = Lit.Num.Or(numericScalarVar);
-
-            var indexList =
-                from head in numeric.Once()
-                from rest in Ch.Comma.Then(_ => numeric).Many()
-                select head.Concat(rest);
-            var array =
-                from v in scalarVar
-                from lp in Ch.LeftParen
-                from i in indexList
-                from rp in Ch.RightParen
-                select Ex.Arr(v, i);
-
-            var term =
-                Lit.Any
-                .Or(array)
-                .Or(scalarVar);
+            var numTerm = Lit.Num.Or(Var.NumAny);
+            var strTerm = Lit.Str.Or(Var.StrAny);
+            var term = strTerm.Or(numTerm);
 
             var add =
                 from x in term
@@ -92,6 +66,43 @@ namespace GWExpr
                 select Ex.Str(c);
 
             public static readonly Parser<BasicExpression> Any = Num.Or(Str);
+        }
+
+        private static class Var
+        {
+            public static readonly Parser<string> Id = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit);
+
+            public static readonly Parser<BasicVariable> StrScalar =
+                from v in Id
+                from d in Ch.Dollar
+                select Ex.StrVar(v);
+
+            public static readonly Parser<BasicVariable> NumScalar =
+                from v in Id
+                select Ex.NumVar(v);
+
+            public static readonly Parser<BasicExpression> Index = Lit.Num.Or(NumScalar);
+
+            public static readonly Parser<IEnumerable<BasicExpression>> IndexList =
+                from lp in Ch.LeftParen
+                from head in Index.Once()
+                from rest in Ch.Comma.Then(_ => Index).Many()
+                from rp in Ch.RightParen
+                select head.Concat(rest);
+
+            public static readonly Parser<BasicExpression> NumArray =
+                from v in NumScalar
+                from i in IndexList
+                select Ex.Arr(v, i);
+
+            public static readonly Parser<BasicExpression> StrArray =
+                from v in StrScalar
+                from i in IndexList
+                select Ex.Arr(v, i);
+
+            public static readonly Parser<BasicExpression> NumAny = NumArray.Or(NumScalar);
+
+            public static readonly Parser<BasicExpression> StrAny = StrArray.Or(StrScalar);
         }
 
         private static class Ex
