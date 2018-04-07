@@ -43,5 +43,16 @@ namespace GWExpr.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData("1+2+3", "Add(Add(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("(1+2+3)", "Add(Add(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("(1+2)+3", "Add(Add(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("1+(2+3)", "Add(NumericLiteral(1), Add(NumericLiteral(2), NumericLiteral(3)))")]
+        [InlineData("\"1\"+(\"2\"+\"3\")", "Add(StringLiteral(\"1\"), Add(StringLiteral(\"2\"), StringLiteral(\"3\")))")]
+        [Theory]
+        public void WithThreeTerms(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }

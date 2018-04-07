@@ -34,5 +34,15 @@ namespace GWExpr.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData("1/2/3", "Divide(Divide(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("(1/2/3)", "Divide(Divide(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("(1/2)/3", "Divide(Divide(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("1/(2/3)", "Divide(NumericLiteral(1), Divide(NumericLiteral(2), NumericLiteral(3)))")]
+        [Theory]
+        public void WithThreeTerms(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }
