@@ -25,5 +25,14 @@ namespace GWExpr.Test
         {
             Test.Bad(input);
         }
+
+        [InlineData("(1*2)", "Multiply(NumericLiteral(1), NumericLiteral(2))")]
+        [InlineData("(X*234)", "Multiply(NumericVariable(X), NumericLiteral(234))")]
+        [InlineData("(X(234)*YZ1234)", "Multiply(Array(NumericVariable(X), NumericLiteral(234)), NumericVariable(YZ1234))")]
+        [Theory]
+        public void WithParens(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }

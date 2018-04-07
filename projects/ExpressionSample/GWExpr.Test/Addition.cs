@@ -34,5 +34,14 @@ namespace GWExpr.Test
         {
             Test.Bad(input);
         }
+
+        [InlineData("(1+2)", "Add(NumericLiteral(1), NumericLiteral(2))")]
+        [InlineData("(X$+\"234\")", "Add(StringVariable(X), StringLiteral(\"234\"))")]
+        [InlineData("(X$(234)+YZ1234$)", "Add(Array(StringVariable(X), NumericLiteral(234)), StringVariable(YZ1234))")]
+        [Theory]
+        public void WithParens(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }

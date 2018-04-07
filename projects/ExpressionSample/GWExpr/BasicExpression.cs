@@ -20,12 +20,6 @@ namespace GWExpr
             var numTerm = Lit.Num.Or(Var.NumAny);
             var strTerm = Lit.Str.Or(Var.StrAny);
             var term = strTerm.Or(numTerm);
-            var parenTerm =
-                from lp in Ch.LeftParen
-                from x in term
-                from rp in Ch.RightParen
-                select x;
-            var anyTerm = parenTerm.Or(term);
 
             var addNum =
                 from x in numTerm
@@ -62,12 +56,18 @@ namespace GWExpr
                 .Or(subtract)
                 .Or(multiply)
                 .Or(divide)
-                .Or(anyTerm)
-                .End();
+                .Or(term);
+            var parenExpr =
+                from lp in Ch.LeftParen
+                from x in expr
+                from rp in Ch.RightParen
+                select x;
+            var anyExpr =
+                expr.Or(parenExpr);
 
             try
             {
-                return expr.Parse(input);
+                return anyExpr.End().Parse(input);
             }
             catch (ParseException e)
             {
