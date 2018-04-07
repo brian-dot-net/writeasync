@@ -17,9 +17,6 @@ namespace GWExpr
 
         public static BasicExpression FromString(string input)
         {
-            var numericLiteral =
-                from n in Parse.Number
-                select Num(int.Parse(n));
             var quote = Parse.Char('\"');
             var dollar = Parse.Char('$');
             var leftParen = Parse.Char('(');
@@ -27,25 +24,30 @@ namespace GWExpr
             var comma = Parse.Char(',');
             var plus = Parse.Char('+');
             var nonQuote = Parse.AnyChar.Except(quote);
+
+            var numericLiteral =
+                from n in Parse.Number
+                select Num(int.Parse(n));
             var stringLiteral =
                 from lq in quote
                 from c in nonQuote.Many().Text()
                 from rq in quote
                 select Str(c);
+            var literal = numericLiteral.Or(stringLiteral);
 
             var id = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit);
-            var stringVar =
+            var stringScalarVar =
                 from v in id
                 from d in dollar
                 select StrVar(v);
-            var numericVar =
+            var numericScalarVar =
                 from v in id
                 select NumVar(v);
             var scalarVar =
-                stringVar
-                .Or(numericVar);
+                stringScalarVar
+                .Or(numericScalarVar);
 
-            var numeric = numericLiteral.Or(numericVar);
+            var numeric = numericLiteral.Or(numericScalarVar);
 
             var indexList =
                 from head in numeric.Once()
@@ -59,8 +61,7 @@ namespace GWExpr
                 select Arr(v, i);
 
             var term =
-                numericLiteral
-                .Or(stringLiteral)
+                literal
                 .Or(array)
                 .Or(scalarVar);
 
