@@ -33,8 +33,15 @@ namespace GWExpr
                 select Ex.Add(x, y);
             var add = addStr.Or(addNum);
 
+            var subtract =
+                from x in numTerm
+                from m in Ch.Minus
+                from y in numTerm
+                select Ex.Subtract(x, y);
+
             var expr =
                 add
+                .Or(subtract)
                 .Or(term)
                 .End();
 
@@ -56,6 +63,7 @@ namespace GWExpr
             public static readonly Parser<char> RightParen = Parse.Char(')');
             public static readonly Parser<char> Comma = Parse.Char(',');
             public static readonly Parser<char> Plus = Parse.Char('+');
+            public static readonly Parser<char> Minus = Parse.Char('-');
             public static readonly Parser<char> NonQuote = Parse.AnyChar.Except(Quote);
         }
 
@@ -124,6 +132,8 @@ namespace GWExpr
             public static BasicExpression Arr(BasicVariable v, IEnumerable<BasicExpression> i) => new BasicArray(v, i);
 
             public static BasicExpression Add(BasicExpression x, BasicExpression y) => new AddExpression(x, y);
+
+            public static BasicExpression Subtract(BasicExpression x, BasicExpression y) => new SubtractExpression(x, y);
 
             private sealed class NumericLiteral : BasicExpression
             {
@@ -199,6 +209,20 @@ namespace GWExpr
                 }
 
                 public override string ToString() => "Add(" + this.x + ", " + this.y + ")";
+            }
+
+            private sealed class SubtractExpression : BasicExpression
+            {
+                private readonly BasicExpression x;
+                private readonly BasicExpression y;
+
+                public SubtractExpression(BasicExpression x, BasicExpression y)
+                {
+                    this.x = x;
+                    this.y = y;
+                }
+
+                public override string ToString() => "Subtract(" + this.x + ", " + this.y + ")";
             }
         }
 
