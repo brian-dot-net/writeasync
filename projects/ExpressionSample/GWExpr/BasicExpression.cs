@@ -114,7 +114,7 @@ namespace GWExpr
 
             public NumericVariable(string v)
             {
-                this.v = v;
+                this.v = v.ToUpperInvariant();
             }
 
             public override string ToString() => "NumericVariable(" + this.v + ")";

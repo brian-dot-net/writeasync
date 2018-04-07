@@ -45,6 +45,15 @@ namespace GWExpr.Test
             Test(input, output);
         }
 
+        [InlineData("a", "NumericVariable(A)")]
+        [InlineData("ab", "NumericVariable(AB)")]
+        [InlineData("xyZ123", "NumericVariable(XYZ123)")]
+        [Theory]
+        public void VariablesToUppercase(string input, string output)
+        {
+            Test(input, output);
+        }
+
         private static void Test(string input, string output)
         {
             BasicExpression.FromString(input).ToString().Should().Be(output);
