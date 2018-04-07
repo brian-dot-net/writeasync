@@ -17,28 +17,20 @@ namespace GWExpr
 
         public static BasicExpression FromString(string input)
         {
-            var quote = Parse.Char('\"');
-            var dollar = Parse.Char('$');
-            var leftParen = Parse.Char('(');
-            var rightParen = Parse.Char(')');
-            var comma = Parse.Char(',');
-            var plus = Parse.Char('+');
-            var nonQuote = Parse.AnyChar.Except(quote);
-
             var numericLiteral =
                 from n in Parse.Number
                 select Num(int.Parse(n));
             var stringLiteral =
-                from lq in quote
-                from c in nonQuote.Many().Text()
-                from rq in quote
+                from lq in Ch.Quote
+                from c in Ch.NonQuote.Many().Text()
+                from rq in Ch.Quote
                 select Str(c);
             var literal = numericLiteral.Or(stringLiteral);
 
             var id = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit);
             var stringScalarVar =
                 from v in id
-                from d in dollar
+                from d in Ch.Dollar
                 select StrVar(v);
             var numericScalarVar =
                 from v in id
@@ -51,13 +43,13 @@ namespace GWExpr
 
             var indexList =
                 from head in numeric.Once()
-                from rest in comma.Then(_ => numeric).Many()
+                from rest in Ch.Comma.Then(_ => numeric).Many()
                 select head.Concat(rest);
             var array =
                 from v in scalarVar
-                from lp in leftParen
+                from lp in Ch.LeftParen
                 from i in indexList
-                from rp in rightParen
+                from rp in Ch.RightParen
                 select Arr(v, i);
 
             var term =
@@ -67,7 +59,7 @@ namespace GWExpr
 
             var add =
                 from x in term
-                from p in plus
+                from p in Ch.Plus
                 from y in term
                 select Add(x, y);
 
@@ -97,6 +89,17 @@ namespace GWExpr
         private static BasicExpression Arr(BasicVariable v, IEnumerable<BasicExpression> i) => new BasicArray(v, i);
 
         private static BasicExpression Add(BasicExpression x, BasicExpression y) => new AddExpression(x, y);
+
+        private static class Ch
+        {
+            public static readonly Parser<char> Quote = Parse.Char('\"');
+            public static readonly Parser<char> Dollar = Parse.Char('$');
+            public static readonly Parser<char> LeftParen = Parse.Char('(');
+            public static readonly Parser<char> RightParen = Parse.Char(')');
+            public static readonly Parser<char> Comma = Parse.Char(',');
+            public static readonly Parser<char> Plus = Parse.Char('+');
+            public static readonly Parser<char> NonQuote = Parse.AnyChar.Except(Quote);
+        }
 
         private sealed class NumericLiteral : BasicExpression
         {
