@@ -93,7 +93,7 @@ namespace GWExpr
 
         private static BasicVariable StrVar(string v) => new StringVariable(v);
 
-        private static BasicExpression Arr(BasicVariable v, IEnumerable<BasicExpression> i) => new ArrayVariable(v, i);
+        private static BasicExpression Arr(BasicVariable v, IEnumerable<BasicExpression> i) => new BasicArray(v, i);
 
         private static BasicExpression Add(BasicExpression x, BasicExpression y) => new AddExpression(x, y);
 
@@ -153,12 +153,12 @@ namespace GWExpr
             public override string ToString() => "String" + base.ToString();
         }
 
-        private sealed class ArrayVariable : BasicExpression
+        private sealed class BasicArray : BasicExpression
         {
             private readonly BasicVariable v;
             private readonly BasicExpression[] i;
 
-            public ArrayVariable(BasicVariable v, IEnumerable<BasicExpression> i)
+            public BasicArray(BasicVariable v, IEnumerable<BasicExpression> i)
             {
                 this.v = v;
                 this.i = i.ToArray();
@@ -167,7 +167,7 @@ namespace GWExpr
             public override string ToString()
             {
                 var list = string.Join<BasicExpression>(", ", this.i);
-                return "ArrayVariable(" + this.v + ", " + list + ")";
+                return "Array(" + this.v + ", " + list + ")";
             }
         }
 

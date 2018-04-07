@@ -10,75 +10,75 @@ namespace GWExpr.Test
 
     public sealed class Arrays
     {
-        [InlineData("A(1)", "ArrayVariable(NumericVariable(A), NumericLiteral(1))")]
-        [InlineData("AB(1)", "ArrayVariable(NumericVariable(AB), NumericLiteral(1))")]
-        [InlineData("XYZ123(1)", "ArrayVariable(NumericVariable(XYZ123), NumericLiteral(1))")]
+        [InlineData("A(1)", "Array(NumericVariable(A), NumericLiteral(1))")]
+        [InlineData("AB(1)", "Array(NumericVariable(AB), NumericLiteral(1))")]
+        [InlineData("XYZ123(1)", "Array(NumericVariable(XYZ123), NumericLiteral(1))")]
         [Theory]
         public void NumericWithLiteralIndex1D(string input, string output)
         {
             Test(input, output);
         }
 
-        [InlineData("A(B)", "ArrayVariable(NumericVariable(A), NumericVariable(B))")]
-        [InlineData("AB(CD123)", "ArrayVariable(NumericVariable(AB), NumericVariable(CD123))")]
-        [InlineData("XY5(ZZ)", "ArrayVariable(NumericVariable(XY5), NumericVariable(ZZ))")]
+        [InlineData("A(B)", "Array(NumericVariable(A), NumericVariable(B))")]
+        [InlineData("AB(CD123)", "Array(NumericVariable(AB), NumericVariable(CD123))")]
+        [InlineData("XY5(ZZ)", "Array(NumericVariable(XY5), NumericVariable(ZZ))")]
         [Theory]
         public void NumericWithVarIndex1D(string input, string output)
         {
             Test(input, output);
         }
 
-        [InlineData("A(1,0)", "ArrayVariable(NumericVariable(A), NumericLiteral(1), NumericLiteral(0))")]
-        [InlineData("AB(1,2)", "ArrayVariable(NumericVariable(AB), NumericLiteral(1), NumericLiteral(2))")]
-        [InlineData("XYZ123(250,99)", "ArrayVariable(NumericVariable(XYZ123), NumericLiteral(250), NumericLiteral(99))")]
+        [InlineData("A(1,0)", "Array(NumericVariable(A), NumericLiteral(1), NumericLiteral(0))")]
+        [InlineData("AB(1,2)", "Array(NumericVariable(AB), NumericLiteral(1), NumericLiteral(2))")]
+        [InlineData("XYZ123(250,99)", "Array(NumericVariable(XYZ123), NumericLiteral(250), NumericLiteral(99))")]
         [Theory]
         public void NumericWithLiteralIndex2D(string input, string output)
         {
             Test(input, output);
         }
 
-        [InlineData("A(1,B)", "ArrayVariable(NumericVariable(A), NumericLiteral(1), NumericVariable(B))")]
-        [InlineData("AB(CD123,2)", "ArrayVariable(NumericVariable(AB), NumericVariable(CD123), NumericLiteral(2))")]
-        [InlineData("XY5(ZZ,33)", "ArrayVariable(NumericVariable(XY5), NumericVariable(ZZ), NumericLiteral(33))")]
+        [InlineData("A(1,B)", "Array(NumericVariable(A), NumericLiteral(1), NumericVariable(B))")]
+        [InlineData("AB(CD123,2)", "Array(NumericVariable(AB), NumericVariable(CD123), NumericLiteral(2))")]
+        [InlineData("XY5(ZZ,33)", "Array(NumericVariable(XY5), NumericVariable(ZZ), NumericLiteral(33))")]
         [Theory]
         public void NumericWithLiteralAndVarIndex2D(string input, string output)
         {
             Test(input, output);
         }
 
-        [InlineData("A$(1)", "ArrayVariable(StringVariable(A), NumericLiteral(1))")]
-        [InlineData("AB$(1)", "ArrayVariable(StringVariable(AB), NumericLiteral(1))")]
-        [InlineData("XYZ123$(1)", "ArrayVariable(StringVariable(XYZ123), NumericLiteral(1))")]
+        [InlineData("A$(1)", "Array(StringVariable(A), NumericLiteral(1))")]
+        [InlineData("AB$(1)", "Array(StringVariable(AB), NumericLiteral(1))")]
+        [InlineData("XYZ123$(1)", "Array(StringVariable(XYZ123), NumericLiteral(1))")]
         [Theory]
         public void StringWithLiteralIndex1D(string input, string output)
         {
             Test(input, output);
         }
 
-        [InlineData("A$(1,0)", "ArrayVariable(StringVariable(A), NumericLiteral(1), NumericLiteral(0))")]
-        [InlineData("AB$(1,2)", "ArrayVariable(StringVariable(AB), NumericLiteral(1), NumericLiteral(2))")]
-        [InlineData("XYZ123$(250,99)", "ArrayVariable(StringVariable(XYZ123), NumericLiteral(250), NumericLiteral(99))")]
+        [InlineData("A$(1,0)", "Array(StringVariable(A), NumericLiteral(1), NumericLiteral(0))")]
+        [InlineData("AB$(1,2)", "Array(StringVariable(AB), NumericLiteral(1), NumericLiteral(2))")]
+        [InlineData("XYZ123$(250,99)", "Array(StringVariable(XYZ123), NumericLiteral(250), NumericLiteral(99))")]
         [Theory]
         public void StringWithLiteralIndex2D(string input, string output)
         {
             Test(input, output);
         }
 
-        [InlineData("A$(1,B)", "ArrayVariable(StringVariable(A), NumericLiteral(1), NumericVariable(B))")]
-        [InlineData("AB$(CD123,2)", "ArrayVariable(StringVariable(AB), NumericVariable(CD123), NumericLiteral(2))")]
-        [InlineData("XY5$(ZZ,33)", "ArrayVariable(StringVariable(XY5), NumericVariable(ZZ), NumericLiteral(33))")]
+        [InlineData("A$(1,B)", "Array(StringVariable(A), NumericLiteral(1), NumericVariable(B))")]
+        [InlineData("AB$(CD123,2)", "Array(StringVariable(AB), NumericVariable(CD123), NumericLiteral(2))")]
+        [InlineData("XY5$(ZZ,33)", "Array(StringVariable(XY5), NumericVariable(ZZ), NumericLiteral(33))")]
         [Theory]
         public void StringWithLiteralAndVarIndex2D(string input, string output)
         {
             Test(input, output);
         }
 
-        [InlineData("a(1)", "ArrayVariable(NumericVariable(A), NumericLiteral(1))")]
-        [InlineData("Ab(1)", "ArrayVariable(NumericVariable(AB), NumericLiteral(1))")]
-        [InlineData("xYz123(1)", "ArrayVariable(NumericVariable(XYZ123), NumericLiteral(1))")]
-        [InlineData("a$(1)", "ArrayVariable(StringVariable(A), NumericLiteral(1))")]
-        [InlineData("Ab$(1)", "ArrayVariable(StringVariable(AB), NumericLiteral(1))")]
-        [InlineData("xYz123$(1)", "ArrayVariable(StringVariable(XYZ123), NumericLiteral(1))")]
+        [InlineData("a(1)", "Array(NumericVariable(A), NumericLiteral(1))")]
+        [InlineData("Ab(1)", "Array(NumericVariable(AB), NumericLiteral(1))")]
+        [InlineData("xYz123(1)", "Array(NumericVariable(XYZ123), NumericLiteral(1))")]
+        [InlineData("a$(1)", "Array(StringVariable(A), NumericLiteral(1))")]
+        [InlineData("Ab$(1)", "Array(StringVariable(AB), NumericLiteral(1))")]
+        [InlineData("xYz123$(1)", "Array(StringVariable(XYZ123), NumericLiteral(1))")]
         [Theory]
         public void NameToUppercase(string input, string output)
         {
