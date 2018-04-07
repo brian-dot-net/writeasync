@@ -45,15 +45,39 @@ namespace GWExpr
         {
             public static readonly Parser<BasicExpression> Num =
                 from n in Parse.Number
-                select Ex.Num(int.Parse(n));
+                select new NumericLiteral(int.Parse(n));
 
             public static readonly Parser<BasicExpression> Str =
                 from lq in Ch.Quote
-                from c in Ch.NonQuote.Many().Text()
+                from s in Ch.NonQuote.Many().Text()
                 from rq in Ch.Quote
-                select Ex.Str(c);
+                select new StringLiteral(s);
 
             public static readonly Parser<BasicExpression> Any = Num.Or(Str);
+
+            private sealed class NumericLiteral : BasicExpression
+            {
+                private readonly int n;
+
+                public NumericLiteral(int n)
+                {
+                    this.n = n;
+                }
+
+                public override string ToString() => "NumericLiteral(" + this.n + ")";
+            }
+
+            private sealed class StringLiteral : BasicExpression
+            {
+                private readonly string s;
+
+                public StringLiteral(string s)
+                {
+                    this.s = s;
+                }
+
+                public override string ToString() => "StringLiteral(\"" + this.s + "\")";
+            }
         }
 
         private static class Var
@@ -166,11 +190,7 @@ namespace GWExpr
 
         private static class Ex
         {
-            public static BasicExpression Num(int n) => new NumericLiteral(n);
-
             public static BasicVariable NumVar(string v) => new NumericVariable(v);
-
-            public static BasicExpression Str(string s) => new StringLiteral(s);
 
             public static BasicVariable StrVar(string v) => new StringVariable(v);
 
@@ -194,30 +214,6 @@ namespace GWExpr
             public static BasicExpression Divide(IEnumerable<BasicExpression> xs)
             {
                 return xs.Aggregate((x, y) => new DivideExpression(x, y));
-            }
-
-            private sealed class NumericLiteral : BasicExpression
-            {
-                private readonly int n;
-
-                public NumericLiteral(int n)
-                {
-                    this.n = n;
-                }
-
-                public override string ToString() => "NumericLiteral(" + this.n + ")";
-            }
-
-            private sealed class StringLiteral : BasicExpression
-            {
-                private readonly string s;
-
-                public StringLiteral(string s)
-                {
-                    this.s = s;
-                }
-
-                public override string ToString() => "StringLiteral(\"" + this.s + "\")";
             }
 
             private sealed class NumericVariable : BasicVariable
