@@ -75,6 +75,7 @@ namespace GWExpr.Test
 
         [InlineData("A$(\"bad\")")]
         [InlineData("XYZ123(\"bad\")")]
+        [InlineData("Z(Z$)")]
         [Theory]
         public void FailNonNumericIndex(string input)
         {
