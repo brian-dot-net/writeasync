@@ -25,6 +25,7 @@ namespace GWExpr
             var leftParen = Parse.Char('(');
             var rightParen = Parse.Char(')');
             var comma = Parse.Char(',');
+            var plus = Parse.Char('+');
             var nonQuote = Parse.AnyChar.Except(quote);
             var stringLiteral =
                 from lq in quote
@@ -57,11 +58,21 @@ namespace GWExpr
                 from rp in rightParen
                 select Arr(v, i);
 
-            var expr =
+            var term =
                 numericLiteral
                 .Or(stringLiteral)
                 .Or(array)
-                .Or(scalarVar)
+                .Or(scalarVar);
+
+            var add =
+                from x in term
+                from p in plus
+                from y in term
+                select Add(x, y);
+
+            var expr =
+                add
+                .Or(term)
                 .End();
 
             try
@@ -83,6 +94,8 @@ namespace GWExpr
         private static BasicVariable StrVar(string v) => new StringVariable(v);
 
         private static BasicExpression Arr(BasicVariable v, IEnumerable<BasicExpression> i) => new ArrayVariable(v, i);
+
+        private static BasicExpression Add(BasicExpression x, BasicExpression y) => new AddExpression(x, y);
 
         private sealed class NumericLiteral : BasicExpression
         {
@@ -156,6 +169,20 @@ namespace GWExpr
                 var list = string.Join<BasicExpression>(", ", this.i);
                 return "ArrayVariable(" + this.v + ", " + list + ")";
             }
+        }
+
+        private sealed class AddExpression : BasicExpression
+        {
+            private readonly BasicExpression x;
+            private readonly BasicExpression y;
+
+            public AddExpression(BasicExpression x, BasicExpression y)
+            {
+                this.x = x;
+                this.y = y;
+            }
+
+            public override string ToString() => "Add(" + this.x + ", " + this.y + ")";
         }
     }
 }
