@@ -141,7 +141,10 @@ namespace GWExpr
                 from rest in Ch.Slash.Then(_ => NumTerm).AtLeastOnce()
                 select Ex.Divide(head.Concat(rest));
 
-            private static readonly Parser<BasicExpression> MultTerm = Multiply.Or(NumTerm);
+            private static readonly Parser<BasicExpression> MultTerm =
+                Multiply
+                .Or(Divide)
+                .Or(NumTerm);
 
             private static readonly Parser<BasicExpression> Add =
                 from head in NumTerm.Once()
