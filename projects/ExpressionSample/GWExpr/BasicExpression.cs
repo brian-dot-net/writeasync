@@ -17,57 +17,9 @@ namespace GWExpr
 
         public static BasicExpression FromString(string input)
         {
-            var numTerm = Lit.Num.Or(Var.NumAny);
-            var strTerm = Lit.Str.Or(Var.StrAny);
-            var term = strTerm.Or(numTerm);
-
-            var addNum =
-                from x in numTerm
-                from p in Ch.Plus
-                from y in numTerm
-                select Ex.Add(x, y);
-            var addStr =
-                from x in strTerm
-                from p in Ch.Plus
-                from y in strTerm
-                select Ex.Add(x, y);
-            var add = addStr.Or(addNum);
-
-            var subtract =
-                from x in numTerm
-                from m in Ch.Minus
-                from y in numTerm
-                select Ex.Subtract(x, y);
-
-            var multiply =
-                from x in numTerm
-                from m in Ch.Star
-                from y in numTerm
-                select Ex.Multiply(x, y);
-
-            var divide =
-                from x in numTerm
-                from m in Ch.Slash
-                from y in numTerm
-                select Ex.Divide(x, y);
-
-            var expr =
-                add
-                .Or(subtract)
-                .Or(multiply)
-                .Or(divide)
-                .Or(term);
-            var parenExpr =
-                from lp in Ch.LeftParen
-                from x in expr
-                from rp in Ch.RightParen
-                select x;
-            var anyExpr =
-                expr.Or(parenExpr);
-
             try
             {
-                return anyExpr.End().Parse(input);
+                return Expr.Any.Parse(input);
             }
             catch (ParseException e)
             {
@@ -141,6 +93,72 @@ namespace GWExpr
             public static readonly Parser<BasicExpression> StrAny = StrArray.Or(StrScalar);
         }
 
+        private static class Expr
+        {
+            public static readonly Parser<BasicExpression> Any =
+                Parse.Ref(() => Str)
+                .Or(Parse.Ref(() => Num))
+                .End();
+
+            private static readonly Parser<BasicExpression> StrParen =
+                from lp in Ch.LeftParen
+                from x in Parse.Ref(() => Str)
+                from rp in Ch.RightParen
+                select x;
+
+            private static readonly Parser<BasicExpression> StrTerm =
+                StrParen
+                .Or(Lit.Str)
+                .Or(Var.StrAny);
+
+            private static readonly Parser<BasicExpression> Concat =
+                from head in StrTerm.Once()
+                from rest in Ch.Plus.Then(_ => StrTerm).AtLeastOnce()
+                select Ex.Add(head.Concat(rest));
+
+            private static readonly Parser<BasicExpression> Str =
+                Concat
+                .Or(StrTerm);
+
+            private static readonly Parser<BasicExpression> NumParen =
+                from lp in Ch.LeftParen
+                from x in Parse.Ref(() => Num)
+                from rp in Ch.RightParen
+                select x;
+
+            private static readonly Parser<BasicExpression> NumTerm =
+                NumParen
+                .Or(Lit.Num)
+                .Or(Var.NumAny);
+
+            private static readonly Parser<BasicExpression> Multiply =
+                from head in NumTerm.Once()
+                from rest in Ch.Star.Then(_ => NumTerm).AtLeastOnce()
+                select Ex.Multiply(head.Concat(rest));
+
+            private static readonly Parser<BasicExpression> Divide =
+                from head in NumTerm.Once()
+                from rest in Ch.Slash.Then(_ => NumTerm).AtLeastOnce()
+                select Ex.Divide(head.Concat(rest));
+
+            private static readonly Parser<BasicExpression> Add =
+                from head in NumTerm.Once()
+                from rest in Ch.Plus.Then(_ => NumTerm).AtLeastOnce()
+                select Ex.Add(head.Concat(rest));
+
+            private static readonly Parser<BasicExpression> Subtract =
+                from head in NumTerm.Once()
+                from rest in Ch.Minus.Then(_ => NumTerm).AtLeastOnce()
+                select Ex.Subtract(head.Concat(rest));
+
+            private static readonly Parser<BasicExpression> Num =
+                Multiply
+                .Or(Divide)
+                .Or(Add)
+                .Or(Subtract)
+                .Or(NumTerm);
+        }
+
         private static class Ex
         {
             public static BasicExpression Num(int n) => new NumericLiteral(n);
@@ -153,13 +171,25 @@ namespace GWExpr
 
             public static BasicExpression Arr(BasicVariable v, IEnumerable<BasicExpression> i) => new BasicArray(v, i);
 
-            public static BasicExpression Add(BasicExpression x, BasicExpression y) => new AddExpression(x, y);
+            public static BasicExpression Add(IEnumerable<BasicExpression> xs)
+            {
+                return xs.Aggregate((x, y) => new AddExpression(x, y));
+            }
 
-            public static BasicExpression Subtract(BasicExpression x, BasicExpression y) => new SubtractExpression(x, y);
+            public static BasicExpression Subtract(IEnumerable<BasicExpression> xs)
+            {
+                return xs.Aggregate((x, y) => new SubtractExpression(x, y));
+            }
 
-            public static BasicExpression Multiply(BasicExpression x, BasicExpression y) => new MultiplyExpression(x, y);
+            public static BasicExpression Multiply(IEnumerable<BasicExpression> xs)
+            {
+                return xs.Aggregate((x, y) => new MultiplyExpression(x, y));
+            }
 
-            public static BasicExpression Divide(BasicExpression x, BasicExpression y) => new DivideExpression(x, y);
+            public static BasicExpression Divide(IEnumerable<BasicExpression> xs)
+            {
+                return xs.Aggregate((x, y) => new DivideExpression(x, y));
+            }
 
             private sealed class NumericLiteral : BasicExpression
             {
