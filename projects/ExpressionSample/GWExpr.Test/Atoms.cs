@@ -69,5 +69,15 @@ namespace GWExpr.Test
         {
             Test.Bad(input);
         }
+
+        [InlineData("(1)", "NumericLiteral(1)")]
+        [InlineData("(\"x\")", "StringLiteral(\"x\")")]
+        [InlineData("(A)", "NumericVariable(A)")]
+        [InlineData("(A$)", "StringVariable(A)")]
+        [Theory]
+        public void WithParens(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }
