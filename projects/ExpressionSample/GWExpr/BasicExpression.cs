@@ -87,7 +87,7 @@ namespace GWExpr
                 from v in Id
                 select Ex.NumVar(v);
 
-            public static readonly Parser<BasicExpression> Index = Lit.Num.Or(NumScalar);
+            public static readonly Parser<BasicExpression> Index = Lit.Num.Or(Parse.Ref(() => NumAny));
 
             public static readonly Parser<IEnumerable<BasicExpression>> IndexList =
                 from lp in Ch.LeftParen

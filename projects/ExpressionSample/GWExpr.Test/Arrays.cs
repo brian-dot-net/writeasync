@@ -93,5 +93,12 @@ namespace GWExpr.Test
         {
             Test.Bad(input);
         }
+
+        [InlineData("A(B(1,2))", "Array(NumericVariable(A), Array(NumericVariable(B), NumericLiteral(1), NumericLiteral(2)))")]
+        [Theory]
+        public void WithArraySubscript(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }
