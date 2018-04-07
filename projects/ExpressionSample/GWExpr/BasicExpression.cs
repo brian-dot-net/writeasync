@@ -141,9 +141,11 @@ namespace GWExpr
                 from rest in Ch.Slash.Then(_ => NumTerm).AtLeastOnce()
                 select Ex.Divide(head.Concat(rest));
 
+            private static readonly Parser<BasicExpression> MultTerm = Multiply.Or(NumTerm);
+
             private static readonly Parser<BasicExpression> Add =
                 from head in NumTerm.Once()
-                from rest in Ch.Plus.Then(_ => NumTerm).AtLeastOnce()
+                from rest in Ch.Plus.Then(_ => MultTerm).AtLeastOnce()
                 select Ex.Add(head.Concat(rest));
 
             private static readonly Parser<BasicExpression> Subtract =
