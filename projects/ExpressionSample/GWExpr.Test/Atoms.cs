@@ -55,5 +55,19 @@ namespace GWExpr.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData("123x")]
+        [Theory]
+        public void InvalidNumber(string input)
+        {
+            Test.Bad(input);
+        }
+
+        [InlineData("\"just the beginning")]
+        [Theory]
+        public void InvalidString(string input)
+        {
+            Test.Bad(input);
+        }
     }
 }
