@@ -39,9 +39,16 @@ namespace GWExpr
                 from y in numTerm
                 select Ex.Subtract(x, y);
 
+            var multiply =
+                from x in numTerm
+                from m in Ch.Star
+                from y in numTerm
+                select Ex.Multiply(x, y);
+
             var expr =
                 add
                 .Or(subtract)
+                .Or(multiply)
                 .Or(term)
                 .End();
 
@@ -64,6 +71,7 @@ namespace GWExpr
             public static readonly Parser<char> Comma = Parse.Char(',');
             public static readonly Parser<char> Plus = Parse.Char('+');
             public static readonly Parser<char> Minus = Parse.Char('-');
+            public static readonly Parser<char> Star = Parse.Char('*');
             public static readonly Parser<char> NonQuote = Parse.AnyChar.Except(Quote);
         }
 
@@ -135,6 +143,8 @@ namespace GWExpr
 
             public static BasicExpression Subtract(BasicExpression x, BasicExpression y) => new SubtractExpression(x, y);
 
+            public static BasicExpression Multiply(BasicExpression x, BasicExpression y) => new MultiplyExpression(x, y);
+
             private sealed class NumericLiteral : BasicExpression
             {
                 private readonly int n;
@@ -197,32 +207,48 @@ namespace GWExpr
                 }
             }
 
-            private sealed class AddExpression : BasicExpression
+            private abstract class BinaryExpression : BasicExpression
             {
                 private readonly BasicExpression x;
                 private readonly BasicExpression y;
 
-                public AddExpression(BasicExpression x, BasicExpression y)
+                protected BinaryExpression(BasicExpression x, BasicExpression y)
                 {
                     this.x = x;
                     this.y = y;
                 }
 
-                public override string ToString() => "Add(" + this.x + ", " + this.y + ")";
+                public override string ToString() => "(" + this.x + ", " + this.y + ")";
             }
 
-            private sealed class SubtractExpression : BasicExpression
+            private sealed class AddExpression : BinaryExpression
             {
-                private readonly BasicExpression x;
-                private readonly BasicExpression y;
-
-                public SubtractExpression(BasicExpression x, BasicExpression y)
+                public AddExpression(BasicExpression x, BasicExpression y)
+                    : base(x, y)
                 {
-                    this.x = x;
-                    this.y = y;
                 }
 
-                public override string ToString() => "Subtract(" + this.x + ", " + this.y + ")";
+                public override string ToString() => "Add" + base.ToString();
+            }
+
+            private sealed class SubtractExpression : BinaryExpression
+            {
+                public SubtractExpression(BasicExpression x, BasicExpression y)
+                    : base(x, y)
+                {
+                }
+
+                public override string ToString() => "Subtract" + base.ToString();
+            }
+
+            private sealed class MultiplyExpression : BinaryExpression
+            {
+                public MultiplyExpression(BasicExpression x, BasicExpression y)
+                    : base(x, y)
+                {
+                }
+
+                public override string ToString() => "Multiply" + base.ToString();
             }
         }
 
