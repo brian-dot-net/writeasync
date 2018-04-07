@@ -176,7 +176,7 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Concat =
                 from head in StrTerm.Once()
                 from rest in Ch.Plus.Then(_ => StrTerm).AtLeastOnce()
-                select Ex.Add(head.Concat(rest));
+                select Op.Add(head.Concat(rest));
 
             private static readonly Parser<BasicExpression> Str =
                 Concat
@@ -196,12 +196,12 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Multiply =
                 from head in NumTerm.Once()
                 from rest in Ch.Star.Then(_ => NumTerm).AtLeastOnce()
-                select Ex.Multiply(head.Concat(rest));
+                select Op.Multiply(head.Concat(rest));
 
             private static readonly Parser<BasicExpression> Divide =
                 from head in NumTerm.Once()
                 from rest in Ch.Slash.Then(_ => NumTerm).AtLeastOnce()
-                select Ex.Divide(head.Concat(rest));
+                select Op.Divide(head.Concat(rest));
 
             private static readonly Parser<BasicExpression> MultTerm =
                 Multiply
@@ -211,12 +211,12 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Add =
                 from head in NumTerm.Once()
                 from rest in Ch.Plus.Then(_ => MultTerm).AtLeastOnce()
-                select Ex.Add(head.Concat(rest));
+                select Op.Add(head.Concat(rest));
 
             private static readonly Parser<BasicExpression> Subtract =
                 from head in NumTerm.Once()
                 from rest in Ch.Minus.Then(_ => MultTerm).AtLeastOnce()
-                select Ex.Subtract(head.Concat(rest));
+                select Op.Subtract(head.Concat(rest));
 
             private static readonly Parser<BasicExpression> Num =
                 Multiply
@@ -226,34 +226,34 @@ namespace GWExpr
                 .Or(NumTerm);
         }
 
-        private static class Ex
+        private static class Op
         {
             public static BasicExpression Add(IEnumerable<BasicExpression> xs)
             {
-                return xs.Aggregate((x, y) => new AddExpression(x, y));
+                return xs.Aggregate((x, y) => new AddOperator(x, y));
             }
 
             public static BasicExpression Subtract(IEnumerable<BasicExpression> xs)
             {
-                return xs.Aggregate((x, y) => new SubtractExpression(x, y));
+                return xs.Aggregate((x, y) => new SubtractOperator(x, y));
             }
 
             public static BasicExpression Multiply(IEnumerable<BasicExpression> xs)
             {
-                return xs.Aggregate((x, y) => new MultiplyExpression(x, y));
+                return xs.Aggregate((x, y) => new MultiplyOperator(x, y));
             }
 
             public static BasicExpression Divide(IEnumerable<BasicExpression> xs)
             {
-                return xs.Aggregate((x, y) => new DivideExpression(x, y));
+                return xs.Aggregate((x, y) => new DivideOperator(x, y));
             }
 
-            private abstract class BinaryExpression : BasicExpression
+            private abstract class BinaryOperator : BasicExpression
             {
                 private readonly BasicExpression x;
                 private readonly BasicExpression y;
 
-                protected BinaryExpression(BasicExpression x, BasicExpression y)
+                protected BinaryOperator(BasicExpression x, BasicExpression y)
                 {
                     this.x = x;
                     this.y = y;
@@ -262,9 +262,9 @@ namespace GWExpr
                 public override string ToString() => "(" + this.x + ", " + this.y + ")";
             }
 
-            private sealed class AddExpression : BinaryExpression
+            private sealed class AddOperator : BinaryOperator
             {
-                public AddExpression(BasicExpression x, BasicExpression y)
+                public AddOperator(BasicExpression x, BasicExpression y)
                     : base(x, y)
                 {
                 }
@@ -272,9 +272,9 @@ namespace GWExpr
                 public override string ToString() => "Add" + base.ToString();
             }
 
-            private sealed class SubtractExpression : BinaryExpression
+            private sealed class SubtractOperator : BinaryOperator
             {
-                public SubtractExpression(BasicExpression x, BasicExpression y)
+                public SubtractOperator(BasicExpression x, BasicExpression y)
                     : base(x, y)
                 {
                 }
@@ -282,9 +282,9 @@ namespace GWExpr
                 public override string ToString() => "Subtract" + base.ToString();
             }
 
-            private sealed class MultiplyExpression : BinaryExpression
+            private sealed class MultiplyOperator : BinaryOperator
             {
-                public MultiplyExpression(BasicExpression x, BasicExpression y)
+                public MultiplyOperator(BasicExpression x, BasicExpression y)
                     : base(x, y)
                 {
                 }
@@ -292,9 +292,9 @@ namespace GWExpr
                 public override string ToString() => "Multiply" + base.ToString();
             }
 
-            private sealed class DivideExpression : BinaryExpression
+            private sealed class DivideOperator : BinaryOperator
             {
-                public DivideExpression(BasicExpression x, BasicExpression y)
+                public DivideOperator(BasicExpression x, BasicExpression y)
                     : base(x, y)
                 {
                 }
