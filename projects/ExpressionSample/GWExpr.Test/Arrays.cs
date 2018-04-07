@@ -4,8 +4,6 @@
 
 namespace GWExpr.Test
 {
-    using System;
-    using FluentAssertions;
     using Xunit;
 
     public sealed class Arrays
