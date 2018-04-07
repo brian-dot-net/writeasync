@@ -87,11 +87,11 @@ namespace GWExpr
             public static readonly Parser<BasicVariable> StrScalar =
                 from v in Id
                 from d in Ch.Dollar
-                select Ex.StrVar(v);
+                select new StringVariable(v);
 
             public static readonly Parser<BasicVariable> NumScalar =
                 from v in Id
-                select Ex.NumVar(v);
+                select new NumericVariable(v);
 
             public static readonly Parser<BasicExpression> Index = Lit.Num.Or(Parse.Ref(() => NumAny));
 
@@ -105,16 +105,54 @@ namespace GWExpr
             public static readonly Parser<BasicExpression> NumArray =
                 from v in NumScalar
                 from i in IndexList
-                select Ex.Arr(v, i);
+                select new BasicArray(v, i);
 
             public static readonly Parser<BasicExpression> StrArray =
                 from v in StrScalar
                 from i in IndexList
-                select Ex.Arr(v, i);
+                select new BasicArray(v, i);
 
             public static readonly Parser<BasicExpression> NumAny = NumArray.Or(NumScalar);
 
             public static readonly Parser<BasicExpression> StrAny = StrArray.Or(StrScalar);
+
+            private sealed class NumericVariable : BasicVariable
+            {
+                public NumericVariable(string v)
+                    : base(v)
+                {
+                }
+
+                public override string ToString() => "Numeric" + base.ToString();
+            }
+
+            private sealed class StringVariable : BasicVariable
+            {
+                public StringVariable(string v)
+                    : base(v)
+                {
+                }
+
+                public override string ToString() => "String" + base.ToString();
+            }
+
+            private sealed class BasicArray : BasicExpression
+            {
+                private readonly BasicVariable v;
+                private readonly BasicExpression[] i;
+
+                public BasicArray(BasicVariable v, IEnumerable<BasicExpression> i)
+                {
+                    this.v = v;
+                    this.i = i.ToArray();
+                }
+
+                public override string ToString()
+                {
+                    var list = string.Join<BasicExpression>(", ", this.i);
+                    return "Array(" + this.v + ", " + list + ")";
+                }
+            }
         }
 
         private static class Expr
@@ -190,12 +228,6 @@ namespace GWExpr
 
         private static class Ex
         {
-            public static BasicVariable NumVar(string v) => new NumericVariable(v);
-
-            public static BasicVariable StrVar(string v) => new StringVariable(v);
-
-            public static BasicExpression Arr(BasicVariable v, IEnumerable<BasicExpression> i) => new BasicArray(v, i);
-
             public static BasicExpression Add(IEnumerable<BasicExpression> xs)
             {
                 return xs.Aggregate((x, y) => new AddExpression(x, y));
@@ -214,44 +246,6 @@ namespace GWExpr
             public static BasicExpression Divide(IEnumerable<BasicExpression> xs)
             {
                 return xs.Aggregate((x, y) => new DivideExpression(x, y));
-            }
-
-            private sealed class NumericVariable : BasicVariable
-            {
-                public NumericVariable(string v)
-                    : base(v)
-                {
-                }
-
-                public override string ToString() => "Numeric" + base.ToString();
-            }
-
-            private sealed class StringVariable : BasicVariable
-            {
-                public StringVariable(string v)
-                    : base(v)
-                {
-                }
-
-                public override string ToString() => "String" + base.ToString();
-            }
-
-            private sealed class BasicArray : BasicExpression
-            {
-                private readonly BasicVariable v;
-                private readonly BasicExpression[] i;
-
-                public BasicArray(BasicVariable v, IEnumerable<BasicExpression> i)
-                {
-                    this.v = v;
-                    this.i = i.ToArray();
-                }
-
-                public override string ToString()
-                {
-                    var list = string.Join<BasicExpression>(", ", this.i);
-                    return "Array(" + this.v + ", " + list + ")";
-                }
             }
 
             private abstract class BinaryExpression : BasicExpression
