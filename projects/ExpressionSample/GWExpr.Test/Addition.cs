@@ -25,5 +25,14 @@ namespace GWExpr.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData("\"1\"+2")]
+        [InlineData("X$+234")]
+        [InlineData("X(234)+YZ1234$")]
+        [Theory]
+        public void TypeMismatch(string input)
+        {
+            Test.Bad(input);
+        }
     }
 }

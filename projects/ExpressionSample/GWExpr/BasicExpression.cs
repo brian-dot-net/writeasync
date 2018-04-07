@@ -21,11 +21,17 @@ namespace GWExpr
             var strTerm = Lit.Str.Or(Var.StrAny);
             var term = strTerm.Or(numTerm);
 
-            var add =
-                from x in term
+            var addNum =
+                from x in numTerm
                 from p in Ch.Plus
-                from y in term
+                from y in numTerm
                 select Ex.Add(x, y);
+            var addStr =
+                from x in strTerm
+                from p in Ch.Plus
+                from y in strTerm
+                select Ex.Add(x, y);
+            var add = addStr.Or(addNum);
 
             var expr =
                 add
