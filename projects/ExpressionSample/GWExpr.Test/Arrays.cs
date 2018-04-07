@@ -73,6 +73,18 @@ namespace GWExpr.Test
             Test(input, output);
         }
 
+        [InlineData("a(1)", "ArrayVariable(NumericVariable(A), NumericLiteral(1))")]
+        [InlineData("Ab(1)", "ArrayVariable(NumericVariable(AB), NumericLiteral(1))")]
+        [InlineData("xYz123(1)", "ArrayVariable(NumericVariable(XYZ123), NumericLiteral(1))")]
+        [InlineData("a$(1)", "ArrayVariable(StringVariable(A), NumericLiteral(1))")]
+        [InlineData("Ab$(1)", "ArrayVariable(StringVariable(AB), NumericLiteral(1))")]
+        [InlineData("xYz123$(1)", "ArrayVariable(StringVariable(XYZ123), NumericLiteral(1))")]
+        [Theory]
+        public void NameToUppercase(string input, string output)
+        {
+            Test(input, output);
+        }
+
         [InlineData("A$(\"bad\")")]
         [InlineData("XYZ123(\"bad\")")]
         [InlineData("Z(Z$)")]
