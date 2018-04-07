@@ -40,7 +40,7 @@ namespace GWExpr
             var numericVar =
                 from v in id
                 select NumVar(v);
-            var scalar =
+            var scalarVar =
                 stringVar
                 .Or(numericVar);
 
@@ -51,7 +51,7 @@ namespace GWExpr
                 from rest in comma.Then(_ => numeric).Many()
                 select head.Concat(rest);
             var array =
-                from v in scalar
+                from v in scalarVar
                 from lp in leftParen
                 from i in indexList
                 from rp in rightParen
@@ -61,7 +61,7 @@ namespace GWExpr
                 numericLiteral
                 .Or(stringLiteral)
                 .Or(array)
-                .Or(scalar)
+                .Or(scalarVar)
                 .End();
 
             try
@@ -76,13 +76,13 @@ namespace GWExpr
 
         private static BasicExpression Num(int n) => new NumericLiteral(n);
 
-        private static BasicExpression NumVar(string v) => new NumericVariable(v);
+        private static BasicVariable NumVar(string v) => new NumericVariable(v);
 
         private static BasicExpression Str(string s) => new StringLiteral(s);
 
-        private static BasicExpression StrVar(string v) => new StringVariable(v);
+        private static BasicVariable StrVar(string v) => new StringVariable(v);
 
-        private static BasicExpression Arr(BasicExpression v, IEnumerable<BasicExpression> i) => new ArrayVariable(v, i);
+        private static BasicExpression Arr(BasicVariable v, IEnumerable<BasicExpression> i) => new ArrayVariable(v, i);
 
         private sealed class NumericLiteral : BasicExpression
         {
@@ -142,10 +142,10 @@ namespace GWExpr
 
         private sealed class ArrayVariable : BasicExpression
         {
-            private readonly BasicExpression v;
+            private readonly BasicVariable v;
             private readonly BasicExpression[] i;
 
-            public ArrayVariable(BasicExpression v, IEnumerable<BasicExpression> i)
+            public ArrayVariable(BasicVariable v, IEnumerable<BasicExpression> i)
             {
                 this.v = v;
                 this.i = i.ToArray();
