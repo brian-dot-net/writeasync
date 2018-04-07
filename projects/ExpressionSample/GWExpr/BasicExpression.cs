@@ -45,10 +45,17 @@ namespace GWExpr
                 from y in numTerm
                 select Ex.Multiply(x, y);
 
+            var divide =
+                from x in numTerm
+                from m in Ch.Slash
+                from y in numTerm
+                select Ex.Divide(x, y);
+
             var expr =
                 add
                 .Or(subtract)
                 .Or(multiply)
+                .Or(divide)
                 .Or(term)
                 .End();
 
@@ -72,6 +79,7 @@ namespace GWExpr
             public static readonly Parser<char> Plus = Parse.Char('+');
             public static readonly Parser<char> Minus = Parse.Char('-');
             public static readonly Parser<char> Star = Parse.Char('*');
+            public static readonly Parser<char> Slash = Parse.Char('/');
             public static readonly Parser<char> NonQuote = Parse.AnyChar.Except(Quote);
         }
 
@@ -144,6 +152,8 @@ namespace GWExpr
             public static BasicExpression Subtract(BasicExpression x, BasicExpression y) => new SubtractExpression(x, y);
 
             public static BasicExpression Multiply(BasicExpression x, BasicExpression y) => new MultiplyExpression(x, y);
+
+            public static BasicExpression Divide(BasicExpression x, BasicExpression y) => new DivideExpression(x, y);
 
             private sealed class NumericLiteral : BasicExpression
             {
@@ -249,6 +259,16 @@ namespace GWExpr
                 }
 
                 public override string ToString() => "Multiply" + base.ToString();
+            }
+
+            private sealed class DivideExpression : BinaryExpression
+            {
+                public DivideExpression(BasicExpression x, BasicExpression y)
+                    : base(x, y)
+                {
+                }
+
+                public override string ToString() => "Divide" + base.ToString();
             }
         }
 
