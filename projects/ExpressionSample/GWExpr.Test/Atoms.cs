@@ -48,6 +48,9 @@ namespace GWExpr.Test
         [InlineData("a", "NumericVariable(A)")]
         [InlineData("ab", "NumericVariable(AB)")]
         [InlineData("xyZ123", "NumericVariable(XYZ123)")]
+        [InlineData("a$", "StringVariable(A)")]
+        [InlineData("Ab$", "StringVariable(AB)")]
+        [InlineData("XyZ123$", "StringVariable(XYZ123)")]
         [Theory]
         public void VariablesToUppercase(string input, string output)
         {

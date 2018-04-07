@@ -108,28 +108,36 @@ namespace GWExpr
             public override string ToString() => "StringLiteral(\"" + this.s + "\")";
         }
 
-        private sealed class NumericVariable : BasicExpression
+        private abstract class BasicVariable : BasicExpression
         {
             private readonly string v;
 
-            public NumericVariable(string v)
+            protected BasicVariable(string v)
             {
                 this.v = v.ToUpperInvariant();
             }
 
-            public override string ToString() => "NumericVariable(" + this.v + ")";
+            public override string ToString() => "Variable(" + this.v + ")";
         }
 
-        private sealed class StringVariable : BasicExpression
+        private sealed class NumericVariable : BasicVariable
         {
-            private readonly string v;
-
-            public StringVariable(string v)
+            public NumericVariable(string v)
+                : base(v)
             {
-                this.v = v;
             }
 
-            public override string ToString() => "StringVariable(" + this.v + ")";
+            public override string ToString() => "Numeric" + base.ToString();
+        }
+
+        private sealed class StringVariable : BasicVariable
+        {
+            public StringVariable(string v)
+                : base(v)
+            {
+            }
+
+            public override string ToString() => "String" + base.ToString();
         }
 
         private sealed class ArrayVariable : BasicExpression
