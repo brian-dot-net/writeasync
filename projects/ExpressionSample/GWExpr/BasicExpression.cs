@@ -153,7 +153,7 @@ namespace GWExpr
 
             private static readonly Parser<BasicExpression> Subtract =
                 from head in NumTerm.Once()
-                from rest in Ch.Minus.Then(_ => NumTerm).AtLeastOnce()
+                from rest in Ch.Minus.Then(_ => MultTerm).AtLeastOnce()
                 select Ex.Subtract(head.Concat(rest));
 
             private static readonly Parser<BasicExpression> Num =

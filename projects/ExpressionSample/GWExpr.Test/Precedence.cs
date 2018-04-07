@@ -10,6 +10,8 @@ namespace GWExpr.Test
     {
         [InlineData("1+2*3", "Add(NumericLiteral(1), Multiply(NumericLiteral(2), NumericLiteral(3)))")]
         [InlineData("1+2/3", "Add(NumericLiteral(1), Divide(NumericLiteral(2), NumericLiteral(3)))")]
+        [InlineData("1-2*3", "Subtract(NumericLiteral(1), Multiply(NumericLiteral(2), NumericLiteral(3)))")]
+        [InlineData("1-2/3", "Subtract(NumericLiteral(1), Divide(NumericLiteral(2), NumericLiteral(3)))")]
         [Theory]
         public void Arithmetic(string input, string output)
         {
