@@ -17,16 +17,6 @@ namespace GWExpr
 
         public static BasicExpression FromString(string input)
         {
-            var numericLiteral =
-                from n in Parse.Number
-                select Ex.Num(int.Parse(n));
-            var stringLiteral =
-                from lq in Ch.Quote
-                from c in Ch.NonQuote.Many().Text()
-                from rq in Ch.Quote
-                select Ex.Str(c);
-            var literal = numericLiteral.Or(stringLiteral);
-
             var id = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit);
             var stringScalarVar =
                 from v in id
@@ -39,7 +29,7 @@ namespace GWExpr
                 stringScalarVar
                 .Or(numericScalarVar);
 
-            var numeric = numericLiteral.Or(numericScalarVar);
+            var numeric = Lit.Num.Or(numericScalarVar);
 
             var indexList =
                 from head in numeric.Once()
@@ -53,7 +43,7 @@ namespace GWExpr
                 select Ex.Arr(v, i);
 
             var term =
-                literal
+                Lit.Any
                 .Or(array)
                 .Or(scalarVar);
 
@@ -87,6 +77,21 @@ namespace GWExpr
             public static readonly Parser<char> Comma = Parse.Char(',');
             public static readonly Parser<char> Plus = Parse.Char('+');
             public static readonly Parser<char> NonQuote = Parse.AnyChar.Except(Quote);
+        }
+
+        private static class Lit
+        {
+            public static readonly Parser<BasicExpression> Num =
+                from n in Parse.Number
+                select Ex.Num(int.Parse(n));
+
+            public static readonly Parser<BasicExpression> Str =
+                from lq in Ch.Quote
+                from c in Ch.NonQuote.Many().Text()
+                from rq in Ch.Quote
+                select Ex.Str(c);
+
+            public static readonly Parser<BasicExpression> Any = Num.Or(Str);
         }
 
         private static class Ex
