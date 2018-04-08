@@ -35,8 +35,8 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("1^2^3", "Pow(NumericLiteral(1), Pow(NumericLiteral(2), NumericLiteral(3)))")]
-        [InlineData("(1^2^3)", "Pow(NumericLiteral(1), Pow(NumericLiteral(2), NumericLiteral(3)))")]
+        [InlineData("1^2^3", "Pow(Pow(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("(1^2^3)", "Pow(Pow(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
         [InlineData("(1^2)^3", "Pow(Pow(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
         [InlineData("1^(2^3)", "Pow(NumericLiteral(1), Pow(NumericLiteral(2), NumericLiteral(3)))")]
         [Theory]

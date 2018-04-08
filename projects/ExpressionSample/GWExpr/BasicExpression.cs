@@ -199,7 +199,7 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> NumOperand = NumNeg.Or(NumFactor);
 
             private static readonly Parser<BasicExpression> NumPow =
-                Parse.ChainRightOperator(Op.Exponential, NumOperand, Op.Apply);
+                Parse.ChainOperator(Op.Exponential, NumOperand, Op.Apply);
 
             private static readonly Parser<BasicExpression> NumMult =
                 Parse.ChainOperator(Op.Multiplicative, NumPow, Op.Apply);

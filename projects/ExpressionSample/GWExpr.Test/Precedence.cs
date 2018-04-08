@@ -19,6 +19,15 @@ namespace GWExpr.Test
         [InlineData("(1*2)/3", "Divide(Multiply(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
         [InlineData("(1*2)+3", "Add(Multiply(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
         [InlineData("(1/2)-3", "Subtract(Divide(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("1*2^3", "Multiply(NumericLiteral(1), Pow(NumericLiteral(2), NumericLiteral(3)))")]
+        [InlineData("1^2/3", "Divide(Pow(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("1^2+3", "Add(Pow(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("1^2-3", "Subtract(Pow(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("1+2^3", "Add(NumericLiteral(1), Pow(NumericLiteral(2), NumericLiteral(3)))")]
+        [InlineData("1-2^3", "Subtract(NumericLiteral(1), Pow(NumericLiteral(2), NumericLiteral(3)))")]
+        [InlineData("(-1)^2+3", "Add(Pow(Negate(NumericLiteral(1)), NumericLiteral(2)), NumericLiteral(3))")]
+        [InlineData("1^-2+3", "Add(Pow(NumericLiteral(1), Negate(NumericLiteral(2))), NumericLiteral(3))")]
+        [InlineData("1^(-2)+3", "Add(Pow(NumericLiteral(1), Negate(NumericLiteral(2))), NumericLiteral(3))")]
         [Theory]
         public void Arithmetic(string input, string output)
         {
