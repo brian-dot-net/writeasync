@@ -15,6 +15,11 @@ namespace GWExpr
         {
         }
 
+        private interface IOperator
+        {
+            BasicExpression Apply(BasicExpression x, BasicExpression y);
+        }
+
         public static BasicExpression FromString(string input)
         {
             try
@@ -162,25 +167,18 @@ namespace GWExpr
                 .Or(Parse.Ref(() => Num))
                 .End();
 
+            private static readonly Parser<BasicExpression> StrValue = Lit.Str.Or(Var.StrAny);
+
             private static readonly Parser<BasicExpression> StrParen =
                 from lp in Ch.LeftParen
                 from x in Parse.Ref(() => Str)
                 from rp in Ch.RightParen
                 select x;
 
-            private static readonly Parser<BasicExpression> StrTerm =
-                StrParen
-                .Or(Lit.Str)
-                .Or(Var.StrAny);
-
-            private static readonly Parser<BasicExpression> Concat =
-                from head in StrTerm.Once()
-                from rest in Ch.Plus.Then(_ => StrTerm).AtLeastOnce()
-                select Op.Add(head.Concat(rest));
+            private static readonly Parser<BasicExpression> StrTerm = StrParen.Or(StrValue);
 
             private static readonly Parser<BasicExpression> Str =
-                Concat
-                .Or(StrTerm);
+                Parse.ChainOperator(Op.Add, StrTerm, Op.Apply);
 
             private static readonly Parser<BasicExpression> NumParen =
                 from lp in Ch.LeftParen
@@ -188,118 +186,148 @@ namespace GWExpr
                 from rp in Ch.RightParen
                 select x;
 
+            private static readonly Parser<BasicExpression> NumValue = Lit.Num.Or(Var.NumAny);
+
+            private static readonly Parser<BasicExpression> NumFactor = NumParen.Or(NumValue);
+
+            private static readonly Parser<BasicExpression> NumOperand = NumFactor;
+
             private static readonly Parser<BasicExpression> NumTerm =
-                NumParen
-                .Or(Lit.Num)
-                .Or(Var.NumAny);
-
-            private static readonly Parser<BasicExpression> Multiply =
-                from head in NumTerm.Once()
-                from rest in Ch.Star.Then(_ => NumTerm).AtLeastOnce()
-                select Op.Multiply(head.Concat(rest));
-
-            private static readonly Parser<BasicExpression> Divide =
-                from head in NumTerm.Once()
-                from rest in Ch.Slash.Then(_ => NumTerm).AtLeastOnce()
-                select Op.Divide(head.Concat(rest));
-
-            private static readonly Parser<BasicExpression> MultTerm =
-                Multiply
-                .Or(Divide)
-                .Or(NumTerm);
-
-            private static readonly Parser<BasicExpression> Add =
-                from head in NumTerm.Once()
-                from rest in Ch.Plus.Then(_ => MultTerm).AtLeastOnce()
-                select Op.Add(head.Concat(rest));
-
-            private static readonly Parser<BasicExpression> Subtract =
-                from head in NumTerm.Once()
-                from rest in Ch.Minus.Then(_ => MultTerm).AtLeastOnce()
-                select Op.Subtract(head.Concat(rest));
+                Parse.ChainOperator(Op.Multiplicative, NumOperand, Op.Apply);
 
             private static readonly Parser<BasicExpression> Num =
-                Multiply
-                .Or(Divide)
-                .Or(Add)
-                .Or(Subtract)
-                .Or(NumTerm);
+                Parse.ChainOperator(Op.Additive, NumTerm, Op.Apply);
         }
 
         private static class Op
         {
-            public static BasicExpression Add(IEnumerable<BasicExpression> xs)
+            public static readonly Parser<IOperator> Add =
+                from o in Ch.Plus
+                select AddOperator.Value;
+
+            public static readonly Parser<IOperator> Subtract =
+                from o in Ch.Minus
+                select SubtractOperator.Value;
+
+            public static readonly Parser<IOperator> Multiply =
+                from o in Ch.Star
+                select MultiplyOperator.Value;
+
+            public static readonly Parser<IOperator> Divide =
+                from o in Ch.Slash
+                select DivideOperator.Value;
+
+            public static readonly Parser<IOperator> Additive = Add.Or(Subtract);
+
+            public static readonly Parser<IOperator> Multiplicative = Multiply.Or(Divide);
+
+            public static BasicExpression Apply(IOperator op, BasicExpression x, BasicExpression y)
             {
-                return xs.Aggregate((x, y) => new AddOperator(x, y));
+                return op.Apply(x, y);
             }
 
-            public static BasicExpression Subtract(IEnumerable<BasicExpression> xs)
+            private abstract class BinaryExpression : BasicExpression
             {
-                return xs.Aggregate((x, y) => new SubtractOperator(x, y));
-            }
-
-            public static BasicExpression Multiply(IEnumerable<BasicExpression> xs)
-            {
-                return xs.Aggregate((x, y) => new MultiplyOperator(x, y));
-            }
-
-            public static BasicExpression Divide(IEnumerable<BasicExpression> xs)
-            {
-                return xs.Aggregate((x, y) => new DivideOperator(x, y));
-            }
-
-            private abstract class BinaryOperator : BasicExpression
-            {
+                private readonly string name;
                 private readonly BasicExpression x;
                 private readonly BasicExpression y;
 
-                protected BinaryOperator(BasicExpression x, BasicExpression y)
+                protected BinaryExpression(string name, BasicExpression x, BasicExpression y)
                 {
+                    this.name = name;
                     this.x = x;
                     this.y = y;
                 }
 
-                public override string ToString() => "(" + this.x + ", " + this.y + ")";
+                public override string ToString() => this.name + "(" + this.x + ", " + this.y + ")";
             }
 
-            private sealed class AddOperator : BinaryOperator
+            private sealed class AddOperator : IOperator
             {
-                public AddOperator(BasicExpression x, BasicExpression y)
-                    : base(x, y)
+                public static readonly IOperator Value = new AddOperator();
+
+                private AddOperator()
                 {
                 }
 
-                public override string ToString() => "Add" + base.ToString();
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new AddExpression(x, y);
+                }
+
+                private sealed class AddExpression : BinaryExpression
+                {
+                    public AddExpression(BasicExpression x, BasicExpression y)
+                        : base("Add", x, y)
+                    {
+                    }
+                }
             }
 
-            private sealed class SubtractOperator : BinaryOperator
+            private sealed class SubtractOperator : IOperator
             {
-                public SubtractOperator(BasicExpression x, BasicExpression y)
-                    : base(x, y)
+                public static readonly IOperator Value = new SubtractOperator();
+
+                private SubtractOperator()
                 {
                 }
 
-                public override string ToString() => "Subtract" + base.ToString();
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new SubtractExpression(x, y);
+                }
+
+                private sealed class SubtractExpression : BinaryExpression
+                {
+                    public SubtractExpression(BasicExpression x, BasicExpression y)
+                        : base("Subtract", x, y)
+                    {
+                    }
+                }
             }
 
-            private sealed class MultiplyOperator : BinaryOperator
+            private sealed class MultiplyOperator : IOperator
             {
-                public MultiplyOperator(BasicExpression x, BasicExpression y)
-                    : base(x, y)
+                public static readonly IOperator Value = new MultiplyOperator();
+
+                private MultiplyOperator()
                 {
                 }
 
-                public override string ToString() => "Multiply" + base.ToString();
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new MultiplyExpression(x, y);
+                }
+
+                private sealed class MultiplyExpression : BinaryExpression
+                {
+                    public MultiplyExpression(BasicExpression x, BasicExpression y)
+                        : base("Multiply", x, y)
+                    {
+                    }
+                }
             }
 
-            private sealed class DivideOperator : BinaryOperator
+            private sealed class DivideOperator : IOperator
             {
-                public DivideOperator(BasicExpression x, BasicExpression y)
-                    : base(x, y)
+                public static readonly IOperator Value = new DivideOperator();
+
+                private DivideOperator()
                 {
                 }
 
-                public override string ToString() => "Divide" + base.ToString();
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new DivideExpression(x, y);
+                }
+
+                private sealed class DivideExpression : BinaryExpression
+                {
+                    public DivideExpression(BasicExpression x, BasicExpression y)
+                        : base("Divide", x, y)
+                    {
+                    }
+                }
             }
         }
 
