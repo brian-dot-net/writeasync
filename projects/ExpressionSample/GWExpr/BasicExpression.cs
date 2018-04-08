@@ -184,7 +184,7 @@ namespace GWExpr
 
         private static class Num
         {
-            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Add);
+            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Bool);
 
             private static readonly Parser<BasicExpression> Paren =
                 from lp in Ch.LeftParen
@@ -197,7 +197,7 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Factor = Paren.Or(Value);
 
             private static readonly Parser<BasicExpression> Operand =
-                Parse.Ref(() => Neg)
+                Parse.Ref(() => Unary)
                 .Or(Factor);
 
             private static readonly Parser<BasicExpression> Pow =
@@ -214,6 +214,15 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Add =
                 Parse.ChainOperator(Op.Additive, Mult, Op.Apply);
 
+            private static readonly Parser<BasicExpression> Not =
+                from k in Parse.String("NOT ")
+                from x in Any
+                select new NotExpression(x);
+
+            private static readonly Parser<BasicExpression> Bool = Not.Or(Add);
+
+            private static readonly Parser<BasicExpression> Unary = Neg.Or(Not);
+
             private sealed class NegateExpression : BasicExpression
             {
                 private readonly BasicExpression x;
@@ -224,6 +233,18 @@ namespace GWExpr
                 }
 
                 public override string ToString() => "Negate(" + this.x + ")";
+            }
+
+            private sealed class NotExpression : BasicExpression
+            {
+                private readonly BasicExpression x;
+
+                public NotExpression(BasicExpression x)
+                {
+                    this.x = x;
+                }
+
+                public override string ToString() => "Not(" + this.x + ")";
             }
         }
 
