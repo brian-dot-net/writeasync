@@ -9,8 +9,8 @@ namespace GWExpr.Test
     public sealed class Division
     {
         [InlineData("1/2", "Divide(Literal(1), Literal(2))")]
-        [InlineData("X/234", "Divide(NumericVariable(X), Literal(234))")]
-        [InlineData("X(234)/YZ1234", "Divide(Array(NumericVariable(X), Literal(234)), NumericVariable(YZ1234))")]
+        [InlineData("X/234", "Divide(NumVar(X), Literal(234))")]
+        [InlineData("X(234)/YZ1234", "Divide(Array(NumVar(X), Literal(234)), NumVar(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -27,8 +27,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("(1/2)", "Divide(Literal(1), Literal(2))")]
-        [InlineData("(X/234)", "Divide(NumericVariable(X), Literal(234))")]
-        [InlineData("(X(234)/YZ1234)", "Divide(Array(NumericVariable(X), Literal(234)), NumericVariable(YZ1234))")]
+        [InlineData("(X/234)", "Divide(NumVar(X), Literal(234))")]
+        [InlineData("(X(234)/YZ1234)", "Divide(Array(NumVar(X), Literal(234)), NumVar(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {

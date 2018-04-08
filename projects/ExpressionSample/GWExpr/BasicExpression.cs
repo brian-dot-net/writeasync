@@ -129,7 +129,7 @@ namespace GWExpr
                 {
                 }
 
-                public override string ToString() => "Numeric" + base.ToString();
+                public override string ToString() => "Num" + base.ToString();
             }
 
             private sealed class StringVariable : BasicVariable
@@ -139,7 +139,7 @@ namespace GWExpr
                 {
                 }
 
-                public override string ToString() => "String" + base.ToString();
+                public override string ToString() => "Str" + base.ToString();
             }
 
             private sealed class BasicArray : BasicExpression
@@ -387,7 +387,7 @@ namespace GWExpr
                 this.v = v.ToUpperInvariant();
             }
 
-            public override string ToString() => "Variable(" + this.v + ")";
+            public override string ToString() => "Var(" + this.v + ")";
         }
     }
 }

@@ -26,30 +26,30 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("A", "NumericVariable(A)")]
-        [InlineData("AB", "NumericVariable(AB)")]
-        [InlineData("XYZ123", "NumericVariable(XYZ123)")]
+        [InlineData("A", "NumVar(A)")]
+        [InlineData("AB", "NumVar(AB)")]
+        [InlineData("XYZ123", "NumVar(XYZ123)")]
         [Theory]
-        public void NumericVariables(string input, string output)
+        public void NumVars(string input, string output)
         {
             Test.Good(input, output);
         }
 
-        [InlineData("A$", "StringVariable(A)")]
-        [InlineData("AB$", "StringVariable(AB)")]
-        [InlineData("XYZ123$", "StringVariable(XYZ123)")]
+        [InlineData("A$", "StrVar(A)")]
+        [InlineData("AB$", "StrVar(AB)")]
+        [InlineData("XYZ123$", "StrVar(XYZ123)")]
         [Theory]
-        public void StringVariables(string input, string output)
+        public void StrVars(string input, string output)
         {
             Test.Good(input, output);
         }
 
-        [InlineData("a", "NumericVariable(A)")]
-        [InlineData("ab", "NumericVariable(AB)")]
-        [InlineData("xyZ123", "NumericVariable(XYZ123)")]
-        [InlineData("a$", "StringVariable(A)")]
-        [InlineData("Ab$", "StringVariable(AB)")]
-        [InlineData("XyZ123$", "StringVariable(XYZ123)")]
+        [InlineData("a", "NumVar(A)")]
+        [InlineData("ab", "NumVar(AB)")]
+        [InlineData("xyZ123", "NumVar(XYZ123)")]
+        [InlineData("a$", "StrVar(A)")]
+        [InlineData("Ab$", "StrVar(AB)")]
+        [InlineData("XyZ123$", "StrVar(XYZ123)")]
         [Theory]
         public void VariablesToUppercase(string input, string output)
         {
@@ -72,8 +72,8 @@ namespace GWExpr.Test
 
         [InlineData("(1)", "Literal(1)")]
         [InlineData("(\"x\")", "Literal(\"x\")")]
-        [InlineData("(A)", "NumericVariable(A)")]
-        [InlineData("(A$)", "StringVariable(A)")]
+        [InlineData("(A)", "NumVar(A)")]
+        [InlineData("(A$)", "StrVar(A)")]
         [Theory]
         public void WithParens(string input, string output)
         {

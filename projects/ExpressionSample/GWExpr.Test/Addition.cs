@@ -9,8 +9,8 @@ namespace GWExpr.Test
     public sealed class Addition
     {
         [InlineData("1+2", "Add(Literal(1), Literal(2))")]
-        [InlineData("X+234", "Add(NumericVariable(X), Literal(234))")]
-        [InlineData("X(234)+YZ1234", "Add(Array(NumericVariable(X), Literal(234)), NumericVariable(YZ1234))")]
+        [InlineData("X+234", "Add(NumVar(X), Literal(234))")]
+        [InlineData("X(234)+YZ1234", "Add(Array(NumVar(X), Literal(234)), NumVar(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -18,8 +18,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("\"1\"+\"2\"", "Add(Literal(\"1\"), Literal(\"2\"))")]
-        [InlineData("X$+\"234\"", "Add(StringVariable(X), Literal(\"234\"))")]
-        [InlineData("X$(234)+YZ1234$", "Add(Array(StringVariable(X), Literal(234)), StringVariable(YZ1234))")]
+        [InlineData("X$+\"234\"", "Add(StrVar(X), Literal(\"234\"))")]
+        [InlineData("X$(234)+YZ1234$", "Add(Array(StrVar(X), Literal(234)), StrVar(YZ1234))")]
         [Theory]
         public void StringExpressions(string input, string output)
         {
@@ -36,8 +36,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("(1+2)", "Add(Literal(1), Literal(2))")]
-        [InlineData("(X$+\"234\")", "Add(StringVariable(X), Literal(\"234\"))")]
-        [InlineData("(X$(234)+YZ1234$)", "Add(Array(StringVariable(X), Literal(234)), StringVariable(YZ1234))")]
+        [InlineData("(X$+\"234\")", "Add(StrVar(X), Literal(\"234\"))")]
+        [InlineData("(X$(234)+YZ1234$)", "Add(Array(StrVar(X), Literal(234)), StrVar(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {
