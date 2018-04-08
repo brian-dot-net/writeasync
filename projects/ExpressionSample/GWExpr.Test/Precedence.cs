@@ -28,6 +28,7 @@ namespace GWExpr.Test
         [InlineData("(-1)^2+3", "Add(Pow(Negate(NumericLiteral(1)), NumericLiteral(2)), NumericLiteral(3))")]
         [InlineData("1^-2+3", "Add(Pow(NumericLiteral(1), Negate(NumericLiteral(2))), NumericLiteral(3))")]
         [InlineData("1^(-2)+3", "Add(Pow(NumericLiteral(1), Negate(NumericLiteral(2))), NumericLiteral(3))")]
+        [InlineData("-1^2+3", "Add(Negate(Pow(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))", Skip = "Unary minus bug :(")]
         [Theory]
         public void Arithmetic(string input, string output)
         {
