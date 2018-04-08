@@ -43,6 +43,7 @@ namespace GWExpr
             public static readonly Parser<char> Minus = Parse.Char('-');
             public static readonly Parser<char> Star = Parse.Char('*');
             public static readonly Parser<char> Slash = Parse.Char('/');
+            public static readonly Parser<char> Caret = Parse.Char('^');
             public static readonly Parser<char> NonQuote = Parse.AnyChar.Except(Quote);
         }
 
@@ -197,11 +198,14 @@ namespace GWExpr
 
             private static readonly Parser<BasicExpression> NumOperand = NumNeg.Or(NumFactor);
 
-            private static readonly Parser<BasicExpression> NumTerm =
-                Parse.ChainOperator(Op.Multiplicative, NumOperand, Op.Apply);
+            private static readonly Parser<BasicExpression> NumPow =
+                Parse.ChainRightOperator(Op.Exponential, NumOperand, Op.Apply);
+
+            private static readonly Parser<BasicExpression> NumMult =
+                Parse.ChainOperator(Op.Multiplicative, NumPow, Op.Apply);
 
             private static readonly Parser<BasicExpression> Num =
-                Parse.ChainOperator(Op.Additive, NumTerm, Op.Apply);
+                Parse.ChainOperator(Op.Additive, NumMult, Op.Apply);
 
             private sealed class NegateExpression : BasicExpression
             {
@@ -237,6 +241,10 @@ namespace GWExpr
             public static readonly Parser<IOperator> Additive = Add.Or(Subtract);
 
             public static readonly Parser<IOperator> Multiplicative = Multiply.Or(Divide);
+
+            public static readonly Parser<IOperator> Exponential =
+                from o in Ch.Caret
+                select PowOperator.Value;
 
             public static BasicExpression Apply(IOperator op, BasicExpression x, BasicExpression y)
             {
@@ -342,6 +350,28 @@ namespace GWExpr
                 {
                     public DivideExpression(BasicExpression x, BasicExpression y)
                         : base("Divide", x, y)
+                    {
+                    }
+                }
+            }
+
+            private sealed class PowOperator : IOperator
+            {
+                public static readonly IOperator Value = new PowOperator();
+
+                private PowOperator()
+                {
+                }
+
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new PowExpression(x, y);
+                }
+
+                private sealed class PowExpression : BinaryExpression
+                {
+                    public PowExpression(BasicExpression x, BasicExpression y)
+                        : base("Pow", x, y)
                     {
                     }
                 }
