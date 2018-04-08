@@ -11,7 +11,7 @@ namespace GWExpr.Test
     {
         public static void Good(string input, string output)
         {
-            BasicExpression.FromString(input).ToString().Should().Be(output);
+            BasicExpression.FromString(input).ToString().Should().Be(output, "[{0}]", input);
         }
 
         public static void Bad(string input)
