@@ -70,7 +70,7 @@ namespace GWExpr
                     this.n = n;
                 }
 
-                public override string ToString() => "NumericLiteral(" + this.n + ")";
+                public override string ToString() => "Literal(" + this.n + ")";
             }
 
             private sealed class StringLiteral : BasicExpression

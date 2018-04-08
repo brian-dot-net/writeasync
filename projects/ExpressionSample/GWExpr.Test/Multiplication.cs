@@ -8,9 +8,9 @@ namespace GWExpr.Test
 
     public sealed class Multiplication
     {
-        [InlineData("1*2", "Multiply(NumericLiteral(1), NumericLiteral(2))")]
-        [InlineData("X*234", "Multiply(NumericVariable(X), NumericLiteral(234))")]
-        [InlineData("X(234)*YZ1234", "Multiply(Array(NumericVariable(X), NumericLiteral(234)), NumericVariable(YZ1234))")]
+        [InlineData("1*2", "Multiply(Literal(1), Literal(2))")]
+        [InlineData("X*234", "Multiply(NumericVariable(X), Literal(234))")]
+        [InlineData("X(234)*YZ1234", "Multiply(Array(NumericVariable(X), Literal(234)), NumericVariable(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -26,19 +26,19 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("(1*2)", "Multiply(NumericLiteral(1), NumericLiteral(2))")]
-        [InlineData("(X*234)", "Multiply(NumericVariable(X), NumericLiteral(234))")]
-        [InlineData("(X(234)*YZ1234)", "Multiply(Array(NumericVariable(X), NumericLiteral(234)), NumericVariable(YZ1234))")]
+        [InlineData("(1*2)", "Multiply(Literal(1), Literal(2))")]
+        [InlineData("(X*234)", "Multiply(NumericVariable(X), Literal(234))")]
+        [InlineData("(X(234)*YZ1234)", "Multiply(Array(NumericVariable(X), Literal(234)), NumericVariable(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {
             Test.Good(input, output);
         }
 
-        [InlineData("1*2*3", "Multiply(Multiply(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
-        [InlineData("(1*2*3)", "Multiply(Multiply(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
-        [InlineData("(1*2)*3", "Multiply(Multiply(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
-        [InlineData("1*(2*3)", "Multiply(NumericLiteral(1), Multiply(NumericLiteral(2), NumericLiteral(3)))")]
+        [InlineData("1*2*3", "Multiply(Multiply(Literal(1), Literal(2)), Literal(3))")]
+        [InlineData("(1*2*3)", "Multiply(Multiply(Literal(1), Literal(2)), Literal(3))")]
+        [InlineData("(1*2)*3", "Multiply(Multiply(Literal(1), Literal(2)), Literal(3))")]
+        [InlineData("1*(2*3)", "Multiply(Literal(1), Multiply(Literal(2), Literal(3)))")]
         [Theory]
         public void WithThreeTerms(string input, string output)
         {

@@ -8,9 +8,9 @@ namespace GWExpr.Test
 
     public sealed class Atoms
     {
-        [InlineData("1", "NumericLiteral(1)")]
-        [InlineData("22", "NumericLiteral(22)")]
-        [InlineData("32000", "NumericLiteral(32000)")]
+        [InlineData("1", "Literal(1)")]
+        [InlineData("22", "Literal(22)")]
+        [InlineData("32000", "Literal(32000)")]
         [Theory]
         public void Integers(string input, string output)
         {
@@ -70,7 +70,7 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("(1)", "NumericLiteral(1)")]
+        [InlineData("(1)", "Literal(1)")]
         [InlineData("(\"x\")", "StringLiteral(\"x\")")]
         [InlineData("(A)", "NumericVariable(A)")]
         [InlineData("(A$)", "StringVariable(A)")]

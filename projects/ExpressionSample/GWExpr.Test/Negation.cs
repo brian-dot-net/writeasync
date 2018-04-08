@@ -8,9 +8,9 @@ namespace GWExpr.Test
 
     public sealed class Negation
     {
-        [InlineData("-1", "Negate(NumericLiteral(1))")]
+        [InlineData("-1", "Negate(Literal(1))")]
         [InlineData("-X", "Negate(NumericVariable(X))")]
-        [InlineData("-X(234)", "Negate(Array(NumericVariable(X), NumericLiteral(234)))")]
+        [InlineData("-X(234)", "Negate(Array(NumericVariable(X), Literal(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -26,7 +26,7 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("-(1)", "Negate(NumericLiteral(1))")]
+        [InlineData("-(1)", "Negate(Literal(1))")]
         [InlineData("-(-(X))", "Negate(Negate(NumericVariable(X)))")]
         [InlineData("(-X)", "Negate(NumericVariable(X))")]
         [Theory]
@@ -35,14 +35,14 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("1+(-2)", "Add(NumericLiteral(1), Negate(NumericLiteral(2)))")]
-        [InlineData("-1+2", "Add(Negate(NumericLiteral(1)), NumericLiteral(2))")]
-        [InlineData("1-(-2)", "Subtract(NumericLiteral(1), Negate(NumericLiteral(2)))")]
-        [InlineData("-1-2", "Subtract(Negate(NumericLiteral(1)), NumericLiteral(2))")]
-        [InlineData("1*(-2)", "Multiply(NumericLiteral(1), Negate(NumericLiteral(2)))")]
-        [InlineData("-1*2", "Multiply(Negate(NumericLiteral(1)), NumericLiteral(2))")]
-        [InlineData("1/(-2)", "Divide(NumericLiteral(1), Negate(NumericLiteral(2)))")]
-        [InlineData("-1/2", "Divide(Negate(NumericLiteral(1)), NumericLiteral(2))")]
+        [InlineData("1+(-2)", "Add(Literal(1), Negate(Literal(2)))")]
+        [InlineData("-1+2", "Add(Negate(Literal(1)), Literal(2))")]
+        [InlineData("1-(-2)", "Subtract(Literal(1), Negate(Literal(2)))")]
+        [InlineData("-1-2", "Subtract(Negate(Literal(1)), Literal(2))")]
+        [InlineData("1*(-2)", "Multiply(Literal(1), Negate(Literal(2)))")]
+        [InlineData("-1*2", "Multiply(Negate(Literal(1)), Literal(2))")]
+        [InlineData("1/(-2)", "Divide(Literal(1), Negate(Literal(2)))")]
+        [InlineData("-1/2", "Divide(Negate(Literal(1)), Literal(2))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {

@@ -8,9 +8,9 @@ namespace GWExpr.Test
 
     public sealed class Subtraction
     {
-        [InlineData("1-2", "Subtract(NumericLiteral(1), NumericLiteral(2))")]
-        [InlineData("X-234", "Subtract(NumericVariable(X), NumericLiteral(234))")]
-        [InlineData("X(234)-YZ1234", "Subtract(Array(NumericVariable(X), NumericLiteral(234)), NumericVariable(YZ1234))")]
+        [InlineData("1-2", "Subtract(Literal(1), Literal(2))")]
+        [InlineData("X-234", "Subtract(NumericVariable(X), Literal(234))")]
+        [InlineData("X(234)-YZ1234", "Subtract(Array(NumericVariable(X), Literal(234)), NumericVariable(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -26,19 +26,19 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("(1-2)", "Subtract(NumericLiteral(1), NumericLiteral(2))")]
-        [InlineData("(X-234)", "Subtract(NumericVariable(X), NumericLiteral(234))")]
-        [InlineData("(X(234)-YZ1234)", "Subtract(Array(NumericVariable(X), NumericLiteral(234)), NumericVariable(YZ1234))")]
+        [InlineData("(1-2)", "Subtract(Literal(1), Literal(2))")]
+        [InlineData("(X-234)", "Subtract(NumericVariable(X), Literal(234))")]
+        [InlineData("(X(234)-YZ1234)", "Subtract(Array(NumericVariable(X), Literal(234)), NumericVariable(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {
             Test.Good(input, output);
         }
 
-        [InlineData("1-2-3", "Subtract(Subtract(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
-        [InlineData("(1-2-3)", "Subtract(Subtract(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
-        [InlineData("(1-2)-3", "Subtract(Subtract(NumericLiteral(1), NumericLiteral(2)), NumericLiteral(3))")]
-        [InlineData("1-(2-3)", "Subtract(NumericLiteral(1), Subtract(NumericLiteral(2), NumericLiteral(3)))")]
+        [InlineData("1-2-3", "Subtract(Subtract(Literal(1), Literal(2)), Literal(3))")]
+        [InlineData("(1-2-3)", "Subtract(Subtract(Literal(1), Literal(2)), Literal(3))")]
+        [InlineData("(1-2)-3", "Subtract(Subtract(Literal(1), Literal(2)), Literal(3))")]
+        [InlineData("1-(2-3)", "Subtract(Literal(1), Subtract(Literal(2), Literal(3)))")]
         [Theory]
         public void WithThreeTerms(string input, string output)
         {
