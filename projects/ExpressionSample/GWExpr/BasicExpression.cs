@@ -163,38 +163,56 @@ namespace GWExpr
 
         private static class Expr
         {
-            public static readonly Parser<BasicExpression> Any =
-                Str.Any
-                .Or(Parse.Ref(() => Num))
-                .End();
+            public static readonly Parser<BasicExpression> Any = Str.Any.Or(Num.Any).End();
+        }
 
-            private static readonly Parser<BasicExpression> NumParen =
+        private static class Str
+        {
+            public static readonly Parser<BasicExpression> Any =
+                Parse.ChainOperator(Op.Add, Parse.Ref(() => Term), Op.Apply);
+
+            private static readonly Parser<BasicExpression> Value = Lit.Str.Or(Var.StrAny);
+
+            private static readonly Parser<BasicExpression> Paren =
                 from lp in Ch.LeftParen
-                from x in Parse.Ref(() => Num)
+                from x in Any
                 from rp in Ch.RightParen
                 select x;
 
-            private static readonly Parser<BasicExpression> NumValue = Lit.Num.Or(Var.NumAny);
+            private static readonly Parser<BasicExpression> Term = Paren.Or(Value);
+        }
 
-            private static readonly Parser<BasicExpression> NumFactor = NumParen.Or(NumValue);
+        private static class Num
+        {
+            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Add);
 
-            private static readonly Parser<BasicExpression> NumOperand =
-                Parse.Ref(() => NumNeg)
-                .Or(NumFactor);
+            private static readonly Parser<BasicExpression> Paren =
+                from lp in Ch.LeftParen
+                from x in Any
+                from rp in Ch.RightParen
+                select x;
 
-            private static readonly Parser<BasicExpression> NumPow =
-                Parse.ChainOperator(Op.Exponential, NumOperand, Op.Apply);
+            private static readonly Parser<BasicExpression> Value = Lit.Num.Or(Var.NumAny);
 
-            private static readonly Parser<BasicExpression> NumNeg =
+            private static readonly Parser<BasicExpression> Factor = Paren.Or(Value);
+
+            private static readonly Parser<BasicExpression> Operand =
+                Parse.Ref(() => Neg)
+                .Or(Factor);
+
+            private static readonly Parser<BasicExpression> Pow =
+                Parse.ChainOperator(Op.Exponential, Operand, Op.Apply);
+
+            private static readonly Parser<BasicExpression> Neg =
                 from m in Ch.Minus
-                from x in NumPow
+                from x in Pow
                 select new NegateExpression(x);
 
-            private static readonly Parser<BasicExpression> NumMult =
-                Parse.ChainOperator(Op.Multiplicative, NumNeg.Or(NumPow), Op.Apply);
+            private static readonly Parser<BasicExpression> Mult =
+                Parse.ChainOperator(Op.Multiplicative, Neg.Or(Pow), Op.Apply);
 
-            private static readonly Parser<BasicExpression> Num =
-                Parse.ChainOperator(Op.Additive, NumMult, Op.Apply);
+            private static readonly Parser<BasicExpression> Add =
+                Parse.ChainOperator(Op.Additive, Mult, Op.Apply);
 
             private sealed class NegateExpression : BasicExpression
             {
@@ -207,22 +225,6 @@ namespace GWExpr
 
                 public override string ToString() => "Negate(" + this.x + ")";
             }
-        }
-
-        private static class Str
-        {
-            public static readonly Parser<BasicExpression> Any =
-                Parse.ChainOperator(Op.Add, Parse.Ref(() => Term), Op.Apply);
-
-            private static readonly Parser<BasicExpression> Value = Lit.Str.Or(Var.StrAny);
-
-            private static readonly Parser<BasicExpression> Paren =
-                from lp in Ch.LeftParen
-                from x in Parse.Ref(() => Any)
-                from rp in Ch.RightParen
-                select x;
-
-            private static readonly Parser<BasicExpression> Term = Paren.Or(Value);
         }
 
         private static class Op
