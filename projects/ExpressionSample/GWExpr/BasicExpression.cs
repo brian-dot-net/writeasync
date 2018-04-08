@@ -191,18 +191,20 @@ namespace GWExpr
 
             private static readonly Parser<BasicExpression> NumFactor = NumParen.Or(NumValue);
 
-            private static readonly Parser<BasicExpression> NumNeg =
-                from m in Ch.Minus
-                from x in NumFactor
-                select new NegateExpression(x);
-
-            private static readonly Parser<BasicExpression> NumOperand = NumNeg.Or(NumFactor);
+            private static readonly Parser<BasicExpression> NumOperand =
+                Parse.Ref(() => NumNeg)
+                .Or(NumFactor);
 
             private static readonly Parser<BasicExpression> NumPow =
                 Parse.ChainOperator(Op.Exponential, NumOperand, Op.Apply);
 
+            private static readonly Parser<BasicExpression> NumNeg =
+                from m in Ch.Minus
+                from x in NumPow
+                select new NegateExpression(x);
+
             private static readonly Parser<BasicExpression> NumMult =
-                Parse.ChainOperator(Op.Multiplicative, NumPow, Op.Apply);
+                Parse.ChainOperator(Op.Multiplicative, NumNeg.Or(NumPow), Op.Apply);
 
             private static readonly Parser<BasicExpression> Num =
                 Parse.ChainOperator(Op.Additive, NumMult, Op.Apply);
