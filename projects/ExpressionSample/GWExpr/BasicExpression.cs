@@ -164,22 +164,9 @@ namespace GWExpr
         private static class Expr
         {
             public static readonly Parser<BasicExpression> Any =
-                Parse.Ref(() => Str)
+                Str.Any
                 .Or(Parse.Ref(() => Num))
                 .End();
-
-            private static readonly Parser<BasicExpression> StrValue = Lit.Str.Or(Var.StrAny);
-
-            private static readonly Parser<BasicExpression> StrParen =
-                from lp in Ch.LeftParen
-                from x in Parse.Ref(() => Str)
-                from rp in Ch.RightParen
-                select x;
-
-            private static readonly Parser<BasicExpression> StrTerm = StrParen.Or(StrValue);
-
-            private static readonly Parser<BasicExpression> Str =
-                Parse.ChainOperator(Op.Add, StrTerm, Op.Apply);
 
             private static readonly Parser<BasicExpression> NumParen =
                 from lp in Ch.LeftParen
@@ -220,6 +207,22 @@ namespace GWExpr
 
                 public override string ToString() => "Negate(" + this.x + ")";
             }
+        }
+
+        private static class Str
+        {
+            public static readonly Parser<BasicExpression> Any =
+                Parse.ChainOperator(Op.Add, Parse.Ref(() => Term), Op.Apply);
+
+            private static readonly Parser<BasicExpression> Value = Lit.Str.Or(Var.StrAny);
+
+            private static readonly Parser<BasicExpression> Paren =
+                from lp in Ch.LeftParen
+                from x in Parse.Ref(() => Any)
+                from rp in Ch.RightParen
+                select x;
+
+            private static readonly Parser<BasicExpression> Term = Paren.Or(Value);
         }
 
         private static class Op
