@@ -17,9 +17,9 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("\"1\"", "StringLiteral(\"1\")")]
-        [InlineData("\"\"", "StringLiteral(\"\")")]
-        [InlineData("\"string with spaces\"", "StringLiteral(\"string with spaces\")")]
+        [InlineData("\"1\"", "Literal(\"1\")")]
+        [InlineData("\"\"", "Literal(\"\")")]
+        [InlineData("\"string with spaces\"", "Literal(\"string with spaces\")")]
         [Theory]
         public void Strings(string input, string output)
         {
@@ -71,7 +71,7 @@ namespace GWExpr.Test
         }
 
         [InlineData("(1)", "Literal(1)")]
-        [InlineData("(\"x\")", "StringLiteral(\"x\")")]
+        [InlineData("(\"x\")", "Literal(\"x\")")]
         [InlineData("(A)", "NumericVariable(A)")]
         [InlineData("(A$)", "StringVariable(A)")]
         [Theory]

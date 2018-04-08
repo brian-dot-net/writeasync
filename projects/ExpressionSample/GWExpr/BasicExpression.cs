@@ -82,7 +82,7 @@ namespace GWExpr
                     this.s = s;
                 }
 
-                public override string ToString() => "StringLiteral(\"" + this.s + "\")";
+                public override string ToString() => "Literal(\"" + this.s + "\")";
             }
         }
 
