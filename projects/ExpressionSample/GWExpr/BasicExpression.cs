@@ -222,7 +222,10 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> And =
                 Parse.ChainOperator(Op.And, Add, Op.Apply);
 
-            private static readonly Parser<BasicExpression> Bool = Not.Or(And);
+            private static readonly Parser<BasicExpression> Or =
+                Parse.ChainOperator(Op.Or, And, Op.Apply);
+
+            private static readonly Parser<BasicExpression> Bool = Not.Or(Or);
 
             private static readonly Parser<BasicExpression> Unary = Neg.Or(Not);
 
@@ -256,6 +259,10 @@ namespace GWExpr
             public static readonly Parser<IOperator> And =
                 from k in Parse.String(" AND ")
                 select AndOperator.Value;
+
+            public static readonly Parser<IOperator> Or =
+                from k in Parse.String(" OR ")
+                select OrOperator.Value;
 
             public static readonly Parser<IOperator> Add =
                 from o in Ch.Plus
@@ -319,6 +326,28 @@ namespace GWExpr
                 {
                     public AndExpression(BasicExpression x, BasicExpression y)
                         : base("And", x, y)
+                    {
+                    }
+                }
+            }
+
+            private sealed class OrOperator : IOperator
+            {
+                public static readonly IOperator Value = new OrOperator();
+
+                private OrOperator()
+                {
+                }
+
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new OrExpression(x, y);
+                }
+
+                private sealed class OrExpression : BinaryExpression
+                {
+                    public OrExpression(BasicExpression x, BasicExpression y)
+                        : base("Or", x, y)
                     {
                     }
                 }
