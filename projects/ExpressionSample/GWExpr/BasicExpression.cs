@@ -216,16 +216,16 @@ namespace GWExpr
 
             private static readonly Parser<BasicExpression> Not =
                 from k in Parse.String("NOT ")
-                from x in Any
+                from x in Add
                 select new NotExpression(x);
 
             private static readonly Parser<BasicExpression> And =
-                Parse.ChainOperator(Op.And, Add, Op.Apply);
+                Parse.ChainOperator(Op.And, Not.Or(Add), Op.Apply);
 
             private static readonly Parser<BasicExpression> Or =
                 Parse.ChainOperator(Op.Or, And, Op.Apply);
 
-            private static readonly Parser<BasicExpression> Bool = Not.Or(Or);
+            private static readonly Parser<BasicExpression> Bool = Or;
 
             private static readonly Parser<BasicExpression> Unary = Neg.Or(Not);
 

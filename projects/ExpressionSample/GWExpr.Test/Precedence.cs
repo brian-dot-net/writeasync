@@ -34,5 +34,16 @@ namespace GWExpr.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData("1 AND 2 OR 3", "Or(And(Literal(1), Literal(2)), Literal(3))")]
+        [InlineData("1 AND (2 OR 3)", "And(Literal(1), Or(Literal(2), Literal(3)))")]
+        [InlineData("1+2 AND 3", "And(Add(Literal(1), Literal(2)), Literal(3))")]
+        [InlineData("1*2 AND 3", "And(Multiply(Literal(1), Literal(2)), Literal(3))")]
+        [InlineData("NOT 1 AND 2 OR 3", "Or(And(Not(Literal(1)), Literal(2)), Literal(3))")]
+        [Theory]
+        public void Logical(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }
