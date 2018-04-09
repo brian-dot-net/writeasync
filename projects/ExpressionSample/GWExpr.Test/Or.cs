@@ -54,5 +54,13 @@ namespace GWExpr.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData("1+OR")]
+        [InlineData("OR(1,X)")]
+        [Theory]
+        public void FailedReserved(string input)
+        {
+            Test.Bad(input);
+        }
     }
 }

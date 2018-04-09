@@ -45,5 +45,13 @@ namespace GWExpr.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData("1+NOT")]
+        [InlineData("NOT(1,X)")]
+        [Theory]
+        public void FailedReserved(string input)
+        {
+            Test.Bad(input);
+        }
     }
 }

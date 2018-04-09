@@ -44,7 +44,18 @@ namespace GWExpr
             public static readonly Parser<char> Star = Parse.Char('*');
             public static readonly Parser<char> Slash = Parse.Char('/');
             public static readonly Parser<char> Caret = Parse.Char('^');
+            public static readonly Parser<char> Space = Parse.Char(' ');
             public static readonly Parser<char> NonQuote = Parse.AnyChar.Except(Quote);
+        }
+
+        private static class Kw
+        {
+            public static readonly Parser<IEnumerable<char>> And = Parse.String("AND");
+            public static readonly Parser<IEnumerable<char>> Not = Parse.String("NOT");
+            public static readonly Parser<IEnumerable<char>> Or = Parse.String("OR");
+
+            public static readonly Parser<IEnumerable<char>> Any =
+                And.Or(Not).Or(Or);
         }
 
         private static class Lit
@@ -88,7 +99,9 @@ namespace GWExpr
 
         private static class Var
         {
-            public static readonly Parser<string> Id = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit);
+            public static readonly Parser<string> Id =
+                Parse.Identifier(Parse.Letter, Parse.LetterOrDigit)
+                .Except(Kw.Any);
 
             public static readonly Parser<BasicVariable> StrScalar =
                 from v in Id
@@ -215,7 +228,8 @@ namespace GWExpr
                 Parse.ChainOperator(Op.Additive, Mult, Op.Apply);
 
             private static readonly Parser<BasicExpression> Not =
-                from k in Parse.String("NOT ")
+                from k in Kw.Not
+                from s in Ch.Space
                 from x in Add
                 select new NotExpression(x);
 
@@ -257,11 +271,15 @@ namespace GWExpr
         private static class Op
         {
             public static readonly Parser<IOperator> And =
-                from k in Parse.String(" AND ")
+                from s1 in Ch.Space
+                from k in Kw.And
+                from s2 in Ch.Space
                 select AndOperator.Value;
 
             public static readonly Parser<IOperator> Or =
-                from k in Parse.String(" OR ")
+                from s1 in Ch.Space
+                from k in Kw.Or
+                from s2 in Ch.Space
                 select OrOperator.Value;
 
             public static readonly Parser<IOperator> Add =
