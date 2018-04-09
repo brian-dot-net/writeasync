@@ -219,7 +219,10 @@ namespace GWExpr
                 from x in Any
                 select new NotExpression(x);
 
-            private static readonly Parser<BasicExpression> Bool = Not.Or(Add);
+            private static readonly Parser<BasicExpression> And =
+                Parse.ChainOperator(Op.And, Add, Op.Apply);
+
+            private static readonly Parser<BasicExpression> Bool = Not.Or(And);
 
             private static readonly Parser<BasicExpression> Unary = Neg.Or(Not);
 
@@ -250,6 +253,10 @@ namespace GWExpr
 
         private static class Op
         {
+            public static readonly Parser<IOperator> And =
+                from k in Parse.String(" AND ")
+                select AndOperator.Value;
+
             public static readonly Parser<IOperator> Add =
                 from o in Ch.Plus
                 select AddOperator.Value;
@@ -293,6 +300,28 @@ namespace GWExpr
                 }
 
                 public override string ToString() => this.name + "(" + this.x + ", " + this.y + ")";
+            }
+
+            private sealed class AndOperator : IOperator
+            {
+                public static readonly IOperator Value = new AndOperator();
+
+                private AndOperator()
+                {
+                }
+
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new AndExpression(x, y);
+                }
+
+                private sealed class AndExpression : BinaryExpression
+                {
+                    public AndExpression(BasicExpression x, BasicExpression y)
+                        : base("And", x, y)
+                    {
+                    }
+                }
             }
 
             private sealed class AddOperator : IOperator
