@@ -633,7 +633,7 @@ namespace GWExpr
             private sealed class DivideExpression : BinaryExpression
             {
                 public DivideExpression(BasicExpression x, BasicExpression y)
-                    : base("Divide", x, y)
+                    : base("Div", x, y)
                 {
                 }
             }

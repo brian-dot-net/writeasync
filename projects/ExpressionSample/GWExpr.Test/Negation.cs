@@ -41,8 +41,8 @@ namespace GWExpr.Test
         [InlineData("-1-2", "Subtract(Neg(L(1)), L(2))")]
         [InlineData("1*(-2)", "Mult(L(1), Neg(L(2)))")]
         [InlineData("-1*2", "Mult(Neg(L(1)), L(2))")]
-        [InlineData("1/(-2)", "Divide(L(1), Neg(L(2)))")]
-        [InlineData("-1/2", "Divide(Neg(L(1)), L(2))")]
+        [InlineData("1/(-2)", "Div(L(1), Neg(L(2)))")]
+        [InlineData("-1/2", "Div(Neg(L(1)), L(2))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {
