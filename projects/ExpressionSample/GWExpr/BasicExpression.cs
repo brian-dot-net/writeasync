@@ -84,7 +84,7 @@ namespace GWExpr
                     this.n = n;
                 }
 
-                public override string ToString() => "Literal(" + this.n + ")";
+                public override string ToString() => "L(" + this.n + ")";
             }
 
             private sealed class StringLiteral : BasicExpression
@@ -96,7 +96,7 @@ namespace GWExpr
                     this.s = s;
                 }
 
-                public override string ToString() => "Literal(\"" + this.s + "\")";
+                public override string ToString() => "L(\"" + this.s + "\")";
             }
         }
 
