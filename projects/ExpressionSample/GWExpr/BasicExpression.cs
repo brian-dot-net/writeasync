@@ -184,10 +184,7 @@ namespace GWExpr
 
         private static class Str
         {
-            public static readonly Parser<BasicExpression> Any =
-                Parse.ChainOperator(Op.Add, Parse.Ref(() => Term), Op.Apply);
-
-            private static readonly Parser<BasicExpression> Value = Lit.Str.Or(Var.StrAny);
+            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Relational);
 
             private static readonly Parser<BasicExpression> Paren =
                 from lp in Ch.LeftParen
@@ -195,7 +192,15 @@ namespace GWExpr
                 from rp in Ch.RightParen
                 select x;
 
-            private static readonly Parser<BasicExpression> Term = Paren.Or(Value);
+            private static readonly Parser<BasicExpression> Value = Lit.Str.Or(Var.StrAny);
+
+            private static readonly Parser<BasicExpression> Factor = Paren.Or(Value);
+
+            private static readonly Parser<BasicExpression> Add =
+                Parse.ChainOperator(Op.Add, Factor, Op.Apply);
+
+            private static readonly Parser<BasicExpression> Relational =
+                Parse.ChainOperator(Op.Relational, Add, Op.Apply);
         }
 
         private static class Num

@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("\"one\"<=\"two\"", "Le(L(\"one\"), L(\"two\"))")]
+        [InlineData("X$<=\"abc\"", "Le(StrVar(X), L(\"abc\"))")]
+        [InlineData("X$(234)<=YZ1234$", "Le(Array(StrVar(X), L(234)), StrVar(YZ1234))")]
+        [Theory]
+        public void String(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("2<=\"1\"")]
         [InlineData("234<=X$")]
         [InlineData("X(234)<=YZ1234$")]
