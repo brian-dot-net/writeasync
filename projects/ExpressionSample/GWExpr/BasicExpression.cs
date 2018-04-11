@@ -617,7 +617,7 @@ namespace GWExpr
             private sealed class SubtractExpression : BinaryExpression
             {
                 public SubtractExpression(BasicExpression x, BasicExpression y)
-                    : base("Subtract", x, y)
+                    : base("Sub", x, y)
                 {
                 }
             }

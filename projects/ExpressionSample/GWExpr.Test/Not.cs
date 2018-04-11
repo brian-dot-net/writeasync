@@ -37,8 +37,8 @@ namespace GWExpr.Test
 
         [InlineData("1+NOT -2", "Add(L(1), Not(Neg(L(2))))")]
         [InlineData("NOT 1+2", "Not(Add(L(1), L(2)))")]
-        [InlineData("1-NOT -2", "Subtract(L(1), Not(Neg(L(2))))")]
-        [InlineData("NOT 1-NOT 2", "Not(Subtract(L(1), Not(L(2))))")]
+        [InlineData("1-NOT -2", "Sub(L(1), Not(Neg(L(2))))")]
+        [InlineData("NOT 1-NOT 2", "Not(Sub(L(1), Not(L(2))))")]
         [InlineData("NOT 1*2", "Not(Mult(L(1), L(2)))")]
         [Theory]
         public void WithOtherOperations(string input, string output)

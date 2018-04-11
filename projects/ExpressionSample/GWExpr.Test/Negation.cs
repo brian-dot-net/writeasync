@@ -37,8 +37,8 @@ namespace GWExpr.Test
 
         [InlineData("1+(-2)", "Add(L(1), Neg(L(2)))")]
         [InlineData("-1+2", "Add(Neg(L(1)), L(2))")]
-        [InlineData("1-(-2)", "Subtract(L(1), Neg(L(2)))")]
-        [InlineData("-1-2", "Subtract(Neg(L(1)), L(2))")]
+        [InlineData("1-(-2)", "Sub(L(1), Neg(L(2)))")]
+        [InlineData("-1-2", "Sub(Neg(L(1)), L(2))")]
         [InlineData("1*(-2)", "Mult(L(1), Neg(L(2)))")]
         [InlineData("-1*2", "Mult(Neg(L(1)), L(2))")]
         [InlineData("1/(-2)", "Div(L(1), Neg(L(2)))")]

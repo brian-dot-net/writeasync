@@ -45,8 +45,8 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("(Z+1) OR (X-Y)", "Or(Add(NumVar(Z), L(1)), Subtract(NumVar(X), NumVar(Y)))")]
-        [InlineData("Z+1 OR X-Y", "Or(Add(NumVar(Z), L(1)), Subtract(NumVar(X), NumVar(Y)))")]
+        [InlineData("(Z+1) OR (X-Y)", "Or(Add(NumVar(Z), L(1)), Sub(NumVar(X), NumVar(Y)))")]
+        [InlineData("Z+1 OR X-Y", "Or(Add(NumVar(Z), L(1)), Sub(NumVar(X), NumVar(Y)))")]
         [InlineData("(Z*1) OR (X^Y)", "Or(Mult(NumVar(Z), L(1)), Pow(NumVar(X), NumVar(Y)))")]
         [InlineData("Z*1 OR X^Y", "Or(Mult(NumVar(Z), L(1)), Pow(NumVar(X), NumVar(Y)))")]
         [Theory]
