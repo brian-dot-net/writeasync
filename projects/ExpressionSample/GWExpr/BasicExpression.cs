@@ -625,7 +625,7 @@ namespace GWExpr
             private sealed class MultiplyExpression : BinaryExpression
             {
                 public MultiplyExpression(BasicExpression x, BasicExpression y)
-                    : base("Multiply", x, y)
+                    : base("Mult", x, y)
                 {
                 }
             }

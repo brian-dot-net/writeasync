@@ -47,8 +47,8 @@ namespace GWExpr.Test
 
         [InlineData("(Z+1)<(X-Y)", "Lt(Add(NumVar(Z), L(1)), Subtract(NumVar(X), NumVar(Y)))")]
         [InlineData("Z+1<X-Y", "Lt(Add(NumVar(Z), L(1)), Subtract(NumVar(X), NumVar(Y)))")]
-        [InlineData("(Z*1)<(X^Y)", "Lt(Multiply(NumVar(Z), L(1)), Pow(NumVar(X), NumVar(Y)))")]
-        [InlineData("Z*1<X^Y", "Lt(Multiply(NumVar(Z), L(1)), Pow(NumVar(X), NumVar(Y)))")]
+        [InlineData("(Z*1)<(X^Y)", "Lt(Mult(NumVar(Z), L(1)), Pow(NumVar(X), NumVar(Y)))")]
+        [InlineData("Z*1<X^Y", "Lt(Mult(NumVar(Z), L(1)), Pow(NumVar(X), NumVar(Y)))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {
