@@ -46,6 +46,8 @@ namespace GWExpr
             public static readonly Parser<char> Caret = Parse.Char('^');
             public static readonly Parser<char> Space = Parse.Char(' ');
             public static readonly Parser<char> Equal = Parse.Char('=');
+            public static readonly Parser<char> Less = Parse.Char('<');
+            public static readonly Parser<char> Greater = Parse.Char('>');
             public static readonly Parser<char> NonQuote = Parse.AnyChar.Except(Quote);
         }
 
@@ -230,17 +232,17 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Add =
                 Parse.ChainOperator(Op.Additive, Mult, Op.Apply);
 
+            private static readonly Parser<BasicExpression> Relational =
+                Parse.ChainOperator(Op.Relational, Add, Op.Apply);
+
             private static readonly Parser<BasicExpression> Not =
                 from k in Kw.Not
                 from s in Ch.Space
                 from x in Add
                 select new NotExpression(x);
 
-            private static readonly Parser<BasicExpression> Eq =
-                Parse.ChainOperator(Op.Eq, Add, Op.Apply);
-
             private static readonly Parser<BasicExpression> And =
-                Parse.ChainOperator(Op.And, Not.Or(Eq), Op.Apply);
+                Parse.ChainOperator(Op.And, Not.Or(Relational), Op.Apply);
 
             private static readonly Parser<BasicExpression> Or =
                 Parse.ChainOperator(Op.Or, And, Op.Apply);
@@ -288,6 +290,11 @@ namespace GWExpr
                 from o in Ch.Equal
                 select EqOperator.Value;
 
+            public static readonly Parser<IOperator> Ne =
+                from o1 in Ch.Less
+                from o2 in Ch.Greater
+                select NeOperator.Value;
+
             public static readonly Parser<IOperator> Add =
                 from o in Ch.Plus
                 select AddOperator.Value;
@@ -311,6 +318,8 @@ namespace GWExpr
             public static readonly Parser<IOperator> Exponential =
                 from o in Ch.Caret
                 select PowOperator.Value;
+
+            public static readonly Parser<IOperator> Relational = Eq.Or(Ne);
 
             public static BasicExpression Apply(IOperator op, BasicExpression x, BasicExpression y)
             {
@@ -394,6 +403,28 @@ namespace GWExpr
                 {
                     public EqExpression(BasicExpression x, BasicExpression y)
                         : base("Eq", x, y)
+                    {
+                    }
+                }
+            }
+
+            private sealed class NeOperator : IOperator
+            {
+                public static readonly IOperator Value = new NeOperator();
+
+                private NeOperator()
+                {
+                }
+
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new NeExpression(x, y);
+                }
+
+                private sealed class NeExpression : BinaryExpression
+                {
+                    public NeExpression(BasicExpression x, BasicExpression y)
+                        : base("Ne", x, y)
                     {
                     }
                 }
