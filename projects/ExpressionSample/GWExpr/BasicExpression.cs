@@ -299,6 +299,10 @@ namespace GWExpr
                 from o1 in Ch.Less
                 select LtOperator.Value;
 
+            public static readonly Parser<IOperator> Gt =
+                from o1 in Ch.Greater
+                select GtOperator.Value;
+
             public static readonly Parser<IOperator> Add =
                 from o in Ch.Plus
                 select AddOperator.Value;
@@ -323,7 +327,7 @@ namespace GWExpr
                 from o in Ch.Caret
                 select PowOperator.Value;
 
-            public static readonly Parser<IOperator> Relational = Eq.Or(Ne).Or(Lt);
+            public static readonly Parser<IOperator> Relational = Eq.Or(Ne).Or(Lt).Or(Gt);
 
             public static BasicExpression Apply(IOperator op, BasicExpression x, BasicExpression y)
             {
@@ -451,6 +455,28 @@ namespace GWExpr
                 {
                     public LtExpression(BasicExpression x, BasicExpression y)
                         : base("Lt", x, y)
+                    {
+                    }
+                }
+            }
+
+            private sealed class GtOperator : IOperator
+            {
+                public static readonly IOperator Value = new GtOperator();
+
+                private GtOperator()
+                {
+                }
+
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new GtExpression(x, y);
+                }
+
+                private sealed class GtExpression : BinaryExpression
+                {
+                    public GtExpression(BasicExpression x, BasicExpression y)
+                        : base("Gt", x, y)
                     {
                     }
                 }
