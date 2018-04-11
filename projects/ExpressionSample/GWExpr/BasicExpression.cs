@@ -184,7 +184,7 @@ namespace GWExpr
 
         private static class Str
         {
-            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Relational);
+            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Or);
 
             private static readonly Parser<BasicExpression> Paren =
                 from lp in Ch.LeftParen
@@ -201,6 +201,12 @@ namespace GWExpr
 
             private static readonly Parser<BasicExpression> Relational =
                 Parse.ChainOperator(Op.Relational, Add, Op.Apply);
+
+            private static readonly Parser<BasicExpression> And =
+                Parse.ChainOperator(Op.And, Relational, Op.Apply);
+
+            private static readonly Parser<BasicExpression> Or =
+                Parse.ChainOperator(Op.Or, And, Op.Apply);
         }
 
         private static class Num
@@ -262,18 +268,6 @@ namespace GWExpr
                 }
 
                 public override string ToString() => "Neg(" + this.x + ")";
-            }
-
-            private sealed class NotExpression : BasicExpression
-            {
-                private readonly BasicExpression x;
-
-                public NotExpression(BasicExpression x)
-                {
-                    this.x = x;
-                }
-
-                public override string ToString() => "Not(" + this.x + ")";
             }
         }
 
@@ -650,6 +644,18 @@ namespace GWExpr
                 {
                 }
             }
+        }
+
+        private sealed class NotExpression : BasicExpression
+        {
+            private readonly BasicExpression x;
+
+            public NotExpression(BasicExpression x)
+            {
+                this.x = x;
+            }
+
+            public override string ToString() => "Not(" + this.x + ")";
         }
 
         private abstract class BasicVariable : BasicExpression

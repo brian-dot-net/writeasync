@@ -55,6 +55,14 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("(Z$+\"x\") AND (X$=Y$)", "And(Add(StrVar(Z), L(\"x\")), Eq(StrVar(X), StrVar(Y)))")]
+        [InlineData("(Z$>\"x\") AND (X$<>Y$)", "And(Gt(StrVar(Z), L(\"x\")), Ne(StrVar(X), StrVar(Y)))")]
+        [Theory]
+        public void WithOtherStringOperations(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("1+AND")]
         [InlineData("AND(1,X)")]
         [Theory]

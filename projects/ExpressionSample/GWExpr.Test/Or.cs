@@ -55,6 +55,14 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("(Z$+\"x\") OR (X$=Y$)", "Or(Add(StrVar(Z), L(\"x\")), Eq(StrVar(X), StrVar(Y)))")]
+        [InlineData("(Z$>\"x\") OR (X$<>Y$)", "Or(Gt(StrVar(Z), L(\"x\")), Ne(StrVar(X), StrVar(Y)))")]
+        [Theory]
+        public void WithOtherStringOperations(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("1+OR")]
         [InlineData("OR(1,X)")]
         [Theory]
