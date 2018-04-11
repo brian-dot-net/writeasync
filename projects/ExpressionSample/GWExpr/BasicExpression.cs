@@ -304,6 +304,11 @@ namespace GWExpr
                 from o1 in Ch.Less
                 select LtOperator.Value;
 
+            public static readonly Parser<IOperator> Ge =
+                from o1 in Ch.Greater
+                from o2 in Ch.Equal
+                select GeOperator.Value;
+
             public static readonly Parser<IOperator> Gt =
                 from o1 in Ch.Greater
                 select GtOperator.Value;
@@ -332,7 +337,7 @@ namespace GWExpr
                 from o in Ch.Caret
                 select PowOperator.Value;
 
-            public static readonly Parser<IOperator> Relational = Eq.Or(Ne).Or(Le).Or(Lt).Or(Gt);
+            public static readonly Parser<IOperator> Relational = Eq.Or(Ne).Or(Le).Or(Lt).Or(Ge).Or(Gt);
 
             public static BasicExpression Apply(IOperator op, BasicExpression x, BasicExpression y)
             {
@@ -436,6 +441,20 @@ namespace GWExpr
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
                     return new LtExpression(x, y);
+                }
+            }
+
+            private sealed class GeOperator : IOperator
+            {
+                public static readonly IOperator Value = new GeOperator();
+
+                private GeOperator()
+                {
+                }
+
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new GeExpression(x, y);
                 }
             }
 
@@ -575,6 +594,14 @@ namespace GWExpr
             {
                 public GtExpression(BasicExpression x, BasicExpression y)
                     : base("Gt", x, y)
+                {
+                }
+            }
+
+            private sealed class GeExpression : BinaryExpression
+            {
+                public GeExpression(BasicExpression x, BasicExpression y)
+                    : base("Ge", x, y)
                 {
                 }
             }
