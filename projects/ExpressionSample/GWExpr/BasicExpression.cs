@@ -45,6 +45,7 @@ namespace GWExpr
             public static readonly Parser<char> Slash = Parse.Char('/');
             public static readonly Parser<char> Caret = Parse.Char('^');
             public static readonly Parser<char> Space = Parse.Char(' ');
+            public static readonly Parser<char> Equal = Parse.Char('=');
             public static readonly Parser<char> NonQuote = Parse.AnyChar.Except(Quote);
         }
 
@@ -197,7 +198,11 @@ namespace GWExpr
 
         private static class Num
         {
-            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Bool);
+            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Or);
+
+            private static readonly Parser<BasicExpression> Unary =
+                Parse.Ref(() => Neg)
+                .Or(Parse.Ref(() => Not));
 
             private static readonly Parser<BasicExpression> Paren =
                 from lp in Ch.LeftParen
@@ -209,9 +214,7 @@ namespace GWExpr
 
             private static readonly Parser<BasicExpression> Factor = Paren.Or(Value);
 
-            private static readonly Parser<BasicExpression> Operand =
-                Parse.Ref(() => Unary)
-                .Or(Factor);
+            private static readonly Parser<BasicExpression> Operand = Unary.Or(Factor);
 
             private static readonly Parser<BasicExpression> Pow =
                 Parse.ChainOperator(Op.Exponential, Operand, Op.Apply);
@@ -233,15 +236,14 @@ namespace GWExpr
                 from x in Add
                 select new NotExpression(x);
 
+            private static readonly Parser<BasicExpression> Eq =
+                Parse.ChainOperator(Op.Eq, Add, Op.Apply);
+
             private static readonly Parser<BasicExpression> And =
-                Parse.ChainOperator(Op.And, Not.Or(Add), Op.Apply);
+                Parse.ChainOperator(Op.And, Not.Or(Eq), Op.Apply);
 
             private static readonly Parser<BasicExpression> Or =
                 Parse.ChainOperator(Op.Or, And, Op.Apply);
-
-            private static readonly Parser<BasicExpression> Bool = Or;
-
-            private static readonly Parser<BasicExpression> Unary = Neg.Or(Not);
 
             private sealed class NegateExpression : BasicExpression
             {
@@ -270,17 +272,21 @@ namespace GWExpr
 
         private static class Op
         {
+            public static readonly Parser<IOperator> Or =
+                from s1 in Ch.Space
+                from k in Kw.Or
+                from s2 in Ch.Space
+                select OrOperator.Value;
+
             public static readonly Parser<IOperator> And =
                 from s1 in Ch.Space
                 from k in Kw.And
                 from s2 in Ch.Space
                 select AndOperator.Value;
 
-            public static readonly Parser<IOperator> Or =
-                from s1 in Ch.Space
-                from k in Kw.Or
-                from s2 in Ch.Space
-                select OrOperator.Value;
+            public static readonly Parser<IOperator> Eq =
+                from o in Ch.Equal
+                select EqOperator.Value;
 
             public static readonly Parser<IOperator> Add =
                 from o in Ch.Plus
@@ -327,6 +333,28 @@ namespace GWExpr
                 public override string ToString() => this.name + "(" + this.x + ", " + this.y + ")";
             }
 
+            private sealed class OrOperator : IOperator
+            {
+                public static readonly IOperator Value = new OrOperator();
+
+                private OrOperator()
+                {
+                }
+
+                public BasicExpression Apply(BasicExpression x, BasicExpression y)
+                {
+                    return new OrExpression(x, y);
+                }
+
+                private sealed class OrExpression : BinaryExpression
+                {
+                    public OrExpression(BasicExpression x, BasicExpression y)
+                        : base("Or", x, y)
+                    {
+                    }
+                }
+            }
+
             private sealed class AndOperator : IOperator
             {
                 public static readonly IOperator Value = new AndOperator();
@@ -349,23 +377,23 @@ namespace GWExpr
                 }
             }
 
-            private sealed class OrOperator : IOperator
+            private sealed class EqOperator : IOperator
             {
-                public static readonly IOperator Value = new OrOperator();
+                public static readonly IOperator Value = new EqOperator();
 
-                private OrOperator()
+                private EqOperator()
                 {
                 }
 
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
-                    return new OrExpression(x, y);
+                    return new EqExpression(x, y);
                 }
 
-                private sealed class OrExpression : BinaryExpression
+                private sealed class EqExpression : BinaryExpression
                 {
-                    public OrExpression(BasicExpression x, BasicExpression y)
-                        : base("Or", x, y)
+                    public EqExpression(BasicExpression x, BasicExpression y)
+                        : base("Eq", x, y)
                     {
                     }
                 }
