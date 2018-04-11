@@ -256,7 +256,7 @@ namespace GWExpr
                     this.x = x;
                 }
 
-                public override string ToString() => "Negate(" + this.x + ")";
+                public override string ToString() => "Neg(" + this.x + ")";
             }
 
             private sealed class NotExpression : BasicExpression

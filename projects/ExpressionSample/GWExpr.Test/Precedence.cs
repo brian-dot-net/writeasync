@@ -25,10 +25,10 @@ namespace GWExpr.Test
         [InlineData("1^2-3", "Subtract(Pow(L(1), L(2)), L(3))")]
         [InlineData("1+2^3", "Add(L(1), Pow(L(2), L(3)))")]
         [InlineData("1-2^3", "Subtract(L(1), Pow(L(2), L(3)))")]
-        [InlineData("(-1)^2+3", "Add(Pow(Negate(L(1)), L(2)), L(3))")]
-        [InlineData("1^-2+3", "Add(Pow(L(1), Negate(L(2))), L(3))")]
-        [InlineData("1^(-2)+3", "Add(Pow(L(1), Negate(L(2))), L(3))")]
-        [InlineData("-1^2+3", "Add(Negate(Pow(L(1), L(2))), L(3))")]
+        [InlineData("(-1)^2+3", "Add(Pow(Neg(L(1)), L(2)), L(3))")]
+        [InlineData("1^-2+3", "Add(Pow(L(1), Neg(L(2))), L(3))")]
+        [InlineData("1^(-2)+3", "Add(Pow(L(1), Neg(L(2))), L(3))")]
+        [InlineData("-1^2+3", "Add(Neg(Pow(L(1), L(2))), L(3))")]
         [Theory]
         public void Arithmetic(string input, string output)
         {
