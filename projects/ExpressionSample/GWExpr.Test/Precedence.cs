@@ -45,5 +45,13 @@ namespace GWExpr.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData("1+2 AND 3=4", "And(Add(Literal(1), Literal(2)), Eq(Literal(3), Literal(4)))")]
+        [InlineData("1*2 OR 3=4", "Or(Multiply(Literal(1), Literal(2)), Eq(Literal(3), Literal(4)))")]
+        [Theory]
+        public void Relational(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }
