@@ -51,6 +51,8 @@ namespace GWExpr.Test
         [InlineData("1*2 OR 3<>4", "Or(Multiply(Literal(1), Literal(2)), Ne(Literal(3), Literal(4)))")]
         [InlineData("1>2 AND 3<4", "And(Gt(Literal(1), Literal(2)), Lt(Literal(3), Literal(4)))")]
         [InlineData("1>2<3=4<>5", "Ne(Eq(Lt(Gt(Literal(1), Literal(2)), Literal(3)), Literal(4)), Literal(5))")]
+        [InlineData("1>=2<=3=4<>5", "Ne(Eq(Le(Ge(Literal(1), Literal(2)), Literal(3)), Literal(4)), Literal(5))")]
+        [InlineData("1>2>=3=4<>5", "Ne(Eq(Ge(Gt(Literal(1), Literal(2)), Literal(3)), Literal(4)), Literal(5))")]
         [Theory]
         public void Relational(string input, string output)
         {
