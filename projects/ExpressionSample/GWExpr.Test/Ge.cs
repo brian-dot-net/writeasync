@@ -29,6 +29,7 @@ namespace GWExpr.Test
         [InlineData("2>=\"1\"")]
         [InlineData("234>=X$")]
         [InlineData("X(234)>=YZ1234$")]
+        [InlineData("A$>=B$>=\"C\"")]
         [Theory]
         public void TypeMismatch(string input)
         {

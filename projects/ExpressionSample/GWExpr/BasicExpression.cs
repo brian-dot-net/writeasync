@@ -200,10 +200,13 @@ namespace GWExpr
                 Parse.ChainOperator(Op.Add, Factor, Op.Apply);
 
             private static readonly Parser<BasicExpression> Relational =
-                Parse.ChainOperator(Op.Relational, Add, Op.Apply);
+                from x in Add
+                from op in Op.Relational
+                from y in Add
+                select op.Apply(x, y);
 
             private static readonly Parser<BasicExpression> And =
-                Parse.ChainOperator(Op.And, Relational, Op.Apply);
+                Parse.ChainOperator(Op.And, Relational.Or(Add), Op.Apply);
 
             private static readonly Parser<BasicExpression> Or =
                 Parse.ChainOperator(Op.Or, And, Op.Apply);
