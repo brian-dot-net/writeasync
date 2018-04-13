@@ -24,7 +24,7 @@ namespace GWExpr
         {
             try
             {
-                return Expr.Any.Parse(input);
+                return Expr.Any.End().Parse(input);
             }
             catch (ParseException e)
             {
@@ -179,12 +179,30 @@ namespace GWExpr
 
         private static class Expr
         {
-            public static readonly Parser<BasicExpression> Any = Str.Any.Or(Num.Any).End();
+            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Root);
+
+            private static readonly Parser<BasicExpression> Paren =
+                from lp in Ch.LeftParen
+                from x in Any
+                from rp in Ch.RightParen
+                select x;
+
+            private static readonly Parser<BasicExpression> Value = Str.Any.Or(Num.Any);
+
+            private static readonly Parser<BasicExpression> Factor = Value.Or(Paren);
+
+            private static readonly Parser<BasicExpression> And =
+                Parse.ChainOperator(Op.And, Factor, Op.Apply);
+
+            private static readonly Parser<BasicExpression> Or =
+                Parse.ChainOperator(Op.Or, And, Op.Apply);
+
+            private static readonly Parser<BasicExpression> Root = Or;
         }
 
         private static class Str
         {
-            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Or);
+            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Root);
 
             private static readonly Parser<BasicExpression> Paren =
                 from lp in Ch.LeftParen
@@ -205,16 +223,12 @@ namespace GWExpr
                 from y in Add
                 select op.Apply(x, y);
 
-            private static readonly Parser<BasicExpression> And =
-                Parse.ChainOperator(Op.And, Relational.Or(Add), Op.Apply);
-
-            private static readonly Parser<BasicExpression> Or =
-                Parse.ChainOperator(Op.Or, And, Op.Apply);
+            private static readonly Parser<BasicExpression> Root = Relational.Or(Add);
         }
 
         private static class Num
         {
-            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Or);
+            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Root);
 
             private static readonly Parser<BasicExpression> Unary =
                 Parse.Ref(() => Neg)
@@ -255,11 +269,7 @@ namespace GWExpr
                 from x in Add
                 select new NotExpression(x);
 
-            private static readonly Parser<BasicExpression> And =
-                Parse.ChainOperator(Op.And, Not.Or(Relational), Op.Apply);
-
-            private static readonly Parser<BasicExpression> Or =
-                Parse.ChainOperator(Op.Or, And, Op.Apply);
+            private static readonly Parser<BasicExpression> Root = Not.Or(Relational);
 
             private sealed class NegateExpression : BasicExpression
             {

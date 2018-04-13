@@ -18,7 +18,7 @@ namespace GWExpr.Test
         {
             Action act = () => BasicExpression.FromString(input);
 
-            act.Should().Throw<FormatException>().WithMessage("*'" + input + "'*").WithInnerException<Exception>();
+            act.Should().Throw<FormatException>("[{0}]", input).WithMessage("*'" + input + "'*").WithInnerException<Exception>();
         }
     }
 }

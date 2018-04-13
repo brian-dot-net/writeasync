@@ -17,17 +17,6 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("2 OR \"1\"")]
-        [InlineData("234 OR X$")]
-        [InlineData("X(234) OR YZ1234$")]
-        [InlineData("X$+2 OR 1")]
-        [InlineData("X$+2 AND \"1\"")]
-        [Theory]
-        public void TypeMismatch(string input)
-        {
-            Test.Bad(input);
-        }
-
         [InlineData("(1 OR 2)", "Or(L(1), L(2))")]
         [InlineData("(X OR 234)", "Or(NumVar(X), L(234))")]
         [InlineData("(X(234) OR YZ1234)", "Or(Array(NumVar(X), L(234)), NumVar(YZ1234))")]
@@ -61,6 +50,14 @@ namespace GWExpr.Test
         [InlineData("(Z$>\"x\") OR (X$<>Y$)", "Or(Gt(StrVar(Z), L(\"x\")), Ne(StrVar(X), StrVar(Y)))")]
         [Theory]
         public void WithOtherStringOperations(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
+        [InlineData("(Z$<=\"x\") OR (X=Y)", "Or(Le(StrVar(Z), L(\"x\")), Eq(NumVar(X), NumVar(Y)))")]
+        [InlineData("(Z>1) OR (X$<>Y$)", "Or(Gt(NumVar(Z), L(1)), Ne(StrVar(X), StrVar(Y)))")]
+        [Theory]
+        public void WithNumAndString(string input, string output)
         {
             Test.Good(input, output);
         }
