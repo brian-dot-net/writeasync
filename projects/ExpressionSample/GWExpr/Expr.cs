@@ -89,30 +89,6 @@ namespace GWExpr
                 select new StringLiteral(s);
 
             public static readonly Parser<BasicExpression> Any = Num.Or(Str);
-
-            private sealed class NumericLiteral : BasicExpression
-            {
-                private readonly int n;
-
-                public NumericLiteral(int n)
-                {
-                    this.n = n;
-                }
-
-                public override string ToString() => "L(" + this.n + ")";
-            }
-
-            private sealed class StringLiteral : BasicExpression
-            {
-                private readonly string s;
-
-                public StringLiteral(string s)
-                {
-                    this.s = s;
-                }
-
-                public override string ToString() => "L(\"" + this.s + "\")";
-            }
         }
 
         private static class Var
