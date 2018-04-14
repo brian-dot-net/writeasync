@@ -110,11 +110,11 @@ namespace GWExpr
             public static readonly Parser<BasicVariable> StrScalar =
                 from v in Id.Except(Kw.AnyStr)
                 from d in Ch.Dollar
-                select new StringVariable(v);
+                select BasicVariable.Str(v);
 
             public static readonly Parser<BasicVariable> NumScalar =
                 from v in Id
-                select new NumericVariable(v);
+                select BasicVariable.Num(v);
 
             public static readonly Parser<BasicExpression> Index = Lit.Num.Or(Parse.Ref(() => NumAny));
 
@@ -138,44 +138,6 @@ namespace GWExpr
             public static readonly Parser<BasicExpression> NumAny = NumArray.Or(NumScalar);
 
             public static readonly Parser<BasicExpression> StrAny = StrArray.Or(StrScalar);
-
-            private sealed class NumericVariable : BasicVariable
-            {
-                public NumericVariable(string v)
-                    : base(v)
-                {
-                }
-
-                public override string ToString() => "Num" + base.ToString();
-            }
-
-            private sealed class StringVariable : BasicVariable
-            {
-                public StringVariable(string v)
-                    : base(v)
-                {
-                }
-
-                public override string ToString() => "Str" + base.ToString();
-            }
-
-            private sealed class BasicArray : BasicExpression
-            {
-                private readonly BasicVariable v;
-                private readonly BasicExpression[] i;
-
-                public BasicArray(BasicVariable v, IEnumerable<BasicExpression> i)
-                {
-                    this.v = v;
-                    this.i = i.ToArray();
-                }
-
-                public override string ToString()
-                {
-                    var list = string.Join<BasicExpression>(", ", this.i);
-                    return "Array(" + this.v + ", " + list + ")";
-                }
-            }
         }
 
         private static class Str
@@ -753,18 +715,6 @@ namespace GWExpr
             }
 
             public override string ToString() => "Not(" + this.x + ")";
-        }
-
-        private abstract class BasicVariable : BasicExpression
-        {
-            private readonly string v;
-
-            protected BasicVariable(string v)
-            {
-                this.v = v.ToUpperInvariant();
-            }
-
-            public override string ToString() => "Var(" + this.v + ")";
         }
     }
 }
