@@ -347,7 +347,7 @@ namespace GWExpr
                 select Binary.Gt;
 
             public static readonly Parser<IOperator> Add =
-                from o in Ch.Plus
+                from o in Ch.Plus.Token()
                 select Binary.Add;
 
             public static readonly Parser<IOperator> Subtract =
