@@ -61,12 +61,13 @@ namespace GWExpr
             public static readonly Parser<IEnumerable<char>> Sqr = Parse.String("SQR");
 
             public static readonly Parser<IEnumerable<char>> Left = Parse.String("LEFT");
+            public static readonly Parser<IEnumerable<char>> Mid = Parse.String("MID");
             public static readonly Parser<IEnumerable<char>> Right = Parse.String("RIGHT");
 
             public static readonly Parser<IEnumerable<char>> Any =
                 And.Or(Exp).Or(Len).Or(Not).Or(Or).Or(Sqr);
 
-            public static readonly Parser<IEnumerable<char>> AnyStr = Left.Or(Right);
+            public static readonly Parser<IEnumerable<char>> AnyStr = Left.Or(Mid).Or(Right);
         }
 
         private static class Lit
@@ -228,6 +229,16 @@ namespace GWExpr
                 from rp in Ch.RightParen
                 select new LeftExpression(x, n);
 
+            private static readonly Parser<BasicExpression> Mid =
+                from f in Kw.Mid
+                from d in Ch.Dollar
+                from lp in Ch.LeftParen
+                from x in Any
+                from c in Ch.Comma
+                from n in Num.Any
+                from rp in Ch.RightParen
+                select new MidExpression(x, n);
+
             private static readonly Parser<BasicExpression> Right =
                 from f in Kw.Right
                 from d in Ch.Dollar
@@ -238,7 +249,7 @@ namespace GWExpr
                 from rp in Ch.RightParen
                 select new RightExpression(x, n);
 
-            private static readonly Parser<BasicExpression> Fun = Left.Or(Right);
+            private static readonly Parser<BasicExpression> Fun = Left.Or(Mid).Or(Right);
 
             private static readonly Parser<BasicExpression> Value = Lit.Str.Or(Fun).Or(Var.StrAny);
 
@@ -259,6 +270,14 @@ namespace GWExpr
             {
                 public LeftExpression(BasicExpression x, BasicExpression n)
                     : base("Left", x, n)
+                {
+                }
+            }
+
+            private sealed class MidExpression : BinaryExpression
+            {
+                public MidExpression(BasicExpression x, BasicExpression n)
+                    : base("Mid", x, n)
                 {
                 }
             }
