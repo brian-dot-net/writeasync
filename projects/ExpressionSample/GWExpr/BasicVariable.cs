@@ -4,39 +4,21 @@
 
 namespace GWExpr
 {
-    internal abstract class BasicVariable : BasicExpression
+    internal sealed class BasicVariable : BasicExpression
     {
-        private readonly string v;
+        private readonly BasicType type;
+        private readonly string name;
 
-        protected BasicVariable(string v)
+        private BasicVariable(BasicType type, string name)
         {
-            this.v = v.ToUpperInvariant();
+            this.type = type;
+            this.name = name.ToUpperInvariant();
         }
 
-        public static BasicVariable Str(string v) => new StringVariable(v);
+        public static BasicVariable Num(string name) => new BasicVariable(BasicType.Num, name);
 
-        public static BasicVariable Num(string v) => new NumericVariable(v);
+        public static BasicVariable Str(string name) => new BasicVariable(BasicType.Str, name);
 
-        public override string ToString() => "Var(" + this.v + ")";
-
-        private sealed class NumericVariable : BasicVariable
-        {
-            public NumericVariable(string v)
-                : base(v)
-            {
-            }
-
-            public override string ToString() => "Num" + base.ToString();
-        }
-
-        private sealed class StringVariable : BasicVariable
-        {
-            public StringVariable(string v)
-                : base(v)
-            {
-            }
-
-            public override string ToString() => "Str" + base.ToString();
-        }
+        public override string ToString() => this.type + "Var(" + this.name + ")";
     }
 }
