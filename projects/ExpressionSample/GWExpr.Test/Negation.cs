@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("- 1", "Neg(NumL(1))")]
+        [InlineData(" -X", "Neg(NumV(X))")]
+        [InlineData("  -  X(234)", "Neg(NumArr(X, NumL(234)))")]
+        [Theory]
+        public void IgnoreSpaces(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("-\"1\"")]
         [InlineData("-X$")]
         [InlineData("-YZ1234$")]

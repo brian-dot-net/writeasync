@@ -283,7 +283,7 @@ namespace GWExpr
                 Parse.ChainOperator(Op.Exponential, Operand, Op.Apply);
 
             private static readonly Parser<BasicExpression> Neg =
-                from m in Ch.Minus
+                from m in Ch.Minus.Token()
                 from x in Pow
                 select OperatorExpression.Unary("Neg", x);
 
