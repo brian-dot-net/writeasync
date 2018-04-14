@@ -365,20 +365,6 @@ namespace GWExpr
 
             private static readonly Parser<BasicExpression> Root = Not.Or(Relational);
 
-            private abstract class UnaryExpression : BasicExpression
-            {
-                private readonly string name;
-                private readonly BasicExpression x;
-
-                protected UnaryExpression(string name, BasicExpression x)
-                {
-                    this.name = name;
-                    this.x = x;
-                }
-
-                public override string ToString() => this.name + "(" + this.x + ")";
-            }
-
             private sealed class NegateExpression : UnaryExpression
             {
                 public NegateExpression(BasicExpression x)
