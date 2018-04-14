@@ -357,7 +357,7 @@ namespace GWExpr
                 select Binary.Mult;
 
             public static readonly Parser<IOperator> Divide =
-                from o in Ch.Slash
+                from o in Ch.Slash.Token()
                 select Binary.Div;
 
             public static readonly Parser<IOperator> Additive = Add.Or(Subtract);
