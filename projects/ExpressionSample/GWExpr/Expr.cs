@@ -318,7 +318,7 @@ namespace GWExpr
                 select Binary.And;
 
             public static readonly Parser<IOperator> Eq =
-                from o in Ch.Equal
+                from o in Ch.Equal.Token()
                 select Binary.Eq;
 
             public static readonly Parser<IOperator> Ne =
