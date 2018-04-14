@@ -9,8 +9,8 @@ namespace GWExpr.Test
     public sealed class Exp
     {
         [InlineData("EXP(1)", "Exp(NumL(1))")]
-        [InlineData("EXP(X)", "Exp(NumVar(X))")]
-        [InlineData("EXP(X(234))", "Exp(Array(NumVar(X), NumL(234)))")]
+        [InlineData("EXP(X)", "Exp(NumV(X))")]
+        [InlineData("EXP(X(234))", "Exp(Array(NumV(X), NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -27,8 +27,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("EXP((1))", "Exp(NumL(1))")]
-        [InlineData("EXP(EXP(X))", "Exp(Exp(NumVar(X)))")]
-        [InlineData("(EXP(X))", "Exp(NumVar(X))")]
+        [InlineData("EXP(EXP(X))", "Exp(Exp(NumV(X)))")]
+        [InlineData("(EXP(X))", "Exp(NumV(X))")]
         [Theory]
         public void WithParens(string input, string output)
         {

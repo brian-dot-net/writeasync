@@ -9,8 +9,8 @@ namespace GWExpr.Test
     public sealed class Negation
     {
         [InlineData("-1", "Neg(NumL(1))")]
-        [InlineData("-X", "Neg(NumVar(X))")]
-        [InlineData("-X(234)", "Neg(Array(NumVar(X), NumL(234)))")]
+        [InlineData("-X", "Neg(NumV(X))")]
+        [InlineData("-X(234)", "Neg(Array(NumV(X), NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -27,8 +27,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("-(1)", "Neg(NumL(1))")]
-        [InlineData("-(-(X))", "Neg(Neg(NumVar(X)))")]
-        [InlineData("(-X)", "Neg(NumVar(X))")]
+        [InlineData("-(-(X))", "Neg(Neg(NumV(X)))")]
+        [InlineData("(-X)", "Neg(NumV(X))")]
         [Theory]
         public void WithParens(string input, string output)
         {

@@ -9,8 +9,8 @@ namespace GWExpr.Test
     public sealed class Gt
     {
         [InlineData("1>2", "Gt(NumL(1), NumL(2))")]
-        [InlineData("X>234", "Gt(NumVar(X), NumL(234))")]
-        [InlineData("X(234)>YZ1234", "Gt(Array(NumVar(X), NumL(234)), NumVar(YZ1234))")]
+        [InlineData("X>234", "Gt(NumV(X), NumL(234))")]
+        [InlineData("X(234)>YZ1234", "Gt(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -18,8 +18,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("\"one\">\"two\"", "Gt(StrL(one), StrL(two))")]
-        [InlineData("X$>\"abc\"", "Gt(StrVar(X), StrL(abc))")]
-        [InlineData("X$(234)>YZ1234$", "Gt(Array(StrVar(X), NumL(234)), StrVar(YZ1234))")]
+        [InlineData("X$>\"abc\"", "Gt(StrV(X), StrL(abc))")]
+        [InlineData("X$(234)>YZ1234$", "Gt(Array(StrV(X), NumL(234)), StrV(YZ1234))")]
         [Theory]
         public void String(string input, string output)
         {
@@ -37,8 +37,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("(1>2)", "Gt(NumL(1), NumL(2))")]
-        [InlineData("(X>234)", "Gt(NumVar(X), NumL(234))")]
-        [InlineData("(X(234)>YZ1234)", "Gt(Array(NumVar(X), NumL(234)), NumVar(YZ1234))")]
+        [InlineData("(X>234)", "Gt(NumV(X), NumL(234))")]
+        [InlineData("(X(234)>YZ1234)", "Gt(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {
@@ -55,10 +55,10 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("(Z+1)>(X-Y)", "Gt(Add(NumVar(Z), NumL(1)), Sub(NumVar(X), NumVar(Y)))")]
-        [InlineData("Z+1>X-Y", "Gt(Add(NumVar(Z), NumL(1)), Sub(NumVar(X), NumVar(Y)))")]
-        [InlineData("(Z*1)>(X^Y)", "Gt(Mult(NumVar(Z), NumL(1)), Pow(NumVar(X), NumVar(Y)))")]
-        [InlineData("Z*1>X^Y", "Gt(Mult(NumVar(Z), NumL(1)), Pow(NumVar(X), NumVar(Y)))")]
+        [InlineData("(Z+1)>(X-Y)", "Gt(Add(NumV(Z), NumL(1)), Sub(NumV(X), NumV(Y)))")]
+        [InlineData("Z+1>X-Y", "Gt(Add(NumV(Z), NumL(1)), Sub(NumV(X), NumV(Y)))")]
+        [InlineData("(Z*1)>(X^Y)", "Gt(Mult(NumV(Z), NumL(1)), Pow(NumV(X), NumV(Y)))")]
+        [InlineData("Z*1>X^Y", "Gt(Mult(NumV(Z), NumL(1)), Pow(NumV(X), NumV(Y)))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {

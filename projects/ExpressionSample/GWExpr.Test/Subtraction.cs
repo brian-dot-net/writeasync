@@ -9,8 +9,8 @@ namespace GWExpr.Test
     public sealed class Subtraction
     {
         [InlineData("1-2", "Sub(NumL(1), NumL(2))")]
-        [InlineData("X-234", "Sub(NumVar(X), NumL(234))")]
-        [InlineData("X(234)-YZ1234", "Sub(Array(NumVar(X), NumL(234)), NumVar(YZ1234))")]
+        [InlineData("X-234", "Sub(NumV(X), NumL(234))")]
+        [InlineData("X(234)-YZ1234", "Sub(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -27,8 +27,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("(1-2)", "Sub(NumL(1), NumL(2))")]
-        [InlineData("(X-234)", "Sub(NumVar(X), NumL(234))")]
-        [InlineData("(X(234)-YZ1234)", "Sub(Array(NumVar(X), NumL(234)), NumVar(YZ1234))")]
+        [InlineData("(X-234)", "Sub(NumV(X), NumL(234))")]
+        [InlineData("(X(234)-YZ1234)", "Sub(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {

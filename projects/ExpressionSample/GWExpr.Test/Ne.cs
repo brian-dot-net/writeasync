@@ -9,8 +9,8 @@ namespace GWExpr.Test
     public sealed class Ne
     {
         [InlineData("1<>2", "Ne(NumL(1), NumL(2))")]
-        [InlineData("X<>234", "Ne(NumVar(X), NumL(234))")]
-        [InlineData("X(234)<>YZ1234", "Ne(Array(NumVar(X), NumL(234)), NumVar(YZ1234))")]
+        [InlineData("X<>234", "Ne(NumV(X), NumL(234))")]
+        [InlineData("X(234)<>YZ1234", "Ne(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -18,8 +18,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("\"one\"<>\"two\"", "Ne(StrL(one), StrL(two))")]
-        [InlineData("X$<>\"abc\"", "Ne(StrVar(X), StrL(abc))")]
-        [InlineData("X$(234)<>YZ1234$", "Ne(Array(StrVar(X), NumL(234)), StrVar(YZ1234))")]
+        [InlineData("X$<>\"abc\"", "Ne(StrV(X), StrL(abc))")]
+        [InlineData("X$(234)<>YZ1234$", "Ne(Array(StrV(X), NumL(234)), StrV(YZ1234))")]
         [Theory]
         public void String(string input, string output)
         {
@@ -37,8 +37,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("(1<>2)", "Ne(NumL(1), NumL(2))")]
-        [InlineData("(X<>234)", "Ne(NumVar(X), NumL(234))")]
-        [InlineData("(X(234)<>YZ1234)", "Ne(Array(NumVar(X), NumL(234)), NumVar(YZ1234))")]
+        [InlineData("(X<>234)", "Ne(NumV(X), NumL(234))")]
+        [InlineData("(X(234)<>YZ1234)", "Ne(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {
@@ -55,10 +55,10 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("(Z+1)<>(X-Y)", "Ne(Add(NumVar(Z), NumL(1)), Sub(NumVar(X), NumVar(Y)))")]
-        [InlineData("Z+1<>X-Y", "Ne(Add(NumVar(Z), NumL(1)), Sub(NumVar(X), NumVar(Y)))")]
-        [InlineData("(Z*1)<>(X^Y)", "Ne(Mult(NumVar(Z), NumL(1)), Pow(NumVar(X), NumVar(Y)))")]
-        [InlineData("Z*1<>X^Y", "Ne(Mult(NumVar(Z), NumL(1)), Pow(NumVar(X), NumVar(Y)))")]
+        [InlineData("(Z+1)<>(X-Y)", "Ne(Add(NumV(Z), NumL(1)), Sub(NumV(X), NumV(Y)))")]
+        [InlineData("Z+1<>X-Y", "Ne(Add(NumV(Z), NumL(1)), Sub(NumV(X), NumV(Y)))")]
+        [InlineData("(Z*1)<>(X^Y)", "Ne(Mult(NumV(Z), NumL(1)), Pow(NumV(X), NumV(Y)))")]
+        [InlineData("Z*1<>X^Y", "Ne(Mult(NumV(Z), NumL(1)), Pow(NumV(X), NumV(Y)))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {

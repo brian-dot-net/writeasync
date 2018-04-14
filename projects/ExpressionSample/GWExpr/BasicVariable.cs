@@ -19,6 +19,6 @@ namespace GWExpr
 
         public static BasicVariable Str(string name) => new BasicVariable(BasicType.Str, name);
 
-        public override string ToString() => this.type + "Var(" + this.name + ")";
+        public override string ToString() => this.type + "V(" + this.name + ")";
     }
 }

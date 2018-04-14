@@ -9,8 +9,8 @@ namespace GWExpr.Test
     public sealed class Sqrt
     {
         [InlineData("SQR(1)", "Sqrt(NumL(1))")]
-        [InlineData("SQR(X)", "Sqrt(NumVar(X))")]
-        [InlineData("SQR(X(234))", "Sqrt(Array(NumVar(X), NumL(234)))")]
+        [InlineData("SQR(X)", "Sqrt(NumV(X))")]
+        [InlineData("SQR(X(234))", "Sqrt(Array(NumV(X), NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -27,8 +27,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("SQR((1))", "Sqrt(NumL(1))")]
-        [InlineData("SQR(SQR(X))", "Sqrt(Sqrt(NumVar(X)))")]
-        [InlineData("(SQR(X))", "Sqrt(NumVar(X))")]
+        [InlineData("SQR(SQR(X))", "Sqrt(Sqrt(NumV(X)))")]
+        [InlineData("(SQR(X))", "Sqrt(NumV(X))")]
         [Theory]
         public void WithParens(string input, string output)
         {

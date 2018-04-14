@@ -9,8 +9,8 @@ namespace GWExpr.Test
     public sealed class Not
     {
         [InlineData("NOT 1", "Not(NumL(1))")]
-        [InlineData("NOT X", "Not(NumVar(X))")]
-        [InlineData("NOT X(234)", "Not(Array(NumVar(X), NumL(234)))")]
+        [InlineData("NOT X", "Not(NumV(X))")]
+        [InlineData("NOT X(234)", "Not(Array(NumV(X), NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -27,8 +27,8 @@ namespace GWExpr.Test
         }
 
         [InlineData("NOT (1)", "Not(NumL(1))")]
-        [InlineData("NOT (NOT (X))", "Not(Not(NumVar(X)))")]
-        [InlineData("(NOT X)", "Not(NumVar(X))")]
+        [InlineData("NOT (NOT (X))", "Not(Not(NumV(X)))")]
+        [InlineData("(NOT X)", "Not(NumV(X))")]
         [Theory]
         public void WithParens(string input, string output)
         {
