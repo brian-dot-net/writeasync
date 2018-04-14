@@ -184,11 +184,11 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Left =
                 from f in Kw.Left
                 from d in Ch.Dollar
-                from lp in Ch.LeftParen
+                from lp in Ch.LeftParen.Token()
                 from x in Any
-                from c in Ch.Comma
+                from c in Ch.Comma.Token()
                 from n in Num.Any
-                from rp in Ch.RightParen
+                from rp in Ch.RightParen.Token()
                 select OperatorExpression.Binary("Left", x, n);
 
             private static readonly Parser<Tuple<BasicExpression, BasicExpression>> MidPrefix =
