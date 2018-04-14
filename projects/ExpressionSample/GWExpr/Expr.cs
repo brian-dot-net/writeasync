@@ -313,6 +313,14 @@ namespace GWExpr
 
             private static readonly Parser<BasicExpression> Root = Not.Or(Relational);
 
+            private sealed class NotExpression : UnaryExpression
+            {
+                public NotExpression(BasicExpression x)
+                    : base("Not", x)
+                {
+                }
+            }
+
             private sealed class NegateExpression : UnaryExpression
             {
                 public NegateExpression(BasicExpression x)
@@ -430,6 +438,14 @@ namespace GWExpr
                 {
                     return new OrExpression(x, y);
                 }
+
+                private sealed class OrExpression : BinaryExpression
+                {
+                    public OrExpression(BasicExpression x, BasicExpression y)
+                        : base("Or", x, y)
+                    {
+                    }
+                }
             }
 
             private sealed class AndOperator : IOperator
@@ -443,6 +459,14 @@ namespace GWExpr
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
                     return new AndExpression(x, y);
+                }
+
+                private sealed class AndExpression : BinaryExpression
+                {
+                    public AndExpression(BasicExpression x, BasicExpression y)
+                        : base("And", x, y)
+                    {
+                    }
                 }
             }
 
@@ -458,6 +482,14 @@ namespace GWExpr
                 {
                     return new EqExpression(x, y);
                 }
+
+                private sealed class EqExpression : BinaryExpression
+                {
+                    public EqExpression(BasicExpression x, BasicExpression y)
+                        : base("Eq", x, y)
+                    {
+                    }
+                }
             }
 
             private sealed class NeOperator : IOperator
@@ -471,6 +503,14 @@ namespace GWExpr
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
                     return new NeExpression(x, y);
+                }
+
+                private sealed class NeExpression : BinaryExpression
+                {
+                    public NeExpression(BasicExpression x, BasicExpression y)
+                        : base("Ne", x, y)
+                    {
+                    }
                 }
             }
 
@@ -486,6 +526,14 @@ namespace GWExpr
                 {
                     return new LeExpression(x, y);
                 }
+
+                private sealed class LeExpression : BinaryExpression
+                {
+                    public LeExpression(BasicExpression x, BasicExpression y)
+                        : base("Le", x, y)
+                    {
+                    }
+                }
             }
 
             private sealed class LtOperator : IOperator
@@ -499,6 +547,14 @@ namespace GWExpr
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
                     return new LtExpression(x, y);
+                }
+
+                private sealed class LtExpression : BinaryExpression
+                {
+                    public LtExpression(BasicExpression x, BasicExpression y)
+                        : base("Lt", x, y)
+                    {
+                    }
                 }
             }
 
@@ -514,6 +570,14 @@ namespace GWExpr
                 {
                     return new GeExpression(x, y);
                 }
+
+                private sealed class GeExpression : BinaryExpression
+                {
+                    public GeExpression(BasicExpression x, BasicExpression y)
+                        : base("Ge", x, y)
+                    {
+                    }
+                }
             }
 
             private sealed class GtOperator : IOperator
@@ -527,6 +591,14 @@ namespace GWExpr
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
                     return new GtExpression(x, y);
+                }
+
+                private sealed class GtExpression : BinaryExpression
+                {
+                    public GtExpression(BasicExpression x, BasicExpression y)
+                        : base("Gt", x, y)
+                    {
+                    }
                 }
             }
 
@@ -542,6 +614,14 @@ namespace GWExpr
                 {
                     return new AddExpression(x, y);
                 }
+
+                private sealed class AddExpression : BinaryExpression
+                {
+                    public AddExpression(BasicExpression x, BasicExpression y)
+                        : base("Add", x, y)
+                    {
+                    }
+                }
             }
 
             private sealed class SubtractOperator : IOperator
@@ -555,6 +635,14 @@ namespace GWExpr
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
                     return new SubtractExpression(x, y);
+                }
+
+                private sealed class SubtractExpression : BinaryExpression
+                {
+                    public SubtractExpression(BasicExpression x, BasicExpression y)
+                        : base("Sub", x, y)
+                    {
+                    }
                 }
             }
 
@@ -570,6 +658,14 @@ namespace GWExpr
                 {
                     return new MultiplyExpression(x, y);
                 }
+
+                private sealed class MultiplyExpression : BinaryExpression
+                {
+                    public MultiplyExpression(BasicExpression x, BasicExpression y)
+                        : base("Mult", x, y)
+                    {
+                    }
+                }
             }
 
             private sealed class DivideOperator : IOperator
@@ -583,6 +679,14 @@ namespace GWExpr
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
                     return new DivideExpression(x, y);
+                }
+
+                private sealed class DivideExpression : BinaryExpression
+                {
+                    public DivideExpression(BasicExpression x, BasicExpression y)
+                        : base("Div", x, y)
+                    {
+                    }
                 }
             }
 
@@ -598,123 +702,15 @@ namespace GWExpr
                 {
                     return new PowExpression(x, y);
                 }
-            }
 
-            private sealed class OrExpression : BinaryExpression
-            {
-                public OrExpression(BasicExpression x, BasicExpression y)
-                    : base("Or", x, y)
+                private sealed class PowExpression : BinaryExpression
                 {
+                    public PowExpression(BasicExpression x, BasicExpression y)
+                        : base("Pow", x, y)
+                    {
+                    }
                 }
             }
-
-            private sealed class AndExpression : BinaryExpression
-            {
-                public AndExpression(BasicExpression x, BasicExpression y)
-                    : base("And", x, y)
-                {
-                }
-            }
-
-            private sealed class EqExpression : BinaryExpression
-            {
-                public EqExpression(BasicExpression x, BasicExpression y)
-                    : base("Eq", x, y)
-                {
-                }
-            }
-
-            private sealed class NeExpression : BinaryExpression
-            {
-                public NeExpression(BasicExpression x, BasicExpression y)
-                    : base("Ne", x, y)
-                {
-                }
-            }
-
-            private sealed class LeExpression : BinaryExpression
-            {
-                public LeExpression(BasicExpression x, BasicExpression y)
-                    : base("Le", x, y)
-                {
-                }
-            }
-
-            private sealed class LtExpression : BinaryExpression
-            {
-                public LtExpression(BasicExpression x, BasicExpression y)
-                    : base("Lt", x, y)
-                {
-                }
-            }
-
-            private sealed class GtExpression : BinaryExpression
-            {
-                public GtExpression(BasicExpression x, BasicExpression y)
-                    : base("Gt", x, y)
-                {
-                }
-            }
-
-            private sealed class GeExpression : BinaryExpression
-            {
-                public GeExpression(BasicExpression x, BasicExpression y)
-                    : base("Ge", x, y)
-                {
-                }
-            }
-
-            private sealed class AddExpression : BinaryExpression
-            {
-                public AddExpression(BasicExpression x, BasicExpression y)
-                    : base("Add", x, y)
-                {
-                }
-            }
-
-            private sealed class SubtractExpression : BinaryExpression
-            {
-                public SubtractExpression(BasicExpression x, BasicExpression y)
-                    : base("Sub", x, y)
-                {
-                }
-            }
-
-            private sealed class MultiplyExpression : BinaryExpression
-            {
-                public MultiplyExpression(BasicExpression x, BasicExpression y)
-                    : base("Mult", x, y)
-                {
-                }
-            }
-
-            private sealed class DivideExpression : BinaryExpression
-            {
-                public DivideExpression(BasicExpression x, BasicExpression y)
-                    : base("Div", x, y)
-                {
-                }
-            }
-
-            private sealed class PowExpression : BinaryExpression
-            {
-                public PowExpression(BasicExpression x, BasicExpression y)
-                    : base("Pow", x, y)
-                {
-                }
-            }
-        }
-
-        private sealed class NotExpression : BasicExpression
-        {
-            private readonly BasicExpression x;
-
-            public NotExpression(BasicExpression x)
-            {
-                this.x = x;
-            }
-
-            public override string ToString() => "Not(" + this.x + ")";
         }
     }
 }
