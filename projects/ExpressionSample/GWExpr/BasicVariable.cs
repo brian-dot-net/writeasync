@@ -12,7 +12,7 @@ namespace GWExpr
         private BasicVariable(BasicType type, string name)
         {
             this.type = type;
-            this.name = name.ToUpperInvariant();
+            this.name = name;
         }
 
         public static BasicVariable Num(string name) => new BasicVariable(BasicType.Num, name);

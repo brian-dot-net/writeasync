@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("1/2", "Div(NumL(1), NumL(2))")]
         [InlineData("X/234", "Div(NumV(X), NumL(234))")]
-        [InlineData("X(234)/YZ1234", "Div(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
+        [InlineData("X(234)/YZ1234", "Div(NumArr(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -28,7 +28,7 @@ namespace GWExpr.Test
 
         [InlineData("(1/2)", "Div(NumL(1), NumL(2))")]
         [InlineData("(X/234)", "Div(NumV(X), NumL(234))")]
-        [InlineData("(X(234)/YZ1234)", "Div(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
+        [InlineData("(X(234)/YZ1234)", "Div(NumArr(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {

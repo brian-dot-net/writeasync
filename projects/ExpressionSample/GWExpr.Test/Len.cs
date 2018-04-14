@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("LEN(\"x\")", "Len(StrL(x))")]
         [InlineData("LEN(X$)", "Len(StrV(X))")]
-        [InlineData("LEN(X$(234))", "Len(Array(StrV(X), NumL(234)))")]
+        [InlineData("LEN(X$(234))", "Len(StrArr(X, NumL(234)))")]
         [Theory]
         public void String(string input, string output)
         {
@@ -27,7 +27,7 @@ namespace GWExpr.Test
         }
 
         [InlineData("LEN((\"x\"))", "Len(StrL(x))")]
-        [InlineData("LEN((X$(X)))", "Len(Array(StrV(X), NumV(X)))")]
+        [InlineData("LEN((X$(X)))", "Len(StrArr(X, NumV(X)))")]
         [InlineData("(LEN(X$))", "Len(StrV(X))")]
         [Theory]
         public void WithParens(string input, string output)

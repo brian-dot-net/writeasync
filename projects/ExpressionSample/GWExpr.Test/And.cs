@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("1 AND 2", "And(NumL(1), NumL(2))")]
         [InlineData("X AND 234", "And(NumV(X), NumL(234))")]
-        [InlineData("X(234) AND YZ1234", "And(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
+        [InlineData("X(234) AND YZ1234", "And(NumArr(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -19,7 +19,7 @@ namespace GWExpr.Test
 
         [InlineData("(1 AND 2)", "And(NumL(1), NumL(2))")]
         [InlineData("(X AND 234)", "And(NumV(X), NumL(234))")]
-        [InlineData("(X(234) AND YZ1234)", "And(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
+        [InlineData("(X(234) AND YZ1234)", "And(NumArr(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {

@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("NOT 1", "Not(NumL(1))")]
         [InlineData("NOT X", "Not(NumV(X))")]
-        [InlineData("NOT X(234)", "Not(Array(NumV(X), NumL(234)))")]
+        [InlineData("NOT X(234)", "Not(NumArr(X, NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {

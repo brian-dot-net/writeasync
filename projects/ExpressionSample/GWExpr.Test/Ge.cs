@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("1>=2", "Ge(NumL(1), NumL(2))")]
         [InlineData("X>=234", "Ge(NumV(X), NumL(234))")]
-        [InlineData("X(234)>=YZ1234", "Ge(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
+        [InlineData("X(234)>=YZ1234", "Ge(NumArr(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -19,7 +19,7 @@ namespace GWExpr.Test
 
         [InlineData("\"one\">=\"two\"", "Ge(StrL(one), StrL(two))")]
         [InlineData("X$>=\"abc\"", "Ge(StrV(X), StrL(abc))")]
-        [InlineData("X$(234)>=YZ1234$", "Ge(Array(StrV(X), NumL(234)), StrV(YZ1234))")]
+        [InlineData("X$(234)>=YZ1234$", "Ge(StrArr(X, NumL(234)), StrV(YZ1234))")]
         [Theory]
         public void String(string input, string output)
         {
@@ -38,7 +38,7 @@ namespace GWExpr.Test
 
         [InlineData("(1>=2)", "Ge(NumL(1), NumL(2))")]
         [InlineData("(X>=234)", "Ge(NumV(X), NumL(234))")]
-        [InlineData("(X(234)>=YZ1234)", "Ge(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
+        [InlineData("(X(234)>=YZ1234)", "Ge(NumArr(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {

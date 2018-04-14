@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("1<2", "Lt(NumL(1), NumL(2))")]
         [InlineData("X<234", "Lt(NumV(X), NumL(234))")]
-        [InlineData("X(234)<YZ1234", "Lt(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
+        [InlineData("X(234)<YZ1234", "Lt(NumArr(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -19,7 +19,7 @@ namespace GWExpr.Test
 
         [InlineData("\"one\"<\"two\"", "Lt(StrL(one), StrL(two))")]
         [InlineData("X$<\"abc\"", "Lt(StrV(X), StrL(abc))")]
-        [InlineData("X$(234)<YZ1234$", "Lt(Array(StrV(X), NumL(234)), StrV(YZ1234))")]
+        [InlineData("X$(234)<YZ1234$", "Lt(StrArr(X, NumL(234)), StrV(YZ1234))")]
         [Theory]
         public void String(string input, string output)
         {
@@ -38,7 +38,7 @@ namespace GWExpr.Test
 
         [InlineData("(1<2)", "Lt(NumL(1), NumL(2))")]
         [InlineData("(X<234)", "Lt(NumV(X), NumL(234))")]
-        [InlineData("(X(234)<YZ1234)", "Lt(Array(NumV(X), NumL(234)), NumV(YZ1234))")]
+        [InlineData("(X(234)<YZ1234)", "Lt(NumArr(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {

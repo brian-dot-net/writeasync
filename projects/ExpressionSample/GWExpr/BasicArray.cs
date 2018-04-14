@@ -9,19 +9,31 @@ namespace GWExpr
 
     internal sealed class BasicArray : BasicExpression
     {
-        private readonly BasicVariable v;
-        private readonly BasicExpression[] i;
+        private readonly string name;
+        private readonly BasicType type;
+        private readonly BasicExpression[] subs;
 
-        public BasicArray(BasicVariable v, IEnumerable<BasicExpression> i)
+        private BasicArray(BasicType type, string name, IEnumerable<BasicExpression> subs)
         {
-            this.v = v;
-            this.i = i.ToArray();
+            this.type = type;
+            this.name = name;
+            this.subs = subs.ToArray();
+        }
+
+        public static BasicArray Num(string name, IEnumerable<BasicExpression> subs)
+        {
+            return new BasicArray(BasicType.Num, name, subs);
+        }
+
+        public static BasicArray Str(string name, IEnumerable<BasicExpression> subs)
+        {
+            return new BasicArray(BasicType.Str, name, subs);
         }
 
         public override string ToString()
         {
-            var list = string.Join<BasicExpression>(", ", this.i);
-            return "Array(" + this.v + ", " + list + ")";
+            var list = string.Join<BasicExpression>(", ", this.subs);
+            return this.type + "Arr(" + this.name + ", " + list + ")";
         }
     }
 }

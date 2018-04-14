@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("SQR(1)", "Sqrt(NumL(1))")]
         [InlineData("SQR(X)", "Sqrt(NumV(X))")]
-        [InlineData("SQR(X(234))", "Sqrt(Array(NumV(X), NumL(234)))")]
+        [InlineData("SQR(X(234))", "Sqrt(NumArr(X, NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {

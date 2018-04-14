@@ -103,18 +103,16 @@ namespace GWExpr
 
         private static class Var
         {
-            public static readonly Parser<string> Id =
-                Parse.Identifier(Parse.Letter, Parse.LetterOrDigit)
-                .Except(Kw.Any);
+            public static readonly Parser<string> IdUpper =
+                from v in Parse.Identifier(Parse.Letter, Parse.LetterOrDigit)
+                select v.ToUpperInvariant();
 
-            public static readonly Parser<BasicVariable> StrScalar =
+            public static readonly Parser<string> Id = IdUpper.Except(Kw.Any);
+
+            public static readonly Parser<string> StrId =
                 from v in Id.Except(Kw.AnyStr)
                 from d in Ch.Dollar
-                select BasicVariable.Str(v);
-
-            public static readonly Parser<BasicVariable> NumScalar =
-                from v in Id
-                select BasicVariable.Num(v);
+                select v;
 
             public static readonly Parser<BasicExpression> Index = Lit.Num.Or(Parse.Ref(() => NumAny));
 
@@ -125,15 +123,23 @@ namespace GWExpr
                 from rp in Ch.RightParen
                 select head.Concat(rest);
 
+            public static readonly Parser<BasicExpression> NumScalar =
+                from v in Id
+                select BasicVariable.Num(v);
+
             public static readonly Parser<BasicExpression> NumArray =
-                from v in NumScalar
+                from v in Id
                 from i in IndexList
-                select new BasicArray(v, i);
+                select BasicArray.Num(v, i);
+
+            public static readonly Parser<BasicExpression> StrScalar =
+                from v in StrId
+                select BasicVariable.Str(v);
 
             public static readonly Parser<BasicExpression> StrArray =
-                from v in StrScalar
+                from v in StrId
                 from i in IndexList
-                select new BasicArray(v, i);
+                select BasicArray.Str(v, i);
 
             public static readonly Parser<BasicExpression> NumAny = NumArray.Or(NumScalar);
 
