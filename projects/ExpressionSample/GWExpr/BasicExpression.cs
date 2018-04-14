@@ -54,12 +54,13 @@ namespace GWExpr
         private static class Kw
         {
             public static readonly Parser<IEnumerable<char>> And = Parse.String("AND");
+            public static readonly Parser<IEnumerable<char>> Exp = Parse.String("EXP");
             public static readonly Parser<IEnumerable<char>> Not = Parse.String("NOT");
             public static readonly Parser<IEnumerable<char>> Or = Parse.String("OR");
             public static readonly Parser<IEnumerable<char>> Sqr = Parse.String("SQR");
 
             public static readonly Parser<IEnumerable<char>> Any =
-                And.Or(Not).Or(Or).Or(Sqr);
+                And.Or(Exp).Or(Not).Or(Or).Or(Sqr);
         }
 
         private static class Lit
@@ -241,12 +242,17 @@ namespace GWExpr
                 from rp in Ch.RightParen
                 select x;
 
+            private static readonly Parser<BasicExpression> Exp =
+                from f in Kw.Exp
+                from x in Paren
+                select new ExpExpression(x);
+
             private static readonly Parser<BasicExpression> Sqr =
                 from f in Kw.Sqr
                 from x in Paren
                 select new SqrtExpression(x);
 
-            private static readonly Parser<BasicExpression> Fun = Sqr;
+            private static readonly Parser<BasicExpression> Fun = Exp.Or(Sqr);
 
             private static readonly Parser<BasicExpression> Value = Lit.Num.Or(Fun).Or(Var.NumAny);
 
@@ -279,28 +285,42 @@ namespace GWExpr
 
             private static readonly Parser<BasicExpression> Root = Not.Or(Relational);
 
-            private sealed class NegateExpression : BasicExpression
+            private abstract class UnaryExpression : BasicExpression
             {
+                private readonly string name;
                 private readonly BasicExpression x;
 
-                public NegateExpression(BasicExpression x)
+                protected UnaryExpression(string name, BasicExpression x)
                 {
+                    this.name = name;
                     this.x = x;
                 }
 
-                public override string ToString() => "Neg(" + this.x + ")";
+                public override string ToString() => this.name + "(" + this.x + ")";
             }
 
-            private sealed class SqrtExpression : BasicExpression
+            private sealed class NegateExpression : UnaryExpression
             {
-                private readonly BasicExpression x;
-
-                public SqrtExpression(BasicExpression x)
+                public NegateExpression(BasicExpression x)
+                    : base("Neg", x)
                 {
-                    this.x = x;
                 }
+            }
 
-                public override string ToString() => "Sqrt(" + this.x + ")";
+            private sealed class ExpExpression : UnaryExpression
+            {
+                public ExpExpression(BasicExpression x)
+                    : base("Exp", x)
+                {
+                }
+            }
+
+            private sealed class SqrtExpression : UnaryExpression
+            {
+                public SqrtExpression(BasicExpression x)
+                    : base("Sqrt", x)
+                {
+                }
             }
         }
 
