@@ -325,8 +325,8 @@ namespace GWExpr
                 select Binary.Ne;
 
             public static readonly Parser<IOperator> Le =
-                from o1 in Ch.Less
-                from oe in Ch.Equal
+                from o1 in Ch.Less.Token()
+                from o2 in Ch.Equal.Token()
                 select Binary.Le;
 
             public static readonly Parser<IOperator> Lt =
