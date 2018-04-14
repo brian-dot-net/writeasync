@@ -158,7 +158,7 @@ namespace GWExpr
                 from c in Ch.Comma
                 from n in Num.Any
                 from rp in Ch.RightParen
-                select new OperatorExpression("Left", x, n);
+                select OperatorExpression.Binary("Left", x, n);
 
             private static readonly Parser<Tuple<BasicExpression, BasicExpression>> MidPrefix =
                 from f in Kw.Mid
@@ -174,12 +174,12 @@ namespace GWExpr
                 from c in Ch.Comma
                 from m in Num.Any
                 from rp in Ch.RightParen
-                select new OperatorExpression("Mid", t.Item1, t.Item2, m);
+                select OperatorExpression.Ternary("Mid", t.Item1, t.Item2, m);
 
             private static readonly Parser<BasicExpression> Mid2 =
                 from t in MidPrefix
                 from rp in Ch.RightParen
-                select new OperatorExpression("Mid", t.Item1, t.Item2);
+                select OperatorExpression.Binary("Mid", t.Item1, t.Item2);
 
             private static readonly Parser<BasicExpression> Mid = Mid3.Or(Mid2);
 
@@ -191,7 +191,7 @@ namespace GWExpr
                 from c in Ch.Comma
                 from n in Num.Any
                 from rp in Ch.RightParen
-                select new OperatorExpression("Right", x, n);
+                select OperatorExpression.Binary("Right", x, n);
 
             private static readonly Parser<BasicExpression> Fun = Left.Or(Mid).Or(Right);
 
@@ -228,17 +228,17 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Exp =
                 from f in Kw.Exp
                 from x in Paren
-                select new OperatorExpression("Exp", x);
+                select OperatorExpression.Unary("Exp", x);
 
             private static readonly Parser<BasicExpression> Len =
                 from f in Kw.Len
                 from x in Str.Paren
-                select new OperatorExpression("Len", x);
+                select OperatorExpression.Unary("Len", x);
 
             private static readonly Parser<BasicExpression> Sqr =
                 from f in Kw.Sqr
                 from x in Paren
-                select new OperatorExpression("Sqrt", x);
+                select OperatorExpression.Unary("Sqrt", x);
 
             private static readonly Parser<BasicExpression> Fun = Exp.Or(Len).Or(Sqr);
 
@@ -254,7 +254,7 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Neg =
                 from m in Ch.Minus
                 from x in Pow
-                select new OperatorExpression("Neg", x);
+                select OperatorExpression.Unary("Neg", x);
 
             private static readonly Parser<BasicExpression> Mult =
                 Parse.ChainOperator(Op.Multiplicative, Neg.Or(Pow), Op.Apply);
@@ -269,7 +269,7 @@ namespace GWExpr
                 from k in Kw.Not
                 from s in Ch.Space
                 from x in Add
-                select new OperatorExpression("Not", x);
+                select OperatorExpression.Unary("Not", x);
 
             private static readonly Parser<BasicExpression> Root = Not.Or(Relational);
         }
@@ -371,7 +371,7 @@ namespace GWExpr
 
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
-                    return new OperatorExpression(this.name, x, y);
+                    return OperatorExpression.Binary(this.name, x, y);
                 }
             }
         }
