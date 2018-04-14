@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("LEN (\"x\")", "Len(StrL(x))")]
+        [InlineData("LEN( X$)", "Len(StrV(X))")]
+        [InlineData("LEN  (  X$(234)  )", "Len(StrArr(X, NumL(234)))")]
+        [Theory]
+        public void IgnoreSpaces(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("len(\"x\")", "Len(StrL(x))")]
         [InlineData("Len(X$)", "Len(StrV(X))")]
         [InlineData("lEN(X$(234))", "Len(StrArr(X, NumL(234)))")]

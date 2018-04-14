@@ -176,9 +176,9 @@ namespace GWExpr
             public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Root);
 
             public static readonly Parser<BasicExpression> Paren =
-                from lp in Ch.LeftParen
+                from lp in Ch.LeftParen.Token()
                 from x in Any
-                from rp in Ch.RightParen
+                from rp in Ch.RightParen.Token()
                 select x;
 
             private static readonly Parser<BasicExpression> Left =
@@ -262,7 +262,7 @@ namespace GWExpr
                 select OperatorExpression.Unary("Exp", x);
 
             private static readonly Parser<BasicExpression> Len =
-                from f in Kw.Len
+                from f in Kw.Len.Token()
                 from x in Str.Paren
                 select OperatorExpression.Unary("Len", x);
 
