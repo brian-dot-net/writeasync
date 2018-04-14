@@ -229,15 +229,28 @@ namespace GWExpr
                 from rp in Ch.RightParen
                 select new LeftExpression(x, n);
 
-            private static readonly Parser<BasicExpression> Mid =
+            private static readonly Parser<Tuple<BasicExpression, BasicExpression>> MidPrefix =
                 from f in Kw.Mid
                 from d in Ch.Dollar
                 from lp in Ch.LeftParen
                 from x in Any
                 from c in Ch.Comma
                 from n in Num.Any
+                select Tuple.Create(x, n);
+
+            private static readonly Parser<BasicExpression> Mid3 =
+                from t in MidPrefix
+                from c in Ch.Comma
+                from m in Num.Any
                 from rp in Ch.RightParen
-                select new MidExpression(x, n);
+                select new Mid3Expression(t.Item1, t.Item2, m);
+
+            private static readonly Parser<BasicExpression> Mid2 =
+                from t in MidPrefix
+                from rp in Ch.RightParen
+                select new Mid2Expression(t.Item1, t.Item2);
+
+            private static readonly Parser<BasicExpression> Mid = Mid3.Or(Mid2);
 
             private static readonly Parser<BasicExpression> Right =
                 from f in Kw.Right
@@ -274,12 +287,28 @@ namespace GWExpr
                 }
             }
 
-            private sealed class MidExpression : BinaryExpression
+            private sealed class Mid2Expression : BinaryExpression
             {
-                public MidExpression(BasicExpression x, BasicExpression n)
+                public Mid2Expression(BasicExpression x, BasicExpression n)
                     : base("Mid", x, n)
                 {
                 }
+            }
+
+            private sealed class Mid3Expression : BasicExpression
+            {
+                private readonly BasicExpression x;
+                private readonly BasicExpression n;
+                private readonly BasicExpression m;
+
+                public Mid3Expression(BasicExpression x, BasicExpression n, BasicExpression m)
+                {
+                    this.x = x;
+                    this.n = n;
+                    this.m = m;
+                }
+
+                public override string ToString() => "Mid(" + this.x + ", " + this.n + ", " + this.m + ")";
             }
 
             private sealed class RightExpression : BinaryExpression
