@@ -90,13 +90,13 @@ namespace GWExpr
         {
             public static readonly Parser<BasicExpression> Num =
                 from n in Parse.Number
-                select new NumericLiteral(int.Parse(n));
+                select BasicLiteral.Num(n);
 
             public static readonly Parser<BasicExpression> Str =
                 from lq in Ch.Quote
                 from s in Ch.NonQuote.Many().Text()
                 from rq in Ch.Quote
-                select new StringLiteral(s);
+                select BasicLiteral.Str(s);
 
             public static readonly Parser<BasicExpression> Any = Num.Or(Str);
         }
