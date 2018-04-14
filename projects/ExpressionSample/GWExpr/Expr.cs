@@ -314,9 +314,7 @@ namespace GWExpr
                 select Binary.Or;
 
             public static readonly Parser<IOperator> And =
-                from s1 in Ch.Space
-                from k in Kw.And
-                from s2 in Ch.Space
+                from k in Kw.And.Token()
                 select Binary.And;
 
             public static readonly Parser<IOperator> Eq =

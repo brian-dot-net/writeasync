@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("1  AND 2", "And(NumL(1), NumL(2))")]
+        [InlineData("X  AND  234", "And(NumV(X), NumL(234))")]
+        [InlineData("X(234)AND  YZ1234", "And(NumArr(X, NumL(234)), NumV(YZ1234))")]
+        [Theory]
+        public void IgnoreSpaces(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("1 and 2", "And(NumL(1), NumL(2))")]
         [InlineData("X AnD 234", "And(NumV(X), NumL(234))")]
         [InlineData("X(234) aNd YZ1234", "And(NumArr(X, NumL(234)), NumV(YZ1234))")]
