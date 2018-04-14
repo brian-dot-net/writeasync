@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("1> 2", "Gt(NumL(1), NumL(2))")]
+        [InlineData("X >234", "Gt(NumV(X), NumL(234))")]
+        [InlineData("X(234)  >  YZ1234", "Gt(NumArr(X, NumL(234)), NumV(YZ1234))")]
+        [Theory]
+        public void IgnoreSpaces(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("\"one\">\"two\"", "Gt(StrL(one), StrL(two))")]
         [InlineData("X$>\"abc\"", "Gt(StrV(X), StrL(abc))")]
         [InlineData("X$(234)>YZ1234$", "Gt(StrArr(X, NumL(234)), StrV(YZ1234))")]
