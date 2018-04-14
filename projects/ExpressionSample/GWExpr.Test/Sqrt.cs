@@ -8,9 +8,9 @@ namespace GWExpr.Test
 
     public sealed class Sqrt
     {
-        [InlineData("SQR(1)", "Sqrt(L(1))")]
+        [InlineData("SQR(1)", "Sqrt(NumL(1))")]
         [InlineData("SQR(X)", "Sqrt(NumVar(X))")]
-        [InlineData("SQR(X(234))", "Sqrt(Array(NumVar(X), L(234)))")]
+        [InlineData("SQR(X(234))", "Sqrt(Array(NumVar(X), NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -26,7 +26,7 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("SQR((1))", "Sqrt(L(1))")]
+        [InlineData("SQR((1))", "Sqrt(NumL(1))")]
         [InlineData("SQR(SQR(X))", "Sqrt(Sqrt(NumVar(X)))")]
         [InlineData("(SQR(X))", "Sqrt(NumVar(X))")]
         [Theory]
@@ -35,11 +35,11 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("1+SQR(-2)", "Add(L(1), Sqrt(Neg(L(2))))")]
-        [InlineData("SQR(1+2)", "Sqrt(Add(L(1), L(2)))")]
-        [InlineData("1-SQR(-2)", "Sub(L(1), Sqrt(Neg(L(2))))")]
-        [InlineData("SQR(1-SQR(2))", "Sqrt(Sub(L(1), Sqrt(L(2))))")]
-        [InlineData("SQR(1*2)", "Sqrt(Mult(L(1), L(2)))")]
+        [InlineData("1+SQR(-2)", "Add(NumL(1), Sqrt(Neg(NumL(2))))")]
+        [InlineData("SQR(1+2)", "Sqrt(Add(NumL(1), NumL(2)))")]
+        [InlineData("1-SQR(-2)", "Sub(NumL(1), Sqrt(Neg(NumL(2))))")]
+        [InlineData("SQR(1-SQR(2))", "Sqrt(Sub(NumL(1), Sqrt(NumL(2))))")]
+        [InlineData("SQR(1*2)", "Sqrt(Mult(NumL(1), NumL(2)))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {

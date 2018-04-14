@@ -8,9 +8,9 @@ namespace GWExpr.Test
 
     public sealed class Right
     {
-        [InlineData("RIGHT$(\"x\",1)", "Right(L(\"x\"), L(1))")]
+        [InlineData("RIGHT$(\"x\",1)", "Right(StrL(x), NumL(1))")]
         [InlineData("RIGHT$(X$,X)", "Right(StrVar(X), NumVar(X))")]
-        [InlineData("RIGHT$(X$(234),X(123))", "Right(Array(StrVar(X), L(234)), Array(NumVar(X), L(123)))")]
+        [InlineData("RIGHT$(X$(234),X(123))", "Right(Array(StrVar(X), NumL(234)), Array(NumVar(X), NumL(123)))")]
         [Theory]
         public void String(string input, string output)
         {
@@ -35,26 +35,26 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("RIGHT$((\"x\"),1)", "Right(L(\"x\"), L(1))")]
-        [InlineData("RIGHT$((X$(X)),2)", "Right(Array(StrVar(X), NumVar(X)), L(2))")]
-        [InlineData("(RIGHT$(X$,1))", "Right(StrVar(X), L(1))")]
-        [InlineData("RIGHT$(RIGHT$(X$,1),2)", "Right(Right(StrVar(X), L(1)), L(2))")]
+        [InlineData("RIGHT$((\"x\"),1)", "Right(StrL(x), NumL(1))")]
+        [InlineData("RIGHT$((X$(X)),2)", "Right(Array(StrVar(X), NumVar(X)), NumL(2))")]
+        [InlineData("(RIGHT$(X$,1))", "Right(StrVar(X), NumL(1))")]
+        [InlineData("RIGHT$(RIGHT$(X$,1),2)", "Right(Right(StrVar(X), NumL(1)), NumL(2))")]
         [Theory]
         public void WithParens(string input, string output)
         {
             Test.Good(input, output);
         }
 
-        [InlineData("\"x\"+RIGHT$(X$,1)", "Add(L(\"x\"), Right(StrVar(X), L(1)))")]
-        [InlineData("RIGHT$(\"a\"+\"b\",1)", "Right(Add(L(\"a\"), L(\"b\")), L(1))")]
+        [InlineData("\"x\"+RIGHT$(X$,1)", "Add(StrL(x), Right(StrVar(X), NumL(1)))")]
+        [InlineData("RIGHT$(\"a\"+\"b\",1)", "Right(Add(StrL(a), StrL(b)), NumL(1))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {
             Test.Good(input, output);
         }
 
-        [InlineData("1+RIGHT", "Add(L(1), NumVar(RIGHT))")]
-        [InlineData("RIGHT*3", "Mult(NumVar(RIGHT), L(3))")]
+        [InlineData("1+RIGHT", "Add(NumL(1), NumVar(RIGHT))")]
+        [InlineData("RIGHT*3", "Mult(NumVar(RIGHT), NumL(3))")]
         [Theory]
         public void AllowReservedNum(string input, string output)
         {

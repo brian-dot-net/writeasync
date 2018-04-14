@@ -4,37 +4,21 @@
 
 namespace GWExpr
 {
-    internal abstract class BasicLiteral : BasicExpression
+    internal sealed class BasicLiteral : BasicExpression
     {
+        private readonly BasicType type;
         private readonly object o;
-        private readonly string s;
 
-        protected BasicLiteral(object o, string s)
+        private BasicLiteral(BasicType type, object o)
         {
+            this.type = type;
             this.o = o;
-            this.s = s;
         }
 
-        public static BasicLiteral Num(string n) => new NumericLiteral(int.Parse(n));
+        public static BasicLiteral Num(string n) => new BasicLiteral(BasicType.Num, int.Parse(n));
 
-        public static BasicLiteral Str(string s) => new StringLiteral(s);
+        public static BasicLiteral Str(string s) => new BasicLiteral(BasicType.Str, s);
 
-        public override string ToString() => "L(" + this.s + this.o + this.s + ")";
-
-        private sealed class StringLiteral : BasicLiteral
-        {
-            public StringLiteral(string s)
-                : base(s, "\"")
-            {
-            }
-        }
-
-        private sealed class NumericLiteral : BasicLiteral
-        {
-            public NumericLiteral(int n)
-                    : base(n, string.Empty)
-            {
-            }
-        }
+        public override string ToString() => this.type + "L(" + this.o + ")";
     }
 }

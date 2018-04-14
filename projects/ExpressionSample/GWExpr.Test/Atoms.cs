@@ -8,18 +8,18 @@ namespace GWExpr.Test
 
     public sealed class Atoms
     {
-        [InlineData("1", "L(1)")]
-        [InlineData("22", "L(22)")]
-        [InlineData("32000", "L(32000)")]
+        [InlineData("1", "NumL(1)")]
+        [InlineData("22", "NumL(22)")]
+        [InlineData("32000", "NumL(32000)")]
         [Theory]
         public void Integers(string input, string output)
         {
             Test.Good(input, output);
         }
 
-        [InlineData("\"1\"", "L(\"1\")")]
-        [InlineData("\"\"", "L(\"\")")]
-        [InlineData("\"string with spaces\"", "L(\"string with spaces\")")]
+        [InlineData("\"1\"", "StrL(1)")]
+        [InlineData("\"\"", "StrL()")]
+        [InlineData("\"string with spaces\"", "StrL(string with spaces)")]
         [Theory]
         public void Strings(string input, string output)
         {
@@ -70,8 +70,8 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("(1)", "L(1)")]
-        [InlineData("(\"x\")", "L(\"x\")")]
+        [InlineData("(1)", "NumL(1)")]
+        [InlineData("(\"x\")", "StrL(x)")]
         [InlineData("(A)", "NumVar(A)")]
         [InlineData("(A$)", "StrVar(A)")]
         [Theory]

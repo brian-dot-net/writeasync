@@ -8,9 +8,9 @@ namespace GWExpr.Test
 
     public sealed class Len
     {
-        [InlineData("LEN(\"x\")", "Len(L(\"x\"))")]
+        [InlineData("LEN(\"x\")", "Len(StrL(x))")]
         [InlineData("LEN(X$)", "Len(StrVar(X))")]
-        [InlineData("LEN(X$(234))", "Len(Array(StrVar(X), L(234)))")]
+        [InlineData("LEN(X$(234))", "Len(Array(StrVar(X), NumL(234)))")]
         [Theory]
         public void String(string input, string output)
         {
@@ -26,7 +26,7 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("LEN((\"x\"))", "Len(L(\"x\"))")]
+        [InlineData("LEN((\"x\"))", "Len(StrL(x))")]
         [InlineData("LEN((X$(X)))", "Len(Array(StrVar(X), NumVar(X)))")]
         [InlineData("(LEN(X$))", "Len(StrVar(X))")]
         [Theory]
@@ -35,10 +35,10 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("1+LEN(X$)", "Add(L(1), Len(StrVar(X)))")]
-        [InlineData("LEN(\"a\"+\"b\")", "Len(Add(L(\"a\"), L(\"b\")))")]
-        [InlineData("1-LEN(\"a\")", "Sub(L(1), Len(L(\"a\")))")]
-        [InlineData("1*LEN(X$)", "Mult(L(1), Len(StrVar(X)))")]
+        [InlineData("1+LEN(X$)", "Add(NumL(1), Len(StrVar(X)))")]
+        [InlineData("LEN(\"a\"+\"b\")", "Len(Add(StrL(a), StrL(b)))")]
+        [InlineData("1-LEN(\"a\")", "Sub(NumL(1), Len(StrL(a)))")]
+        [InlineData("1*LEN(X$)", "Mult(NumL(1), Len(StrVar(X)))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {

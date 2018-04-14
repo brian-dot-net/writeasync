@@ -8,9 +8,9 @@ namespace GWExpr.Test
 
     public sealed class Not
     {
-        [InlineData("NOT 1", "Not(L(1))")]
+        [InlineData("NOT 1", "Not(NumL(1))")]
         [InlineData("NOT X", "Not(NumVar(X))")]
-        [InlineData("NOT X(234)", "Not(Array(NumVar(X), L(234)))")]
+        [InlineData("NOT X(234)", "Not(Array(NumVar(X), NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -26,7 +26,7 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("NOT (1)", "Not(L(1))")]
+        [InlineData("NOT (1)", "Not(NumL(1))")]
         [InlineData("NOT (NOT (X))", "Not(Not(NumVar(X)))")]
         [InlineData("(NOT X)", "Not(NumVar(X))")]
         [Theory]
@@ -35,11 +35,11 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("1+NOT -2", "Add(L(1), Not(Neg(L(2))))")]
-        [InlineData("NOT 1+2", "Not(Add(L(1), L(2)))")]
-        [InlineData("1-NOT -2", "Sub(L(1), Not(Neg(L(2))))")]
-        [InlineData("NOT 1-NOT 2", "Not(Sub(L(1), Not(L(2))))")]
-        [InlineData("NOT 1*2", "Not(Mult(L(1), L(2)))")]
+        [InlineData("1+NOT -2", "Add(NumL(1), Not(Neg(NumL(2))))")]
+        [InlineData("NOT 1+2", "Not(Add(NumL(1), NumL(2)))")]
+        [InlineData("1-NOT -2", "Sub(NumL(1), Not(Neg(NumL(2))))")]
+        [InlineData("NOT 1-NOT 2", "Not(Sub(NumL(1), Not(NumL(2))))")]
+        [InlineData("NOT 1*2", "Not(Mult(NumL(1), NumL(2)))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {

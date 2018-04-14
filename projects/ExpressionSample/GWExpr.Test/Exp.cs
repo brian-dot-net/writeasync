@@ -8,9 +8,9 @@ namespace GWExpr.Test
 
     public sealed class Exp
     {
-        [InlineData("EXP(1)", "Exp(L(1))")]
+        [InlineData("EXP(1)", "Exp(NumL(1))")]
         [InlineData("EXP(X)", "Exp(NumVar(X))")]
-        [InlineData("EXP(X(234))", "Exp(Array(NumVar(X), L(234)))")]
+        [InlineData("EXP(X(234))", "Exp(Array(NumVar(X), NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -26,7 +26,7 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("EXP((1))", "Exp(L(1))")]
+        [InlineData("EXP((1))", "Exp(NumL(1))")]
         [InlineData("EXP(EXP(X))", "Exp(Exp(NumVar(X)))")]
         [InlineData("(EXP(X))", "Exp(NumVar(X))")]
         [Theory]
@@ -35,11 +35,11 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("1+EXP(-2)", "Add(L(1), Exp(Neg(L(2))))")]
-        [InlineData("EXP(1+2)", "Exp(Add(L(1), L(2)))")]
-        [InlineData("1-EXP(-2)", "Sub(L(1), Exp(Neg(L(2))))")]
-        [InlineData("EXP(1-EXP(2))", "Exp(Sub(L(1), Exp(L(2))))")]
-        [InlineData("EXP(1*2)", "Exp(Mult(L(1), L(2)))")]
+        [InlineData("1+EXP(-2)", "Add(NumL(1), Exp(Neg(NumL(2))))")]
+        [InlineData("EXP(1+2)", "Exp(Add(NumL(1), NumL(2)))")]
+        [InlineData("1-EXP(-2)", "Sub(NumL(1), Exp(Neg(NumL(2))))")]
+        [InlineData("EXP(1-EXP(2))", "Exp(Sub(NumL(1), Exp(NumL(2))))")]
+        [InlineData("EXP(1*2)", "Exp(Mult(NumL(1), NumL(2)))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {
