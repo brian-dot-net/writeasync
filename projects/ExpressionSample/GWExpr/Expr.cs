@@ -36,7 +36,17 @@ namespace GWExpr
             BasicExpression Apply(BasicExpression x, BasicExpression y);
         }
 
-        public static BasicExpression FromString(string input) => Any.End().Parse(input);
+        public static BasicExpression FromString(string input)
+        {
+            try
+            {
+                return Any.End().Parse(input);
+            }
+            catch (ParseException e)
+            {
+                throw new FormatException("Bad expression '" + input + "'.", e);
+            }
+        }
 
         private static class Ch
         {
