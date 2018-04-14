@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("1 *2", "Mult(NumL(1), NumL(2))")]
+        [InlineData("X* 234", "Mult(NumV(X), NumL(234))")]
+        [InlineData("X(234)  *  YZ1234", "Mult(NumArr(X, NumL(234)), NumV(YZ1234))")]
+        [Theory]
+        public void IgnoreSpaces(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("2*\"1\"")]
         [InlineData("234*X$")]
         [InlineData("X(234)*YZ1234$")]

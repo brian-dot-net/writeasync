@@ -351,7 +351,7 @@ namespace GWExpr
                 select Binary.Sub;
 
             public static readonly Parser<IOperator> Multiply =
-                from o in Ch.Star
+                from o in Ch.Star.Token()
                 select Binary.Mult;
 
             public static readonly Parser<IOperator> Divide =
