@@ -55,12 +55,13 @@ namespace GWExpr
         {
             public static readonly Parser<IEnumerable<char>> And = Parse.String("AND");
             public static readonly Parser<IEnumerable<char>> Exp = Parse.String("EXP");
+            public static readonly Parser<IEnumerable<char>> Len = Parse.String("LEN");
             public static readonly Parser<IEnumerable<char>> Not = Parse.String("NOT");
             public static readonly Parser<IEnumerable<char>> Or = Parse.String("OR");
             public static readonly Parser<IEnumerable<char>> Sqr = Parse.String("SQR");
 
             public static readonly Parser<IEnumerable<char>> Any =
-                And.Or(Exp).Or(Not).Or(Or).Or(Sqr);
+                And.Or(Exp).Or(Len).Or(Not).Or(Or).Or(Sqr);
         }
 
         private static class Lit
@@ -206,7 +207,7 @@ namespace GWExpr
         {
             public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Root);
 
-            private static readonly Parser<BasicExpression> Paren =
+            public static readonly Parser<BasicExpression> Paren =
                 from lp in Ch.LeftParen
                 from x in Any
                 from rp in Ch.RightParen
@@ -247,12 +248,17 @@ namespace GWExpr
                 from x in Paren
                 select new ExpExpression(x);
 
+            private static readonly Parser<BasicExpression> Len =
+                from f in Kw.Len
+                from x in Str.Paren
+                select new LenExpression(x);
+
             private static readonly Parser<BasicExpression> Sqr =
                 from f in Kw.Sqr
                 from x in Paren
                 select new SqrtExpression(x);
 
-            private static readonly Parser<BasicExpression> Fun = Exp.Or(Sqr);
+            private static readonly Parser<BasicExpression> Fun = Exp.Or(Len).Or(Sqr);
 
             private static readonly Parser<BasicExpression> Value = Lit.Num.Or(Fun).Or(Var.NumAny);
 
@@ -311,6 +317,14 @@ namespace GWExpr
             {
                 public ExpExpression(BasicExpression x)
                     : base("Exp", x)
+                {
+                }
+            }
+
+            private sealed class LenExpression : UnaryExpression
+            {
+                public LenExpression(BasicExpression x)
+                    : base("Len", x)
                 {
                 }
             }
