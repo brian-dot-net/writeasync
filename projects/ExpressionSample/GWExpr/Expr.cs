@@ -297,8 +297,7 @@ namespace GWExpr
                 Parse.ChainOperator(Op.Relational, Add, Op.Apply);
 
             private static readonly Parser<BasicExpression> Not =
-                from k in Kw.Not
-                from s in Ch.Space
+                from k in Kw.Not.Token()
                 from x in Add
                 select OperatorExpression.Unary("Not", x);
 
