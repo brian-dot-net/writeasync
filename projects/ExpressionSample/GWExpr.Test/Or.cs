@@ -65,6 +65,8 @@ namespace GWExpr.Test
         [InlineData("1+OR")]
         [InlineData("OR(1,X)")]
         [InlineData("OR$")]
+        [InlineData("or$")]
+        [InlineData("1+or")]
         [Theory]
         public void FailedReserved(string input)
         {

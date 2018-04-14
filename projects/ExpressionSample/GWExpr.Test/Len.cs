@@ -48,6 +48,8 @@ namespace GWExpr.Test
         [InlineData("1+LEN")]
         [InlineData("LEN(1,X)")]
         [InlineData("LEN$")]
+        [InlineData("len$")]
+        [InlineData("1+len")]
         [Theory]
         public void FailedReserved(string input)
         {

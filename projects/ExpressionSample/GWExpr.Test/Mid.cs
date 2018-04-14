@@ -61,6 +61,7 @@ namespace GWExpr.Test
 
         [InlineData("1+MID", "Add(NumL(1), NumV(MID))")]
         [InlineData("MID*3", "Mult(NumV(MID), NumL(3))")]
+        [InlineData("mid*3", "Mult(NumV(MID), NumL(3))")]
         [Theory]
         public void AllowReservedNum(string input, string output)
         {
@@ -69,6 +70,7 @@ namespace GWExpr.Test
 
         [InlineData("\"x\"+MID$")]
         [InlineData("MID$")]
+        [InlineData("mid$")]
         [Theory]
         public void FailedReservedString(string input)
         {

@@ -49,6 +49,8 @@ namespace GWExpr.Test
         [InlineData("1+SQR")]
         [InlineData("SQR(1,X)")]
         [InlineData("SQR$")]
+        [InlineData("sqr$")]
+        [InlineData("1+sqr")]
         [Theory]
         public void FailedReserved(string input)
         {

@@ -55,6 +55,7 @@ namespace GWExpr.Test
 
         [InlineData("1+RIGHT", "Add(NumL(1), NumV(RIGHT))")]
         [InlineData("RIGHT*3", "Mult(NumV(RIGHT), NumL(3))")]
+        [InlineData("right*3", "Mult(NumV(RIGHT), NumL(3))")]
         [Theory]
         public void AllowReservedNum(string input, string output)
         {
@@ -63,6 +64,7 @@ namespace GWExpr.Test
 
         [InlineData("\"x\"+RIGHT$")]
         [InlineData("RIGHT$")]
+        [InlineData("right$")]
         [Theory]
         public void FailedReservedString(string input)
         {

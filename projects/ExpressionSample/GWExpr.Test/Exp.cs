@@ -49,6 +49,8 @@ namespace GWExpr.Test
         [InlineData("1+EXP")]
         [InlineData("EXP(1,X)")]
         [InlineData("EXP$")]
+        [InlineData("exp$")]
+        [InlineData("1+exp")]
         [Theory]
         public void FailedReserved(string input)
         {
