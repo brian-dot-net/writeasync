@@ -251,9 +251,9 @@ namespace GWExpr
                 .Or(Parse.Ref(() => Not));
 
             private static readonly Parser<BasicExpression> Paren =
-                from lp in Ch.LeftParen
+                from lp in Ch.LeftParen.Token()
                 from x in Any
-                from rp in Ch.RightParen
+                from rp in Ch.RightParen.Token()
                 select x;
 
             private static readonly Parser<BasicExpression> Exp =
@@ -308,9 +308,7 @@ namespace GWExpr
         private static class Op
         {
             public static readonly Parser<IOperator> Or =
-                from s1 in Ch.Space
-                from k in Kw.Or
-                from s2 in Ch.Space
+                from k in Kw.Or.Token()
                 select Binary.Or;
 
             public static readonly Parser<IOperator> And =
