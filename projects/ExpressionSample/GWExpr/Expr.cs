@@ -158,7 +158,7 @@ namespace GWExpr
                 from c in Ch.Comma
                 from n in Num.Any
                 from rp in Ch.RightParen
-                select new LeftExpression(x, n);
+                select new OperatorExpression("Left", x, n);
 
             private static readonly Parser<Tuple<BasicExpression, BasicExpression>> MidPrefix =
                 from f in Kw.Mid
@@ -174,12 +174,12 @@ namespace GWExpr
                 from c in Ch.Comma
                 from m in Num.Any
                 from rp in Ch.RightParen
-                select new Mid3Expression(t.Item1, t.Item2, m);
+                select new OperatorExpression("Mid", t.Item1, t.Item2, m);
 
             private static readonly Parser<BasicExpression> Mid2 =
                 from t in MidPrefix
                 from rp in Ch.RightParen
-                select new Mid2Expression(t.Item1, t.Item2);
+                select new OperatorExpression("Mid", t.Item1, t.Item2);
 
             private static readonly Parser<BasicExpression> Mid = Mid3.Or(Mid2);
 
@@ -191,7 +191,7 @@ namespace GWExpr
                 from c in Ch.Comma
                 from n in Num.Any
                 from rp in Ch.RightParen
-                select new RightExpression(x, n);
+                select new OperatorExpression("Right", x, n);
 
             private static readonly Parser<BasicExpression> Fun = Left.Or(Mid).Or(Right);
 
@@ -209,46 +209,6 @@ namespace GWExpr
                 select op.Apply(x, y);
 
             private static readonly Parser<BasicExpression> Root = Relational.Or(Add);
-
-            private sealed class LeftExpression : BinaryExpression
-            {
-                public LeftExpression(BasicExpression x, BasicExpression n)
-                    : base("Left", x, n)
-                {
-                }
-            }
-
-            private sealed class Mid2Expression : BinaryExpression
-            {
-                public Mid2Expression(BasicExpression x, BasicExpression n)
-                    : base("Mid", x, n)
-                {
-                }
-            }
-
-            private sealed class Mid3Expression : BasicExpression
-            {
-                private readonly BasicExpression x;
-                private readonly BasicExpression n;
-                private readonly BasicExpression m;
-
-                public Mid3Expression(BasicExpression x, BasicExpression n, BasicExpression m)
-                {
-                    this.x = x;
-                    this.n = n;
-                    this.m = m;
-                }
-
-                public override string ToString() => "Mid(" + this.x + ", " + this.n + ", " + this.m + ")";
-            }
-
-            private sealed class RightExpression : BinaryExpression
-            {
-                public RightExpression(BasicExpression x, BasicExpression n)
-                    : base("Right", x, n)
-                {
-                }
-            }
         }
 
         private static class Num
@@ -268,17 +228,17 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Exp =
                 from f in Kw.Exp
                 from x in Paren
-                select new ExpExpression(x);
+                select new OperatorExpression("Exp", x);
 
             private static readonly Parser<BasicExpression> Len =
                 from f in Kw.Len
                 from x in Str.Paren
-                select new LenExpression(x);
+                select new OperatorExpression("Len", x);
 
             private static readonly Parser<BasicExpression> Sqr =
                 from f in Kw.Sqr
                 from x in Paren
-                select new SqrtExpression(x);
+                select new OperatorExpression("Sqrt", x);
 
             private static readonly Parser<BasicExpression> Fun = Exp.Or(Len).Or(Sqr);
 
@@ -294,7 +254,7 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Neg =
                 from m in Ch.Minus
                 from x in Pow
-                select new NegateExpression(x);
+                select new OperatorExpression("Neg", x);
 
             private static readonly Parser<BasicExpression> Mult =
                 Parse.ChainOperator(Op.Multiplicative, Neg.Or(Pow), Op.Apply);
@@ -309,49 +269,9 @@ namespace GWExpr
                 from k in Kw.Not
                 from s in Ch.Space
                 from x in Add
-                select new NotExpression(x);
+                select new OperatorExpression("Not", x);
 
             private static readonly Parser<BasicExpression> Root = Not.Or(Relational);
-
-            private sealed class NotExpression : UnaryExpression
-            {
-                public NotExpression(BasicExpression x)
-                    : base("Not", x)
-                {
-                }
-            }
-
-            private sealed class NegateExpression : UnaryExpression
-            {
-                public NegateExpression(BasicExpression x)
-                    : base("Neg", x)
-                {
-                }
-            }
-
-            private sealed class ExpExpression : UnaryExpression
-            {
-                public ExpExpression(BasicExpression x)
-                    : base("Exp", x)
-                {
-                }
-            }
-
-            private sealed class LenExpression : UnaryExpression
-            {
-                public LenExpression(BasicExpression x)
-                    : base("Len", x)
-                {
-                }
-            }
-
-            private sealed class SqrtExpression : UnaryExpression
-            {
-                public SqrtExpression(BasicExpression x)
-                    : base("Sqrt", x)
-                {
-                }
-            }
         }
 
         private static class Op
@@ -360,56 +280,56 @@ namespace GWExpr
                 from s1 in Ch.Space
                 from k in Kw.Or
                 from s2 in Ch.Space
-                select OrOperator.Value;
+                select Binary.Or;
 
             public static readonly Parser<IOperator> And =
                 from s1 in Ch.Space
                 from k in Kw.And
                 from s2 in Ch.Space
-                select AndOperator.Value;
+                select Binary.And;
 
             public static readonly Parser<IOperator> Eq =
                 from o in Ch.Equal
-                select EqOperator.Value;
+                select Binary.Eq;
 
             public static readonly Parser<IOperator> Ne =
                 from o1 in Ch.Less
                 from o2 in Ch.Greater
-                select NeOperator.Value;
+                select Binary.Ne;
 
             public static readonly Parser<IOperator> Le =
                 from o1 in Ch.Less
                 from oe in Ch.Equal
-                select LeOperator.Value;
+                select Binary.Le;
 
             public static readonly Parser<IOperator> Lt =
                 from o1 in Ch.Less
-                select LtOperator.Value;
+                select Binary.Lt;
 
             public static readonly Parser<IOperator> Ge =
                 from o1 in Ch.Greater
                 from o2 in Ch.Equal
-                select GeOperator.Value;
+                select Binary.Ge;
 
             public static readonly Parser<IOperator> Gt =
                 from o1 in Ch.Greater
-                select GtOperator.Value;
+                select Binary.Gt;
 
             public static readonly Parser<IOperator> Add =
                 from o in Ch.Plus
-                select AddOperator.Value;
+                select Binary.Add;
 
             public static readonly Parser<IOperator> Subtract =
                 from o in Ch.Minus
-                select SubtractOperator.Value;
+                select Binary.Sub;
 
             public static readonly Parser<IOperator> Multiply =
                 from o in Ch.Star
-                select MultiplyOperator.Value;
+                select Binary.Mult;
 
             public static readonly Parser<IOperator> Divide =
                 from o in Ch.Slash
-                select DivideOperator.Value;
+                select Binary.Div;
 
             public static readonly Parser<IOperator> Additive = Add.Or(Subtract);
 
@@ -417,7 +337,7 @@ namespace GWExpr
 
             public static readonly Parser<IOperator> Exponential =
                 from o in Ch.Caret
-                select PowOperator.Value;
+                select Binary.Pow;
 
             public static readonly Parser<IOperator> Relational = Eq.Or(Ne).Or(Le).Or(Lt).Or(Ge).Or(Gt);
 
@@ -426,289 +346,32 @@ namespace GWExpr
                 return op.Apply(x, y);
             }
 
-            private sealed class OrOperator : IOperator
+            private sealed class Binary : IOperator
             {
-                public static readonly IOperator Value = new OrOperator();
+                public static readonly IOperator Or = new Binary("Or");
+                public static readonly IOperator And = new Binary("And");
+                public static readonly IOperator Eq = new Binary("Eq");
+                public static readonly IOperator Ne = new Binary("Ne");
+                public static readonly IOperator Le = new Binary("Le");
+                public static readonly IOperator Lt = new Binary("Lt");
+                public static readonly IOperator Ge = new Binary("Ge");
+                public static readonly IOperator Gt = new Binary("Gt");
+                public static readonly IOperator Add = new Binary("Add");
+                public static readonly IOperator Sub = new Binary("Sub");
+                public static readonly IOperator Mult = new Binary("Mult");
+                public static readonly IOperator Div = new Binary("Div");
+                public static readonly IOperator Pow = new Binary("Pow");
 
-                private OrOperator()
+                private readonly string name;
+
+                private Binary(string name)
                 {
+                    this.name = name;
                 }
 
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
-                    return new OrExpression(x, y);
-                }
-
-                private sealed class OrExpression : BinaryExpression
-                {
-                    public OrExpression(BasicExpression x, BasicExpression y)
-                        : base("Or", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class AndOperator : IOperator
-            {
-                public static readonly IOperator Value = new AndOperator();
-
-                private AndOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new AndExpression(x, y);
-                }
-
-                private sealed class AndExpression : BinaryExpression
-                {
-                    public AndExpression(BasicExpression x, BasicExpression y)
-                        : base("And", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class EqOperator : IOperator
-            {
-                public static readonly IOperator Value = new EqOperator();
-
-                private EqOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new EqExpression(x, y);
-                }
-
-                private sealed class EqExpression : BinaryExpression
-                {
-                    public EqExpression(BasicExpression x, BasicExpression y)
-                        : base("Eq", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class NeOperator : IOperator
-            {
-                public static readonly IOperator Value = new NeOperator();
-
-                private NeOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new NeExpression(x, y);
-                }
-
-                private sealed class NeExpression : BinaryExpression
-                {
-                    public NeExpression(BasicExpression x, BasicExpression y)
-                        : base("Ne", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class LeOperator : IOperator
-            {
-                public static readonly IOperator Value = new LeOperator();
-
-                private LeOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new LeExpression(x, y);
-                }
-
-                private sealed class LeExpression : BinaryExpression
-                {
-                    public LeExpression(BasicExpression x, BasicExpression y)
-                        : base("Le", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class LtOperator : IOperator
-            {
-                public static readonly IOperator Value = new LtOperator();
-
-                private LtOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new LtExpression(x, y);
-                }
-
-                private sealed class LtExpression : BinaryExpression
-                {
-                    public LtExpression(BasicExpression x, BasicExpression y)
-                        : base("Lt", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class GeOperator : IOperator
-            {
-                public static readonly IOperator Value = new GeOperator();
-
-                private GeOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new GeExpression(x, y);
-                }
-
-                private sealed class GeExpression : BinaryExpression
-                {
-                    public GeExpression(BasicExpression x, BasicExpression y)
-                        : base("Ge", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class GtOperator : IOperator
-            {
-                public static readonly IOperator Value = new GtOperator();
-
-                private GtOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new GtExpression(x, y);
-                }
-
-                private sealed class GtExpression : BinaryExpression
-                {
-                    public GtExpression(BasicExpression x, BasicExpression y)
-                        : base("Gt", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class AddOperator : IOperator
-            {
-                public static readonly IOperator Value = new AddOperator();
-
-                private AddOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new AddExpression(x, y);
-                }
-
-                private sealed class AddExpression : BinaryExpression
-                {
-                    public AddExpression(BasicExpression x, BasicExpression y)
-                        : base("Add", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class SubtractOperator : IOperator
-            {
-                public static readonly IOperator Value = new SubtractOperator();
-
-                private SubtractOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new SubtractExpression(x, y);
-                }
-
-                private sealed class SubtractExpression : BinaryExpression
-                {
-                    public SubtractExpression(BasicExpression x, BasicExpression y)
-                        : base("Sub", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class MultiplyOperator : IOperator
-            {
-                public static readonly IOperator Value = new MultiplyOperator();
-
-                private MultiplyOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new MultiplyExpression(x, y);
-                }
-
-                private sealed class MultiplyExpression : BinaryExpression
-                {
-                    public MultiplyExpression(BasicExpression x, BasicExpression y)
-                        : base("Mult", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class DivideOperator : IOperator
-            {
-                public static readonly IOperator Value = new DivideOperator();
-
-                private DivideOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new DivideExpression(x, y);
-                }
-
-                private sealed class DivideExpression : BinaryExpression
-                {
-                    public DivideExpression(BasicExpression x, BasicExpression y)
-                        : base("Div", x, y)
-                    {
-                    }
-                }
-            }
-
-            private sealed class PowOperator : IOperator
-            {
-                public static readonly IOperator Value = new PowOperator();
-
-                private PowOperator()
-                {
-                }
-
-                public BasicExpression Apply(BasicExpression x, BasicExpression y)
-                {
-                    return new PowExpression(x, y);
-                }
-
-                private sealed class PowExpression : BinaryExpression
-                {
-                    public PowExpression(BasicExpression x, BasicExpression y)
-                        : base("Pow", x, y)
-                    {
-                    }
+                    return new OperatorExpression(this.name, x, y);
                 }
             }
         }
