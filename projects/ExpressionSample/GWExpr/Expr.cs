@@ -363,7 +363,7 @@ namespace GWExpr
             public static readonly Parser<IOperator> Multiplicative = Multiply.Or(Divide);
 
             public static readonly Parser<IOperator> Exponential =
-                from o in Ch.Caret
+                from o in Ch.Caret.Token()
                 select Binary.Pow;
 
             public static readonly Parser<IOperator> Relational = Eq.Or(Ne).Or(Le).Or(Lt).Or(Ge).Or(Gt);
