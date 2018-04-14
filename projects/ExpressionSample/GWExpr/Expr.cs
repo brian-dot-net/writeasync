@@ -194,22 +194,22 @@ namespace GWExpr
             private static readonly Parser<Tuple<BasicExpression, BasicExpression>> MidPrefix =
                 from f in Kw.Mid
                 from d in Ch.Dollar
-                from lp in Ch.LeftParen
+                from lp in Ch.LeftParen.Token()
                 from x in Any
-                from c in Ch.Comma
+                from c in Ch.Comma.Token()
                 from n in Num.Any
                 select Tuple.Create(x, n);
 
             private static readonly Parser<BasicExpression> Mid3 =
                 from t in MidPrefix
-                from c in Ch.Comma
+                from c in Ch.Comma.Token()
                 from m in Num.Any
-                from rp in Ch.RightParen
+                from rp in Ch.RightParen.Token()
                 select OperatorExpression.Ternary("Mid", t.Item1, t.Item2, m);
 
             private static readonly Parser<BasicExpression> Mid2 =
                 from t in MidPrefix
-                from rp in Ch.RightParen
+                from rp in Ch.RightParen.Token()
                 select OperatorExpression.Binary("Mid", t.Item1, t.Item2);
 
             private static readonly Parser<BasicExpression> Mid = Mid3.Or(Mid2);

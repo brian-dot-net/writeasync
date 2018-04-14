@@ -20,6 +20,18 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("MID$ (\"x\",1)", "Mid(StrL(x), NumL(1))")]
+        [InlineData("MID$( X$,X)", "Mid(StrV(X), NumV(X))")]
+        [InlineData("MID$  (  X$(234)  ,  X(123)  )", "Mid(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
+        [InlineData("MID$ (\"x\",1,2)", "Mid(StrL(x), NumL(1), NumL(2))")]
+        [InlineData("MID$( X$,X,Y)", "Mid(StrV(X), NumV(X), NumV(Y))")]
+        [InlineData("MID$  (  X$(234)  ,  X(123)  ,  Y(1)  )", "Mid(StrArr(X, NumL(234)), NumArr(X, NumL(123)), NumArr(Y, NumL(1)))")]
+        [Theory]
+        public void IgnoreSpaces(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("mid$(\"x\",1)", "Mid(StrL(x), NumL(1))")]
         [InlineData("MiD$(X$,X)", "Mid(StrV(X), NumV(X))")]
         [InlineData("mId$(X$(234),X(123))", "Mid(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
