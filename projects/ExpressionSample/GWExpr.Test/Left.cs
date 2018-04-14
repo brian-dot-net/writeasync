@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("left$(\"x\",1)", "Left(StrL(x), NumL(1))")]
+        [InlineData("Left$(X$,X)", "Left(StrV(X), NumV(X))")]
+        [InlineData("LeFT$(X$(234),X(123))", "Left(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
+        [Theory]
+        public void IgnoreCase(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("LEFT$(\"x\")")]
         [InlineData("LEFT$(X$)")]
         [InlineData("LEFT$(X$(X,Y))")]

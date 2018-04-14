@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("1 or 2", "Or(NumL(1), NumL(2))")]
+        [InlineData("X oR 234", "Or(NumV(X), NumL(234))")]
+        [InlineData("X(234) Or YZ1234", "Or(NumArr(X, NumL(234)), NumV(YZ1234))")]
+        [Theory]
+        public void IgnoreCase(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("(1 OR 2)", "Or(NumL(1), NumL(2))")]
         [InlineData("(X OR 234)", "Or(NumV(X), NumL(234))")]
         [InlineData("(X(234) OR YZ1234)", "Or(NumArr(X, NumL(234)), NumV(YZ1234))")]

@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("exp(1)", "Exp(NumL(1))")]
+        [InlineData("ExP(X)", "Exp(NumV(X))")]
+        [InlineData("eXp(X(234))", "Exp(NumArr(X, NumL(234)))")]
+        [Theory]
+        public void IgnoreCase(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("EXP(\"1\")")]
         [InlineData("EXP(X$)")]
         [InlineData("EXP(YZ1234$)")]
