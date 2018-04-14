@@ -64,6 +64,7 @@ namespace GWExpr.Test
 
         [InlineData("1+AND")]
         [InlineData("AND(1,X)")]
+        [InlineData("AND$")]
         [Theory]
         public void FailedReserved(string input)
         {

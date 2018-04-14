@@ -48,6 +48,7 @@ namespace GWExpr.Test
 
         [InlineData("1+NOT")]
         [InlineData("NOT(1,X)")]
+        [InlineData("NOT$")]
         [Theory]
         public void FailedReserved(string input)
         {
