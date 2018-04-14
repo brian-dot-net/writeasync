@@ -60,8 +60,12 @@ namespace GWExpr
             public static readonly Parser<IEnumerable<char>> Or = Parse.String("OR");
             public static readonly Parser<IEnumerable<char>> Sqr = Parse.String("SQR");
 
+            public static readonly Parser<IEnumerable<char>> Left = Parse.String("LEFT");
+
             public static readonly Parser<IEnumerable<char>> Any =
                 And.Or(Exp).Or(Len).Or(Not).Or(Or).Or(Sqr);
+
+            public static readonly Parser<IEnumerable<char>> AnyStr = Left;
         }
 
         private static class Lit
@@ -110,7 +114,7 @@ namespace GWExpr
                 .Except(Kw.Any);
 
             public static readonly Parser<BasicVariable> StrScalar =
-                from v in Id
+                from v in Id.Except(Kw.AnyStr)
                 from d in Ch.Dollar
                 select new StringVariable(v);
 
@@ -213,7 +217,19 @@ namespace GWExpr
                 from rp in Ch.RightParen
                 select x;
 
-            private static readonly Parser<BasicExpression> Value = Lit.Str.Or(Var.StrAny);
+            private static readonly Parser<BasicExpression> Left =
+                from f in Kw.Left
+                from d in Ch.Dollar
+                from lp in Ch.LeftParen
+                from x in Any
+                from c in Ch.Comma
+                from n in Num.Any
+                from rp in Ch.RightParen
+                select new LeftExpression(x, n);
+
+            private static readonly Parser<BasicExpression> Fun = Left;
+
+            private static readonly Parser<BasicExpression> Value = Lit.Str.Or(Fun).Or(Var.StrAny);
 
             private static readonly Parser<BasicExpression> Factor = Paren.Or(Value);
 
@@ -227,6 +243,14 @@ namespace GWExpr
                 select op.Apply(x, y);
 
             private static readonly Parser<BasicExpression> Root = Relational.Or(Add);
+
+            private sealed class LeftExpression : BinaryExpression
+            {
+                public LeftExpression(BasicExpression x, BasicExpression n)
+                    : base("Left", x, n)
+                {
+                }
+            }
         }
 
         private static class Num
@@ -408,22 +432,6 @@ namespace GWExpr
             public static BasicExpression Apply(IOperator op, BasicExpression x, BasicExpression y)
             {
                 return op.Apply(x, y);
-            }
-
-            private abstract class BinaryExpression : BasicExpression
-            {
-                private readonly string name;
-                private readonly BasicExpression x;
-                private readonly BasicExpression y;
-
-                protected BinaryExpression(string name, BasicExpression x, BasicExpression y)
-                {
-                    this.name = name;
-                    this.x = x;
-                    this.y = y;
-                }
-
-                public override string ToString() => this.name + "(" + this.x + ", " + this.y + ")";
             }
 
             private sealed class OrOperator : IOperator
@@ -711,6 +719,22 @@ namespace GWExpr
                 {
                 }
             }
+        }
+
+        private abstract class BinaryExpression : BasicExpression
+        {
+            private readonly string name;
+            private readonly BasicExpression x;
+            private readonly BasicExpression y;
+
+            protected BinaryExpression(string name, BasicExpression x, BasicExpression y)
+            {
+                this.name = name;
+                this.x = x;
+                this.y = y;
+            }
+
+            public override string ToString() => this.name + "(" + this.x + ", " + this.y + ")";
         }
 
         private sealed class NotExpression : BasicExpression
