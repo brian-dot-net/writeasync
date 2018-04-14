@@ -56,9 +56,10 @@ namespace GWExpr
             public static readonly Parser<IEnumerable<char>> And = Parse.String("AND");
             public static readonly Parser<IEnumerable<char>> Not = Parse.String("NOT");
             public static readonly Parser<IEnumerable<char>> Or = Parse.String("OR");
+            public static readonly Parser<IEnumerable<char>> Sqr = Parse.String("SQR");
 
             public static readonly Parser<IEnumerable<char>> Any =
-                And.Or(Not).Or(Or);
+                And.Or(Not).Or(Or).Or(Sqr);
         }
 
         private static class Lit
@@ -240,7 +241,14 @@ namespace GWExpr
                 from rp in Ch.RightParen
                 select x;
 
-            private static readonly Parser<BasicExpression> Value = Lit.Num.Or(Var.NumAny);
+            private static readonly Parser<BasicExpression> Sqr =
+                from f in Kw.Sqr
+                from x in Paren
+                select new SqrtExpression(x);
+
+            private static readonly Parser<BasicExpression> Fun = Sqr;
+
+            private static readonly Parser<BasicExpression> Value = Lit.Num.Or(Fun).Or(Var.NumAny);
 
             private static readonly Parser<BasicExpression> Factor = Paren.Or(Value);
 
@@ -281,6 +289,18 @@ namespace GWExpr
                 }
 
                 public override string ToString() => "Neg(" + this.x + ")";
+            }
+
+            private sealed class SqrtExpression : BasicExpression
+            {
+                private readonly BasicExpression x;
+
+                public SqrtExpression(BasicExpression x)
+                {
+                    this.x = x;
+                }
+
+                public override string ToString() => "Sqrt(" + this.x + ")";
             }
         }
 
