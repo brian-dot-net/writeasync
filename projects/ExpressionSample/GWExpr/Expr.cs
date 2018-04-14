@@ -330,7 +330,7 @@ namespace GWExpr
                 select Binary.Le;
 
             public static readonly Parser<IOperator> Lt =
-                from o1 in Ch.Less
+                from o in Ch.Less.Token()
                 select Binary.Lt;
 
             public static readonly Parser<IOperator> Ge =
