@@ -31,6 +31,10 @@ namespace GWParse.Statements
             from k in Kw.Cls
             select new ClearScreenStatement();
 
+        private static readonly Parser<BasicStatement> Return =
+            from k in Kw.Return
+            select new ReturnStatement();
+
         private static readonly Parser<IEnumerable<BasicExpression>> Arrays =
             from head in Expr.AnyArray.Once()
             from rest in Ch.Comma.Then(_ => Expr.AnyArray).Many()
@@ -122,6 +126,7 @@ namespace GWParse.Statements
             .Or(IfThen)
             .Or(Input)
             .Or(Print)
+            .Or(Return)
             .Or(Assign);
 
         public static BasicStatement FromString(string input)
@@ -157,6 +162,7 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> PrintE = Parse.IgnoreCase("PRINT");
             public static readonly Parser<IEnumerable<char>> Rem = Parse.IgnoreCase("REM ");
             public static readonly Parser<IEnumerable<char>> RemE = Parse.IgnoreCase("REM");
+            public static readonly Parser<IEnumerable<char>> Return = Parse.IgnoreCase("RETURN");
             public static readonly Parser<IEnumerable<char>> Then = Parse.IgnoreCase(" THEN ");
         }
     }
