@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("SQR (1)", "Sqrt(NumL(1))")]
+        [InlineData("SQR( X)", "Sqrt(NumV(X))")]
+        [InlineData("SQR  (  X(234)  )", "Sqrt(NumArr(X, NumL(234)))")]
+        [Theory]
+        public void IgnoreSpaces(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("sqr(1)", "Sqrt(NumL(1))")]
         [InlineData("SqR(X)", "Sqrt(NumV(X))")]
         [InlineData("sQr(X(234))", "Sqrt(NumArr(X, NumL(234)))")]
