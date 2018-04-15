@@ -17,6 +17,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
+        [InlineData("RIGHT$ (\"x\",1)", "Right(StrL(x), NumL(1))")]
+        [InlineData("RIGHT$( X$,X)", "Right(StrV(X), NumV(X))")]
+        [InlineData("RIGHT$  (  X$(234)  ,  X(123)  )", "Right(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
+        [Theory]
+        public void IgnoreSpaces(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("right$(\"x\",1)", "Right(StrL(x), NumL(1))")]
         [InlineData("RiGhT$(X$,X)", "Right(StrV(X), NumV(X))")]
         [InlineData("rIgHt$(X$(234),X(123))", "Right(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]

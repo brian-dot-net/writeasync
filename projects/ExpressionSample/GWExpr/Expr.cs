@@ -192,11 +192,11 @@ namespace GWExpr
             private static readonly Parser<BasicExpression> Right =
                 from f in Kw.Right
                 from d in Ch.Dollar
-                from lp in Ch.LeftParen
+                from lp in Ch.LeftParen.Token()
                 from x in Any
-                from c in Ch.Comma
+                from c in Ch.Comma.Token()
                 from n in Num.Any
-                from rp in Ch.RightParen
+                from rp in Ch.RightParen.Token()
                 select OperatorExpression.Binary("Right", x, n);
 
             private static readonly Parser<BasicExpression> Fun = Left.Or(Mid).Or(Right);
