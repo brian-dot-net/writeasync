@@ -17,9 +17,10 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("\"1\"", "StrL(1)")]
-        [InlineData("\"\"", "StrL()")]
-        [InlineData("\"string with spaces\"", "StrL(string with spaces)")]
+        [InlineData("\"1\"", "StrL(\"1\")")]
+        [InlineData("\"\"", "StrL(\"\")")]
+        [InlineData("\"string with spaces\"", "StrL(\"string with spaces\")")]
+        [InlineData("\"(parens)\"", "StrL(\"(parens)\")")]
         [Theory]
         public void Strings(string input, string output)
         {
@@ -71,7 +72,7 @@ namespace GWExpr.Test
         }
 
         [InlineData("(1)", "NumL(1)")]
-        [InlineData("(\"x\")", "StrL(x)")]
+        [InlineData("(\"x\")", "StrL(\"x\")")]
         [InlineData("(A)", "NumV(A)")]
         [InlineData("(A$)", "StrV(A)")]
         [Theory]

@@ -66,15 +66,15 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("(Z$<=\"x\") OR (X$=Y$)", "Or(Le(StrV(Z), StrL(x)), Eq(StrV(X), StrV(Y)))")]
-        [InlineData("(Z$>\"x\") OR (X$<>Y$)", "Or(Gt(StrV(Z), StrL(x)), Ne(StrV(X), StrV(Y)))")]
+        [InlineData("(Z$<=\"x\") OR (X$=Y$)", "Or(Le(StrV(Z), StrL(\"x\")), Eq(StrV(X), StrV(Y)))")]
+        [InlineData("(Z$>\"x\") OR (X$<>Y$)", "Or(Gt(StrV(Z), StrL(\"x\")), Ne(StrV(X), StrV(Y)))")]
         [Theory]
         public void WithOtherStringOperations(string input, string output)
         {
             Test.Good(input, output);
         }
 
-        [InlineData("(Z$<=\"x\") OR (X=Y)", "Or(Le(StrV(Z), StrL(x)), Eq(NumV(X), NumV(Y)))")]
+        [InlineData("(Z$<=\"x\") OR (X=Y)", "Or(Le(StrV(Z), StrL(\"x\")), Eq(NumV(X), NumV(Y)))")]
         [InlineData("(Z>1) OR (X$<>Y$)", "Or(Gt(NumV(Z), NumL(1)), Ne(StrV(X), StrV(Y)))")]
         [Theory]
         public void WithNumAndString(string input, string output)

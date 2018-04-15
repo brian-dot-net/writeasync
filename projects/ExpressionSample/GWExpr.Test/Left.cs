@@ -8,7 +8,7 @@ namespace GWExpr.Test
 
     public sealed class Left
     {
-        [InlineData("LEFT$(\"x\",1)", "Left(StrL(x), NumL(1))")]
+        [InlineData("LEFT$(\"x\",1)", "Left(StrL(\"x\"), NumL(1))")]
         [InlineData("LEFT$(X$,X)", "Left(StrV(X), NumV(X))")]
         [InlineData("LEFT$(X$(234),X(123))", "Left(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
         [Theory]
@@ -17,7 +17,7 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("LEFT$ (\"x\",1)", "Left(StrL(x), NumL(1))")]
+        [InlineData("LEFT$ (\"x\",1)", "Left(StrL(\"x\"), NumL(1))")]
         [InlineData("LEFT$( X$,X)", "Left(StrV(X), NumV(X))")]
         [InlineData("LEFT$  (  X$(234)  ,  X(123)  )", "Left(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
         [Theory]
@@ -26,7 +26,7 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("left$(\"x\",1)", "Left(StrL(x), NumL(1))")]
+        [InlineData("left$(\"x\",1)", "Left(StrL(\"x\"), NumL(1))")]
         [InlineData("Left$(X$,X)", "Left(StrV(X), NumV(X))")]
         [InlineData("LeFT$(X$(234),X(123))", "Left(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
         [Theory]
@@ -53,7 +53,7 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("LEFT$((\"x\"),1)", "Left(StrL(x), NumL(1))")]
+        [InlineData("LEFT$((\"x\"),1)", "Left(StrL(\"x\"), NumL(1))")]
         [InlineData("LEFT$((X$(X)),2)", "Left(StrArr(X, NumV(X)), NumL(2))")]
         [InlineData("(LEFT$(X$,1))", "Left(StrV(X), NumL(1))")]
         [InlineData("LEFT$(LEFT$(X$,1),2)", "Left(Left(StrV(X), NumL(1)), NumL(2))")]
@@ -63,8 +63,8 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("\"x\"+LEFT$(X$,1)", "Add(StrL(x), Left(StrV(X), NumL(1)))")]
-        [InlineData("LEFT$(\"a\"+\"b\",1)", "Left(Add(StrL(a), StrL(b)), NumL(1))")]
+        [InlineData("\"x\"+LEFT$(X$,1)", "Add(StrL(\"x\"), Left(StrV(X), NumL(1)))")]
+        [InlineData("LEFT$(\"a\"+\"b\",1)", "Left(Add(StrL(\"a\"), StrL(\"b\")), NumL(1))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {

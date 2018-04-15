@@ -26,8 +26,8 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("\"one\"<=\"two\"", "Le(StrL(one), StrL(two))")]
-        [InlineData("X$<=\"abc\"", "Le(StrV(X), StrL(abc))")]
+        [InlineData("\"one\"<=\"two\"", "Le(StrL(\"one\"), StrL(\"two\"))")]
+        [InlineData("X$<=\"abc\"", "Le(StrV(X), StrL(\"abc\"))")]
         [InlineData("X$(234)<=YZ1234$", "Le(StrArr(X, NumL(234)), StrV(YZ1234))")]
         [Theory]
         public void String(string input, string output)

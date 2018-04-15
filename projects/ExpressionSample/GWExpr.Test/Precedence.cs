@@ -53,7 +53,7 @@ namespace GWExpr.Test
         [InlineData("1>2<3=4<>5", "Ne(Eq(Lt(Gt(NumL(1), NumL(2)), NumL(3)), NumL(4)), NumL(5))")]
         [InlineData("1>=2<=3=4<>5", "Ne(Eq(Le(Ge(NumL(1), NumL(2)), NumL(3)), NumL(4)), NumL(5))")]
         [InlineData("1>2>=3=4<>5", "Ne(Eq(Ge(Gt(NumL(1), NumL(2)), NumL(3)), NumL(4)), NumL(5))")]
-        [InlineData("\"1\">\"2\" AND \"3\"<>\"4\"", "And(Gt(StrL(1), StrL(2)), Ne(StrL(3), StrL(4)))")]
+        [InlineData("\"1\">\"2\" AND \"3\"<>\"4\"", "And(Gt(StrL(\"1\"), StrL(\"2\")), Ne(StrL(\"3\"), StrL(\"4\")))")]
         [Theory]
         public void RelationaNumL(string input, string output)
         {

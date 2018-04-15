@@ -26,8 +26,8 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("\"1\"+\"2\"", "Add(StrL(1), StrL(2))")]
-        [InlineData("X$+\"234\"", "Add(StrV(X), StrL(234))")]
+        [InlineData("\"1\"+\"2\"", "Add(StrL(\"1\"), StrL(\"2\"))")]
+        [InlineData("X$+\"234\"", "Add(StrV(X), StrL(\"234\"))")]
         [InlineData("X$(234)+YZ1234$", "Add(StrArr(X, NumL(234)), StrV(YZ1234))")]
         [Theory]
         public void StringExpressions(string input, string output)
@@ -45,7 +45,7 @@ namespace GWExpr.Test
         }
 
         [InlineData("(1+2)", "Add(NumL(1), NumL(2))")]
-        [InlineData("(X$+\"234\")", "Add(StrV(X), StrL(234))")]
+        [InlineData("(X$+\"234\")", "Add(StrV(X), StrL(\"234\"))")]
         [InlineData("(X$(234)+YZ1234$)", "Add(StrArr(X, NumL(234)), StrV(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
@@ -57,7 +57,7 @@ namespace GWExpr.Test
         [InlineData("(1+2+3)", "Add(Add(NumL(1), NumL(2)), NumL(3))")]
         [InlineData("(1+2)+3", "Add(Add(NumL(1), NumL(2)), NumL(3))")]
         [InlineData("1+(2+3)", "Add(NumL(1), Add(NumL(2), NumL(3)))")]
-        [InlineData("\"1\"+(\"2\"+\"3\")", "Add(StrL(1), Add(StrL(2), StrL(3)))")]
+        [InlineData("\"1\"+(\"2\"+\"3\")", "Add(StrL(\"1\"), Add(StrL(\"2\"), StrL(\"3\")))")]
         [Theory]
         public void WithThreeTerms(string input, string output)
         {

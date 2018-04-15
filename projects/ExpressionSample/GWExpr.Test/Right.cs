@@ -8,7 +8,7 @@ namespace GWExpr.Test
 
     public sealed class Right
     {
-        [InlineData("RIGHT$(\"x\",1)", "Right(StrL(x), NumL(1))")]
+        [InlineData("RIGHT$(\"x\",1)", "Right(StrL(\"x\"), NumL(1))")]
         [InlineData("RIGHT$(X$,X)", "Right(StrV(X), NumV(X))")]
         [InlineData("RIGHT$(X$(234),X(123))", "Right(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
         [Theory]
@@ -17,7 +17,7 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("RIGHT$ (\"x\",1)", "Right(StrL(x), NumL(1))")]
+        [InlineData("RIGHT$ (\"x\",1)", "Right(StrL(\"x\"), NumL(1))")]
         [InlineData("RIGHT$( X$,X)", "Right(StrV(X), NumV(X))")]
         [InlineData("RIGHT$  (  X$(234)  ,  X(123)  )", "Right(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
         [Theory]
@@ -26,7 +26,7 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("right$(\"x\",1)", "Right(StrL(x), NumL(1))")]
+        [InlineData("right$(\"x\",1)", "Right(StrL(\"x\"), NumL(1))")]
         [InlineData("RiGhT$(X$,X)", "Right(StrV(X), NumV(X))")]
         [InlineData("rIgHt$(X$(234),X(123))", "Right(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
         [Theory]
@@ -53,7 +53,7 @@ namespace GWExpr.Test
             Test.Bad(input);
         }
 
-        [InlineData("RIGHT$((\"x\"),1)", "Right(StrL(x), NumL(1))")]
+        [InlineData("RIGHT$((\"x\"),1)", "Right(StrL(\"x\"), NumL(1))")]
         [InlineData("RIGHT$((X$(X)),2)", "Right(StrArr(X, NumV(X)), NumL(2))")]
         [InlineData("(RIGHT$(X$,1))", "Right(StrV(X), NumL(1))")]
         [InlineData("RIGHT$(RIGHT$(X$,1),2)", "Right(Right(StrV(X), NumL(1)), NumL(2))")]
@@ -63,8 +63,8 @@ namespace GWExpr.Test
             Test.Good(input, output);
         }
 
-        [InlineData("\"x\"+RIGHT$(X$,1)", "Add(StrL(x), Right(StrV(X), NumL(1)))")]
-        [InlineData("RIGHT$(\"a\"+\"b\",1)", "Right(Add(StrL(a), StrL(b)), NumL(1))")]
+        [InlineData("\"x\"+RIGHT$(X$,1)", "Add(StrL(\"x\"), Right(StrV(X), NumL(1)))")]
+        [InlineData("RIGHT$(\"a\"+\"b\",1)", "Right(Add(StrL(\"a\"), StrL(\"b\")), NumL(1))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {
