@@ -11,17 +11,19 @@ namespace GWParse.Statements
         private readonly BasicExpression v;
         private readonly BasicExpression start;
         private readonly BasicExpression end;
+        private readonly BasicExpression step;
 
-        public ForStatement(BasicExpression v, BasicExpression start, BasicExpression end)
+        public ForStatement(BasicExpression v, BasicExpression start, BasicExpression end, BasicExpression step)
         {
             this.v = v;
             this.start = start;
             this.end = end;
+            this.step = step;
         }
 
         public override string ToString()
         {
-            return "For(" + this.v + ", " + this.start + ", " + this.end + ")";
+            return "For(" + this.v + ", " + this.start + ", " + this.end + ", " + this.step + ")";
         }
     }
 }

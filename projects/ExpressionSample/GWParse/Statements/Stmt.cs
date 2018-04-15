@@ -12,6 +12,8 @@ namespace GWParse.Statements
 
     internal static class Stmt
     {
+        private static readonly BasicExpression One = BasicExpression.FromString("1");
+
         private static readonly Parser<int> LineNum =
             from n in Parse.Number.Token()
             select int.Parse(n);
@@ -134,7 +136,7 @@ namespace GWParse.Statements
             from a in Expr.Any
             from k2 in Kw.To
             from b in Expr.Any
-            select new ForStatement(v, a, b);
+            select new ForStatement(v, a, b, One);
 
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
