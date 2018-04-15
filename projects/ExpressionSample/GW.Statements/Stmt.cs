@@ -25,7 +25,7 @@ namespace GW.Statements
         {
             try
             {
-                return Any.End().Parse(input);
+                return Any.Token().End().Parse(input);
             }
             catch (ParseException e)
             {

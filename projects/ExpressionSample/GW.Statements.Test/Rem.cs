@@ -26,6 +26,16 @@ namespace GW.Statements.Test
             Test.Good(input, output);
         }
 
+        [InlineData("  REM", "Rem(\"\")")]
+        [InlineData("REM  ", "Rem(\" \")")]
+        [InlineData("REM  hello ", "Rem(\" hello \")")]
+        [InlineData(" REM  REM starts here", "Rem(\" REM starts here\")")]
+        [Theory]
+        public void AllowSpaces(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("REMARK")]
         [InlineData("REMnospaces")]
         [Theory]
