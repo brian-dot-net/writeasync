@@ -40,7 +40,7 @@ namespace GWExpr
         {
             try
             {
-                return Any.End().Parse(input);
+                return Any.Token().End().Parse(input);
             }
             catch (ParseException e)
             {
@@ -69,46 +69,21 @@ namespace GWExpr
 
         private static class Kw
         {
-            public static readonly Parser<IEnumerable<char>> And = Word("AND");
-            public static readonly Parser<IEnumerable<char>> Exp = Word("EXP");
-            public static readonly Parser<IEnumerable<char>> Len = Word("LEN");
-            public static readonly Parser<IEnumerable<char>> Not = Word("NOT");
-            public static readonly Parser<IEnumerable<char>> Or = Word("OR");
-            public static readonly Parser<IEnumerable<char>> Sqr = Word("SQR");
+            public static readonly Parser<IEnumerable<char>> And = Parse.IgnoreCase("AND");
+            public static readonly Parser<IEnumerable<char>> Exp = Parse.IgnoreCase("EXP");
+            public static readonly Parser<IEnumerable<char>> Len = Parse.IgnoreCase("LEN");
+            public static readonly Parser<IEnumerable<char>> Not = Parse.IgnoreCase("NOT");
+            public static readonly Parser<IEnumerable<char>> Or = Parse.IgnoreCase("OR");
+            public static readonly Parser<IEnumerable<char>> Sqr = Parse.IgnoreCase("SQR");
 
-            public static readonly Parser<IEnumerable<char>> Left = Word("LEFT");
-            public static readonly Parser<IEnumerable<char>> Mid = Word("MID");
-            public static readonly Parser<IEnumerable<char>> Right = Word("RIGHT");
+            public static readonly Parser<IEnumerable<char>> Left = Parse.IgnoreCase("LEFT");
+            public static readonly Parser<IEnumerable<char>> Mid = Parse.IgnoreCase("MID");
+            public static readonly Parser<IEnumerable<char>> Right = Parse.IgnoreCase("RIGHT");
 
-            public static readonly Parser<IEnumerable<char>> Any =
+            public static readonly Parser<IEnumerable<char>> AnyNum =
                 And.Or(Exp).Or(Len).Or(Not).Or(Or).Or(Sqr);
 
             public static readonly Parser<IEnumerable<char>> AnyStr = Left.Or(Mid).Or(Right);
-
-            private static Parser<IEnumerable<char>> Word(string word)
-            {
-                Parser<IEnumerable<char>> parser = null;
-                foreach (char c in word)
-                {
-                    char a = char.ToUpper(c);
-                    char b = char.ToLower(a);
-                    Parser<IEnumerable<char>> next = Parse.Chars(a, b).Once();
-
-                    if (parser == null)
-                    {
-                        parser = next;
-                    }
-                    else
-                    {
-                        parser =
-                            from x in parser
-                            from y in next
-                            select x.Concat(y);
-                    }
-                }
-
-                return parser;
-            }
         }
 
         private static class Lit
@@ -128,11 +103,11 @@ namespace GWExpr
 
         private static class Var
         {
-            public static readonly Parser<string> IdUpper =
-                from v in Parse.Identifier(Parse.Letter, Parse.LetterOrDigit)
-                select v.ToUpperInvariant();
+            public static readonly Parser<string> IdPrefix = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit);
 
-            public static readonly Parser<string> Id = IdUpper.Except(Kw.Any);
+            public static readonly Parser<string> Id =
+                from v in IdPrefix.Except(Kw.AnyNum)
+                select v.ToUpperInvariant();
 
             public static readonly Parser<string> StrId =
                 from v in Id.Except(Kw.AnyStr)
@@ -297,7 +272,8 @@ namespace GWExpr
                 Parse.ChainOperator(Op.Relational, Add, Op.Apply);
 
             private static readonly Parser<BasicExpression> Not =
-                from k in Kw.Not.Token()
+                from k in Kw.Not
+                from s in Ch.Space.AtLeastOnce()
                 from x in Add
                 select OperatorExpression.Unary("Not", x);
 
