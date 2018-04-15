@@ -25,6 +25,11 @@ namespace GW.Statements
             from k in Parse.IgnoreCase("CLS")
             select new ClearScreenStatement();
 
+        private static readonly Parser<BasicStatement> Dim =
+            from k in Parse.IgnoreCase("DIM").Token()
+            from s in Parse.AnyChar.AtLeastOnce().Text()
+            select new DimensionStatement(Expr(s));
+
         private static readonly Parser<BasicStatement> Assign =
             from left in Parse.CharExcept('=').AtLeastOnce().Text()
             from o in Parse.Char('=')
@@ -32,7 +37,7 @@ namespace GW.Statements
             select Asgn(left, right);
 
         private static readonly Parser<BasicStatement> Any =
-            Rem.Or(Cls).Or(Assign);
+            Rem.Or(Cls).Or(Dim).Or(Assign);
 
         public static BasicStatement FromString(string input)
         {
@@ -50,11 +55,21 @@ namespace GW.Statements
         {
             try
             {
-                return new AssignmentStatement(
-                    BasicExpression.FromString(left),
-                    BasicExpression.FromString(right));
+                return new AssignmentStatement(Expr(left), Expr(right));
             }
             catch (NotSupportedException e)
+            {
+                throw new ParseException(e.Message);
+            }
+        }
+
+        private static BasicExpression Expr(string s)
+        {
+            try
+            {
+                return BasicExpression.FromString(s);
+            }
+            catch (FormatException e)
             {
                 throw new ParseException(e.Message);
             }

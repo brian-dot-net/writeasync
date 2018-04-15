@@ -55,6 +55,7 @@ namespace GW.Statements.Test
         [InlineData("\"x\"")]
         [InlineData("\"x\"=A$")]
         [InlineData("X+1=2")]
+        [InlineData("X=1+")]
         [Theory]
         public void Invalid(string input)
         {
