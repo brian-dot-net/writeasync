@@ -8,9 +8,11 @@ namespace GW.Statements.Test
 
     public sealed class Rem
     {
-        [InlineData("REM", "Rem()")]
+        [InlineData("REM", "Rem(\"\")")]
+        [InlineData("REM hello", "Rem(\"hello\")")]
+        [InlineData("REM REM starts here", "Rem(\"REM starts here\")")]
         [Theory]
-        public void Statements(string input, string output)
+        public void Valid(string input, string output)
         {
             Test.Good(input, output);
         }

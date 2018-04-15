@@ -6,6 +6,13 @@ namespace GW.Statements
 {
     internal sealed class RemarkStatement : BasicStatement
     {
-        public override string ToString() => "Rem()";
+        private readonly string text;
+
+        public RemarkStatement(string text)
+        {
+            this.text = text;
+        }
+
+        public override string ToString() => "Rem(\"" + this.text + "\")";
     }
 }
