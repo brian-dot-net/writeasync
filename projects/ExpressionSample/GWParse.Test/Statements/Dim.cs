@@ -11,7 +11,7 @@ namespace GWParse.Test.Statements
         [InlineData("DIM R(1)", "Dim(NumA(R, NumL(1)))")]
         [InlineData("DIM R(1,2)", "Dim(NumA(R, NumL(1), NumL(2)))")]
         [Theory]
-        public void Valid(string input, string output)
+        public void OneItem(string input, string output)
         {
             Test.Good(input, output);
         }

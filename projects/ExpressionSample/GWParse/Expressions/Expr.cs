@@ -11,7 +11,11 @@ namespace GWParse.Expressions
 
     internal static class Expr
     {
-        private static readonly Parser<BasicExpression> Any = Parse.Ref(() => Root);
+        public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Root);
+
+        public static readonly Parser<BasicExpression> AnyArray = Var.ArrayAny;
+
+        public static readonly Parser<BasicExpression> AnyVar = Var.Any;
 
         private static readonly Parser<BasicExpression> Paren =
             from lp in Ch.LeftParen
@@ -144,6 +148,10 @@ namespace GWParse.Expressions
             public static readonly Parser<BasicExpression> NumAny = NumArray.Or(NumScalar);
 
             public static readonly Parser<BasicExpression> StrAny = StrArray.Or(StrScalar);
+
+            public static readonly Parser<BasicExpression> ArrayAny = StrArray.Or(NumArray);
+
+            public static readonly Parser<BasicExpression> Any = StrAny.Or(NumAny);
         }
 
         private static class Str

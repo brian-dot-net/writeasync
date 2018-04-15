@@ -5,6 +5,8 @@
 namespace GWParse.Statements
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using GWParse.Expressions;
     using Sprache;
 
@@ -27,14 +29,14 @@ namespace GWParse.Statements
 
         private static readonly Parser<BasicStatement> Dim =
             from k in Parse.IgnoreCase("DIM").Token()
-            from s in Parse.AnyChar.AtLeastOnce().Text()
-            select DimA(s);
+            from a in Expr.AnyArray
+            select new DimensionStatement(a);
 
         private static readonly Parser<BasicStatement> Assign =
-            from left in Parse.CharExcept('=').AtLeastOnce().Text()
-            from o in Parse.Char('=')
-            from right in Parse.AnyChar.AtLeastOnce().Text()
-            select Asgn(left, right);
+            from left in Expr.AnyVar
+            from o in Parse.Char('=').Token()
+            from right in Expr.Any
+            select new AssignmentStatement(left, right);
 
         private static readonly Parser<BasicStatement> Any =
             Rem.Or(Cls).Or(Dim).Or(Assign);
@@ -48,42 +50,6 @@ namespace GWParse.Statements
             catch (ParseException e)
             {
                 throw new FormatException("Bad statement '" + input + "'.", e);
-            }
-        }
-
-        private static BasicStatement Asgn(string left, string right)
-        {
-            try
-            {
-                return new AssignmentStatement(Expr(left), Expr(right));
-            }
-            catch (NotSupportedException e)
-            {
-                throw new ParseException(e.Message);
-            }
-        }
-
-        private static BasicStatement DimA(string a)
-        {
-            try
-            {
-                return new DimensionStatement(Expr(a));
-            }
-            catch (NotSupportedException e)
-            {
-                throw new ParseException(e.Message);
-            }
-        }
-
-        private static BasicExpression Expr(string s)
-        {
-            try
-            {
-                return BasicExpression.FromString(s);
-            }
-            catch (FormatException e)
-            {
-                throw new ParseException(e.Message);
             }
         }
     }
