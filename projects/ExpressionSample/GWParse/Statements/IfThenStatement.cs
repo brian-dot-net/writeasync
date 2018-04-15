@@ -9,14 +9,14 @@ namespace GWParse.Statements
     internal sealed class IfThenStatement : BasicStatement
     {
         private readonly BasicExpression cond;
-        private readonly int dest;
+        private readonly BasicStatement ifTrue;
 
-        public IfThenStatement(BasicExpression cond, int dest)
+        public IfThenStatement(BasicExpression cond, BasicStatement ifTrue)
         {
             this.cond = cond;
-            this.dest = dest;
+            this.ifTrue = ifTrue;
         }
 
-        public override string ToString() => "If(" + this.cond + ", Goto(" + this.dest + "))";
+        public override string ToString() => "If(" + this.cond + ", " + this.ifTrue + ")";
     }
 }

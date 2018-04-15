@@ -46,7 +46,7 @@ namespace GWParse.Statements
             from x in Expr.Any
             from k2 in Kw.Then
             from n in LineNum
-            select new IfThenStatement(x, n);
+            select new IfThenStatement(x, new GotoStatement(n));
 
         private static readonly Parser<BasicStatement> PrintEmpty =
             from k in Kw.PrintE
