@@ -5,6 +5,7 @@
 namespace GW.Statements
 {
     using System;
+    using GW.Expressions;
     using Sprache;
 
     internal static class Stmt
@@ -24,8 +25,16 @@ namespace GW.Statements
             from k in Parse.IgnoreCase("CLS")
             select new ClearScreenStatement();
 
+        private static readonly Parser<BasicStatement> Assign =
+            from left in Parse.CharExcept('=').AtLeastOnce().Text()
+            from o in Parse.Char('=')
+            from right in Parse.AnyChar.AtLeastOnce().Text()
+            select new AssignmentStatement(
+                BasicExpression.FromString(left),
+                BasicExpression.FromString(right));
+
         private static readonly Parser<BasicStatement> Any =
-            Rem.Or(Cls);
+            Rem.Or(Cls).Or(Assign);
 
         public static BasicStatement FromString(string input)
         {
