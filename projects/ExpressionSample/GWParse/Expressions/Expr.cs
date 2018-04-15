@@ -17,7 +17,7 @@ namespace GWParse.Expressions
 
         public static readonly Parser<BasicExpression> AnyVar = Var.Any;
 
-        public static readonly Parser<BasicExpression> AnyNumVar = Var.NumAny;
+        public static readonly Parser<BasicExpression> AnyNumScalar = Var.NumScalar;
 
         private static readonly Parser<BasicExpression> Paren =
             from lp in Ch.LeftParen

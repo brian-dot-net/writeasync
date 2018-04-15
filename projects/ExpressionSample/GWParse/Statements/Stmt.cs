@@ -39,10 +39,15 @@ namespace GWParse.Statements
             from k in Kw.NextE
             select new NextStatement(Enumerable.Empty<BasicExpression>());
 
+        private static readonly Parser<IEnumerable<BasicExpression>> NumScalars =
+            from head in Expr.AnyNumScalar.Once()
+            from rest in Ch.Comma.Then(_ => Expr.AnyNumScalar).Many()
+            select head.Concat(rest);
+
         private static readonly Parser<BasicStatement> NextNonEmpty =
             from k in Kw.Next
-            from v in Expr.AnyNumVar.Once()
-            select new NextStatement(v);
+            from vars in NumScalars
+            select new NextStatement(vars);
 
         private static readonly Parser<BasicStatement> Next = NextNonEmpty.Or(NextEmpty);
 
