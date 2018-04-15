@@ -4,17 +4,22 @@
 
 namespace GWParse.Statements
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using GWParse.Expressions;
 
     internal sealed class DimensionStatement : BasicStatement
     {
-        private readonly BasicExpression a;
+        private readonly BasicExpression[] list;
 
-        public DimensionStatement(BasicExpression a)
+        public DimensionStatement(IEnumerable<BasicExpression> list)
         {
-            this.a = a;
+            this.list = list.ToArray();
         }
 
-        public override string ToString() => "Dim(" + this.a + ")";
+        public override string ToString()
+        {
+            return "Dim(" + string.Join<BasicExpression>(", ", this.list) + ")";
+        }
     }
 }

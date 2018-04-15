@@ -27,10 +27,15 @@ namespace GWParse.Statements
             from k in Parse.IgnoreCase("CLS")
             select new ClearScreenStatement();
 
+        private static readonly Parser<IEnumerable<BasicExpression>> Arrays =
+            from head in Expr.AnyArray.Once()
+            from rest in Parse.Char(',').Then(_ => Expr.AnyArray).Many()
+            select head.Concat(rest);
+
         private static readonly Parser<BasicStatement> Dim =
             from k in Parse.IgnoreCase("DIM").Token()
-            from a in Expr.AnyArray
-            select new DimensionStatement(a);
+            from list in Arrays
+            select new DimensionStatement(list);
 
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
