@@ -117,10 +117,10 @@ namespace GW.Expressions
             public static readonly Parser<BasicExpression> Index = Lit.Num.Or(Parse.Ref(() => NumAny));
 
             public static readonly Parser<IEnumerable<BasicExpression>> IndexList =
-                from lp in Ch.LeftParen
+                from lp in Ch.LeftParen.Token()
                 from head in Index.Once()
-                from rest in Ch.Comma.Then(_ => Index).Many()
-                from rp in Ch.RightParen
+                from rest in Ch.Comma.Token().Then(_ => Index).Many()
+                from rp in Ch.RightParen.Token()
                 select head.Concat(rest);
 
             public static readonly Parser<BasicExpression> NumScalar =

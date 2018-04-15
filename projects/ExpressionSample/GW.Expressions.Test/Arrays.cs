@@ -98,5 +98,15 @@ namespace GW.Expressions.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData(" A(1)", "NumA(A, NumL(1))")]
+        [InlineData("A (1)", "NumA(A, NumL(1))")]
+        [InlineData("  A  (  1  )  ", "NumA(A, NumL(1))")]
+        [InlineData("  A  (  1 , 2  )  ", "NumA(A, NumL(1), NumL(2))")]
+        [Theory]
+        public void IgnoreSpaces(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }
