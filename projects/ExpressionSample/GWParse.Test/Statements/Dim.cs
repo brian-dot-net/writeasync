@@ -45,6 +45,9 @@ namespace GWParse.Test.Statements
         [InlineData("DIM  R(1)", "Dim(NumA(R, NumL(1)))")]
         [InlineData("  DIM  R  (  1  )", "Dim(NumA(R, NumL(1)))")]
         [InlineData("DIM R( 1 , 2 )", "Dim(NumA(R, NumL(1), NumL(2)))")]
+        [InlineData("DIM R( 1 , 2 ), A(1)", "Dim(NumA(R, NumL(1), NumL(2)), NumA(A, NumL(1)))")]
+        [InlineData("DIM R( 1 , 2 ) ,A(1)", "Dim(NumA(R, NumL(1), NumL(2)), NumA(A, NumL(1)))")]
+        [InlineData("  DIM R( 1 , 2 )  ,  A(1)  ", "Dim(NumA(R, NumL(1), NumL(2)), NumA(A, NumL(1)))")]
         [Theory]
         public void AllowSpaces(string input, string output)
         {

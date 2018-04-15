@@ -29,7 +29,7 @@ namespace GWParse.Statements
 
         private static readonly Parser<IEnumerable<BasicExpression>> Arrays =
             from head in Expr.AnyArray.Once()
-            from rest in Parse.Char(',').Then(_ => Expr.AnyArray).Many()
+            from rest in Parse.Char(',').Token().Then(_ => Expr.AnyArray).Many()
             select head.Concat(rest);
 
         private static readonly Parser<BasicStatement> Dim =
