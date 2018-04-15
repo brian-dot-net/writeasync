@@ -6,6 +6,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GW.Expressions", "GW.Expres
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GW.Expressions.Test", "GW.Expressions.Test\GW.Expressions.Test.csproj", "{7A31611E-27E5-48B2-AE5D-8CFF8EF4E7AB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GW.Statements", "GW.Statements\GW.Statements.csproj", "{786D0E62-2CE1-4676-803D-06BE64B0341D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GW.Statements.Test", "GW.Statements.Test\GW.Statements.Test.csproj", "{488C84DD-C28A-4A4E-8BE0-C877ACD9FB1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +24,14 @@ Global
 		{7A31611E-27E5-48B2-AE5D-8CFF8EF4E7AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A31611E-27E5-48B2-AE5D-8CFF8EF4E7AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A31611E-27E5-48B2-AE5D-8CFF8EF4E7AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{786D0E62-2CE1-4676-803D-06BE64B0341D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{786D0E62-2CE1-4676-803D-06BE64B0341D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{786D0E62-2CE1-4676-803D-06BE64B0341D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{786D0E62-2CE1-4676-803D-06BE64B0341D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{488C84DD-C28A-4A4E-8BE0-C877ACD9FB1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{488C84DD-C28A-4A4E-8BE0-C877ACD9FB1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{488C84DD-C28A-4A4E-8BE0-C877ACD9FB1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{488C84DD-C28A-4A4E-8BE0-C877ACD9FB1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

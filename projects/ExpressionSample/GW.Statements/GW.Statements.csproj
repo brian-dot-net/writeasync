@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\inc\stylecop.targets" />
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Sprache" Version="2.1.2" />
+  </ItemGroup>
+</Project>
