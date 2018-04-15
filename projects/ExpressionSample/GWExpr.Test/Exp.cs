@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("EXP(1)", "Exp(NumL(1))")]
         [InlineData("EXP(X)", "Exp(NumV(X))")]
-        [InlineData("EXP(X(234))", "Exp(NumArr(X, NumL(234)))")]
+        [InlineData("EXP(X(234))", "Exp(NumA(X, NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -19,7 +19,7 @@ namespace GWExpr.Test
 
         [InlineData("EXP (1)", "Exp(NumL(1))")]
         [InlineData("EXP( X)", "Exp(NumV(X))")]
-        [InlineData("EXP(  X(234)  )", "Exp(NumArr(X, NumL(234)))")]
+        [InlineData("EXP(  X(234)  )", "Exp(NumA(X, NumL(234)))")]
         [Theory]
         public void IgnoreSpaces(string input, string output)
         {
@@ -28,7 +28,7 @@ namespace GWExpr.Test
 
         [InlineData("exp(1)", "Exp(NumL(1))")]
         [InlineData("ExP(X)", "Exp(NumV(X))")]
-        [InlineData("eXp(X(234))", "Exp(NumArr(X, NumL(234)))")]
+        [InlineData("eXp(X(234))", "Exp(NumA(X, NumL(234)))")]
         [Theory]
         public void IgnoreCase(string input, string output)
         {

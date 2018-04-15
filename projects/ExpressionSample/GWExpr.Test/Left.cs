@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("LEFT$(\"x\",1)", "Left(StrL(\"x\"), NumL(1))")]
         [InlineData("LEFT$(X$,X)", "Left(StrV(X), NumV(X))")]
-        [InlineData("LEFT$(X$(234),X(123))", "Left(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
+        [InlineData("LEFT$(X$(234),X(123))", "Left(StrA(X, NumL(234)), NumA(X, NumL(123)))")]
         [Theory]
         public void String(string input, string output)
         {
@@ -19,7 +19,7 @@ namespace GWExpr.Test
 
         [InlineData("LEFT$ (\"x\",1)", "Left(StrL(\"x\"), NumL(1))")]
         [InlineData("LEFT$( X$,X)", "Left(StrV(X), NumV(X))")]
-        [InlineData("LEFT$  (  X$(234)  ,  X(123)  )", "Left(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
+        [InlineData("LEFT$  (  X$(234)  ,  X(123)  )", "Left(StrA(X, NumL(234)), NumA(X, NumL(123)))")]
         [Theory]
         public void IgnoreSpaces(string input, string output)
         {
@@ -28,7 +28,7 @@ namespace GWExpr.Test
 
         [InlineData("left$(\"x\",1)", "Left(StrL(\"x\"), NumL(1))")]
         [InlineData("Left$(X$,X)", "Left(StrV(X), NumV(X))")]
-        [InlineData("LeFT$(X$(234),X(123))", "Left(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
+        [InlineData("LeFT$(X$(234),X(123))", "Left(StrA(X, NumL(234)), NumA(X, NumL(123)))")]
         [Theory]
         public void IgnoreCase(string input, string output)
         {
@@ -54,7 +54,7 @@ namespace GWExpr.Test
         }
 
         [InlineData("LEFT$((\"x\"),1)", "Left(StrL(\"x\"), NumL(1))")]
-        [InlineData("LEFT$((X$(X)),2)", "Left(StrArr(X, NumV(X)), NumL(2))")]
+        [InlineData("LEFT$((X$(X)),2)", "Left(StrA(X, NumV(X)), NumL(2))")]
         [InlineData("(LEFT$(X$,1))", "Left(StrV(X), NumL(1))")]
         [InlineData("LEFT$(LEFT$(X$,1),2)", "Left(Left(StrV(X), NumL(1)), NumL(2))")]
         [Theory]

@@ -10,10 +10,10 @@ namespace GWExpr.Test
     {
         [InlineData("MID$(\"x\",1)", "Mid(StrL(\"x\"), NumL(1))")]
         [InlineData("MID$(X$,X)", "Mid(StrV(X), NumV(X))")]
-        [InlineData("MID$(X$(234),X(123))", "Mid(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
+        [InlineData("MID$(X$(234),X(123))", "Mid(StrA(X, NumL(234)), NumA(X, NumL(123)))")]
         [InlineData("MID$(\"x\",1,2)", "Mid(StrL(\"x\"), NumL(1), NumL(2))")]
         [InlineData("MID$(X$,X,Y)", "Mid(StrV(X), NumV(X), NumV(Y))")]
-        [InlineData("MID$(X$(234),X(123),Y(1))", "Mid(StrArr(X, NumL(234)), NumArr(X, NumL(123)), NumArr(Y, NumL(1)))")]
+        [InlineData("MID$(X$(234),X(123),Y(1))", "Mid(StrA(X, NumL(234)), NumA(X, NumL(123)), NumA(Y, NumL(1)))")]
         [Theory]
         public void String(string input, string output)
         {
@@ -22,10 +22,10 @@ namespace GWExpr.Test
 
         [InlineData("MID$ (\"x\",1)", "Mid(StrL(\"x\"), NumL(1))")]
         [InlineData("MID$( X$,X)", "Mid(StrV(X), NumV(X))")]
-        [InlineData("MID$  (  X$(234)  ,  X(123)  )", "Mid(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
+        [InlineData("MID$  (  X$(234)  ,  X(123)  )", "Mid(StrA(X, NumL(234)), NumA(X, NumL(123)))")]
         [InlineData("MID$ (\"x\",1,2)", "Mid(StrL(\"x\"), NumL(1), NumL(2))")]
         [InlineData("MID$( X$,X,Y)", "Mid(StrV(X), NumV(X), NumV(Y))")]
-        [InlineData("MID$  (  X$(234)  ,  X(123)  ,  Y(1)  )", "Mid(StrArr(X, NumL(234)), NumArr(X, NumL(123)), NumArr(Y, NumL(1)))")]
+        [InlineData("MID$  (  X$(234)  ,  X(123)  ,  Y(1)  )", "Mid(StrA(X, NumL(234)), NumA(X, NumL(123)), NumA(Y, NumL(1)))")]
         [Theory]
         public void IgnoreSpaces(string input, string output)
         {
@@ -34,10 +34,10 @@ namespace GWExpr.Test
 
         [InlineData("mid$(\"x\",1)", "Mid(StrL(\"x\"), NumL(1))")]
         [InlineData("MiD$(X$,X)", "Mid(StrV(X), NumV(X))")]
-        [InlineData("mId$(X$(234),X(123))", "Mid(StrArr(X, NumL(234)), NumArr(X, NumL(123)))")]
+        [InlineData("mId$(X$(234),X(123))", "Mid(StrA(X, NumL(234)), NumA(X, NumL(123)))")]
         [InlineData("mid$(\"x\",1,2)", "Mid(StrL(\"x\"), NumL(1), NumL(2))")]
         [InlineData("MiD$(X$,X,Y)", "Mid(StrV(X), NumV(X), NumV(Y))")]
-        [InlineData("mId$(X$(234),X(123),Y(1))", "Mid(StrArr(X, NumL(234)), NumArr(X, NumL(123)), NumArr(Y, NumL(1)))")]
+        [InlineData("mId$(X$(234),X(123),Y(1))", "Mid(StrA(X, NumL(234)), NumA(X, NumL(123)), NumA(Y, NumL(1)))")]
         [Theory]
         public void IgnoreCase(string input, string output)
         {
@@ -64,7 +64,7 @@ namespace GWExpr.Test
         }
 
         [InlineData("MID$((\"x\"),1)", "Mid(StrL(\"x\"), NumL(1))")]
-        [InlineData("MID$((X$(X)),2)", "Mid(StrArr(X, NumV(X)), NumL(2))")]
+        [InlineData("MID$((X$(X)),2)", "Mid(StrA(X, NumV(X)), NumL(2))")]
         [InlineData("(MID$(X$,1))", "Mid(StrV(X), NumL(1))")]
         [InlineData("MID$(MID$(X$,1),2)", "Mid(Mid(StrV(X), NumL(1)), NumL(2))")]
         [InlineData("MID$(MID$(X$,1),2,(3))", "Mid(Mid(StrV(X), NumL(1)), NumL(2), NumL(3))")]

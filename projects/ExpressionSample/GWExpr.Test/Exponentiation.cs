@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("1^2", "Pow(NumL(1), NumL(2))")]
         [InlineData("X^234", "Pow(NumV(X), NumL(234))")]
-        [InlineData("X(234)^YZ1234", "Pow(NumArr(X, NumL(234)), NumV(YZ1234))")]
+        [InlineData("X(234)^YZ1234", "Pow(NumA(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -19,7 +19,7 @@ namespace GWExpr.Test
 
         [InlineData("1 ^2", "Pow(NumL(1), NumL(2))")]
         [InlineData("X^ 234", "Pow(NumV(X), NumL(234))")]
-        [InlineData("X(234)  ^  YZ1234", "Pow(NumArr(X, NumL(234)), NumV(YZ1234))")]
+        [InlineData("X(234)  ^  YZ1234", "Pow(NumA(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void IgnoreSpaces(string input, string output)
         {
@@ -37,7 +37,7 @@ namespace GWExpr.Test
 
         [InlineData("(1^2)", "Pow(NumL(1), NumL(2))")]
         [InlineData("(X^234)", "Pow(NumV(X), NumL(234))")]
-        [InlineData("(X(234)^YZ1234)", "Pow(NumArr(X, NumL(234)), NumV(YZ1234))")]
+        [InlineData("(X(234)^YZ1234)", "Pow(NumA(X, NumL(234)), NumV(YZ1234))")]
         [Theory]
         public void WithParens(string input, string output)
         {

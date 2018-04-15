@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("-1", "Neg(NumL(1))")]
         [InlineData("-X", "Neg(NumV(X))")]
-        [InlineData("-X(234)", "Neg(NumArr(X, NumL(234)))")]
+        [InlineData("-X(234)", "Neg(NumA(X, NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -19,7 +19,7 @@ namespace GWExpr.Test
 
         [InlineData("- 1", "Neg(NumL(1))")]
         [InlineData(" -X", "Neg(NumV(X))")]
-        [InlineData("  -  X(234)", "Neg(NumArr(X, NumL(234)))")]
+        [InlineData("  -  X(234)", "Neg(NumA(X, NumL(234)))")]
         [Theory]
         public void IgnoreSpaces(string input, string output)
         {

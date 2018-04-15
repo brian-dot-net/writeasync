@@ -10,7 +10,7 @@ namespace GWExpr.Test
     {
         [InlineData("NOT 1", "Not(NumL(1))")]
         [InlineData("NOT X", "Not(NumV(X))")]
-        [InlineData("NOT X(234)", "Not(NumArr(X, NumL(234)))")]
+        [InlineData("NOT X(234)", "Not(NumA(X, NumL(234)))")]
         [Theory]
         public void Numeric(string input, string output)
         {
@@ -19,7 +19,7 @@ namespace GWExpr.Test
 
         [InlineData(" NOT 1", "Not(NumL(1))")]
         [InlineData("NOT  X", "Not(NumV(X))")]
-        [InlineData("  NOT  X(234)", "Not(NumArr(X, NumL(234)))")]
+        [InlineData("  NOT  X(234)", "Not(NumA(X, NumL(234)))")]
         [Theory]
         public void IgnoreSpaces(string input, string output)
         {
@@ -28,7 +28,7 @@ namespace GWExpr.Test
 
         [InlineData("not 1", "Not(NumL(1))")]
         [InlineData("NoT X", "Not(NumV(X))")]
-        [InlineData("nOt X(234)", "Not(NumArr(X, NumL(234)))")]
+        [InlineData("nOt X(234)", "Not(NumA(X, NumL(234)))")]
         [Theory]
         public void IgnoreCase(string input, string output)
         {

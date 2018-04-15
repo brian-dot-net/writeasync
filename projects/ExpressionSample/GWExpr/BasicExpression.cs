@@ -58,7 +58,7 @@ namespace GWExpr
 
             public void Array(BasicType type, string name, BasicExpression[] subs)
             {
-                this.sb.Append(type.ToString()).Append("Arr(");
+                this.sb.Append(type.ToString()).Append("A(");
 
                 this.sb.Append(name);
 
