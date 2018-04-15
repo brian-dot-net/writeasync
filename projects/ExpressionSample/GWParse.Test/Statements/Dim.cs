@@ -55,6 +55,7 @@ namespace GWParse.Test.Statements
         }
 
         [InlineData("DIM")]
+        [InlineData("DIM ")]
         [InlineData("DIM R")]
         [InlineData("DIM R,")]
         [InlineData("DIM R(")]
@@ -63,6 +64,11 @@ namespace GWParse.Test.Statements
         [InlineData("DIM R(1,")]
         [InlineData("DIM R(1,2")]
         [InlineData("DIM R(1),")]
+        [InlineData("DIM R(1),,")]
+        [InlineData("DIM ,R(1)")]
+        [InlineData("DIM ,,R(1)")]
+        [InlineData("DIM R(1),,A(1)")]
+        [InlineData("DIM A$")]
         [Theory]
         public void Invalid(string input)
         {
