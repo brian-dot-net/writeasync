@@ -63,6 +63,11 @@ namespace GWParse.Statements
             from list in Arrays
             select new DimensionStatement(list);
 
+        private static readonly Parser<BasicStatement> Read =
+            from k in Kw.Read
+            from v in Expr.AnyVar
+            select new ReadStatement(v);
+
         private static readonly Parser<BasicExpression> IfThenCond =
             from k1 in Kw.If
             from cond in Expr.Any
@@ -167,6 +172,7 @@ namespace GWParse.Statements
             .Or(Input)
             .Or(Next)
             .Or(Print)
+            .Or(Read)
             .Or(Return)
             .Or(Assign);
 
@@ -194,7 +200,7 @@ namespace GWParse.Statements
         private static class Kw
         {
             public static readonly Parser<IEnumerable<char>> Cls = Parse.IgnoreCase("CLS");
-            public static readonly Parser<IEnumerable<char>> Dim = Parse.IgnoreCase("DIM").Token();
+            public static readonly Parser<IEnumerable<char>> Dim = Parse.IgnoreCase("DIM ").Token();
             public static readonly Parser<IEnumerable<char>> For = Parse.IgnoreCase("FOR ").Token();
             public static readonly Parser<IEnumerable<char>> Gosub = Parse.IgnoreCase("GOSUB ").Token();
             public static readonly Parser<IEnumerable<char>> Goto = Parse.IgnoreCase("GOTO ").Token();
@@ -204,6 +210,7 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> NextE = Parse.IgnoreCase("NEXT");
             public static readonly Parser<IEnumerable<char>> Print = Parse.IgnoreCase("PRINT ").Token();
             public static readonly Parser<IEnumerable<char>> PrintE = Parse.IgnoreCase("PRINT");
+            public static readonly Parser<IEnumerable<char>> Read = Parse.IgnoreCase("READ ").Token();
             public static readonly Parser<IEnumerable<char>> Rem = Parse.IgnoreCase("REM ");
             public static readonly Parser<IEnumerable<char>> RemE = Parse.IgnoreCase("REM");
             public static readonly Parser<IEnumerable<char>> Return = Parse.IgnoreCase("RETURN");
