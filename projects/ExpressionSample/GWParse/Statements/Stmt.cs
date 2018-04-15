@@ -29,7 +29,7 @@ namespace GWParse.Statements
 
         private static readonly Parser<IEnumerable<BasicExpression>> Arrays =
             from head in Expr.AnyArray.Once()
-            from rest in Parse.Char(',').Token().Then(_ => Expr.AnyArray).Many()
+            from rest in Ch.Comma.Then(_ => Expr.AnyArray).Many()
             select head.Concat(rest);
 
         private static readonly Parser<BasicStatement> Dim =
@@ -43,7 +43,7 @@ namespace GWParse.Statements
 
         private static readonly Parser<IEnumerable<BasicExpression>> PrintList =
             from head in Expr.Any.Once()
-            from rest in Parse.Char(';').Token().Then(_ => Expr.Any).Many()
+            from rest in Ch.Semicolon.Then(_ => Expr.Any).Many()
             select head.Concat(rest);
 
         private static readonly Parser<BasicStatement> PrintMany =
@@ -54,7 +54,7 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> PrintNMany =
             from k in Kw.Print
             from list in PrintList
-            from o in Parse.Char(';').Token()
+            from o in Ch.Semicolon
             select new PrintStatement(list, false);
 
         private static readonly Parser<BasicStatement> Print =
@@ -67,7 +67,7 @@ namespace GWParse.Statements
 
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
-            from o in Parse.Char('=').Token()
+            from o in Ch.Equal
             from right in Expr.Any
             select new AssignmentStatement(left, right);
 
@@ -84,6 +84,13 @@ namespace GWParse.Statements
             {
                 throw new FormatException("Bad statement '" + input + "'.", e);
             }
+        }
+
+        private static class Ch
+        {
+            public static readonly Parser<char> Equal = Parse.Char('=').Token();
+            public static readonly Parser<char> Comma = Parse.Char(',').Token();
+            public static readonly Parser<char> Semicolon = Parse.Char(';').Token();
         }
 
         private static class Kw
