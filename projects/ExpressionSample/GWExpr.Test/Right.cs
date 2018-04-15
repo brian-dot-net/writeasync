@@ -88,5 +88,14 @@ namespace GWExpr.Test
         {
             Test.Bad(input);
         }
+
+        [InlineData("RIGHT1", "NumV(RIGHT1)")]
+        [InlineData("rightX", "NumV(RIGHTX)")]
+        [InlineData("right1right$", "StrV(RIGHT1RIGHT)")]
+        [Theory(Skip = "reserved prefix variables not working")]
+        public void AllowedReservedPrefix(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }

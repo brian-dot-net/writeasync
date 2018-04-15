@@ -92,5 +92,14 @@ namespace GWExpr.Test
         {
             Test.Bad(input);
         }
+
+        [InlineData("OR1", "NumV(OR1)")]
+        [InlineData("orX", "NumV(ORX)")]
+        [InlineData("or1or$", "StrV(OR1OR)")]
+        [Theory(Skip = "reserved prefix variables not working")]
+        public void AllowedReservedPrefix(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }

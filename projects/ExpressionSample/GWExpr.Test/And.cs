@@ -92,5 +92,14 @@ namespace GWExpr.Test
         {
             Test.Bad(input);
         }
+
+        [InlineData("AND1", "NumV(AND1)")]
+        [InlineData("andX", "NumV(ANDX)")]
+        [InlineData("and1and$", "StrV(AND1AND)")]
+        [Theory(Skip = "reserved prefix variables not working")]
+        public void AllowedReservedPrefix(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }

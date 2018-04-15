@@ -74,5 +74,14 @@ namespace GWExpr.Test
         {
             Test.Bad(input);
         }
+
+        [InlineData("SQR1", "NumV(SQR1)")]
+        [InlineData("sqrX", "NumV(SQRX)")]
+        [InlineData("sqr1sqr$", "StrV(SQR1SQR)")]
+        [Theory(Skip = "reserved prefix variables not working")]
+        public void AllowedReservedPrefix(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }

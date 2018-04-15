@@ -75,5 +75,14 @@ namespace GWExpr.Test
         {
             Test.Bad(input);
         }
+
+        [InlineData("NOT1", "NumV(NOT1)")]
+        [InlineData("notX", "NumV(NOTX)")]
+        [InlineData("not1not$", "StrV(NOT1NOT)")]
+        [Theory(Skip = "reserved prefix variables not working")]
+        public void AllowedReservedPrefix(string input, string output)
+        {
+            Test.Good(input, output);
+        }
     }
 }
