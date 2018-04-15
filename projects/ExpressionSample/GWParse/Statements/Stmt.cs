@@ -41,12 +41,23 @@ namespace GWParse.Statements
             from list in Arrays
             select new DimensionStatement(list);
 
-        private static readonly Parser<BasicStatement> IfThen =
+        private static readonly Parser<BasicExpression> IfThenCond =
             from k1 in Kw.If
-            from x in Expr.Any
+            from cond in Expr.Any
             from k2 in Kw.Then
+            select cond;
+
+        private static readonly Parser<BasicStatement> IfThenGoto =
+            from cond in IfThenCond
             from n in LineNum
-            select new IfThenStatement(x, new GotoStatement(n));
+            select new IfThenStatement(cond, new GotoStatement(n));
+
+        private static readonly Parser<BasicStatement> IfThenNonGoto =
+            from cond in IfThenCond
+            from ifT in Parse.Ref(() => Any)
+            select new IfThenStatement(cond, ifT);
+
+        private static readonly Parser<BasicStatement> IfThen = IfThenNonGoto.Or(IfThenGoto);
 
         private static readonly Parser<BasicStatement> PrintEmpty =
             from k in Kw.PrintE

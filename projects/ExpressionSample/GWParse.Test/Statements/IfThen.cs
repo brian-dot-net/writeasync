@@ -18,8 +18,18 @@ namespace GWParse.Test.Statements
             Test.Good(input, output);
         }
 
+        [InlineData("IF 1 THEN X$=\"ok\"", "If(NumL(1), Assign(StrV(X), StrL(\"ok\")))")]
+        [InlineData("IF X THEN GOTO 1", "If(NumV(X), Goto(1))")]
+        [InlineData("IF X=1 THEN PRINT \"ok\"", "If(Eq(NumV(X), NumL(1)), Print(StrL(\"ok\")))")]
+        [Theory]
+        public void ValidNonGoto(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("if 1 then 2", "If(NumL(1), Goto(2))")]
         [InlineData("If 1 TheN 2", "If(NumL(1), Goto(2))")]
+        [InlineData("If 1 TheN pRINT \"ok\"", "If(NumL(1), Print(StrL(\"ok\")))")]
         [Theory]
         public void IgnoreCase(string input, string output)
         {
@@ -29,6 +39,7 @@ namespace GWParse.Test.Statements
         [InlineData(" IF 1 THEN 2", "If(NumL(1), Goto(2))")]
         [InlineData("IF 1 THEN 2 ", "If(NumL(1), Goto(2))")]
         [InlineData("  IF  1 THEN  2  ", "If(NumL(1), Goto(2))")]
+        [InlineData("  IF  1 THEN  PRINT  \"ok\"  ", "If(NumL(1), Print(StrL(\"ok\")))")]
         [Theory]
         public void AllowSpaces(string input, string output)
         {
@@ -44,6 +55,7 @@ namespace GWParse.Test.Statements
         [InlineData("IF 1THEN2")]
         [InlineData("IF 1THEN 2")]
         [InlineData("IF 1 THEN2")]
+        [InlineData("IF 1 THENPRINT")]
         [Theory]
         public void Invalid(string input)
         {
