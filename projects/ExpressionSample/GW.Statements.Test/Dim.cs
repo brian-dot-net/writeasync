@@ -9,6 +9,7 @@ namespace GW.Statements.Test
     public sealed class Dim
     {
         [InlineData("DIM R(1)", "Dim(NumA(R, NumL(1)))")]
+        [InlineData("DIM R(1,2)", "Dim(NumA(R, NumL(1), NumL(2)))")]
         [Theory]
         public void Valid(string input, string output)
         {
@@ -27,6 +28,7 @@ namespace GW.Statements.Test
         [InlineData(" DIM R(1)", "Dim(NumA(R, NumL(1)))")]
         [InlineData("DIM  R(1)", "Dim(NumA(R, NumL(1)))")]
         [InlineData("  DIM  R  (  1  )", "Dim(NumA(R, NumL(1)))")]
+        [InlineData("DIM R( 1 , 2 )", "Dim(NumA(R, NumL(1), NumL(2)))")]
         [Theory]
         public void AllowSpaces(string input, string output)
         {
@@ -37,6 +39,8 @@ namespace GW.Statements.Test
         [InlineData("DIM R(")]
         [InlineData("DIM R(1")]
         [InlineData("DIM R(\"1\")")]
+        [InlineData("DIM R(1,")]
+        [InlineData("DIM R(1,2")]
         [InlineData("DIM R(1),")]
         [Theory]
         public void Invalid(string input)
