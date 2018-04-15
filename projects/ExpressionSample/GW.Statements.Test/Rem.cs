@@ -12,6 +12,7 @@ namespace GW.Statements.Test
         [InlineData("REM hello", "Rem(\"hello\")")]
         [InlineData("REM REM starts here", "Rem(\"REM starts here\")")]
         [InlineData("REM : REM starts here", "Rem(\": REM starts here\")")]
+        [InlineData(@"REM ""C:\""", @"Rem(""\""C:\\\"""")")]
         [Theory]
         public void Valid(string input, string output)
         {
