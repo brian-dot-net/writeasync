@@ -6,13 +6,13 @@ namespace GWParse.Statements
 {
     internal sealed class GosubStatement : BasicStatement
     {
-        private readonly int line;
+        private readonly int dest;
 
-        public GosubStatement(int line)
+        public GosubStatement(int dest)
         {
-            this.line = line;
+            this.dest = dest;
         }
 
-        public override string ToString() => "Gosub(" + this.line + ")";
+        public override string ToString() => "Gosub(" + this.dest + ")";
     }
 }

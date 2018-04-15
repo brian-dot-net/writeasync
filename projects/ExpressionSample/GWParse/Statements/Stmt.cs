@@ -87,6 +87,11 @@ namespace GWParse.Statements
             from n in Parse.Number
             select new GosubStatement(int.Parse(n));
 
+        private static readonly Parser<BasicStatement> Goto =
+            from k in Kw.Goto
+            from n in Parse.Number
+            select new GotoStatement(int.Parse(n));
+
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
             from o in Ch.Equal
@@ -94,7 +99,15 @@ namespace GWParse.Statements
             select new AssignmentStatement(left, right);
 
         private static readonly Parser<BasicStatement> Any =
-            Rem.Or(Cls).Or(Dim).Or(IfThen).Or(Print).Or(Input).Or(Gosub).Or(Assign);
+            Rem
+            .Or(Cls)
+            .Or(Dim)
+            .Or(Gosub)
+            .Or(Goto)
+            .Or(IfThen)
+            .Or(Input)
+            .Or(Print)
+            .Or(Assign);
 
         public static BasicStatement FromString(string input)
         {
@@ -122,6 +135,7 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> Cls = Parse.IgnoreCase("CLS");
             public static readonly Parser<IEnumerable<char>> Dim = Parse.IgnoreCase("DIM").Token();
             public static readonly Parser<IEnumerable<char>> Gosub = Parse.IgnoreCase("GOSUB ").Token();
+            public static readonly Parser<IEnumerable<char>> Goto = Parse.IgnoreCase("GOTO ").Token();
             public static readonly Parser<IEnumerable<char>> If = Parse.IgnoreCase("IF ").Token();
             public static readonly Parser<IEnumerable<char>> Input = Parse.IgnoreCase("INPUT ").Token();
             public static readonly Parser<IEnumerable<char>> Print = Parse.IgnoreCase("PRINT ").Token();
