@@ -127,6 +127,15 @@ namespace GWParse.Statements
             from n in LineNum
             select new GotoStatement(n);
 
+        private static readonly Parser<BasicStatement> For =
+            from k1 in Kw.For
+            from v in Expr.AnyNumScalar
+            from eq in Ch.Equal.Token()
+            from a in Expr.Any
+            from k2 in Kw.To
+            from b in Expr.Any
+            select new ForStatement(v, a, b);
+
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
             from o in Ch.Equal
@@ -137,6 +146,7 @@ namespace GWParse.Statements
             Rem
             .Or(Cls)
             .Or(Dim)
+            .Or(For)
             .Or(Gosub)
             .Or(Goto)
             .Or(IfThen)
@@ -171,6 +181,7 @@ namespace GWParse.Statements
         {
             public static readonly Parser<IEnumerable<char>> Cls = Parse.IgnoreCase("CLS");
             public static readonly Parser<IEnumerable<char>> Dim = Parse.IgnoreCase("DIM").Token();
+            public static readonly Parser<IEnumerable<char>> For = Parse.IgnoreCase("FOR ").Token();
             public static readonly Parser<IEnumerable<char>> Gosub = Parse.IgnoreCase("GOSUB ").Token();
             public static readonly Parser<IEnumerable<char>> Goto = Parse.IgnoreCase("GOTO ").Token();
             public static readonly Parser<IEnumerable<char>> If = Parse.IgnoreCase("IF ").Token();
@@ -183,6 +194,7 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> RemE = Parse.IgnoreCase("REM");
             public static readonly Parser<IEnumerable<char>> Return = Parse.IgnoreCase("RETURN");
             public static readonly Parser<IEnumerable<char>> Then = Parse.IgnoreCase(" THEN ");
+            public static readonly Parser<IEnumerable<char>> To = Parse.IgnoreCase("TO ").Token();
         }
     }
 }
