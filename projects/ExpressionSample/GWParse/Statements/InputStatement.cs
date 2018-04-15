@@ -8,13 +8,15 @@ namespace GWParse.Statements
 
     internal sealed class InputStatement : BasicStatement
     {
+        private readonly string prompt;
         private readonly BasicExpression v;
 
-        public InputStatement(BasicExpression v)
+        public InputStatement(string prompt, BasicExpression v)
         {
+            this.prompt = prompt;
             this.v = v;
         }
 
-        public override string ToString() => "Input(\"\", " + this.v + ")";
+        public override string ToString() => "Input(\"" + this.prompt + "\", " + this.v + ")";
     }
 }

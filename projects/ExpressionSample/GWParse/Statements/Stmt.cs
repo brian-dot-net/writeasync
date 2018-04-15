@@ -59,10 +59,21 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> Print =
             PrintNMany.Or(PrintMany).Or(PrintEmpty);
 
-        private static readonly Parser<BasicStatement> Input =
+        private static readonly Parser<BasicStatement> InputP =
+            from k in Kw.Input
+            from lq in Ch.Quote
+            from p in Ch.NonQuote.Many().Text()
+            from rq in Ch.Quote
+            from s in Ch.Semicolon
+            from v in Expr.AnyVar
+            select new InputStatement(p, v);
+
+        private static readonly Parser<BasicStatement> InputV =
             from k in Kw.Input
             from v in Expr.AnyVar
-            select new InputStatement(v);
+            select new InputStatement(string.Empty, v);
+
+        private static readonly Parser<BasicStatement> Input = InputP.Or(InputV);
 
         private static readonly Parser<BasicStatement> Gosub =
             from k in Kw.Gosub
@@ -95,6 +106,8 @@ namespace GWParse.Statements
             public static readonly Parser<char> Equal = Parse.Char('=').Token();
             public static readonly Parser<char> Comma = Parse.Char(',').Token();
             public static readonly Parser<char> Semicolon = Parse.Char(';').Token();
+            public static readonly Parser<char> Quote = Parse.Char('"');
+            public static readonly Parser<char> NonQuote = Parse.AnyChar.Except(Quote);
         }
 
         private static class Kw
