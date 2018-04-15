@@ -4,7 +4,7 @@
 
 namespace GWExpr
 {
-    internal enum BasicType
+    public enum BasicType
     {
         None = 0,
         Num,

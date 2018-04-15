@@ -30,9 +30,9 @@ namespace GWExpr
             return new OperatorExpression(name, new BasicExpression[] { x, y, z });
         }
 
-        public override string ToString()
+        public override void Accept(IVisitor visit)
         {
-            return this.name + "(" + string.Join<BasicExpression>(", ", this.operands) + ")";
+            visit.Operator(this.name, this.operands);
         }
     }
 }

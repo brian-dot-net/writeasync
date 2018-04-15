@@ -19,15 +19,9 @@ namespace GWExpr
 
         public static BasicLiteral Str(string s) => new BasicLiteral(BasicType.Str, s);
 
-        public override string ToString()
+        public override void Accept(IVisitor visit)
         {
-            string s = this.o.ToString();
-            if (this.type == BasicType.Str)
-            {
-                s = "\"" + s + "\"";
-            }
-
-            return this.type + "L(" + s + ")";
+            visit.Literal(this.type, this.o);
         }
     }
 }

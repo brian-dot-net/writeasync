@@ -30,10 +30,9 @@ namespace GWExpr
             return new BasicArray(BasicType.Str, name, subs);
         }
 
-        public override string ToString()
+        public override void Accept(IVisitor visit)
         {
-            var list = string.Join<BasicExpression>(", ", this.subs);
-            return this.type + "Arr(" + this.name + ", " + list + ")";
+            visit.Array(this.type, this.name, this.subs);
         }
     }
 }
