@@ -16,5 +16,13 @@ namespace GW.Statements.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData("REMARK")]
+        [InlineData("REMnospaces")]
+        [Theory]
+        public void Invalid(string input)
+        {
+            Test.Bad(input);
+        }
     }
 }

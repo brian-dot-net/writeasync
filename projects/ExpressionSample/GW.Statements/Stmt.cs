@@ -4,6 +4,7 @@
 
 namespace GW.Statements
 {
+    using System;
     using Sprache;
 
     internal static class Stmt
@@ -22,7 +23,14 @@ namespace GW.Statements
 
         public static BasicStatement FromString(string input)
         {
-            return Any.Parse(input);
+            try
+            {
+                return Any.End().Parse(input);
+            }
+            catch (ParseException e)
+            {
+                throw new FormatException("Bad statement '" + input + "'.", e);
+            }
         }
     }
 }
