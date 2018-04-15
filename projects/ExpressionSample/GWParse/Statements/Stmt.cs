@@ -35,9 +35,16 @@ namespace GWParse.Statements
             from k in Kw.Return
             select new ReturnStatement();
 
-        private static readonly Parser<BasicStatement> Next =
+        private static readonly Parser<BasicStatement> NextEmpty =
             from k in Kw.NextE
-            select new NextStatement();
+            select new NextStatement(Enumerable.Empty<BasicExpression>());
+
+        private static readonly Parser<BasicStatement> NextNonEmpty =
+            from k in Kw.Next
+            from v in Expr.AnyNumVar.Once()
+            select new NextStatement(v);
+
+        private static readonly Parser<BasicStatement> Next = NextNonEmpty.Or(NextEmpty);
 
         private static readonly Parser<IEnumerable<BasicExpression>> Arrays =
             from head in Expr.AnyArray.Once()
@@ -163,6 +170,7 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> Goto = Parse.IgnoreCase("GOTO ").Token();
             public static readonly Parser<IEnumerable<char>> If = Parse.IgnoreCase("IF ").Token();
             public static readonly Parser<IEnumerable<char>> Input = Parse.IgnoreCase("INPUT ").Token();
+            public static readonly Parser<IEnumerable<char>> Next = Parse.IgnoreCase("NEXT ").Token();
             public static readonly Parser<IEnumerable<char>> NextE = Parse.IgnoreCase("NEXT");
             public static readonly Parser<IEnumerable<char>> Print = Parse.IgnoreCase("PRINT ").Token();
             public static readonly Parser<IEnumerable<char>> PrintE = Parse.IgnoreCase("PRINT");
