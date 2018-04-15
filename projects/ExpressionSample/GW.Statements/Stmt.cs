@@ -10,11 +10,11 @@ namespace GW.Statements
     internal static class Stmt
     {
         private static readonly Parser<BasicStatement> RemEmpty =
-            from k in Parse.String("REM")
+            from k in Parse.IgnoreCase("REM")
             select new RemarkStatement(string.Empty);
 
         private static readonly Parser<BasicStatement> RemNonEmpty =
-            from k in Parse.String("REM ")
+            from k in Parse.IgnoreCase("REM ")
             from s in Parse.AnyChar.AtLeastOnce().Text()
             select new RemarkStatement(s);
 
