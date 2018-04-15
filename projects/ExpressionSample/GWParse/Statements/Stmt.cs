@@ -12,6 +12,10 @@ namespace GWParse.Statements
 
     internal static class Stmt
     {
+        private static readonly Parser<int> LineNum =
+            from n in Parse.Number.Token()
+            select int.Parse(n);
+
         private static readonly Parser<BasicStatement> RemEmpty =
             from k in Kw.RemE
             select new RemarkStatement(string.Empty);
@@ -41,8 +45,8 @@ namespace GWParse.Statements
             from k1 in Kw.If
             from x in Expr.Any
             from k2 in Kw.Then
-            from n in Parse.Number.Token()
-            select new IfThenStatement(x, int.Parse(n));
+            from n in LineNum
+            select new IfThenStatement(x, n);
 
         private static readonly Parser<BasicStatement> PrintEmpty =
             from k in Kw.PrintE
@@ -84,13 +88,13 @@ namespace GWParse.Statements
 
         private static readonly Parser<BasicStatement> Gosub =
             from k in Kw.Gosub
-            from n in Parse.Number
-            select new GosubStatement(int.Parse(n));
+            from n in LineNum
+            select new GosubStatement(n);
 
         private static readonly Parser<BasicStatement> Goto =
             from k in Kw.Goto
-            from n in Parse.Number
-            select new GotoStatement(int.Parse(n));
+            from n in LineNum
+            select new GotoStatement(n);
 
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
