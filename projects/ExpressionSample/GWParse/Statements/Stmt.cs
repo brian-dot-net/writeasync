@@ -37,6 +37,13 @@ namespace GWParse.Statements
             from list in Arrays
             select new DimensionStatement(list);
 
+        private static readonly Parser<BasicStatement> IfThen =
+            from k1 in Kw.If
+            from x in Expr.Any
+            from k2 in Kw.Then
+            from n in Parse.Number.Token()
+            select new IfThenStatement(x, int.Parse(n));
+
         private static readonly Parser<BasicStatement> PrintEmpty =
             from k in Kw.PrintE
             select new PrintStatement(Enumerable.Empty<BasicExpression>());
@@ -87,7 +94,7 @@ namespace GWParse.Statements
             select new AssignmentStatement(left, right);
 
         private static readonly Parser<BasicStatement> Any =
-            Rem.Or(Cls).Or(Dim).Or(Print).Or(Input).Or(Gosub).Or(Assign);
+            Rem.Or(Cls).Or(Dim).Or(IfThen).Or(Print).Or(Input).Or(Gosub).Or(Assign);
 
         public static BasicStatement FromString(string input)
         {
@@ -115,11 +122,13 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> Cls = Parse.IgnoreCase("CLS");
             public static readonly Parser<IEnumerable<char>> Dim = Parse.IgnoreCase("DIM").Token();
             public static readonly Parser<IEnumerable<char>> Gosub = Parse.IgnoreCase("GOSUB ").Token();
+            public static readonly Parser<IEnumerable<char>> If = Parse.IgnoreCase("IF ").Token();
             public static readonly Parser<IEnumerable<char>> Input = Parse.IgnoreCase("INPUT ").Token();
             public static readonly Parser<IEnumerable<char>> Print = Parse.IgnoreCase("PRINT ").Token();
             public static readonly Parser<IEnumerable<char>> PrintE = Parse.IgnoreCase("PRINT");
             public static readonly Parser<IEnumerable<char>> Rem = Parse.IgnoreCase("REM ");
             public static readonly Parser<IEnumerable<char>> RemE = Parse.IgnoreCase("REM");
+            public static readonly Parser<IEnumerable<char>> Then = Parse.IgnoreCase(" THEN ");
         }
     }
 }
