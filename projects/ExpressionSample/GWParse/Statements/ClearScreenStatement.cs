@@ -2,7 +2,7 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GW.Statements
+namespace GWParse.Statements
 {
     internal sealed class ClearScreenStatement : BasicStatement
     {

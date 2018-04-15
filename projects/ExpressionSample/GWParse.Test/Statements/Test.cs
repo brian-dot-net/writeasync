@@ -2,10 +2,11 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GW.Statements.Test
+namespace GWParse.Test.Statements
 {
     using System;
     using FluentAssertions;
+    using GWParse.Statements;
 
     internal static class Test
     {

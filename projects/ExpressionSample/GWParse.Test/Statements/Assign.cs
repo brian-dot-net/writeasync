@@ -2,7 +2,7 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GW.Statements.Test
+namespace GWParse.Test.Statements
 {
     using Xunit;
 
