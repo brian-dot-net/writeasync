@@ -59,6 +59,11 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> Print =
             PrintNMany.Or(PrintMany).Or(PrintEmpty);
 
+        private static readonly Parser<BasicStatement> Input =
+            from k in Kw.Input
+            from v in Expr.AnyVar
+            select new InputStatement(v);
+
         private static readonly Parser<BasicStatement> Gosub =
             from k in Kw.Gosub
             from n in Parse.Number
@@ -71,7 +76,7 @@ namespace GWParse.Statements
             select new AssignmentStatement(left, right);
 
         private static readonly Parser<BasicStatement> Any =
-            Rem.Or(Cls).Or(Dim).Or(Print).Or(Gosub).Or(Assign);
+            Rem.Or(Cls).Or(Dim).Or(Print).Or(Input).Or(Gosub).Or(Assign);
 
         public static BasicStatement FromString(string input)
         {
@@ -97,6 +102,7 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> Cls = Parse.IgnoreCase("CLS");
             public static readonly Parser<IEnumerable<char>> Dim = Parse.IgnoreCase("DIM").Token();
             public static readonly Parser<IEnumerable<char>> Gosub = Parse.IgnoreCase("GOSUB ").Token();
+            public static readonly Parser<IEnumerable<char>> Input = Parse.IgnoreCase("INPUT ").Token();
             public static readonly Parser<IEnumerable<char>> Print = Parse.IgnoreCase("PRINT ").Token();
             public static readonly Parser<IEnumerable<char>> PrintE = Parse.IgnoreCase("PRINT");
             public static readonly Parser<IEnumerable<char>> Rem = Parse.IgnoreCase("REM ");
