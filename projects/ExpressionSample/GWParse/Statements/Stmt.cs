@@ -35,6 +35,10 @@ namespace GWParse.Statements
             from k in Kw.Return
             select new ReturnStatement();
 
+        private static readonly Parser<BasicStatement> Next =
+            from k in Kw.NextE
+            select new NextStatement();
+
         private static readonly Parser<IEnumerable<BasicExpression>> Arrays =
             from head in Expr.AnyArray.Once()
             from rest in Ch.Comma.Then(_ => Expr.AnyArray).Many()
@@ -125,6 +129,7 @@ namespace GWParse.Statements
             .Or(Goto)
             .Or(IfThen)
             .Or(Input)
+            .Or(Next)
             .Or(Print)
             .Or(Return)
             .Or(Assign);
@@ -158,6 +163,7 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> Goto = Parse.IgnoreCase("GOTO ").Token();
             public static readonly Parser<IEnumerable<char>> If = Parse.IgnoreCase("IF ").Token();
             public static readonly Parser<IEnumerable<char>> Input = Parse.IgnoreCase("INPUT ").Token();
+            public static readonly Parser<IEnumerable<char>> NextE = Parse.IgnoreCase("NEXT");
             public static readonly Parser<IEnumerable<char>> Print = Parse.IgnoreCase("PRINT ").Token();
             public static readonly Parser<IEnumerable<char>> PrintE = Parse.IgnoreCase("PRINT");
             public static readonly Parser<IEnumerable<char>> Rem = Parse.IgnoreCase("REM ");
