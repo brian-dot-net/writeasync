@@ -51,7 +51,14 @@ namespace GWParse.Statements
             from list in PrintList
             select new PrintStatement(list);
 
-        private static readonly Parser<BasicStatement> Print = PrintMany.Or(PrintEmpty);
+        private static readonly Parser<BasicStatement> PrintNMany =
+            from k in Parse.IgnoreCase("PRINT").Token()
+            from list in PrintList
+            from o in Parse.Char(';').Token()
+            select new PrintStatement(list, false);
+
+        private static readonly Parser<BasicStatement> Print =
+            PrintNMany.Or(PrintMany).Or(PrintEmpty);
 
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar

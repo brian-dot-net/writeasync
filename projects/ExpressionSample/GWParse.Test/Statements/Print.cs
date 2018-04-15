@@ -27,12 +27,34 @@ namespace GWParse.Test.Statements
             Test.Good(input, output);
         }
 
+        [InlineData("PRINT 1;", "PrintN(NumL(1))")]
+        [InlineData("PRINT \"one\";", "PrintN(StrL(\"one\"))")]
+        [InlineData("PRINT A;", "PrintN(NumV(A))")]
+        [InlineData("PRINT A$;", "PrintN(StrV(A))")]
+        [InlineData("PRINT A(1);", "PrintN(NumA(A, NumL(1)))")]
+        [InlineData("PRINT A$(1);", "PrintN(StrA(A, NumL(1)))")]
+        [Theory]
+        public void OneItemNoBreak(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("PRINT 1;\"two\"", "Print(NumL(1), StrL(\"two\"))")]
         [InlineData("PRINT \"one\";A", "Print(StrL(\"one\"), NumV(A))")]
         [InlineData("PRINT A;A$", "Print(NumV(A), StrV(A))")]
         [InlineData("PRINT A(1);A$(X)", "Print(NumA(A, NumL(1)), StrA(A, NumV(X)))")]
         [Theory]
         public void TwoItems(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
+        [InlineData("PRINT 1;\"two\";", "PrintN(NumL(1), StrL(\"two\"))")]
+        [InlineData("PRINT \"one\";A;", "PrintN(StrL(\"one\"), NumV(A))")]
+        [InlineData("PRINT A;A$;", "PrintN(NumV(A), StrV(A))")]
+        [InlineData("PRINT A(1);A$(X);", "PrintN(NumA(A, NumL(1)), StrA(A, NumV(X)))")]
+        [Theory]
+        public void TwoItemsNoBreak(string input, string output)
         {
             Test.Good(input, output);
         }
@@ -50,6 +72,7 @@ namespace GWParse.Test.Statements
         [InlineData("PrInT 1", "Print(NumL(1))")]
         [InlineData("PrInT a", "Print(NumV(A))")]
         [InlineData("PrInT a;b", "Print(NumV(A), NumV(B))")]
+        [InlineData("PrInT a;b;", "PrintN(NumV(A), NumV(B))")]
         [Theory]
         public void IgnoreCase(string input, string output)
         {
@@ -61,6 +84,7 @@ namespace GWParse.Test.Statements
         [InlineData(" PRINT  ", "Print()")]
         [InlineData(" PRINT  1  ", "Print(NumL(1))")]
         [InlineData(" PRINT  1  ; 2", "Print(NumL(1), NumL(2))")]
+        [InlineData(" PRINT  1  ; 2  ;  ", "PrintN(NumL(1), NumL(2))")]
         [Theory]
         public void IgnoreSpaces(string input, string output)
         {

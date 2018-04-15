@@ -11,15 +11,19 @@ namespace GWParse.Statements
     internal sealed class PrintStatement : BasicStatement
     {
         private readonly BasicExpression[] list;
+        private readonly bool lineBreak;
 
-        public PrintStatement(IEnumerable<BasicExpression> list)
+        public PrintStatement(IEnumerable<BasicExpression> list, bool lineBreak = true)
         {
             this.list = list.ToArray();
+            this.lineBreak = lineBreak;
         }
 
         public override string ToString()
         {
-            return "Print(" + string.Join<BasicExpression>(", ", this.list) + ")";
+            return
+                "Print" + (this.lineBreak ? string.Empty : "N") + "(" +
+                string.Join<BasicExpression>(", ", this.list) + ")";
         }
     }
 }
