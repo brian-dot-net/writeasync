@@ -129,14 +129,26 @@ namespace GWParse.Statements
             from n in LineNum
             select new GotoStatement(n);
 
-        private static readonly Parser<BasicStatement> For =
+        private static readonly Parser<Tuple<BasicExpression, BasicExpression, BasicExpression>> ForPrefix =
             from k1 in Kw.For
             from v in Expr.AnyNumScalar
             from eq in Ch.Equal.Token()
             from a in Expr.Any
             from k2 in Kw.To
             from b in Expr.Any
-            select new ForStatement(v, a, b, One);
+            select Tuple.Create(v, a, b);
+
+        private static readonly Parser<BasicStatement> ForWithoutStep =
+            from t in ForPrefix
+            select new ForStatement(t.Item1, t.Item2, t.Item3, One);
+
+        private static readonly Parser<BasicStatement> ForWithStep =
+            from t in ForPrefix
+            from k in Kw.Step
+            from s in Expr.Any
+            select new ForStatement(t.Item1, t.Item2, t.Item3, s);
+
+        private static readonly Parser<BasicStatement> For = ForWithStep.Or(ForWithoutStep);
 
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
@@ -195,6 +207,7 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> Rem = Parse.IgnoreCase("REM ");
             public static readonly Parser<IEnumerable<char>> RemE = Parse.IgnoreCase("REM");
             public static readonly Parser<IEnumerable<char>> Return = Parse.IgnoreCase("RETURN");
+            public static readonly Parser<IEnumerable<char>> Step = Parse.IgnoreCase("STEP ").Token();
             public static readonly Parser<IEnumerable<char>> Then = Parse.IgnoreCase(" THEN ");
             public static readonly Parser<IEnumerable<char>> To = Parse.IgnoreCase("TO ").Token();
         }
