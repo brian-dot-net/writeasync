@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GW.Expressions", "GW.Expressions\GW.Expressions.csproj", "{7C0B47F9-F9A9-4587-A589-CF0419545255}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GWParse", "GWParse\GWParse.csproj", "{7C0B47F9-F9A9-4587-A589-CF0419545255}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GW.Expressions.Test", "GW.Expressions.Test\GW.Expressions.Test.csproj", "{7A31611E-27E5-48B2-AE5D-8CFF8EF4E7AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GWParse.Test", "GWParse.Test\GWParse.Test.csproj", "{7A31611E-27E5-48B2-AE5D-8CFF8EF4E7AB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GW.Statements", "GW.Statements\GW.Statements.csproj", "{786D0E62-2CE1-4676-803D-06BE64B0341D}"
 EndProject

@@ -7,6 +7,6 @@
     <PackageReference Include="Sprache" Version="2.1.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GW.Expressions\GW.Expressions.csproj" />
+    <ProjectReference Include="..\GWParse\GWParse.csproj" />
   </ItemGroup>
 </Project>

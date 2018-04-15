@@ -5,7 +5,7 @@
 namespace GW.Statements
 {
     using System;
-    using GW.Expressions;
+    using GWParse.Expressions;
 
     internal sealed class AssignmentStatement : BasicStatement
     {
