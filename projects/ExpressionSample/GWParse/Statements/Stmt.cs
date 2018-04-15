@@ -37,9 +37,16 @@ namespace GWParse.Statements
             from list in Arrays
             select new DimensionStatement(list);
 
-        private static readonly Parser<BasicStatement> Print =
+        private static readonly Parser<BasicStatement> PrintEmpty =
             from k in Parse.IgnoreCase("PRINT")
-            select new PrintStatement();
+            select new PrintStatement(Enumerable.Empty<BasicExpression>());
+
+        private static readonly Parser<BasicStatement> PrintOne =
+            from k in Parse.IgnoreCase("PRINT").Token()
+            from x in Expr.Any.Once()
+            select new PrintStatement(x);
+
+        private static readonly Parser<BasicStatement> Print = PrintOne.Or(PrintEmpty);
 
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
