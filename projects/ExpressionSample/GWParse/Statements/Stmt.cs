@@ -47,12 +47,12 @@ namespace GWParse.Statements
             select head.Concat(rest);
 
         private static readonly Parser<BasicStatement> PrintMany =
-            from k in Parse.IgnoreCase("PRINT").Token()
+            from k in Parse.IgnoreCase("PRINT ").Token()
             from list in PrintList
             select new PrintStatement(list);
 
         private static readonly Parser<BasicStatement> PrintNMany =
-            from k in Parse.IgnoreCase("PRINT").Token()
+            from k in Parse.IgnoreCase("PRINT ").Token()
             from list in PrintList
             from o in Parse.Char(';').Token()
             select new PrintStatement(list, false);
@@ -61,7 +61,7 @@ namespace GWParse.Statements
             PrintNMany.Or(PrintMany).Or(PrintEmpty);
 
         private static readonly Parser<BasicStatement> Gosub =
-            from k in Parse.IgnoreCase("GOSUB").Token()
+            from k in Parse.IgnoreCase("GOSUB ").Token()
             from n in Parse.Number
             select new GosubStatement(int.Parse(n));
 

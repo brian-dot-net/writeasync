@@ -36,6 +36,7 @@ namespace GWParse.Test.Statements
         }
 
         [InlineData("GOSUB")]
+        [InlineData("GOSUB1")]
         [InlineData("GOSUB A")]
         [InlineData("GOSUB 1A")]
         [InlineData("GOSUB A$")]

@@ -56,6 +56,7 @@ namespace GWParse.Test.Statements
 
         [InlineData("DIM")]
         [InlineData("DIM ")]
+        [InlineData("DIMR")]
         [InlineData("DIM R")]
         [InlineData("DIM R,")]
         [InlineData("DIM R(")]

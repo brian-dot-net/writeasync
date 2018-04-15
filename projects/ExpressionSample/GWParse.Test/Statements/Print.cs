@@ -90,5 +90,13 @@ namespace GWParse.Test.Statements
         {
             Test.Good(input, output);
         }
+
+        [InlineData("PRINTA")]
+        [InlineData("PRINT1")]
+        [Theory]
+        public void Invalid(string input)
+        {
+            Test.Bad(input);
+        }
     }
 }
