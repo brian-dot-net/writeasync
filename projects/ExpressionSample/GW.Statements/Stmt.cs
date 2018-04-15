@@ -28,7 +28,7 @@ namespace GW.Statements
         private static readonly Parser<BasicStatement> Dim =
             from k in Parse.IgnoreCase("DIM").Token()
             from s in Parse.AnyChar.AtLeastOnce().Text()
-            select new DimensionStatement(Expr(s));
+            select DimA(s);
 
         private static readonly Parser<BasicStatement> Assign =
             from left in Parse.CharExcept('=').AtLeastOnce().Text()
@@ -56,6 +56,18 @@ namespace GW.Statements
             try
             {
                 return new AssignmentStatement(Expr(left), Expr(right));
+            }
+            catch (NotSupportedException e)
+            {
+                throw new ParseException(e.Message);
+            }
+        }
+
+        private static BasicStatement DimA(string a)
+        {
+            try
+            {
+                return new DimensionStatement(Expr(a));
             }
             catch (NotSupportedException e)
             {

@@ -36,6 +36,8 @@ namespace GW.Statements.Test
         }
 
         [InlineData("DIM")]
+        [InlineData("DIM R")]
+        [InlineData("DIM R,")]
         [InlineData("DIM R(")]
         [InlineData("DIM R(1")]
         [InlineData("DIM R(\"1\")")]
