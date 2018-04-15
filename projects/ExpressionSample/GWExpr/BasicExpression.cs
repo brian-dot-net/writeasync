@@ -2,7 +2,7 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GWExpr
+namespace GW.Expressions
 {
     using System.Text;
 
@@ -14,7 +14,7 @@ namespace GWExpr
 
         public static BasicExpression FromString(string input) => Expr.FromString(input);
 
-        public abstract void Accept(IVisitor visit);
+        public abstract void Accept(IExpressionVisitor visit);
 
         public override string ToString()
         {
@@ -23,7 +23,7 @@ namespace GWExpr
             return str.ToString();
         }
 
-        private sealed class ExpressionString : IVisitor
+        private sealed class ExpressionString : IExpressionVisitor
         {
             private readonly StringBuilder sb;
 

@@ -2,7 +2,7 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GWExpr
+namespace GW.Expressions
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -30,7 +30,7 @@ namespace GWExpr
             return new BasicArray(BasicType.Str, name, subs);
         }
 
-        public override void Accept(IVisitor visit)
+        public override void Accept(IExpressionVisitor visit)
         {
             visit.Array(this.type, this.name, this.subs);
         }

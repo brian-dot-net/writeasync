@@ -2,7 +2,7 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GWExpr
+namespace GW.Expressions
 {
     public enum BasicType
     {

@@ -2,7 +2,7 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GWExpr.Test
+namespace GW.Expressions.Test
 {
     using System;
     using FluentAssertions;

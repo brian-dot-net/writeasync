@@ -2,7 +2,7 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GWExpr
+namespace GW.Expressions
 {
     internal sealed class BasicVariable : BasicExpression
     {
@@ -19,7 +19,7 @@ namespace GWExpr
 
         public static BasicVariable Str(string name) => new BasicVariable(BasicType.Str, name);
 
-        public override void Accept(IVisitor visit)
+        public override void Accept(IExpressionVisitor visit)
         {
             visit.Variable(this.type, this.name);
         }

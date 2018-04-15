@@ -2,7 +2,7 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GWExpr
+namespace GW.Expressions
 {
     using System;
     using System.Collections.Generic;

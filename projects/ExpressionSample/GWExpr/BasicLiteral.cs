@@ -2,7 +2,7 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GWExpr
+namespace GW.Expressions
 {
     internal sealed class BasicLiteral : BasicExpression
     {
@@ -19,7 +19,7 @@ namespace GWExpr
 
         public static BasicLiteral Str(string s) => new BasicLiteral(BasicType.Str, s);
 
-        public override void Accept(IVisitor visit)
+        public override void Accept(IExpressionVisitor visit)
         {
             visit.Literal(this.type, this.o);
         }

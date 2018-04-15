@@ -1,10 +1,10 @@
-﻿// <copyright file="IVisitor.cs" company="Brian Rogers">
+﻿// <copyright file="IExpressionVisitor.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GWExpr
+namespace GW.Expressions
 {
-    public interface IVisitor
+    public interface IExpressionVisitor
     {
         void Literal(BasicType type, object o);
 

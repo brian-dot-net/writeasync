@@ -2,7 +2,7 @@
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
-namespace GWExpr
+namespace GW.Expressions
 {
     internal sealed class BasicOperator : BasicExpression
     {
@@ -30,7 +30,7 @@ namespace GWExpr
             return new BasicOperator(name, new BasicExpression[] { x, y, z });
         }
 
-        public override void Accept(IVisitor visit)
+        public override void Accept(IExpressionVisitor visit)
         {
             visit.Operator(this.name, this.operands);
         }

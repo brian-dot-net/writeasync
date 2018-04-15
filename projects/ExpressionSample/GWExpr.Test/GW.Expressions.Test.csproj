@@ -12,6 +12,6 @@
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GWExpr\GWExpr.csproj" />
+    <ProjectReference Include="..\GWExpr\GW.Expressions.csproj" />
   </ItemGroup>
 </Project>
