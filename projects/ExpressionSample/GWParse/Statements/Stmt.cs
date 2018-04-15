@@ -41,12 +41,17 @@ namespace GWParse.Statements
             from k in Parse.IgnoreCase("PRINT")
             select new PrintStatement(Enumerable.Empty<BasicExpression>());
 
-        private static readonly Parser<BasicStatement> PrintOne =
-            from k in Parse.IgnoreCase("PRINT").Token()
-            from x in Expr.Any.Once()
-            select new PrintStatement(x);
+        private static readonly Parser<IEnumerable<BasicExpression>> PrintList =
+            from head in Expr.Any.Once()
+            from rest in Parse.Char(';').Token().Then(_ => Expr.Any).Many()
+            select head.Concat(rest);
 
-        private static readonly Parser<BasicStatement> Print = PrintOne.Or(PrintEmpty);
+        private static readonly Parser<BasicStatement> PrintMany =
+            from k in Parse.IgnoreCase("PRINT").Token()
+            from list in PrintList
+            select new PrintStatement(list);
+
+        private static readonly Parser<BasicStatement> Print = PrintMany.Or(PrintEmpty);
 
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
