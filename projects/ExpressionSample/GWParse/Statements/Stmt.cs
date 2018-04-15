@@ -60,6 +60,11 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> Print =
             PrintNMany.Or(PrintMany).Or(PrintEmpty);
 
+        private static readonly Parser<BasicStatement> Gosub =
+            from k in Parse.IgnoreCase("GOSUB").Token()
+            from n in Parse.Number
+            select new GosubStatement(int.Parse(n));
+
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
             from o in Parse.Char('=').Token()
@@ -67,7 +72,7 @@ namespace GWParse.Statements
             select new AssignmentStatement(left, right);
 
         private static readonly Parser<BasicStatement> Any =
-            Rem.Or(Cls).Or(Dim).Or(Print).Or(Assign);
+            Rem.Or(Cls).Or(Dim).Or(Print).Or(Gosub).Or(Assign);
 
         public static BasicStatement FromString(string input)
         {
