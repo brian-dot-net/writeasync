@@ -42,17 +42,16 @@ namespace GWParse.Statements
             select new PrintStatement(Enumerable.Empty<BasicExpression>());
 
         private static readonly Parser<IEnumerable<BasicExpression>> PrintList =
+            from k in Kw.Print
             from head in Expr.Any.Once()
             from rest in Ch.Semicolon.Then(_ => Expr.Any).Many()
             select head.Concat(rest);
 
         private static readonly Parser<BasicStatement> PrintMany =
-            from k in Kw.Print
             from list in PrintList
             select new PrintStatement(list);
 
         private static readonly Parser<BasicStatement> PrintNMany =
-            from k in Kw.Print
             from list in PrintList
             from o in Ch.Semicolon
             select new PrintStatement(list, false);
