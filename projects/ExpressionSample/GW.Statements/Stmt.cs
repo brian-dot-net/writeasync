@@ -19,7 +19,13 @@ namespace GW.Statements
             select new RemarkStatement(s);
 
         private static readonly Parser<BasicStatement> Rem = RemNonEmpty.Or(RemEmpty);
-        private static readonly Parser<BasicStatement> Any = Rem;
+
+        private static readonly Parser<BasicStatement> Cls =
+            from k in Parse.IgnoreCase("CLS")
+            select new ClearScreenStatement();
+
+        private static readonly Parser<BasicStatement> Any =
+            Rem.Or(Cls);
 
         public static BasicStatement FromString(string input)
         {
