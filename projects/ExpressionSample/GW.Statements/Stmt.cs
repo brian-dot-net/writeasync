@@ -29,9 +29,7 @@ namespace GW.Statements
             from left in Parse.CharExcept('=').AtLeastOnce().Text()
             from o in Parse.Char('=')
             from right in Parse.AnyChar.AtLeastOnce().Text()
-            select new AssignmentStatement(
-                BasicExpression.FromString(left),
-                BasicExpression.FromString(right));
+            select Asgn(left, right);
 
         private static readonly Parser<BasicStatement> Any =
             Rem.Or(Cls).Or(Assign);
@@ -45,6 +43,20 @@ namespace GW.Statements
             catch (ParseException e)
             {
                 throw new FormatException("Bad statement '" + input + "'.", e);
+            }
+        }
+
+        private static BasicStatement Asgn(string left, string right)
+        {
+            try
+            {
+                return new AssignmentStatement(
+                    BasicExpression.FromString(left),
+                    BasicExpression.FromString(right));
+            }
+            catch (NotSupportedException e)
+            {
+                throw new ParseException(e.Message);
             }
         }
     }

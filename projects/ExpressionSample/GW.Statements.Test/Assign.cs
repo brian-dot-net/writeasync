@@ -44,5 +44,21 @@ namespace GW.Statements.Test
         {
             Test.Good(input, output);
         }
+
+        [InlineData("=")]
+        [InlineData(" = ")]
+        [InlineData("R=")]
+        [InlineData("=1")]
+        [InlineData("R1")]
+        [InlineData("R(1)")]
+        [InlineData("1=2")]
+        [InlineData("\"x\"")]
+        [InlineData("\"x\"=A$")]
+        [InlineData("X+1=2")]
+        [Theory]
+        public void Invalid(string input)
+        {
+            Test.Bad(input);
+        }
     }
 }
