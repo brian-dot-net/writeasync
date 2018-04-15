@@ -37,6 +37,10 @@ namespace GWParse.Statements
             from list in Arrays
             select new DimensionStatement(list);
 
+        private static readonly Parser<BasicStatement> Print =
+            from k in Parse.IgnoreCase("PRINT")
+            select new PrintStatement();
+
         private static readonly Parser<BasicStatement> Assign =
             from left in Expr.AnyVar
             from o in Parse.Char('=').Token()
@@ -44,7 +48,7 @@ namespace GWParse.Statements
             select new AssignmentStatement(left, right);
 
         private static readonly Parser<BasicStatement> Any =
-            Rem.Or(Cls).Or(Dim).Or(Assign);
+            Rem.Or(Cls).Or(Dim).Or(Print).Or(Assign);
 
         public static BasicStatement FromString(string input)
         {
