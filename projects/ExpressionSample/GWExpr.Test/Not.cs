@@ -45,6 +45,7 @@ namespace GWExpr.Test
         }
 
         [InlineData("NOT (1)", "Not(NumL(1))")]
+        [InlineData("NOT(1)", "Not(NumL(1))")]
         [InlineData("NOT (NOT (X))", "Not(Not(NumV(X)))")]
         [InlineData("(NOT X)", "Not(NumV(X))")]
         [Theory]

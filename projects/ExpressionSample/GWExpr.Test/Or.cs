@@ -47,7 +47,9 @@ namespace GWExpr.Test
         [InlineData("1 OR 2 OR 3", "Or(Or(NumL(1), NumL(2)), NumL(3))")]
         [InlineData("(1 OR 2 OR 3)", "Or(Or(NumL(1), NumL(2)), NumL(3))")]
         [InlineData("(1 OR 2) OR 3", "Or(Or(NumL(1), NumL(2)), NumL(3))")]
+        [InlineData("(1 OR 2)OR 3", "Or(Or(NumL(1), NumL(2)), NumL(3))")]
         [InlineData("1 OR (2 OR 3)", "Or(NumL(1), Or(NumL(2), NumL(3)))")]
+        [InlineData("1 OR(2 OR 3)", "Or(NumL(1), Or(NumL(2), NumL(3)))")]
         [Theory]
         public void WithThreeTerms(string input, string output)
         {

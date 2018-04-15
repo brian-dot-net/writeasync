@@ -273,8 +273,7 @@ namespace GWExpr
 
             private static readonly Parser<BasicExpression> Not =
                 from k in Kw.Not
-                from s in Ch.Space.AtLeastOnce()
-                from x in Add
+                from x in Add.Token()
                 select OperatorExpression.Unary("Not", x);
 
             private static readonly Parser<BasicExpression> Root = Not.Or(Relational);

@@ -47,7 +47,9 @@ namespace GWExpr.Test
         [InlineData("1 AND 2 AND 3", "And(And(NumL(1), NumL(2)), NumL(3))")]
         [InlineData("(1 AND 2 AND 3)", "And(And(NumL(1), NumL(2)), NumL(3))")]
         [InlineData("(1 AND 2) AND 3", "And(And(NumL(1), NumL(2)), NumL(3))")]
+        [InlineData("(1 AND 2)AND 3", "And(And(NumL(1), NumL(2)), NumL(3))")]
         [InlineData("1 AND (2 AND 3)", "And(NumL(1), And(NumL(2), NumL(3)))")]
+        [InlineData("1 AND(2 AND 3)", "And(NumL(1), And(NumL(2), NumL(3)))")]
         [Theory]
         public void WithThreeTerms(string input, string output)
         {
