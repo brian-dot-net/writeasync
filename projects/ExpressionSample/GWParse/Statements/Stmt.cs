@@ -53,6 +53,15 @@ namespace GWParse.Statements
 
         private static readonly Parser<BasicStatement> Next = NextNonEmpty.Or(NextEmpty);
 
+        private static readonly Parser<BasicExpression> DataStr =
+            from s in Ch.NonQuote.AtLeastOnce().Token().Text()
+            select BasicExpression.FromString("\"" + s.Trim() + "\"");
+
+        private static readonly Parser<BasicStatement> Data =
+            from k in Kw.Data
+            from c in DataStr
+            select new DataStatement(c);
+
         private static readonly Parser<IEnumerable<BasicExpression>> Arrays =
             from head in Expr.AnyArray.Once()
             from rest in Ch.Comma.Then(_ => Expr.AnyArray).Many()
@@ -169,6 +178,7 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> Any =
             Rem
             .Or(Cls)
+            .Or(Data)
             .Or(Dim)
             .Or(For)
             .Or(Gosub)
@@ -205,6 +215,7 @@ namespace GWParse.Statements
         private static class Kw
         {
             public static readonly Parser<IEnumerable<char>> Cls = Parse.IgnoreCase("CLS");
+            public static readonly Parser<IEnumerable<char>> Data = Parse.IgnoreCase("DATA ").Token();
             public static readonly Parser<IEnumerable<char>> Dim = Parse.IgnoreCase("DIM ").Token();
             public static readonly Parser<IEnumerable<char>> For = Parse.IgnoreCase("FOR ").Token();
             public static readonly Parser<IEnumerable<char>> Gosub = Parse.IgnoreCase("GOSUB ").Token();
