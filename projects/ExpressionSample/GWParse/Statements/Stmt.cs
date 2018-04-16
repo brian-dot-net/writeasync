@@ -53,13 +53,19 @@ namespace GWParse.Statements
 
         private static readonly Parser<BasicStatement> Next = NextNonEmpty.Or(NextEmpty);
 
+        private static readonly Parser<BasicExpression> DataNum =
+            from n in Parse.Number
+            select BasicExpression.FromString(n);
+
         private static readonly Parser<BasicExpression> DataStr =
             from s in Ch.NonQuote.AtLeastOnce().Token().Text()
             select BasicExpression.FromString("\"" + s.Trim() + "\"");
 
+        private static readonly Parser<BasicExpression> DataItem = DataNum.Or(DataStr);
+
         private static readonly Parser<BasicStatement> Data =
             from k in Kw.Data
-            from c in DataStr
+            from c in DataItem
             select new DataStatement(c);
 
         private static readonly Parser<IEnumerable<BasicExpression>> Arrays =

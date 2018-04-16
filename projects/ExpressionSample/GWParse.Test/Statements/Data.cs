@@ -17,8 +17,18 @@ namespace GWParse.Test.Statements
             Test.Good(input, output);
         }
 
+        [InlineData("DATA 1", "Data(NumL(1))")]
+        [InlineData("DATA 123", "Data(NumL(123))")]
+        [InlineData("DATA 999999", "Data(NumL(999999))")]
+        [Theory]
+        public void OneNumber(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("data x", "Data(StrL(\"x\"))")]
         [InlineData("DaTa X", "Data(StrL(\"X\"))")]
+        [InlineData("daTA 1", "Data(NumL(1))")]
         [Theory]
         public void IgnoreCase(string input, string output)
         {
@@ -29,6 +39,7 @@ namespace GWParse.Test.Statements
         [InlineData("DATA x ", "Data(StrL(\"x\"))")]
         [InlineData("  DATA  x  ", "Data(StrL(\"x\"))")]
         [InlineData("  DATA  x  y  ", "Data(StrL(\"x  y\"))")]
+        [InlineData("  DATA  1  ", "Data(NumL(1))")]
         [Theory]
         public void AllowSpaces(string input, string output)
         {
@@ -37,6 +48,7 @@ namespace GWParse.Test.Statements
 
         [InlineData("DATA")]
         [InlineData("DATA ")]
+        [InlineData("DATA 1x")]
         [Theory]
         public void Invalid(string input)
         {
