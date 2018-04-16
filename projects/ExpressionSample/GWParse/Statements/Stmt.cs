@@ -12,6 +12,8 @@ namespace GWParse.Statements
 
     internal static class Stmt
     {
+        public static readonly Parser<BasicStatement> Any = Parse.Ref(() => Root);
+
         private static readonly BasicExpression One = BasicExpression.FromString("1");
 
         private static readonly Parser<int> LineNum =
@@ -196,7 +198,7 @@ namespace GWParse.Statements
             from right in Expr.Any
             select new AssignmentStatement(left, right);
 
-        private static readonly Parser<BasicStatement> Any =
+        private static readonly Parser<BasicStatement> Root =
             Rem
             .Or(Cls)
             .Or(Data)
