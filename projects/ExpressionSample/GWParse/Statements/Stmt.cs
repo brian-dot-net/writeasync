@@ -66,7 +66,7 @@ namespace GWParse.Statements
             select s;
 
         private static readonly Parser<string> DataBare =
-            from s in Parse.CharExcept("\",").AtLeastOnce().Token().Text()
+            from s in Parse.CharExcept("\",:").AtLeastOnce().Token().Text()
             select s.Trim();
 
         private static readonly Parser<BasicExpression> DataStr =

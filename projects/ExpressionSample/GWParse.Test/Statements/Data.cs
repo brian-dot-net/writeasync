@@ -91,6 +91,7 @@ namespace GWParse.Test.Statements
         [InlineData("DATA x,")]
         [InlineData("DATA ,")]
         [InlineData("DATA ,,")]
+        [InlineData("DATA :")]
         [Theory]
         public void Invalid(string input)
         {

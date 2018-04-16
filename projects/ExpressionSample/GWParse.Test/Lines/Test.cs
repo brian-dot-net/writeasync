@@ -19,6 +19,9 @@ namespace GWParse.Test.Lines
         [InlineData("1 REM : REM", "Line(1, Rem(\": REM\"))")]
         [InlineData("2 PRINT : REM many", "Line(2, Print(), Rem(\"many\"))")]
         [InlineData("3 PRINT : A=1 : B=2", "Line(3, Print(), Assign(NumV(A), NumL(1)), Assign(NumV(B), NumL(2)))")]
+        [InlineData("3 DATA 1:PRINT", "Line(3, Data(NumL(1)), Print())")]
+        [InlineData("3 DATA x:PRINT", "Line(3, Data(StrL(\"x\")), Print())")]
+        [InlineData("3 DATA \"x:PRINT\"", "Line(3, Data(StrL(\"x:PRINT\")))")]
         [Theory]
         public void Valid(string input, string output)
         {
