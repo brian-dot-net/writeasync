@@ -64,7 +64,7 @@ namespace GWParse.Statements
             select s;
 
         private static readonly Parser<string> DataBare =
-            from s in Ch.NonQuote.AtLeastOnce().Token().Text()
+            from s in Parse.CharExcept("\",").AtLeastOnce().Token().Text()
             select s.Trim();
 
         private static readonly Parser<BasicExpression> DataStr =
@@ -73,10 +73,15 @@ namespace GWParse.Statements
 
         private static readonly Parser<BasicExpression> DataItem = DataNum.Or(DataStr);
 
+        private static readonly Parser<IEnumerable<BasicExpression>> DataItems =
+            from head in DataItem.Once()
+            from rest in Ch.Comma.Then(_ => DataItem).Many()
+            select head.Concat(rest);
+
         private static readonly Parser<BasicStatement> Data =
             from k in Kw.Data
-            from c in DataItem
-            select new DataStatement(c);
+            from list in DataItems
+            select new DataStatement(list);
 
         private static readonly Parser<IEnumerable<BasicExpression>> Arrays =
             from head in Expr.AnyArray.Once()

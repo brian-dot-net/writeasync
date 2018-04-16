@@ -4,17 +4,22 @@
 
 namespace GWParse.Statements
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using GWParse.Expressions;
 
     internal sealed class DataStatement : BasicStatement
     {
-        private readonly BasicExpression c;
+        private readonly BasicExpression[] list;
 
-        public DataStatement(BasicExpression c)
+        public DataStatement(IEnumerable<BasicExpression> list)
         {
-            this.c = c;
+            this.list = list.ToArray();
         }
 
-        public override string ToString() => "Data(" + this.c + ")";
+        public override string ToString()
+        {
+            return "Data(" + string.Join<BasicExpression>(", ", this.list) + ")";
+        }
     }
 }
