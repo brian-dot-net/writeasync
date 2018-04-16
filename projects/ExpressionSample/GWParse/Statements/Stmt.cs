@@ -57,9 +57,19 @@ namespace GWParse.Statements
             from n in Parse.Number
             select BasicExpression.FromString(n);
 
-        private static readonly Parser<BasicExpression> DataStr =
+        private static readonly Parser<string> DataQuoted =
+            from lq in Ch.Quote
+            from s in Ch.NonQuote.Many().Text()
+            from rq in Ch.Quote
+            select s;
+
+        private static readonly Parser<string> DataBare =
             from s in Ch.NonQuote.AtLeastOnce().Token().Text()
-            select BasicExpression.FromString("\"" + s.Trim() + "\"");
+            select s.Trim();
+
+        private static readonly Parser<BasicExpression> DataStr =
+            from s in DataQuoted.Or(DataBare)
+            select BasicExpression.FromString("\"" + s + "\"");
 
         private static readonly Parser<BasicExpression> DataItem = DataNum.Or(DataStr);
 
