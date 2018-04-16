@@ -4,17 +4,22 @@
 
 namespace GWParse.Statements
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using GWParse.Expressions;
 
     internal sealed class ReadStatement : BasicStatement
     {
-        private readonly BasicExpression v;
+        private readonly BasicExpression[] list;
 
-        public ReadStatement(BasicExpression v)
+        public ReadStatement(IEnumerable<BasicExpression> list)
         {
-            this.v = v;
+            this.list = list.ToArray();
         }
 
-        public override string ToString() => "Read(" + this.v + ")";
+        public override string ToString()
+        {
+            return "Read(" + string.Join<BasicExpression>(", ", this.list) + ")";
+        }
     }
 }

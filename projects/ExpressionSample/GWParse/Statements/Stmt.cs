@@ -63,10 +63,15 @@ namespace GWParse.Statements
             from list in Arrays
             select new DimensionStatement(list);
 
+        private static readonly Parser<IEnumerable<BasicExpression>> Vars =
+            from head in Expr.AnyVar.Once()
+            from rest in Ch.Comma.Then(_ => Expr.AnyVar).Many()
+            select head.Concat(rest);
+
         private static readonly Parser<BasicStatement> Read =
             from k in Kw.Read
-            from v in Expr.AnyVar
-            select new ReadStatement(v);
+            from list in Vars
+            select new ReadStatement(list);
 
         private static readonly Parser<BasicExpression> IfThenCond =
             from k1 in Kw.If
