@@ -22,6 +22,7 @@ namespace GWParse.Test.Lines
         [InlineData("3 DATA 1:PRINT", "Line(3, Data(NumL(1)), Print())")]
         [InlineData("3 DATA x:PRINT", "Line(3, Data(StrL(\"x\")), Print())")]
         [InlineData("3 DATA \"x:PRINT\"", "Line(3, Data(StrL(\"x:PRINT\")))")]
+        [InlineData("120 C=C+1 : IF C>LEN(CM$) THEN 150", "Line(120, Assign(NumV(C), Add(NumV(C), NumL(1))), If(Gt(NumV(C), Len(StrV(CM))), Goto(150)))")]
         [Theory]
         public void Valid(string input, string output)
         {

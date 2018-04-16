@@ -12,6 +12,7 @@ namespace GWParse.Test.Statements
         [InlineData("IF X THEN 34", "If(NumV(X), Goto(34))")]
         [InlineData("IF X=1 THEN 56789", "If(Eq(NumV(X), NumL(1)), Goto(56789))")]
         [InlineData("IF A$>\"x\" AND B=1 THEN 56789", "If(And(Gt(StrV(A), StrL(\"x\")), Eq(NumV(B), NumL(1))), Goto(56789))")]
+        [InlineData("IF C>LEN(CM$) THEN 150", "If(Gt(NumV(C), Len(StrV(CM))), Goto(150))")]
         [Theory]
         public void ValidGoto(string input, string output)
         {
@@ -53,7 +54,6 @@ namespace GWParse.Test.Statements
         [InlineData("IF THEN")]
         [InlineData("IF 1THEN")]
         [InlineData("IF 1THEN2")]
-        [InlineData("IF 1THEN 2")]
         [InlineData("IF 1 THEN2")]
         [InlineData("IF 1 THENPRINT")]
         [Theory]

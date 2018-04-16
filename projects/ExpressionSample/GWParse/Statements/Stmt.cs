@@ -254,7 +254,7 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> RemE = Parse.IgnoreCase("REM");
             public static readonly Parser<IEnumerable<char>> Return = Parse.IgnoreCase("RETURN");
             public static readonly Parser<IEnumerable<char>> Step = Parse.IgnoreCase("STEP ").Token();
-            public static readonly Parser<IEnumerable<char>> Then = Parse.IgnoreCase(" THEN ");
+            public static readonly Parser<IEnumerable<char>> Then = Parse.IgnoreCase("THEN ").Token();
             public static readonly Parser<IEnumerable<char>> To = Parse.IgnoreCase("TO ").Token();
         }
     }
