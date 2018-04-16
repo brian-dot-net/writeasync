@@ -286,7 +286,13 @@ namespace GWParse.Expressions
                 from x in Add.Token()
                 select BasicOperator.Unary("Not", x);
 
-            private static readonly Parser<BasicExpression> Root = Not.Or(Relational);
+            private static readonly Parser<BasicExpression> And =
+                Parse.ChainOperator(Op.And, Not.Or(Relational), Op.Apply);
+
+            private static readonly Parser<BasicExpression> Or =
+                Parse.ChainOperator(Op.Or, And, Op.Apply);
+
+            private static readonly Parser<BasicExpression> Root = Or;
         }
 
         private static class Op

@@ -22,6 +22,7 @@ namespace GWParse.Test.Statements
         [InlineData("IF 1 THEN X$=\"ok\"", "If(NumL(1), Assign(StrV(X), StrL(\"ok\")))")]
         [InlineData("IF X THEN GOTO 1", "If(NumV(X), Goto(1))")]
         [InlineData("IF X=1 THEN PRINT \"ok\"", "If(Eq(NumV(X), NumL(1)), Print(StrL(\"ok\")))")]
+        [InlineData("IF (OB(I) AND 127)=R THEN PRINT \" \";OB$(I)", "If(Eq(And(NumA(OB, NumV(I)), NumL(127)), NumV(R)), Print(StrL(\" \"), StrA(OB, NumV(I))))")]
         [Theory]
         public void ValidNonGoto(string input, string output)
         {

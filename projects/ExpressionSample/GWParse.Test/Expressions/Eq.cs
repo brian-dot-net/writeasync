@@ -48,6 +48,8 @@ namespace GWParse.Test.Expressions
         [InlineData("(1=2)", "Eq(NumL(1), NumL(2))")]
         [InlineData("(X=234)", "Eq(NumV(X), NumL(234))")]
         [InlineData("(X(234)=YZ1234)", "Eq(NumA(X, NumL(234)), NumV(YZ1234))")]
+        [InlineData("(X)=Y", "Eq(NumV(X), NumV(Y))")]
+        [InlineData("X=(Y)", "Eq(NumV(X), NumV(Y))")]
         [Theory]
         public void WithParens(string input, string output)
         {
@@ -68,6 +70,10 @@ namespace GWParse.Test.Expressions
         [InlineData("Z+1=X-Y", "Eq(Add(NumV(Z), NumL(1)), Sub(NumV(X), NumV(Y)))")]
         [InlineData("(Z*1)=(X^Y)", "Eq(Mult(NumV(Z), NumL(1)), Pow(NumV(X), NumV(Y)))")]
         [InlineData("Z*1=X^Y", "Eq(Mult(NumV(Z), NumL(1)), Pow(NumV(X), NumV(Y)))")]
+        [InlineData("(X AND 1)=Y", "Eq(And(NumV(X), NumL(1)), NumV(Y))")]
+        [InlineData("(X OR 1)=Y", "Eq(Or(NumV(X), NumL(1)), NumV(Y))")]
+        [InlineData("Y=(X AND 1)", "Eq(NumV(Y), And(NumV(X), NumL(1)))")]
+        [InlineData("Y=(X OR 1)", "Eq(NumV(Y), Or(NumV(X), NumL(1)))")]
         [Theory]
         public void WithOtherOperations(string input, string output)
         {
