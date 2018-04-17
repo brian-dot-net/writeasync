@@ -17,6 +17,26 @@ namespace GWParse.Test.Expressions
             Test.Good(input, output);
         }
 
+        [InlineData("1 AND \"X\"")]
+        [InlineData("\"X\" AND 1")]
+        [InlineData("1 AND X$")]
+        [InlineData("X$ AND 1")]
+        [InlineData("X AND X$")]
+        [InlineData("X$ AND X")]
+        [InlineData("X(1) AND X$")]
+        [InlineData("X$ AND X(1)")]
+        [InlineData("X(1) AND X$(1)")]
+        [InlineData("X$(1) AND X(1)")]
+        [InlineData("X+1 AND X$")]
+        [InlineData("X$ AND X+1")]
+        [InlineData("X$+\"x\" AND X+1")]
+        [InlineData("X+1 AND X$+\"x\"")]
+        [Theory]
+        public void TypeMismatch(string input)
+        {
+            Test.Bad(input);
+        }
+
         [InlineData("1  AND 2", "And(NumL(1), NumL(2))")]
         [InlineData("X  AND  234", "And(NumV(X), NumL(234))")]
         [InlineData("X(234)AND  YZ1234", "And(NumA(X, NumL(234)), NumV(YZ1234))")]

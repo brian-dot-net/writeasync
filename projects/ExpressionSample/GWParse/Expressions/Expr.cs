@@ -6,6 +6,7 @@ namespace GWParse.Expressions
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using Sprache;
 
@@ -390,7 +391,32 @@ namespace GWParse.Expressions
 
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
-                    return BasicOperator.Binary(this.name, this.type, x, y);
+                    BasicType result = this.CheckType(x, y);
+                    return BasicOperator.Binary(this.name, result, x, y);
+                }
+
+                private BasicType CheckType(BasicExpression x, BasicExpression y)
+                {
+                    if (x.Type != y.Type)
+                    {
+                        string error = string.Format(
+                            CultureInfo.InvariantCulture,
+                            "Type mismatch for operator '{0}'; Type of [{1}] is {2} while type of [{3}] is {4}.",
+                            this.name,
+                            x,
+                            x.Type,
+                            y,
+                            y.Type);
+                        throw new ParseException(error);
+                    }
+
+                    BasicType result = this.type;
+                    if (result == BasicType.None)
+                    {
+                        result = x.Type;
+                    }
+
+                    return result;
                 }
             }
         }

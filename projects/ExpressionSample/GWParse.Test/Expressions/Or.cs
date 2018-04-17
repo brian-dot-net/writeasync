@@ -17,6 +17,26 @@ namespace GWParse.Test.Expressions
             Test.Good(input, output);
         }
 
+        [InlineData("1 OR \"X\"")]
+        [InlineData("\"X\" OR 1")]
+        [InlineData("1 OR X$")]
+        [InlineData("X$ OR 1")]
+        [InlineData("X OR X$")]
+        [InlineData("X$ OR X")]
+        [InlineData("X(1) OR X$")]
+        [InlineData("X$ OR X(1)")]
+        [InlineData("X(1) OR X$(1)")]
+        [InlineData("X$(1) OR X(1)")]
+        [InlineData("X+1 OR X$")]
+        [InlineData("X$ OR X+1")]
+        [InlineData("X$+\"x\" OR X+1")]
+        [InlineData("X+1 OR X$+\"x\"")]
+        [Theory]
+        public void TypeMismatch(string input)
+        {
+            Test.Bad(input);
+        }
+
         [InlineData("1  OR 2", "Or(NumL(1), NumL(2))")]
         [InlineData("X OR  234", "Or(NumV(X), NumL(234))")]
         [InlineData("X(234)OR YZ1234", "Or(NumA(X, NumL(234)), NumV(YZ1234))")]
