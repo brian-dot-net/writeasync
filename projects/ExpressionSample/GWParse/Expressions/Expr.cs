@@ -21,17 +21,106 @@ namespace GWParse.Expressions
         public static readonly Parser<BasicExpression> AnyNumScalar = Var.NumScalar;
 
         private static readonly Parser<BasicExpression> Paren =
-            from lp in Ch.LeftParen
+            from lp in Ch.LeftParen.Token()
             from x in Any
-            from rp in Ch.RightParen
+            from rp in Ch.RightParen.Token()
             select x;
 
-        private static readonly Parser<BasicExpression> Value = Str.Any.Or(Num.Any);
+        private static readonly Parser<BasicExpression> Left =
+            from f in Kw.Left
+            from d in Ch.Dollar
+            from lp in Ch.LeftParen.Token()
+            from x in Any
+            from c in Ch.Comma.Token()
+            from n in Any
+            from rp in Ch.RightParen.Token()
+            select BasicOperator.Binary("Left", BasicType.Str, A.Str(x), A.Num(n));
 
-        private static readonly Parser<BasicExpression> Factor = Value.Or(Paren);
+        private static readonly Parser<Tuple<BasicExpression, BasicExpression>> MidPrefix =
+            from f in Kw.Mid
+            from d in Ch.Dollar
+            from lp in Ch.LeftParen.Token()
+            from x in Any
+            from c in Ch.Comma.Token()
+            from n in Any
+            select Tuple.Create(x, n);
+
+        private static readonly Parser<BasicExpression> Mid3 =
+            from t in MidPrefix
+            from c in Ch.Comma.Token()
+            from m in Any
+            from rp in Ch.RightParen.Token()
+            select BasicOperator.Ternary("Mid", BasicType.Str, A.Str(t.Item1), A.Num(t.Item2), A.Num(m));
+
+        private static readonly Parser<BasicExpression> Mid2 =
+            from t in MidPrefix
+            from rp in Ch.RightParen.Token()
+            select BasicOperator.Binary("Mid", BasicType.Str, A.Str(t.Item1), A.Num(t.Item2));
+
+        private static readonly Parser<BasicExpression> Mid = Mid3.Or(Mid2);
+
+        private static readonly Parser<BasicExpression> Right =
+            from f in Kw.Right
+            from d in Ch.Dollar
+            from lp in Ch.LeftParen.Token()
+            from x in Any
+            from c in Ch.Comma.Token()
+            from n in Any
+            from rp in Ch.RightParen.Token()
+            select BasicOperator.Binary("Right", BasicType.Str, A.Str(x), A.Num(n));
+
+        private static readonly Parser<BasicExpression> Exp =
+            from f in Kw.Exp
+            from x in Paren
+            select BasicOperator.Unary("Exp", BasicType.Num, A.Num(x));
+
+        private static readonly Parser<BasicExpression> Len =
+            from f in Kw.Len
+            from x in Paren
+            select BasicOperator.Unary("Len", BasicType.Num, A.Str(x));
+
+        private static readonly Parser<BasicExpression> Sqr =
+            from f in Kw.Sqr
+            from x in Paren
+            select BasicOperator.Unary("Sqrt", BasicType.Num, A.Num(x));
+
+        private static readonly Parser<BasicExpression> Fun =
+            Left.Or(Mid).Or(Right).Or(Exp).Or(Len).Or(Sqr);
+
+        private static readonly Parser<BasicExpression> Value = Lit.Any.Or(Fun).Or(Var.Any);
+
+        private static readonly Parser<BasicExpression> Unary =
+            Parse.Ref(() => Neg)
+            .Or(Parse.Ref(() => Not));
+
+        private static readonly Parser<BasicExpression> Factor = Paren.Or(Value);
+
+        private static readonly Parser<BasicExpression> Operand = Unary.Or(Factor);
+
+        private static readonly Parser<BasicExpression> Pow =
+            Parse.ChainOperator(Op.Exponential, Operand, Op.Apply);
+
+        private static readonly Parser<BasicExpression> Neg =
+            from m in Ch.Minus.Token()
+            from x in Pow
+            select BasicOperator.Unary("Neg", BasicType.Num, A.Num(x));
+
+        private static readonly Parser<BasicExpression> Mult =
+            Parse.ChainOperator(Op.Multiplicative, Neg.Or(Pow), Op.Apply);
+
+        private static readonly Parser<BasicExpression> Add =
+            Parse.ChainOperator(Op.Additive, Mult, Op.Apply);
+
+        private static readonly Parser<BasicExpression> Relational =
+            Parse.ChainOperator(Op.Relational, Add, Op.Apply);
+
+        private static readonly Parser<BasicExpression> Not =
+            from k in Kw.Not
+            from x in Add.Token()
+            select BasicOperator.Unary("Not", BasicType.Num, A.Num(x));
 
         private static readonly Parser<BasicExpression> And =
-            Parse.ChainOperator(Op.And, Factor, Op.Apply);
+            Parse.ChainOperator(Op.And, Not.Or(Relational), Op.Apply);
 
         private static readonly Parser<BasicExpression> Or =
             Parse.ChainOperator(Op.Or, And, Op.Apply);
@@ -52,6 +141,29 @@ namespace GWParse.Expressions
             catch (ParseException e)
             {
                 throw new FormatException("Bad expression '" + input + "'.", e);
+            }
+        }
+
+        private static class A
+        {
+            public static BasicExpression Str(BasicExpression x) => Type(x, BasicType.Str);
+
+            public static BasicExpression Num(BasicExpression x) => Type(x, BasicType.Num);
+
+            private static BasicExpression Type(BasicExpression x, BasicType expected)
+            {
+                if (x.Type != expected)
+                {
+                    string error = string.Format(
+                        CultureInfo.InvariantCulture,
+                        "Type mismatch; expected [{0}] to be of type {1} but was of type {2}.",
+                        x,
+                        expected,
+                        x.Type);
+                    throw new ParseException(error);
+                }
+
+                return x;
             }
         }
 
@@ -155,145 +267,6 @@ namespace GWParse.Expressions
             public static readonly Parser<BasicExpression> ArrayAny = StrArray.Or(NumArray);
 
             public static readonly Parser<BasicExpression> Any = StrAny.Or(NumAny);
-        }
-
-        private static class Str
-        {
-            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Root);
-
-            public static readonly Parser<BasicExpression> Paren =
-                from lp in Ch.LeftParen.Token()
-                from x in Any
-                from rp in Ch.RightParen.Token()
-                select x;
-
-            private static readonly Parser<BasicExpression> Left =
-                from f in Kw.Left
-                from d in Ch.Dollar
-                from lp in Ch.LeftParen.Token()
-                from x in Any
-                from c in Ch.Comma.Token()
-                from n in Num.Any
-                from rp in Ch.RightParen.Token()
-                select BasicOperator.Binary("Left", BasicType.Str, x, n);
-
-            private static readonly Parser<Tuple<BasicExpression, BasicExpression>> MidPrefix =
-                from f in Kw.Mid
-                from d in Ch.Dollar
-                from lp in Ch.LeftParen.Token()
-                from x in Any
-                from c in Ch.Comma.Token()
-                from n in Num.Any
-                select Tuple.Create(x, n);
-
-            private static readonly Parser<BasicExpression> Mid3 =
-                from t in MidPrefix
-                from c in Ch.Comma.Token()
-                from m in Num.Any
-                from rp in Ch.RightParen.Token()
-                select BasicOperator.Ternary("Mid", BasicType.Str, t.Item1, t.Item2, m);
-
-            private static readonly Parser<BasicExpression> Mid2 =
-                from t in MidPrefix
-                from rp in Ch.RightParen.Token()
-                select BasicOperator.Binary("Mid", BasicType.Str, t.Item1, t.Item2);
-
-            private static readonly Parser<BasicExpression> Mid = Mid3.Or(Mid2);
-
-            private static readonly Parser<BasicExpression> Right =
-                from f in Kw.Right
-                from d in Ch.Dollar
-                from lp in Ch.LeftParen.Token()
-                from x in Any
-                from c in Ch.Comma.Token()
-                from n in Num.Any
-                from rp in Ch.RightParen.Token()
-                select BasicOperator.Binary("Right", BasicType.Str, x, n);
-
-            private static readonly Parser<BasicExpression> Fun = Left.Or(Mid).Or(Right);
-
-            private static readonly Parser<BasicExpression> Value = Lit.Str.Or(Fun).Or(Var.StrAny);
-
-            private static readonly Parser<BasicExpression> Factor = Paren.Or(Value);
-
-            private static readonly Parser<BasicExpression> Add =
-                Parse.ChainOperator(Op.Add, Factor, Op.Apply);
-
-            private static readonly Parser<BasicExpression> Relational =
-                from x in Add
-                from op in Op.Relational
-                from y in Add
-                select op.Apply(x, y);
-
-            private static readonly Parser<BasicExpression> Root = Relational.Or(Add);
-        }
-
-        private static class Num
-        {
-            public static readonly Parser<BasicExpression> Any = Parse.Ref(() => Root);
-
-            private static readonly Parser<BasicExpression> Unary =
-                Parse.Ref(() => Neg)
-                .Or(Parse.Ref(() => Not));
-
-            private static readonly Parser<BasicExpression> Paren =
-                from lp in Ch.LeftParen.Token()
-                from x in Any
-                from rp in Ch.RightParen.Token()
-                select x;
-
-            private static readonly Parser<BasicExpression> Exp =
-                from f in Kw.Exp
-                from x in Paren
-                select BasicOperator.Unary("Exp", BasicType.Num, x);
-
-            private static readonly Parser<BasicExpression> Len =
-                from f in Kw.Len.Token()
-                from x in Str.Paren
-                select BasicOperator.Unary("Len", BasicType.Num, x);
-
-            private static readonly Parser<BasicExpression> Sqr =
-                from f in Kw.Sqr
-                from x in Paren
-                select BasicOperator.Unary("Sqrt", BasicType.Num, x);
-
-            private static readonly Parser<BasicExpression> Fun = Exp.Or(Len).Or(Sqr);
-
-            private static readonly Parser<BasicExpression> Value = Lit.Num.Or(Fun).Or(Var.NumAny);
-
-            private static readonly Parser<BasicExpression> Factor = Paren.Or(Value);
-
-            private static readonly Parser<BasicExpression> Operand = Unary.Or(Factor);
-
-            private static readonly Parser<BasicExpression> Pow =
-                Parse.ChainOperator(Op.Exponential, Operand, Op.Apply);
-
-            private static readonly Parser<BasicExpression> Neg =
-                from m in Ch.Minus.Token()
-                from x in Pow
-                select BasicOperator.Unary("Neg", BasicType.Num, x);
-
-            private static readonly Parser<BasicExpression> Mult =
-                Parse.ChainOperator(Op.Multiplicative, Neg.Or(Pow), Op.Apply);
-
-            private static readonly Parser<BasicExpression> Add =
-                Parse.ChainOperator(Op.Additive, Mult, Op.Apply);
-
-            private static readonly Parser<BasicExpression> Relational =
-                Parse.ChainOperator(Op.Relational, Add, Op.Apply);
-
-            private static readonly Parser<BasicExpression> Not =
-                from k in Kw.Not
-                from x in Add.Token()
-                select BasicOperator.Unary("Not", BasicType.Num, x);
-
-            private static readonly Parser<BasicExpression> And =
-                Parse.ChainOperator(Op.And, Not.Or(Relational), Op.Apply);
-
-            private static readonly Parser<BasicExpression> Or =
-                Parse.ChainOperator(Op.Or, And, Op.Apply);
-
-            private static readonly Parser<BasicExpression> Root = Or;
         }
 
         private static class Op
