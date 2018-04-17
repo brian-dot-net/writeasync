@@ -35,6 +35,10 @@ namespace GWParse.Statements
             from k in Kw.Cls
             select new ClearScreenStatement();
 
+        private static readonly Parser<BasicStatement> End =
+            from k in Kw.End
+            select new EndStatement();
+
         private static readonly Parser<BasicStatement> Return =
             from k in Kw.Return
             select new ReturnStatement();
@@ -207,6 +211,7 @@ namespace GWParse.Statements
             .Or(Cls)
             .Or(Data)
             .Or(Dim)
+            .Or(End)
             .Or(For)
             .Or(Gosub)
             .Or(Goto)
@@ -245,6 +250,7 @@ namespace GWParse.Statements
             public static readonly Parser<IEnumerable<char>> Cls = Parse.IgnoreCase("CLS");
             public static readonly Parser<IEnumerable<char>> Data = Parse.IgnoreCase("DATA ").Token();
             public static readonly Parser<IEnumerable<char>> Dim = Parse.IgnoreCase("DIM ").Token();
+            public static readonly Parser<IEnumerable<char>> End = Parse.IgnoreCase("END");
             public static readonly Parser<IEnumerable<char>> For = Parse.IgnoreCase("FOR ").Token();
             public static readonly Parser<IEnumerable<char>> Gosub = Parse.IgnoreCase("GOSUB ").Token();
             public static readonly Parser<IEnumerable<char>> Goto = Parse.IgnoreCase("GOTO ").Token();
