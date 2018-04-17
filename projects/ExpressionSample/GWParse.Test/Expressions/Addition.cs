@@ -35,9 +35,16 @@ namespace GWParse.Test.Expressions
             Test.Good(input, output);
         }
 
-        [InlineData("\"1\"+2")]
-        [InlineData("X$+234")]
-        [InlineData("X(234)+YZ1234$")]
+        [InlineData("1+\"x\"")]
+        [InlineData("\"x\"+1")]
+        [InlineData("X+X$")]
+        [InlineData("X$+X")]
+        [InlineData("X+\"x\"")]
+        [InlineData("\"x\"+X")]
+        [InlineData("1+X$")]
+        [InlineData("X$+1")]
+        [InlineData("X$(1)+X(1)")]
+        [InlineData("X(1)+X$(1)")]
         [Theory]
         public void TypeMismatch(string input)
         {
