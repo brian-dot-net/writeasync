@@ -174,7 +174,7 @@ namespace GWParse.Expressions
                 from c in Ch.Comma.Token()
                 from n in Num.Any
                 from rp in Ch.RightParen.Token()
-                select BasicOperator.Binary("Left", x, n);
+                select BasicOperator.Binary("Left", BasicType.Str, x, n);
 
             private static readonly Parser<Tuple<BasicExpression, BasicExpression>> MidPrefix =
                 from f in Kw.Mid
@@ -190,12 +190,12 @@ namespace GWParse.Expressions
                 from c in Ch.Comma.Token()
                 from m in Num.Any
                 from rp in Ch.RightParen.Token()
-                select BasicOperator.Ternary("Mid", t.Item1, t.Item2, m);
+                select BasicOperator.Ternary("Mid", BasicType.Str, t.Item1, t.Item2, m);
 
             private static readonly Parser<BasicExpression> Mid2 =
                 from t in MidPrefix
                 from rp in Ch.RightParen.Token()
-                select BasicOperator.Binary("Mid", t.Item1, t.Item2);
+                select BasicOperator.Binary("Mid", BasicType.Str, t.Item1, t.Item2);
 
             private static readonly Parser<BasicExpression> Mid = Mid3.Or(Mid2);
 
@@ -207,7 +207,7 @@ namespace GWParse.Expressions
                 from c in Ch.Comma.Token()
                 from n in Num.Any
                 from rp in Ch.RightParen.Token()
-                select BasicOperator.Binary("Right", x, n);
+                select BasicOperator.Binary("Right", BasicType.Str, x, n);
 
             private static readonly Parser<BasicExpression> Fun = Left.Or(Mid).Or(Right);
 
@@ -244,17 +244,17 @@ namespace GWParse.Expressions
             private static readonly Parser<BasicExpression> Exp =
                 from f in Kw.Exp
                 from x in Paren
-                select BasicOperator.Unary("Exp", x);
+                select BasicOperator.Unary("Exp", BasicType.Num, x);
 
             private static readonly Parser<BasicExpression> Len =
                 from f in Kw.Len.Token()
                 from x in Str.Paren
-                select BasicOperator.Unary("Len", x);
+                select BasicOperator.Unary("Len", BasicType.Num, x);
 
             private static readonly Parser<BasicExpression> Sqr =
                 from f in Kw.Sqr
                 from x in Paren
-                select BasicOperator.Unary("Sqrt", x);
+                select BasicOperator.Unary("Sqrt", BasicType.Num, x);
 
             private static readonly Parser<BasicExpression> Fun = Exp.Or(Len).Or(Sqr);
 
@@ -270,7 +270,7 @@ namespace GWParse.Expressions
             private static readonly Parser<BasicExpression> Neg =
                 from m in Ch.Minus.Token()
                 from x in Pow
-                select BasicOperator.Unary("Neg", x);
+                select BasicOperator.Unary("Neg", BasicType.Num, x);
 
             private static readonly Parser<BasicExpression> Mult =
                 Parse.ChainOperator(Op.Multiplicative, Neg.Or(Pow), Op.Apply);
@@ -284,7 +284,7 @@ namespace GWParse.Expressions
             private static readonly Parser<BasicExpression> Not =
                 from k in Kw.Not
                 from x in Add.Token()
-                select BasicOperator.Unary("Not", x);
+                select BasicOperator.Unary("Not", BasicType.Num, x);
 
             private static readonly Parser<BasicExpression> And =
                 Parse.ChainOperator(Op.And, Not.Or(Relational), Op.Apply);
@@ -373,22 +373,24 @@ namespace GWParse.Expressions
                 public static readonly IOperator Lt = new Binary("Lt");
                 public static readonly IOperator Ge = new Binary("Ge");
                 public static readonly IOperator Gt = new Binary("Gt");
-                public static readonly IOperator Add = new Binary("Add");
+                public static readonly IOperator Add = new Binary("Add", BasicType.None);
                 public static readonly IOperator Sub = new Binary("Sub");
                 public static readonly IOperator Mult = new Binary("Mult");
                 public static readonly IOperator Div = new Binary("Div");
                 public static readonly IOperator Pow = new Binary("Pow");
 
                 private readonly string name;
+                private readonly BasicType type;
 
-                private Binary(string name)
+                private Binary(string name, BasicType type = BasicType.Num)
                 {
                     this.name = name;
+                    this.type = type;
                 }
 
                 public BasicExpression Apply(BasicExpression x, BasicExpression y)
                 {
-                    return BasicOperator.Binary(this.name, x, y);
+                    return BasicOperator.Binary(this.name, this.type, x, y);
                 }
             }
         }

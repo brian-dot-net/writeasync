@@ -6,12 +6,11 @@ namespace GWParse.Expressions
 {
     internal sealed class BasicVariable : BasicExpression
     {
-        private readonly BasicType type;
         private readonly string name;
 
         private BasicVariable(BasicType type, string name)
+            : base(type)
         {
-            this.type = type;
             this.name = name;
         }
 
@@ -21,7 +20,7 @@ namespace GWParse.Expressions
 
         public override void Accept(IExpressionVisitor visit)
         {
-            visit.Variable(this.type, this.name);
+            visit.Variable(this.Type, this.name);
         }
     }
 }

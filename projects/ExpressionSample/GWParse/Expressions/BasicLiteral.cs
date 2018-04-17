@@ -6,12 +6,11 @@ namespace GWParse.Expressions
 {
     internal sealed class BasicLiteral : BasicExpression
     {
-        private readonly BasicType type;
         private readonly object o;
 
         private BasicLiteral(BasicType type, object o)
+            : base(type)
         {
-            this.type = type;
             this.o = o;
         }
 
@@ -21,7 +20,7 @@ namespace GWParse.Expressions
 
         public override void Accept(IExpressionVisitor visit)
         {
-            visit.Literal(this.type, this.o);
+            visit.Literal(this.Type, this.o);
         }
     }
 }

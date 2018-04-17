@@ -10,12 +10,11 @@ namespace GWParse.Expressions
     internal sealed class BasicArray : BasicExpression
     {
         private readonly string name;
-        private readonly BasicType type;
         private readonly BasicExpression[] subs;
 
         private BasicArray(BasicType type, string name, IEnumerable<BasicExpression> subs)
+            : base(type)
         {
-            this.type = type;
             this.name = name;
             this.subs = subs.ToArray();
         }
@@ -32,7 +31,7 @@ namespace GWParse.Expressions
 
         public override void Accept(IExpressionVisitor visit)
         {
-            visit.Array(this.type, this.name, this.subs);
+            visit.Array(this.Type, this.name, this.subs);
         }
     }
 }

@@ -8,9 +8,12 @@ namespace GWParse.Expressions
 
     public abstract class BasicExpression
     {
-        protected BasicExpression()
+        protected BasicExpression(BasicType type)
         {
+            this.Type = type;
         }
+
+        public BasicType Type { get; private set; }
 
         public static BasicExpression FromString(string input) => Expr.FromString(input);
 
