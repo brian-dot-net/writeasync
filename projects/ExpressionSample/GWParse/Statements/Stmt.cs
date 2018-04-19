@@ -33,19 +33,19 @@ namespace GWParse.Statements
 
         private static readonly Parser<BasicStatement> Cls =
             from k in Kw.Cls
-            select new ClearScreenStatement();
+            select new VoidStatement("Cls");
 
         private static readonly Parser<BasicStatement> End =
             from k in Kw.End
-            select new EndStatement();
+            select new VoidStatement("End");
 
         private static readonly Parser<BasicStatement> Return =
             from k in Kw.Return
-            select new ReturnStatement();
+            select new VoidStatement("Return");
 
         private static readonly Parser<BasicStatement> Run =
             from k in Kw.Run
-            select new RunStatement();
+            select new VoidStatement("Run");
 
         private static readonly Parser<BasicStatement> NextEmpty =
             from k in Kw.NextE
