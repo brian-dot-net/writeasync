@@ -31,7 +31,7 @@ namespace GWParse.Lines
             }
             catch (ParseException e)
             {
-                throw new FormatException("Bad statement '" + input + "'.", e);
+                throw new FormatException("Bad line '" + input + "'.", e);
             }
         }
     }
