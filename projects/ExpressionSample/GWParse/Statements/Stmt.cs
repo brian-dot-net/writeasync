@@ -91,7 +91,7 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> Data =
             from k in Kw.Data
             from list in DataItems
-            select new DataStatement(list);
+            select new ManyStatement("Data", list);
 
         private static readonly Parser<IEnumerable<BasicExpression>> Arrays =
             from head in Expr.AnyArray.Once()
@@ -101,7 +101,7 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> Dim =
             from k in Kw.Dim
             from list in Arrays
-            select new DimensionStatement(list);
+            select new ManyStatement("Dim", list);
 
         private static readonly Parser<IEnumerable<BasicExpression>> Vars =
             from head in Expr.AnyVar.Once()
@@ -111,7 +111,7 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> Read =
             from k in Kw.Read
             from list in Vars
-            select new ReadStatement(list);
+            select new ManyStatement("Read", list);
 
         private static readonly Parser<BasicExpression> IfThenCond =
             from k1 in Kw.If

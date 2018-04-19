@@ -1,4 +1,4 @@
-﻿// <copyright file="DataStatement.cs" company="Brian Rogers">
+﻿// <copyright file="ManyStatement.cs" company="Brian Rogers">
 // Copyright (c) Brian Rogers. All rights reserved.
 // </copyright>
 
@@ -8,18 +8,20 @@ namespace GWParse.Statements
     using System.Linq;
     using GWParse.Expressions;
 
-    internal sealed class DataStatement : BasicStatement
+    internal sealed class ManyStatement : BasicStatement
     {
+        private readonly string name;
         private readonly BasicExpression[] list;
 
-        public DataStatement(IEnumerable<BasicExpression> list)
+        public ManyStatement(string name, IEnumerable<BasicExpression> list)
         {
+            this.name = name;
             this.list = list.ToArray();
         }
 
         public override string ToString()
         {
-            return "Data(" + string.Join<BasicExpression>(", ", this.list) + ")";
+            return this.name + "(" + string.Join<BasicExpression>(", ", this.list) + ")";
         }
     }
 }
