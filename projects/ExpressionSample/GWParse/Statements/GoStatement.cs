@@ -15,6 +15,9 @@ namespace GWParse.Statements
             this.dest = dest;
         }
 
-        public override string ToString() => this.name + "(" + this.dest + ")";
+        public override void Accept(IStatementVisitor visit)
+        {
+            visit.Go(this.name, this.dest);
+        }
     }
 }

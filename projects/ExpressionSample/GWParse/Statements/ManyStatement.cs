@@ -19,9 +19,9 @@ namespace GWParse.Statements
             this.list = list.ToArray();
         }
 
-        public override string ToString()
+        public override void Accept(IStatementVisitor visit)
         {
-            return this.name + "(" + string.Join<BasicExpression>(", ", this.list) + ")";
+            visit.Many(this.name, this.list);
         }
     }
 }

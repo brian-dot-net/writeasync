@@ -17,6 +17,9 @@ namespace GWParse.Statements
             this.v = v;
         }
 
-        public override string ToString() => "Input(\"" + this.prompt + "\", " + this.v + ")";
+        public override void Accept(IStatementVisitor visit)
+        {
+            visit.Input(this.prompt, this.v);
+        }
     }
 }

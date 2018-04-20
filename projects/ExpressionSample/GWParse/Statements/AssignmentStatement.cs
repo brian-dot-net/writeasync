@@ -17,6 +17,9 @@ namespace GWParse.Statements
             this.right = right;
         }
 
-        public override string ToString() => "Assign(" + this.left + ", " + this.right + ")";
+        public override void Accept(IStatementVisitor visit)
+        {
+            visit.Assign(this.left, this.right);
+        }
     }
 }

@@ -13,6 +13,9 @@ namespace GWParse.Statements
             this.name = name;
         }
 
-        public override string ToString() => this.name + "()";
+        public override void Accept(IStatementVisitor visit)
+        {
+            visit.Void(this.name);
+        }
     }
 }

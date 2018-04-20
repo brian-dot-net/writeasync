@@ -21,9 +21,9 @@ namespace GWParse.Statements
             this.step = step;
         }
 
-        public override string ToString()
+        public override void Accept(IStatementVisitor visit)
         {
-            return "For(" + this.v + ", " + this.start + ", " + this.end + ", " + this.step + ")";
+            visit.For(this.v, this.start, this.end, this.step);
         }
     }
 }

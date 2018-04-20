@@ -17,6 +17,9 @@ namespace GWParse.Statements
             this.ifTrue = ifTrue;
         }
 
-        public override string ToString() => "If(" + this.cond + ", " + this.ifTrue + ")";
+        public override void Accept(IStatementVisitor visit)
+        {
+            visit.IfThen(this.cond, this.ifTrue);
+        }
     }
 }

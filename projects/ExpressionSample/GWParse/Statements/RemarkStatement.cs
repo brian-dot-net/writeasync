@@ -15,25 +15,9 @@ namespace GWParse.Statements
             this.text = text;
         }
 
-        public override string ToString() => "Rem(\"" + this.Escape() + "\")";
-
-        private string Escape()
+        public override void Accept(IStatementVisitor visit)
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (char c in this.text)
-            {
-                switch (c)
-                {
-                    case '"':
-                    case '\\':
-                        sb.Append('\\');
-                        break;
-                }
-
-                sb.Append(c);
-            }
-
-            return sb.ToString();
+            visit.Remark(this.text);
         }
     }
 }
