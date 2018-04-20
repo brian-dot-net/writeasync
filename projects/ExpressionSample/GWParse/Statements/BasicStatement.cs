@@ -35,13 +35,12 @@ namespace GWParse.Statements
 
             public void Assign(BasicExpression left, BasicExpression right)
             {
-                this.sb.Append("Assign(").Append(left).Append(", ").Append(right).Append(")");
+                this.Write("Assign", left, right);
             }
 
             public void For(BasicExpression v, BasicExpression start, BasicExpression end, BasicExpression step)
             {
-                this.sb.Append("For(").Append(v).Append(", ").Append(start);
-                this.sb.Append(", ").Append(end).Append(", ").Append(step).Append(")");
+                this.Write("For", v, start, end, step);
             }
 
             public void Go(string name, int dest)
@@ -59,23 +58,7 @@ namespace GWParse.Statements
                 this.sb.Append("Input(\"").Append(prompt).Append("\", ").Append(v).Append(")");
             }
 
-            public void Many(string name, BasicExpression[] list)
-            {
-                this.sb.Append(name).Append("(");
-
-                foreach (BasicExpression expr in list)
-                {
-                    this.sb.Append(expr.ToString());
-                    this.sb.Append(", ");
-                }
-
-                if (list.Length > 0)
-                {
-                    this.sb.Remove(this.sb.Length - 2, 2);
-                }
-
-                this.sb.Append(")");
-            }
+            public void Many(string name, BasicExpression[] list) => this.Write(name, list);
 
             public void Remark(string text)
             {
@@ -97,12 +80,27 @@ namespace GWParse.Statements
                 this.sb.Append("\")");
             }
 
-            public void Void(string name)
-            {
-                this.sb.Append(name).Append("()");
-            }
+            public void Void(string name) => this.Write(name);
 
             public override string ToString() => this.sb.ToString();
+
+            private void Write(string name, params BasicExpression[] list)
+            {
+                this.sb.Append(name).Append("(");
+
+                foreach (BasicExpression expr in list)
+                {
+                    this.sb.Append(expr.ToString());
+                    this.sb.Append(", ");
+                }
+
+                if (list.Length > 0)
+                {
+                    this.sb.Remove(this.sb.Length - 2, 2);
+                }
+
+                this.sb.Append(")");
+            }
         }
     }
 }
