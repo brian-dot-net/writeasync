@@ -133,7 +133,7 @@ namespace GWParse.Statements
 
         private static readonly Parser<BasicStatement> PrintEmpty =
             from k in Kw.PrintE
-            select new PrintStatement(Enumerable.Empty<BasicExpression>());
+            select PrintS(Enumerable.Empty<BasicExpression>());
 
         private static readonly Parser<IEnumerable<BasicExpression>> PrintList =
             from k in Kw.Print
@@ -143,12 +143,12 @@ namespace GWParse.Statements
 
         private static readonly Parser<BasicStatement> PrintMany =
             from list in PrintList
-            select new PrintStatement(list);
+            select PrintS(list);
 
         private static readonly Parser<BasicStatement> PrintNMany =
             from list in PrintList
             from o in Ch.Semicolon
-            select new PrintStatement(list, false);
+            select new ManyStatement("PrintN", list);
 
         private static readonly Parser<BasicStatement> Print =
             PrintNMany.Or(PrintMany).Or(PrintEmpty);
@@ -241,6 +241,11 @@ namespace GWParse.Statements
         private static BasicStatement NextS(IEnumerable<BasicExpression> vars)
         {
             return new ManyStatement("Next", vars);
+        }
+
+        private static BasicStatement PrintS(IEnumerable<BasicExpression> vars)
+        {
+            return new ManyStatement("Print", vars);
         }
 
         private static class Ch
