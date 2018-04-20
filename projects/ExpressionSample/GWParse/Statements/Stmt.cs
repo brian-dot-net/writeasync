@@ -122,7 +122,7 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> IfThenGoto =
             from cond in IfThenCond
             from n in LineNum
-            select new IfThenStatement(cond, new GotoStatement(n));
+            select new IfThenStatement(cond, GotoS(n));
 
         private static readonly Parser<BasicStatement> IfThenNonGoto =
             from cond in IfThenCond
@@ -172,12 +172,12 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> Gosub =
             from k in Kw.Gosub
             from n in LineNum
-            select new GosubStatement(n);
+            select new GoStatement("Gosub", n);
 
         private static readonly Parser<BasicStatement> Goto =
             from k in Kw.Goto
             from n in LineNum
-            select new GotoStatement(n);
+            select GotoS(n);
 
         private static readonly Parser<Tuple<BasicExpression, BasicExpression, BasicExpression>> ForPrefix =
             from k1 in Kw.For
@@ -235,6 +235,8 @@ namespace GWParse.Statements
                 throw new FormatException("Bad statement '" + input + "'.", e);
             }
         }
+
+        private static BasicStatement GotoS(int dest) => new GoStatement("Goto", dest);
 
         private static class Ch
         {
