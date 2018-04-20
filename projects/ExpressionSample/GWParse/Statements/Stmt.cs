@@ -49,7 +49,7 @@ namespace GWParse.Statements
 
         private static readonly Parser<BasicStatement> NextEmpty =
             from k in Kw.NextE
-            select new NextStatement(Enumerable.Empty<BasicExpression>());
+            select NextS(Enumerable.Empty<BasicExpression>());
 
         private static readonly Parser<IEnumerable<BasicExpression>> NumScalars =
             from head in Expr.AnyNumScalar.Once()
@@ -59,7 +59,7 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> NextNonEmpty =
             from k in Kw.Next
             from vars in NumScalars
-            select new NextStatement(vars);
+            select NextS(vars);
 
         private static readonly Parser<BasicStatement> Next = NextNonEmpty.Or(NextEmpty);
 
@@ -237,6 +237,11 @@ namespace GWParse.Statements
         }
 
         private static BasicStatement GotoS(int dest) => new GoStatement("Goto", dest);
+
+        private static BasicStatement NextS(IEnumerable<BasicExpression> vars)
+        {
+            return new ManyStatement("Next", vars);
+        }
 
         private static class Ch
         {
