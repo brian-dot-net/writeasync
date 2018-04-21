@@ -145,7 +145,7 @@ internal sealed class MyProg
             {
                 WrappedMemoryStream input = new WrappedMemoryStream(Encoding.UTF8.GetBytes(inputCode));
 
-                Task task = SourceCodeStream.TranslateAsync(name, input, output);
+                Task task = BasicProgram.TranslateAsync(name, input, output);
 
                 task.IsCompletedSuccessfully.Should().BeTrue();
                 outputCode = Encoding.UTF8.GetString(output.ToArray());

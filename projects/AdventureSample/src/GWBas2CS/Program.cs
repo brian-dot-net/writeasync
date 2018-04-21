@@ -25,7 +25,7 @@ namespace GWBas2CS
         private static Task MainAsync(string inputPath, string outputPath)
         {
             string name = Path.GetFileNameWithoutExtension(inputPath);
-            return SourceCodeStream.TranslateAsync(
+            return BasicProgram.TranslateAsync(
                 name,
                 Open(inputPath, FileMode.Open, FileAccess.Read, FileShare.Read),
                 Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.None));
