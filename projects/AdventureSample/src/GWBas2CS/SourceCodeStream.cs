@@ -4,49 +4,25 @@
 
 namespace GWBas2CS
 {
-    using System;
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
     using GWParse.Lines;
 
-    public sealed class SourceCodeStream : IDisposable
+    public static class SourceCodeStream
     {
-        private readonly StreamReader reader;
-
-        public SourceCodeStream(Stream input)
-        {
-            this.reader = new StreamReader(input);
-        }
-
-        public async Task TranslateAsync(string name, Stream output)
+        public static async Task TranslateAsync(string name, Stream input, Stream output)
         {
             BasicProgram program = new BasicProgram(name);
-            await this.TranslateInnerAsync(program);
+            foreach (BasicLine line in await BasicStream.ReadAsync(input))
+            {
+                line.Accept(program);
+            }
 
             string outputCode = program.ToString();
 
             byte[] rawOutput = Encoding.UTF8.GetBytes(outputCode.ToString());
             await output.WriteAsync(rawOutput, 0, rawOutput.Length);
-        }
-
-        public void Dispose()
-        {
-            this.reader.Close();
-        }
-
-        private async Task TranslateInnerAsync(BasicProgram program)
-        {
-            while (true)
-            {
-                string line = await this.reader.ReadLineAsync();
-                if (line == null)
-                {
-                    return;
-                }
-
-                BasicLine.FromString(line).Accept(program);
-            }
         }
     }
 }

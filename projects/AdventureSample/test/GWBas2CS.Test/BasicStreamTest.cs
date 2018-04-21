@@ -55,7 +55,7 @@ namespace GWBas2CS.Test
 
             Task<BasicLine[]> task = BasicStream.ReadAsync(s);
 
-            task.IsCompleted.Should().BeTrue();
+            task.IsCompletedSuccessfully.Should().BeTrue();
             s.DisposeCount.Should().Be(1);
             return task.Result.Select(l => l.ToString());
         }

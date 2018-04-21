@@ -140,19 +140,17 @@ internal sealed class MyProg
 
         private static string Translate(string name, string inputCode)
         {
-            WrappedMemoryStream stream = new WrappedMemoryStream(Encoding.UTF8.GetBytes(inputCode));
             string outputCode;
-            using (SourceCodeStream source = new SourceCodeStream(stream))
             using (MemoryStream output = new MemoryStream())
             {
-                Task task = source.TranslateAsync(name, output);
+                WrappedMemoryStream input = new WrappedMemoryStream(Encoding.UTF8.GetBytes(inputCode));
 
-                task.Exception.Should().BeNull();
+                Task task = SourceCodeStream.TranslateAsync(name, input, output);
+
                 task.IsCompletedSuccessfully.Should().BeTrue();
                 outputCode = Encoding.UTF8.GetString(output.ToArray());
             }
 
-            stream.DisposeCount.Should().Be(1);
             return outputCode;
         }
     }
