@@ -48,6 +48,7 @@ namespace GWParse.Test.Expressions
         [InlineData("NOT(1)", "Not(NumL(1))")]
         [InlineData("NOT (NOT (X))", "Not(Not(NumV(X)))")]
         [InlineData("(NOT X)", "Not(NumV(X))")]
+        [InlineData("NOT  (  X  )  ", "Not(NumV(X))")]
         [Theory]
         public void WithParens(string input, string output)
         {
@@ -79,7 +80,7 @@ namespace GWParse.Test.Expressions
         [InlineData("NOT1", "NumV(NOT1)")]
         [InlineData("notX", "NumV(NOTX)")]
         [InlineData("not1not$", "StrV(NOT1NOT)")]
-        [Theory(Skip = "reserved prefix variables not working")]
+        [Theory]
         public void AllowedReservedPrefix(string input, string output)
         {
             Test.Good(input, output);

@@ -116,7 +116,7 @@ namespace GWParse.Test.Expressions
         [InlineData("AND1", "NumV(AND1)")]
         [InlineData("andX", "NumV(ANDX)")]
         [InlineData("and1and$", "StrV(AND1AND)")]
-        [Theory(Skip = "reserved prefix variables not working")]
+        [Theory]
         public void AllowedReservedPrefix(string input, string output)
         {
             Test.Good(input, output);

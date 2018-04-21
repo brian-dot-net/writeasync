@@ -114,9 +114,21 @@ namespace GWParse.Expressions
         private static readonly Parser<BasicExpression> Relational =
             Parse.ChainOperator(Op.Relational, Add, Op.Apply);
 
-        private static readonly Parser<BasicExpression> Not =
+        private static readonly Parser<BasicExpression> NotS =
             from k in Kw.Not
-            from x in Add.Token()
+            from s in Ch.Space.AtLeastOnce()
+            from x in Add
+            select x;
+
+        private static readonly Parser<BasicExpression> NotP =
+            from k in Kw.Not
+            from lp in Ch.LeftParen
+            from x in Add
+            from rp in Ch.RightParen
+            select x;
+
+        private static readonly Parser<BasicExpression> Not =
+            from x in NotS.Or(NotP)
             select BasicOperator.Unary("Not", BasicType.Num, A.Num(x));
 
         private static readonly Parser<BasicExpression> And =
@@ -188,21 +200,53 @@ namespace GWParse.Expressions
 
         private static class Kw
         {
-            public static readonly Parser<IEnumerable<char>> And = Parse.IgnoreCase("AND");
-            public static readonly Parser<IEnumerable<char>> Exp = Parse.IgnoreCase("EXP");
-            public static readonly Parser<IEnumerable<char>> Len = Parse.IgnoreCase("LEN");
-            public static readonly Parser<IEnumerable<char>> Not = Parse.IgnoreCase("NOT");
-            public static readonly Parser<IEnumerable<char>> Or = Parse.IgnoreCase("OR");
-            public static readonly Parser<IEnumerable<char>> Sqr = Parse.IgnoreCase("SQR");
+            public static readonly HashSet<string> InvalidNum = new HashSet<string>();
+            public static readonly HashSet<string> InvalidStr = new HashSet<string>();
 
-            public static readonly Parser<IEnumerable<char>> Left = Parse.IgnoreCase("LEFT");
-            public static readonly Parser<IEnumerable<char>> Mid = Parse.IgnoreCase("MID");
-            public static readonly Parser<IEnumerable<char>> Right = Parse.IgnoreCase("RIGHT");
+            public static readonly Parser<IEnumerable<char>> And = Num("AND");
+            public static readonly Parser<IEnumerable<char>> Exp = Num("EXP");
+            public static readonly Parser<IEnumerable<char>> Len = Num("LEN");
+            public static readonly Parser<IEnumerable<char>> Not = Num("NOT");
+            public static readonly Parser<IEnumerable<char>> Or = Num("OR");
+            public static readonly Parser<IEnumerable<char>> Sqr = Num("SQR");
 
-            public static readonly Parser<IEnumerable<char>> AnyNum =
-                And.Or(Exp).Or(Len).Or(Not).Or(Or).Or(Sqr);
+            public static readonly Parser<IEnumerable<char>> Left = Str("LEFT");
+            public static readonly Parser<IEnumerable<char>> Mid = Str("MID");
+            public static readonly Parser<IEnumerable<char>> Right = Str("RIGHT");
 
-            public static readonly Parser<IEnumerable<char>> AnyStr = Left.Or(Mid).Or(Right);
+            public static string ValidNum(string v)
+            {
+                if (InvalidNum.Contains(v))
+                {
+                    throw new ParseException("Invalid numeric identifier '" + v + "'.");
+                }
+
+                return v;
+            }
+
+            public static string ValidStr(string v)
+            {
+                if (InvalidStr.Contains(v))
+                {
+                    throw new ParseException("Invalid string identifier '" + v + "'.");
+                }
+
+                return v;
+            }
+
+            private static Parser<IEnumerable<char>> Num(string k)
+            {
+                InvalidNum.Add(k);
+                return Str(k);
+            }
+
+            private static Parser<IEnumerable<char>> Str(string k)
+            {
+                InvalidStr.Add(k);
+                return P(k);
+            }
+
+            private static Parser<IEnumerable<char>> P(string k) => Parse.IgnoreCase(k);
         }
 
         private static class Lit
@@ -225,11 +269,11 @@ namespace GWParse.Expressions
             public static readonly Parser<string> IdPrefix = Parse.Identifier(Parse.Letter, Parse.LetterOrDigit);
 
             public static readonly Parser<string> Id =
-                from v in IdPrefix.Except(Kw.AnyNum)
+                from v in IdPrefix
                 select v.ToUpperInvariant();
 
             public static readonly Parser<string> StrId =
-                from v in Id.Except(Kw.AnyStr)
+                from v in Id
                 from d in Ch.Dollar
                 select v;
 
@@ -244,21 +288,21 @@ namespace GWParse.Expressions
 
             public static readonly Parser<BasicExpression> NumScalar =
                 from v in Id
-                select BasicVariable.Num(v);
+                select BasicVariable.Num(Kw.ValidNum(v));
 
             public static readonly Parser<BasicExpression> NumArray =
                 from v in Id
                 from i in IndexList
-                select BasicArray.Num(v, i);
+                select BasicArray.Num(Kw.ValidNum(v), i);
 
             public static readonly Parser<BasicExpression> StrScalar =
                 from v in StrId
-                select BasicVariable.Str(v);
+                select BasicVariable.Str(Kw.ValidStr(v));
 
             public static readonly Parser<BasicExpression> StrArray =
                 from v in StrId
                 from i in IndexList
-                select BasicArray.Str(v, i);
+                select BasicArray.Str(Kw.ValidStr(v), i);
 
             public static readonly Parser<BasicExpression> NumAny = NumArray.Or(NumScalar);
 

@@ -104,7 +104,7 @@ namespace GWParse.Test.Expressions
         [InlineData("MID1", "NumV(MID1)")]
         [InlineData("midX", "NumV(MIDX)")]
         [InlineData("mid1mid$", "StrV(MID1MID)")]
-        [Theory(Skip = "reserved prefix variables not working")]
+        [Theory]
         public void AllowedReservedPrefix(string input, string output)
         {
             Test.Good(input, output);

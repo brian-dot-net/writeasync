@@ -92,7 +92,7 @@ namespace GWParse.Test.Expressions
         [InlineData("RIGHT1", "NumV(RIGHT1)")]
         [InlineData("rightX", "NumV(RIGHTX)")]
         [InlineData("right1right$", "StrV(RIGHT1RIGHT)")]
-        [Theory(Skip = "reserved prefix variables not working")]
+        [Theory]
         public void AllowedReservedPrefix(string input, string output)
         {
             Test.Good(input, output);
