@@ -222,12 +222,12 @@ namespace GWBas2CS
             {
                 foreach (Variable v in this.strs.Values)
                 {
-                    yield return v.Field(this.generator);
+                    yield return v.Field();
                 }
 
                 foreach (Variable v in this.nums.Values)
                 {
-                    yield return v.Field(this.generator);
+                    yield return v.Field();
                 }
             }
 
@@ -236,12 +236,12 @@ namespace GWBas2CS
                 List<SyntaxNode> statements = new List<SyntaxNode>();
                 foreach (Variable v in this.strs.Values)
                 {
-                    statements.Add(v.Init(this.generator));
+                    statements.Add(v.Init());
                 }
 
                 foreach (Variable v in this.nums.Values)
                 {
-                    statements.Add(v.Init(this.generator));
+                    statements.Add(v.Init());
                 }
 
                 return this.generator.MethodDeclaration("Init", accessibility: Accessibility.Private, statements: statements);
@@ -249,40 +249,54 @@ namespace GWBas2CS
 
             public SyntaxNode Add(BasicType type, string name)
             {
-                Variable v;
-
                 if (type == BasicType.Str)
                 {
-                    if (!this.strs.TryGetValue(name, out v))
-                    {
-                        v = new Variable(type, name);
-                        this.strs.Add(name, v);
-                    }
-                }
-                else
-                {
-                    if (!this.nums.TryGetValue(name, out v))
-                    {
-                        v = new Variable(type, name);
-                        this.nums.Add(name, v);
-                    }
+                    return this.Add(this.strs, type, name);
                 }
 
-                return v.Ref(this.generator);
+                return this.Add(this.nums, type, name);
+            }
+
+            private SyntaxNode Add(IDictionary<string, Variable> vars, BasicType type, string name)
+            {
+                Variable v;
+                if (!vars.TryGetValue(name, out v))
+                {
+                    v = new Variable(this.generator, type, name);
+                    vars.Add(name, v);
+                }
+
+                return v.Ref();
             }
 
             private sealed class Variable
             {
+                private readonly SyntaxGenerator generator;
                 private readonly BasicType type;
                 private readonly string name;
 
-                public Variable(BasicType type, string name)
+                public Variable(SyntaxGenerator generator, BasicType type, string name)
                 {
+                    this.generator = generator;
                     this.type = type;
                     this.name = name;
                 }
 
-                public string Name
+                private SyntaxNode Type
+                {
+                    get
+                    {
+                        SpecialType ty = SpecialType.System_Single;
+                        if (this.type == BasicType.Str)
+                        {
+                            ty = SpecialType.System_String;
+                        }
+
+                        return this.generator.TypeExpression(ty);
+                    }
+                }
+
+                private string Name
                 {
                     get
                     {
@@ -296,41 +310,33 @@ namespace GWBas2CS
                     }
                 }
 
-                public SyntaxNode Ref(SyntaxGenerator generator)
+                private SyntaxNode Default
                 {
-                    return generator.IdentifierName(this.Name);
-                }
-
-                public SyntaxNode Field(SyntaxGenerator generator)
-                {
-                    return generator.FieldDeclaration(this.Name, this.Type(generator), accessibility: Accessibility.Private);
-                }
-
-                public SyntaxNode Init(SyntaxGenerator generator)
-                {
-                    return generator.AssignmentStatement(this.Ref(generator), this.Default(generator));
-                }
-
-                private SyntaxNode Default(SyntaxGenerator generator)
-                {
-                    object lit = 0;
-                    if (this.type == BasicType.Str)
+                    get
                     {
-                        lit = string.Empty;
-                    }
+                        object lit = 0;
+                        if (this.type == BasicType.Str)
+                        {
+                            lit = string.Empty;
+                        }
 
-                    return generator.LiteralExpression(lit);
+                        return this.generator.LiteralExpression(lit);
+                    }
                 }
 
-                private SyntaxNode Type(SyntaxGenerator generator)
+                public SyntaxNode Ref()
                 {
-                    SpecialType ty = SpecialType.System_Single;
-                    if (this.type == BasicType.Str)
-                    {
-                        ty = SpecialType.System_String;
-                    }
+                    return this.generator.IdentifierName(this.Name);
+                }
 
-                    return generator.TypeExpression(ty);
+                public SyntaxNode Field()
+                {
+                    return this.generator.FieldDeclaration(this.Name, this.Type, accessibility: Accessibility.Private);
+                }
+
+                public SyntaxNode Init()
+                {
+                    return this.generator.AssignmentStatement(this.Ref(), this.Default);
                 }
             }
         }
