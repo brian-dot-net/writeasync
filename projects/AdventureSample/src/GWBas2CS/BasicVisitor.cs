@@ -31,9 +31,27 @@ namespace GWBas2CS
 
         public override string ToString()
         {
-            var usingDirectives = this.generator.NamespaceImportDeclaration("System");
+            List<SyntaxNode> usingDirectives = new List<SyntaxNode>();
+            usingDirectives.Add(this.generator.NamespaceImportDeclaration("System"));
+            usingDirectives.Add(this.generator.NamespaceImportDeclaration("System.IO"));
 
             List<SyntaxNode> classMembers = new List<SyntaxNode>();
+            classMembers.Add(this.generator.FieldDeclaration("input", this.generator.IdentifierName("TextReader"), accessibility: Accessibility.Private, modifiers: DeclarationModifiers.ReadOnly));
+            classMembers.Add(this.generator.FieldDeclaration("output", this.generator.IdentifierName("TextWriter"), accessibility: Accessibility.Private, modifiers: DeclarationModifiers.ReadOnly));
+
+            List<SyntaxNode> ctorStatements = new List<SyntaxNode>();
+            var thisInput = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "input");
+            var assignInput = this.generator.AssignmentStatement(thisInput, this.generator.IdentifierName("input"));
+            ctorStatements.Add(assignInput);
+            var thisOutput = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "output");
+            var assignOutput = this.generator.AssignmentStatement(thisOutput, this.generator.IdentifierName("output"));
+            ctorStatements.Add(assignOutput);
+            List<SyntaxNode> ctorParams = new List<SyntaxNode>();
+            ctorParams.Add(this.generator.ParameterDeclaration("input", type: this.generator.IdentifierName("TextReader")));
+            ctorParams.Add(this.generator.ParameterDeclaration("output", type: this.generator.IdentifierName("TextWriter")));
+            var ctorMethod = this.generator.ConstructorDeclaration(accessibility: Accessibility.Public, parameters: ctorParams, statements: ctorStatements);
+
+            classMembers.Add(ctorMethod);
 
             var runCoreMember = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Main");
             var callRunCore = this.generator.InvocationExpression(runCoreMember);
@@ -54,7 +72,10 @@ namespace GWBas2CS
             classMembers.Add(mainMethod);
 
             var classDecl = this.generator.ClassDeclaration(this.name, accessibility: Accessibility.Internal, modifiers: DeclarationModifiers.Sealed, members: classMembers);
-            return this.generator.CompilationUnit(usingDirectives, classDecl).NormalizeWhitespace().ToString();
+            List<SyntaxNode> declarations = new List<SyntaxNode>();
+            declarations.AddRange(usingDirectives);
+            declarations.Add(classDecl);
+            return this.generator.CompilationUnit(declarations).NormalizeWhitespace().ToString();
         }
 
         public void Line(int number, BasicStatement[] list)
@@ -131,10 +152,11 @@ namespace GWBas2CS
             expr.Accept(node);
             var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName("PRINT"), node.Value);
             this.lines.Add(this.lineNumber, callPrint);
-            var callConsoleWriteLine = this.generator.MemberAccessExpression(this.generator.IdentifierName("Console"), "WriteLine");
+            var output = this.generator.MemberAccessExpression(this.generator.ThisExpression(), this.generator.IdentifierName("output"));
+            var callConsoleWriteLine = this.generator.MemberAccessExpression(output, "WriteLine");
             SyntaxNode[] printStatements = new SyntaxNode[] { this.generator.InvocationExpression(callConsoleWriteLine, this.generator.IdentifierName("expression")) };
             SyntaxNode[] parameters = new SyntaxNode[] { this.generator.ParameterDeclaration("expression", type: this.generator.TypeExpression(SpecialType.System_String)) };
-            var printMethod = this.generator.MethodDeclaration("PRINT", accessibility: Accessibility.Private, modifiers: DeclarationModifiers.Static, parameters: parameters, statements: printStatements);
+            var printMethod = this.generator.MethodDeclaration("PRINT", accessibility: Accessibility.Private, parameters: parameters, statements: printStatements);
             this.intrinsics.Add(printMethod);
         }
 

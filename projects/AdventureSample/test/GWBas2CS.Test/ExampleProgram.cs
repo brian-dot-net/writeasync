@@ -13,103 +13,24 @@ namespace GWBas2CS.Test
     public sealed class ExampleProgram
     {
         [Fact]
-        public void WithOneCommentLine()
-        {
-            const string Input = "10 REM A comment";
-            const string Expected = @"using System;
-
-internal sealed class MyProg
-{
-    public void Run()
-    {
-        while (this.Main())
-        {
-        }
-    }
-
-    private bool Main()
-    {
-        // A comment
-        return false;
-    }
-}";
-
-            string actual = Translate("MyProg", Input);
-
-            actual.Should().Be(Expected);
-        }
-
-        [Fact]
-        public void WithOneGotoStatement()
-        {
-            const string Input = "10 GOTO 10";
-            const string Expected = @"using System;
-
-internal sealed class MyProg
-{
-    public void Run()
-    {
-        while (this.Main())
-        {
-        }
-    }
-
-    private bool Main()
-    {
-        L10:
-            ;
-        goto L10;
-        return false;
-    }
-}";
-
-            string actual = Translate("MyProg", Input);
-
-            actual.Should().Be(Expected);
-        }
-
-        [Fact]
-        public void WithOnePrintStatement()
-        {
-            const string Input = "10 PRINT \"An expression\"";
-            const string Expected = @"using System;
-
-internal sealed class MyProg
-{
-    public void Run()
-    {
-        while (this.Main())
-        {
-        }
-    }
-
-    private static void PRINT(string expression)
-    {
-        Console.WriteLine(expression);
-    }
-
-    private bool Main()
-    {
-        PRINT(""An expression"");
-        return false;
-    }
-}";
-
-            string actual = Translate("MyProg", Input);
-
-            actual.Should().Be(Expected);
-        }
-
-        [Fact]
         public void WithCommentPrintAndGotoStatement()
         {
             const string Input = @"10 REM My first BASIC program
 20 PRINT ""HELLO, WORLD!""
 30 GOTO 20";
             const string Expected = @"using System;
+using System.IO;
 
 internal sealed class MyProg
 {
+    private readonly TextReader input;
+    private readonly TextWriter output;
+    public MyProg(TextReader input, TextWriter output)
+    {
+        this.input = (input);
+        this.output = (output);
+    }
+
     public void Run()
     {
         while (this.Main())
@@ -117,9 +38,9 @@ internal sealed class MyProg
         }
     }
 
-    private static void PRINT(string expression)
+    private void PRINT(string expression)
     {
-        Console.WriteLine(expression);
+        this.output.WriteLine(expression);
     }
 
     private bool Main()
