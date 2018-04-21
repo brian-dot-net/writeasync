@@ -4,16 +4,13 @@
 
 namespace GWBas2CS.Test
 {
-    using System.IO;
-    using System.Text;
-    using System.Threading.Tasks;
     using FluentAssertions;
     using Xunit;
 
     public sealed class ExampleProgram
     {
         [Fact]
-        public void WithCommentPrintAndGotoStatement()
+        public void FullClass()
         {
             const string Input = @"10 REM My first BASIC program
 20 PRINT ""HELLO, WORLD!""
@@ -54,25 +51,9 @@ internal sealed class MyProg
     }
 }";
 
-            string actual = Translate("MyProg", Input);
+            string actual = Test.Translate("MyProg", Input);
 
             actual.Should().Be(Expected);
-        }
-
-        private static string Translate(string name, string inputCode)
-        {
-            string outputCode;
-            using (MemoryStream output = new MemoryStream())
-            {
-                WrappedMemoryStream input = new WrappedMemoryStream(Encoding.UTF8.GetBytes(inputCode));
-
-                Task task = BasicProgram.TranslateAsync(name, input, output);
-
-                task.IsCompletedSuccessfully.Should().BeTrue();
-                outputCode = Encoding.UTF8.GetString(output.ToArray());
-            }
-
-            return outputCode;
         }
     }
 }

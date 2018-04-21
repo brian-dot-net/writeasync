@@ -5,6 +5,7 @@
 namespace GWBas2CS.Test
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -69,6 +70,22 @@ namespace GWBas2CS.Test
             }
 
             return new WrappedMemoryStream(Encoding.UTF8.GetBytes(sb.ToString()));
+        }
+
+        private sealed class WrappedMemoryStream : MemoryStream
+        {
+            public WrappedMemoryStream(byte[] buffer)
+                : base(buffer)
+            {
+            }
+
+            public int DisposeCount { get; private set; }
+
+            protected override void Dispose(bool disposing)
+            {
+                ++this.DisposeCount;
+                base.Dispose(disposing);
+            }
         }
     }
 }
