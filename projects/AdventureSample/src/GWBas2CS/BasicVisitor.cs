@@ -209,16 +209,23 @@ namespace GWBas2CS
         {
             private readonly SyntaxGenerator generator;
             private readonly Dictionary<string, Variable> strs;
+            private readonly Dictionary<string, Variable> nums;
 
             public Variables(SyntaxGenerator generator)
             {
                 this.generator = generator;
                 this.strs = new Dictionary<string, Variable>();
+                this.nums = new Dictionary<string, Variable>();
             }
 
             public IEnumerable<SyntaxNode> Fields()
             {
                 foreach (Variable v in this.strs.Values)
+                {
+                    yield return v.Field(this.generator);
+                }
+
+                foreach (Variable v in this.nums.Values)
                 {
                     yield return v.Field(this.generator);
                 }
@@ -232,16 +239,33 @@ namespace GWBas2CS
                     statements.Add(v.Init(this.generator));
                 }
 
+                foreach (Variable v in this.nums.Values)
+                {
+                    statements.Add(v.Init(this.generator));
+                }
+
                 return this.generator.MethodDeclaration("Init", accessibility: Accessibility.Private, statements: statements);
             }
 
             public SyntaxNode Add(BasicType type, string name)
             {
                 Variable v;
-                if (!this.strs.TryGetValue(name, out v))
+
+                if (type == BasicType.Str)
                 {
-                    v = new Variable(type, name);
-                    this.strs.Add(name, v);
+                    if (!this.strs.TryGetValue(name, out v))
+                    {
+                        v = new Variable(type, name);
+                        this.strs.Add(name, v);
+                    }
+                }
+                else
+                {
+                    if (!this.nums.TryGetValue(name, out v))
+                    {
+                        v = new Variable(type, name);
+                        this.nums.Add(name, v);
+                    }
                 }
 
                 return v.Ref(this.generator);
@@ -258,7 +282,19 @@ namespace GWBas2CS
                     this.name = name;
                 }
 
-                public string Name => this.name + "_s";
+                public string Name
+                {
+                    get
+                    {
+                        string suffix = "_n";
+                        if (this.type == BasicType.Str)
+                        {
+                            suffix = "_s";
+                        }
+
+                        return this.name + suffix;
+                    }
+                }
 
                 public SyntaxNode Ref(SyntaxGenerator generator)
                 {
@@ -267,13 +303,34 @@ namespace GWBas2CS
 
                 public SyntaxNode Field(SyntaxGenerator generator)
                 {
-                    var type = generator.TypeExpression(SpecialType.System_String);
-                    return generator.FieldDeclaration(this.Name, type, accessibility: Accessibility.Private);
+                    return generator.FieldDeclaration(this.Name, this.Type(generator), accessibility: Accessibility.Private);
                 }
 
                 public SyntaxNode Init(SyntaxGenerator generator)
                 {
-                    return generator.AssignmentStatement(this.Ref(generator), generator.LiteralExpression(string.Empty));
+                    return generator.AssignmentStatement(this.Ref(generator), this.Default(generator));
+                }
+
+                private SyntaxNode Default(SyntaxGenerator generator)
+                {
+                    object lit = 0;
+                    if (this.type == BasicType.Str)
+                    {
+                        lit = string.Empty;
+                    }
+
+                    return generator.LiteralExpression(lit);
+                }
+
+                private SyntaxNode Type(SyntaxGenerator generator)
+                {
+                    SpecialType ty = SpecialType.System_Single;
+                    if (this.type == BasicType.Str)
+                    {
+                        ty = SpecialType.System_String;
+                    }
+
+                    return generator.TypeExpression(ty);
                 }
             }
         }
