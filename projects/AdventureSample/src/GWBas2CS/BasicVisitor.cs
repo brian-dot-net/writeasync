@@ -212,19 +212,21 @@ namespace GWBas2CS
             expr.Accept(node);
             var callDim = node.Value;
             this.lines.Add(this.lineNumber, callDim);
+            var stype = (expr.Type == BasicType.Str) ? SpecialType.System_String : SpecialType.System_Single;
+            var type = this.generator.TypeExpression(stype);
             var arr = this.generator.IdentifierName("a");
             var d1 = this.generator.IdentifierName("d1");
             var leftS = this.generator.CastExpression(this.generator.TypeExpression(SpecialType.System_Int32), d1);
             var sub = this.generator.AddExpression(leftS, this.generator.LiteralExpression(1));
-            var arrR = this.generator.ArrayCreationExpression(this.generator.TypeExpression(SpecialType.System_String), sub);
+            var arrR = this.generator.ArrayCreationExpression(type, sub);
             SyntaxNode[] dimStatements = new SyntaxNode[] { this.generator.AssignmentStatement(arr, arrR) };
-            var str = this.generator.TypeExpression(SpecialType.System_String);
             SyntaxNode[] parameters = new SyntaxNode[]
             {
-                this.generator.ParameterDeclaration("a", type: this.generator.ArrayTypeExpression(str), refKind: RefKind.Out),
+                this.generator.ParameterDeclaration("a", type: this.generator.ArrayTypeExpression(type), refKind: RefKind.Out),
                 this.generator.ParameterDeclaration("d1", type: this.generator.TypeExpression(SpecialType.System_Single))
             };
-            var dimMethod = this.generator.MethodDeclaration("DIM_sa", accessibility: Accessibility.Private, parameters: parameters, statements: dimStatements);
+            string name = (expr.Type == BasicType.Str) ? "DIM_sa" : "DIM_na";
+            var dimMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, parameters: parameters, statements: dimStatements);
             this.intrinsics.Add(dimMethod);
         }
 
@@ -239,10 +241,13 @@ namespace GWBas2CS
                 this.vars = vars;
             }
 
+            public BasicType Type { get; private set; }
+
             public SyntaxNode Value { get; private set; }
 
             public void Array(BasicType type, string name, BasicExpression[] subs)
             {
+                this.Type = type;
                 this.Value = this.vars.Dim(type, name, subs[0]);
             }
 
@@ -265,23 +270,27 @@ namespace GWBas2CS
         private sealed class Variables
         {
             private readonly SyntaxGenerator generator;
-            private readonly Dictionary<string, Variable> arrs;
+            private readonly Dictionary<string, Variable> strArrs;
+            private readonly Dictionary<string, Variable> numArrs;
             private readonly Dictionary<string, Variable> strs;
             private readonly Dictionary<string, Variable> nums;
 
             public Variables(SyntaxGenerator generator)
             {
                 this.generator = generator;
-                this.arrs = new Dictionary<string, Variable>();
+                this.strArrs = new Dictionary<string, Variable>();
+                this.numArrs = new Dictionary<string, Variable>();
                 this.strs = new Dictionary<string, Variable>();
                 this.nums = new Dictionary<string, Variable>();
             }
 
-            private IEnumerable<Variable> All => this.strs.Values.Concat(this.nums.Values);
+            private IEnumerable<Variable> Scalars => this.strs.Values.Concat(this.nums.Values);
+
+            private IEnumerable<Variable> Arrays => this.strArrs.Values.Concat(this.numArrs.Values);
 
             public IEnumerable<SyntaxNode> Fields()
             {
-                foreach (Variable v in this.arrs.Values.Concat(this.All))
+                foreach (Variable v in this.Arrays.Concat(this.Scalars))
                 {
                     yield return v.Field();
                 }
@@ -290,7 +299,7 @@ namespace GWBas2CS
             public SyntaxNode Init()
             {
                 List<SyntaxNode> statements = new List<SyntaxNode>();
-                foreach (Variable v in this.All)
+                foreach (Variable v in this.Scalars)
                 {
                     statements.Add(v.Init());
                 }
@@ -314,10 +323,10 @@ namespace GWBas2CS
             {
                 if (type == BasicType.Str)
                 {
-                    return this.Add((subs > 0) ? this.arrs : this.strs, type, name, subs);
+                    return this.Add((subs > 0) ? this.strArrs : this.strs, type, name, subs);
                 }
 
-                return this.Add(this.nums, type, name, subs);
+                return this.Add((subs > 0) ? this.numArrs : this.nums, type, name, subs);
             }
 
             private Variable Add(IDictionary<string, Variable> vars, BasicType type, string name, int subs)

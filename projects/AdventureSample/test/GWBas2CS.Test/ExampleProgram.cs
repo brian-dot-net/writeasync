@@ -21,6 +21,7 @@ namespace GWBas2CS.Test
 70 A=20
 80 B1=3
 90 DIM A$(5)
+100 DIM B1(6)
 200 GOTO 20";
             const string Expected = @"using System;
 using System.IO;
@@ -30,6 +31,7 @@ internal sealed class MyProg
     private readonly TextReader input;
     private readonly TextWriter output;
     private string[] A_sa;
+    private float[] B1_na;
     private string A_s;
     private string B1_s;
     private float A_n;
@@ -65,6 +67,11 @@ internal sealed class MyProg
         a = (new string[((int)(d1)) + (1)]);
     }
 
+    private void DIM_na(out float[] a, float d1)
+    {
+        a = (new float[((int)(d1)) + (1)]);
+    }
+
     private bool Main()
     {
         this.Init();
@@ -79,6 +86,7 @@ internal sealed class MyProg
         A_n = (20);
         B1_n = (3);
         DIM_sa(out A_sa, 5);
+        DIM_na(out B1_na, 6);
         goto L20;
         return false;
     }
