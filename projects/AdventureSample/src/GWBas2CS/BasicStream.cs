@@ -16,11 +16,16 @@ namespace GWBas2CS
             List<BasicLine> lines = new List<BasicLine>();
             using (StreamReader reader = new StreamReader(input))
             {
-                string line = await reader.ReadLineAsync();
-                if (line != null)
+                string line;
+                do
                 {
-                    lines.Add(BasicLine.FromString(line));
+                    line = await reader.ReadLineAsync();
+                    if (line != null)
+                    {
+                        lines.Add(BasicLine.FromString(line));
+                    }
                 }
+                while (line != null);
             }
 
             return lines.ToArray();

@@ -4,6 +4,7 @@
 
 namespace GWBas2CS.Test
 {
+    using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
     using FluentAssertions;
@@ -34,6 +35,18 @@ namespace GWBas2CS.Test
             result.IsCompleted.Should().BeTrue();
             s.DisposeCount.Should().Be(1);
             result.Result.Should().ContainSingle().Which.ToString().Should().Be("Line(10, Goto(10))");
+        }
+
+        [Fact]
+        public void TwoLines()
+        {
+            WrappedMemoryStream s = Lines("10 CLS", "20 GOTO 10");
+
+            Task<BasicLine[]> result = BasicStream.ReadAsync(s);
+
+            result.IsCompleted.Should().BeTrue();
+            s.DisposeCount.Should().Be(1);
+            result.Result.Select(l => l.ToString()).Should().HaveCount(2).And.ContainInOrder("Line(10, Cls())", "Line(20, Goto(10))");
         }
 
         private static WrappedMemoryStream Lines(params string[] lines)
