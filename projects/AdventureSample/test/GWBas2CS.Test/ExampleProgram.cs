@@ -16,6 +16,7 @@ namespace GWBas2CS.Test
 20 PRINT ""HELLO, WORLD!""
 30 A$=""a string""
 40 A$=""same string""
+50 B1$=""new string""
 100 GOTO 20";
             const string Expected = @"using System;
 using System.IO;
@@ -25,6 +26,7 @@ internal sealed class MyProg
     private readonly TextReader input;
     private readonly TextWriter output;
     private string A_s;
+    private string B1_s;
     public MyProg(TextReader input, TextWriter output)
     {
         this.input = (input);
@@ -41,6 +43,7 @@ internal sealed class MyProg
     private void Init()
     {
         A_s = ("""");
+        B1_s = ("""");
     }
 
     private void PRINT(string expression)
@@ -57,6 +60,7 @@ internal sealed class MyProg
         PRINT(""HELLO, WORLD!"");
         A_s = (""a string"");
         A_s = (""same string"");
+        B1_s = (""new string"");
         goto L20;
         return false;
     }
