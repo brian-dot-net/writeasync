@@ -6,6 +6,7 @@ namespace GWBas2CS
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using GWParse.Expressions;
     using GWParse.Statements;
     using Microsoft.CodeAnalysis;
@@ -218,14 +219,11 @@ namespace GWBas2CS
                 this.nums = new Dictionary<string, Variable>();
             }
 
+            private IEnumerable<Variable> All => this.strs.Values.Concat(this.nums.Values);
+
             public IEnumerable<SyntaxNode> Fields()
             {
-                foreach (Variable v in this.strs.Values)
-                {
-                    yield return v.Field();
-                }
-
-                foreach (Variable v in this.nums.Values)
+                foreach (Variable v in this.All)
                 {
                     yield return v.Field();
                 }
@@ -234,12 +232,7 @@ namespace GWBas2CS
             public SyntaxNode Init()
             {
                 List<SyntaxNode> statements = new List<SyntaxNode>();
-                foreach (Variable v in this.strs.Values)
-                {
-                    statements.Add(v.Init());
-                }
-
-                foreach (Variable v in this.nums.Values)
+                foreach (Variable v in this.All)
                 {
                     statements.Add(v.Init());
                 }
