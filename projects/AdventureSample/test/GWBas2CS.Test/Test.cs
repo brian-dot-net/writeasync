@@ -4,6 +4,7 @@
 
 namespace GWBas2CS.Test
 {
+    using System;
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace GWBas2CS.Test
 
                 Task task = BasicProgram.TranslateAsync(name, input, output);
 
+                Exception exc = task.Exception;
+                exc.Should().BeNull("{0}", exc);
                 task.IsCompletedSuccessfully.Should().BeTrue();
                 outputCode = Encoding.UTF8.GetString(output.ToArray());
             }

@@ -18,6 +18,7 @@ namespace GWBas2CS
         private readonly SyntaxGenerator generator;
         private readonly List<SyntaxNode> intrinsics;
         private readonly Lines lines;
+        private readonly Variables vars;
 
         private int lineNumber;
 
@@ -27,6 +28,7 @@ namespace GWBas2CS
             this.generator = SyntaxGenerator.GetGenerator(new AdhocWorkspace(), LanguageNames.CSharp);
             this.lines = new Lines();
             this.intrinsics = new List<SyntaxNode>();
+            this.vars = new Variables(this.generator);
         }
 
         public override string ToString()
@@ -38,6 +40,7 @@ namespace GWBas2CS
             List<SyntaxNode> classMembers = new List<SyntaxNode>();
             classMembers.Add(this.generator.FieldDeclaration("input", this.generator.IdentifierName("TextReader"), accessibility: Accessibility.Private, modifiers: DeclarationModifiers.ReadOnly));
             classMembers.Add(this.generator.FieldDeclaration("output", this.generator.IdentifierName("TextWriter"), accessibility: Accessibility.Private, modifiers: DeclarationModifiers.ReadOnly));
+            classMembers.AddRange(this.vars.Fields());
 
             List<SyntaxNode> ctorStatements = new List<SyntaxNode>();
             var thisInput = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "input");
@@ -62,6 +65,10 @@ namespace GWBas2CS
 
             classMembers.Add(runMethod);
 
+            classMembers.Add(this.vars.Init());
+
+            var firstStatement = this.generator.InvocationExpression(this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Init"));
+            this.lines.Add(0, firstStatement);
             var lastStatement = this.generator.ReturnStatement(this.generator.LiteralExpression(false));
             this.lines.Add(65535, lastStatement);
 
@@ -89,7 +96,11 @@ namespace GWBas2CS
 
         public void Assign(BasicExpression left, BasicExpression right)
         {
-            throw new NotImplementedException();
+            ExpressionNode x = new ExpressionNode(this.generator, this.vars);
+            left.Accept(x);
+            ExpressionNode y = new ExpressionNode(this.generator, this.vars);
+            right.Accept(y);
+            this.lines.Add(this.lineNumber, this.generator.AssignmentStatement(x.Value, y.Value));
         }
 
         public void For(BasicExpression v, BasicExpression start, BasicExpression end, BasicExpression step)
@@ -148,7 +159,7 @@ namespace GWBas2CS
 
         private void AddPrint(BasicExpression expr)
         {
-            ExpressionNode node = new ExpressionNode(this.generator);
+            ExpressionNode node = new ExpressionNode(this.generator, this.vars);
             expr.Accept(node);
             var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName("PRINT"), node.Value);
             this.lines.Add(this.lineNumber, callPrint);
@@ -163,10 +174,12 @@ namespace GWBas2CS
         private sealed class ExpressionNode : IExpressionVisitor
         {
             private readonly SyntaxGenerator generator;
+            private readonly Variables vars;
 
-            public ExpressionNode(SyntaxGenerator generator)
+            public ExpressionNode(SyntaxGenerator generator, Variables vars)
             {
                 this.generator = generator;
+                this.vars = vars;
             }
 
             public SyntaxNode Value { get; private set; }
@@ -188,29 +201,102 @@ namespace GWBas2CS
 
             public void Variable(BasicType type, string name)
             {
-                throw new NotImplementedException();
+                this.Value = this.vars.Add(type, name);
+            }
+        }
+
+        private sealed class Variables
+        {
+            private readonly SyntaxGenerator generator;
+            private readonly Dictionary<string, Variable> strs;
+
+            public Variables(SyntaxGenerator generator)
+            {
+                this.generator = generator;
+                this.strs = new Dictionary<string, Variable>();
+            }
+
+            public IEnumerable<SyntaxNode> Fields()
+            {
+                foreach (Variable v in this.strs.Values)
+                {
+                    yield return v.Field(this.generator);
+                }
+            }
+
+            public SyntaxNode Init()
+            {
+                List<SyntaxNode> statements = new List<SyntaxNode>();
+                foreach (Variable v in this.strs.Values)
+                {
+                    statements.Add(v.Init(this.generator));
+                }
+
+                return this.generator.MethodDeclaration("Init", accessibility: Accessibility.Private, statements: statements);
+            }
+
+            public SyntaxNode Add(BasicType type, string name)
+            {
+                Variable v;
+                if (!this.strs.TryGetValue(name, out v))
+                {
+                    v = new Variable(type, name);
+                    this.strs.Add(name, v);
+                }
+
+                return v.Ref(this.generator);
+            }
+
+            private sealed class Variable
+            {
+                private readonly BasicType type;
+                private readonly string name;
+
+                public Variable(BasicType type, string name)
+                {
+                    this.type = type;
+                    this.name = name;
+                }
+
+                public string Name => this.name + "_s";
+
+                public SyntaxNode Ref(SyntaxGenerator generator)
+                {
+                    return generator.IdentifierName(this.Name);
+                }
+
+                public SyntaxNode Field(SyntaxGenerator generator)
+                {
+                    var type = generator.TypeExpression(SpecialType.System_String);
+                    return generator.FieldDeclaration(this.Name, type, accessibility: Accessibility.Private);
+                }
+
+                public SyntaxNode Init(SyntaxGenerator generator)
+                {
+                    return generator.AssignmentStatement(this.Ref(generator), generator.LiteralExpression(string.Empty));
+                }
             }
         }
 
         private sealed class Lines
         {
-            private readonly List<Line> statements;
+            private readonly SortedList<int, Line> statements;
             private readonly HashSet<int> references;
 
             public Lines()
             {
-                this.statements = new List<Line>();
+                this.statements = new SortedList<int, Line>();
                 this.references = new HashSet<int>();
             }
 
             public void Add(int line, SyntaxNode node)
             {
-                this.statements.Add(new Line(line, node, null));
+                this.statements.Add(line, new Line(line, node, null));
             }
 
             public void AddComment(int line, SyntaxTrivia comment)
             {
-                this.statements.Add(new Line(line, null, comment));
+                this.statements.Add(line, new Line(line, null, comment));
             }
 
             public void AddGoto(int line, int destination)
@@ -224,7 +310,7 @@ namespace GWBas2CS
             public IEnumerable<SyntaxNode> Statements()
             {
                 SyntaxTrivia? previous = null;
-                foreach (Line line in this.statements)
+                foreach (Line line in this.statements.Values)
                 {
                     SyntaxTrivia? next = line.Comment;
                     if (next == null)

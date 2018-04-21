@@ -14,7 +14,8 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 REM My first BASIC program
 20 PRINT ""HELLO, WORLD!""
-30 GOTO 20";
+30 A$=""a string""
+40 GOTO 20";
             const string Expected = @"using System;
 using System.IO;
 
@@ -22,6 +23,7 @@ internal sealed class MyProg
 {
     private readonly TextReader input;
     private readonly TextWriter output;
+    private string A_s;
     public MyProg(TextReader input, TextWriter output)
     {
         this.input = (input);
@@ -35,6 +37,11 @@ internal sealed class MyProg
         }
     }
 
+    private void Init()
+    {
+        A_s = ("""");
+    }
+
     private void PRINT(string expression)
     {
         this.output.WriteLine(expression);
@@ -42,10 +49,12 @@ internal sealed class MyProg
 
     private bool Main()
     {
+        this.Init();
         // My first BASIC program
         L20:
             ;
         PRINT(""HELLO, WORLD!"");
+        A_s = (""a string"");
         goto L20;
         return false;
     }
