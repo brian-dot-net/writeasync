@@ -34,55 +34,12 @@ namespace GWBas2CS
 
         public override string ToString()
         {
-            List<SyntaxNode> usingDirectives = new List<SyntaxNode>();
-            usingDirectives.Add(this.generator.NamespaceImportDeclaration("System"));
-            usingDirectives.Add(this.generator.NamespaceImportDeclaration("System.IO"));
-
-            List<SyntaxNode> classMembers = new List<SyntaxNode>();
-            classMembers.Add(this.generator.FieldDeclaration("input", this.generator.IdentifierName("TextReader"), accessibility: Accessibility.Private, modifiers: DeclarationModifiers.ReadOnly));
-            classMembers.Add(this.generator.FieldDeclaration("output", this.generator.IdentifierName("TextWriter"), accessibility: Accessibility.Private, modifiers: DeclarationModifiers.ReadOnly));
-            classMembers.AddRange(this.vars.Fields());
-
-            List<SyntaxNode> ctorStatements = new List<SyntaxNode>();
-            var thisInput = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "input");
-            var assignInput = this.generator.AssignmentStatement(thisInput, this.generator.IdentifierName("input"));
-            ctorStatements.Add(assignInput);
-            var thisOutput = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "output");
-            var assignOutput = this.generator.AssignmentStatement(thisOutput, this.generator.IdentifierName("output"));
-            ctorStatements.Add(assignOutput);
-            List<SyntaxNode> ctorParams = new List<SyntaxNode>();
-            ctorParams.Add(this.generator.ParameterDeclaration("input", type: this.generator.IdentifierName("TextReader")));
-            ctorParams.Add(this.generator.ParameterDeclaration("output", type: this.generator.IdentifierName("TextWriter")));
-            var ctorMethod = this.generator.ConstructorDeclaration(accessibility: Accessibility.Public, parameters: ctorParams, statements: ctorStatements);
-
-            classMembers.Add(ctorMethod);
-
-            var runCoreMember = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Main");
-            var callRunCore = this.generator.InvocationExpression(runCoreMember);
-            List<SyntaxNode> runStatements = new List<SyntaxNode>();
-            var whileLoop = this.generator.WhileStatement(callRunCore, null);
-            runStatements.Add(whileLoop);
-            var runMethod = this.generator.MethodDeclaration("Run", accessibility: Accessibility.Public, statements: runStatements);
-
-            classMembers.Add(runMethod);
-
-            classMembers.Add(this.vars.Init());
-
-            var firstStatement = this.generator.InvocationExpression(this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Init"));
-            this.lines.Add(0, firstStatement);
-            var lastStatement = this.generator.ReturnStatement(this.generator.LiteralExpression(false));
-            this.lines.Add(65535, lastStatement);
-
-            var boolType = this.generator.TypeExpression(SpecialType.System_Boolean);
-            var mainMethod = this.generator.MethodDeclaration("Main", accessibility: Accessibility.Private, returnType: boolType, statements: this.lines.Statements());
-
-            classMembers.AddRange(this.intrinsics);
-            classMembers.Add(mainMethod);
-
-            var classDecl = this.generator.ClassDeclaration(this.name, accessibility: Accessibility.Internal, modifiers: DeclarationModifiers.Sealed, members: classMembers);
             List<SyntaxNode> declarations = new List<SyntaxNode>();
-            declarations.AddRange(usingDirectives);
-            declarations.Add(classDecl);
+
+            this.Usings(declarations);
+
+            this.Class(declarations);
+
             return this.generator.CompilationUnit(declarations).NormalizeWhitespace().ToString();
         }
 
@@ -153,7 +110,81 @@ namespace GWBas2CS
             throw new NotImplementedException();
         }
 
-        public void AddGoto(int destination)
+        private void Usings(IList<SyntaxNode> declarations)
+        {
+            declarations.Add(this.generator.NamespaceImportDeclaration("System"));
+            declarations.Add(this.generator.NamespaceImportDeclaration("System.IO"));
+        }
+
+        private void Class(IList<SyntaxNode> declarations)
+        {
+            List<SyntaxNode> classMembers = new List<SyntaxNode>();
+
+            this.Fields(classMembers);
+            this.Constructor(classMembers);
+            this.RunMethod(classMembers);
+            classMembers.Add(this.vars.Init());
+            classMembers.AddRange(this.intrinsics);
+            this.MainMethod(classMembers);
+
+            var classDecl = this.generator.ClassDeclaration(
+                this.name,
+                accessibility: Accessibility.Internal,
+                modifiers: DeclarationModifiers.Sealed,
+                members: classMembers);
+
+            declarations.Add(classDecl);
+        }
+
+        private void MainMethod(List<SyntaxNode> classMembers)
+        {
+            var firstStatement = this.generator.InvocationExpression(this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Init"));
+            this.lines.Add(0, firstStatement);
+            var lastStatement = this.generator.ReturnStatement(this.generator.LiteralExpression(false));
+            this.lines.Add(65535, lastStatement);
+
+            var boolType = this.generator.TypeExpression(SpecialType.System_Boolean);
+            var mainMethod = this.generator.MethodDeclaration("Main", accessibility: Accessibility.Private, returnType: boolType, statements: this.lines.Statements());
+            classMembers.Add(mainMethod);
+        }
+
+        private void RunMethod(List<SyntaxNode> classMembers)
+        {
+            var runCoreMember = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Main");
+            var callRunCore = this.generator.InvocationExpression(runCoreMember);
+            List<SyntaxNode> runStatements = new List<SyntaxNode>();
+            var whileLoop = this.generator.WhileStatement(callRunCore, null);
+            runStatements.Add(whileLoop);
+            var runMethod = this.generator.MethodDeclaration("Run", accessibility: Accessibility.Public, statements: runStatements);
+
+            classMembers.Add(runMethod);
+        }
+
+        private void Constructor(List<SyntaxNode> classMembers)
+        {
+            List<SyntaxNode> ctorStatements = new List<SyntaxNode>();
+            var thisInput = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "input");
+            var assignInput = this.generator.AssignmentStatement(thisInput, this.generator.IdentifierName("input"));
+            ctorStatements.Add(assignInput);
+            var thisOutput = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "output");
+            var assignOutput = this.generator.AssignmentStatement(thisOutput, this.generator.IdentifierName("output"));
+            ctorStatements.Add(assignOutput);
+            List<SyntaxNode> ctorParams = new List<SyntaxNode>();
+            ctorParams.Add(this.generator.ParameterDeclaration("input", type: this.generator.IdentifierName("TextReader")));
+            ctorParams.Add(this.generator.ParameterDeclaration("output", type: this.generator.IdentifierName("TextWriter")));
+            var ctorMethod = this.generator.ConstructorDeclaration(accessibility: Accessibility.Public, parameters: ctorParams, statements: ctorStatements);
+
+            classMembers.Add(ctorMethod);
+        }
+
+        private void Fields(List<SyntaxNode> classMembers)
+        {
+            classMembers.Add(this.generator.FieldDeclaration("input", this.generator.IdentifierName("TextReader"), accessibility: Accessibility.Private, modifiers: DeclarationModifiers.ReadOnly));
+            classMembers.Add(this.generator.FieldDeclaration("output", this.generator.IdentifierName("TextWriter"), accessibility: Accessibility.Private, modifiers: DeclarationModifiers.ReadOnly));
+            classMembers.AddRange(this.vars.Fields());
+        }
+
+        private void AddGoto(int destination)
         {
             this.lines.AddGoto(this.lineNumber, destination);
         }
