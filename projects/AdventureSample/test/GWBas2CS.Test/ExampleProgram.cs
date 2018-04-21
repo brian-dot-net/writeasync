@@ -10,7 +10,7 @@ namespace GWBas2CS.Test
     using FluentAssertions;
     using Xunit;
 
-    public class ExampleProgram
+    public sealed class ExampleProgram
     {
         [Fact]
         public void WithOneCommentLine()
@@ -154,22 +154,6 @@ internal sealed class MyProg
 
             stream.DisposeCount.Should().Be(1);
             return outputCode;
-        }
-
-        private sealed class WrappedMemoryStream : MemoryStream
-        {
-            public WrappedMemoryStream(byte[] buffer)
-                : base(buffer)
-            {
-            }
-
-            public int DisposeCount { get; private set; }
-
-            protected override void Dispose(bool disposing)
-            {
-                ++this.DisposeCount;
-                base.Dispose(disposing);
-            }
         }
     }
 }
