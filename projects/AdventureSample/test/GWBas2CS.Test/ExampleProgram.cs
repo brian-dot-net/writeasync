@@ -15,7 +15,8 @@ namespace GWBas2CS.Test
             const string Input = @"10 REM My first BASIC program
 20 PRINT ""HELLO, WORLD!""
 30 A$=""a string""
-40 GOTO 20";
+40 A$=""same string""
+100 GOTO 20";
             const string Expected = @"using System;
 using System.IO;
 
@@ -55,6 +56,7 @@ internal sealed class MyProg
             ;
         PRINT(""HELLO, WORLD!"");
         A_s = (""a string"");
+        A_s = (""same string"");
         goto L20;
         return false;
     }
