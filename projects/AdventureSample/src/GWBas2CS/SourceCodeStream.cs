@@ -8,6 +8,7 @@ namespace GWBas2CS
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
+    using GWParse.Lines;
 
     public sealed class SourceCodeStream : IDisposable
     {
@@ -44,22 +45,7 @@ namespace GWBas2CS
                     return;
                 }
 
-                string[] numberAndStatement = line.Split(new char[] { ' ' }, 2);
-                int lineNumber = int.Parse(numberAndStatement[0]);
-                string[] keywordAndRest = numberAndStatement[1].Split(new char[] { ' ' }, 2);
-
-                switch (keywordAndRest[0])
-                {
-                    case "REM":
-                        program.AddComment(lineNumber, keywordAndRest[1]);
-                        break;
-                    case "PRINT":
-                        program.AddPrint(lineNumber, keywordAndRest[1].Substring(1, keywordAndRest[1].Length - 2));
-                        break;
-                    default:
-                        program.AddGoto(lineNumber, int.Parse(keywordAndRest[1]));
-                        break;
-                }
+                BasicLine.FromString(line).Accept(program);
             }
         }
     }

@@ -4,17 +4,22 @@
 
 namespace GWBas2CS
 {
+    using System;
     using System.Collections.Generic;
+    using GWParse.Expressions;
+    using GWParse.Statements;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Editing;
 
-    internal sealed class BasicProgram
+    internal sealed class BasicProgram : ILineVisitor, IStatementVisitor
     {
         private readonly string name;
         private readonly SyntaxGenerator generator;
         private readonly List<SyntaxNode> intrinsics;
         private readonly Lines lines;
+
+        private int lineNumber;
 
         public BasicProgram(string name)
         {
@@ -22,27 +27,6 @@ namespace GWBas2CS
             this.generator = SyntaxGenerator.GetGenerator(new AdhocWorkspace(), LanguageNames.CSharp);
             this.lines = new Lines();
             this.intrinsics = new List<SyntaxNode>();
-        }
-
-        public void AddComment(int line, string comment)
-        {
-            this.lines.AddComment(line, SyntaxFactory.Comment("// " + comment));
-        }
-
-        public void AddPrint(int line, string expression)
-        {
-            var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName("PRINT"), this.generator.LiteralExpression(expression));
-            this.lines.Add(line, callPrint);
-            var callConsoleWriteLine = this.generator.MemberAccessExpression(this.generator.IdentifierName("Console"), "WriteLine");
-            SyntaxNode[] printStatements = new SyntaxNode[] { this.generator.InvocationExpression(callConsoleWriteLine, this.generator.IdentifierName("expression")) };
-            SyntaxNode[] parameters = new SyntaxNode[] { this.generator.ParameterDeclaration("expression", type: this.generator.TypeExpression(SpecialType.System_String)) };
-            var printMethod = this.generator.MethodDeclaration("PRINT", accessibility: Accessibility.Private, modifiers: DeclarationModifiers.Static, parameters: parameters, statements: printStatements);
-            this.intrinsics.Add(printMethod);
-        }
-
-        public void AddGoto(int line, int destination)
-        {
-            this.lines.AddGoto(line, destination);
         }
 
         public override string ToString()
@@ -71,6 +55,119 @@ namespace GWBas2CS
 
             var classDecl = this.generator.ClassDeclaration(this.name, accessibility: Accessibility.Internal, modifiers: DeclarationModifiers.Sealed, members: classMembers);
             return this.generator.CompilationUnit(usingDirectives, classDecl).NormalizeWhitespace().ToString();
+        }
+
+        public void Line(int number, BasicStatement[] list)
+        {
+            this.lineNumber = number;
+            foreach (BasicStatement stmt in list)
+            {
+                stmt.Accept(this);
+            }
+        }
+
+        public void Assign(BasicExpression left, BasicExpression right)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void For(BasicExpression v, BasicExpression start, BasicExpression end, BasicExpression step)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Go(string name, int dest)
+        {
+            switch (name)
+            {
+                case "Goto":
+                    this.AddGoto(dest);
+                    break;
+                default:
+                    throw new NotImplementedException("Go:" + name);
+            }
+        }
+
+        public void IfThen(BasicExpression cond, BasicStatement ifTrue)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Input(string prompt, BasicExpression v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Many(string name, BasicExpression[] list)
+        {
+            switch (name)
+            {
+                case "Print":
+                    this.AddPrint(list[0]);
+                    break;
+                default:
+                    throw new NotImplementedException("Many:" + name);
+            }
+        }
+
+        public void Remark(string text)
+        {
+            this.lines.AddComment(this.lineNumber, SyntaxFactory.Comment("// " + text));
+        }
+
+        public void Void(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddGoto(int destination)
+        {
+            this.lines.AddGoto(this.lineNumber, destination);
+        }
+
+        private void AddPrint(BasicExpression expr)
+        {
+            ExpressionNode node = new ExpressionNode(this.generator);
+            expr.Accept(node);
+            var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName("PRINT"), node.Value);
+            this.lines.Add(this.lineNumber, callPrint);
+            var callConsoleWriteLine = this.generator.MemberAccessExpression(this.generator.IdentifierName("Console"), "WriteLine");
+            SyntaxNode[] printStatements = new SyntaxNode[] { this.generator.InvocationExpression(callConsoleWriteLine, this.generator.IdentifierName("expression")) };
+            SyntaxNode[] parameters = new SyntaxNode[] { this.generator.ParameterDeclaration("expression", type: this.generator.TypeExpression(SpecialType.System_String)) };
+            var printMethod = this.generator.MethodDeclaration("PRINT", accessibility: Accessibility.Private, modifiers: DeclarationModifiers.Static, parameters: parameters, statements: printStatements);
+            this.intrinsics.Add(printMethod);
+        }
+
+        private sealed class ExpressionNode : IExpressionVisitor
+        {
+            private readonly SyntaxGenerator generator;
+
+            public ExpressionNode(SyntaxGenerator generator)
+            {
+                this.generator = generator;
+            }
+
+            public SyntaxNode Value { get; private set; }
+
+            public void Array(BasicType type, string name, BasicExpression[] subs)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Literal(BasicType type, object o)
+            {
+                this.Value = this.generator.LiteralExpression(o);
+            }
+
+            public void Operator(string name, BasicExpression[] operands)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Variable(BasicType type, string name)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private sealed class Lines
