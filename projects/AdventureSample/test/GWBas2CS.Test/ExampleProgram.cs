@@ -18,7 +18,9 @@ namespace GWBas2CS.Test
 40 A$=""same string""
 50 B1$=""new string""
 60 A=2
-100 GOTO 20";
+70 A=20
+80 B1=3
+200 GOTO 20";
             const string Expected = @"using System;
 using System.IO;
 
@@ -29,6 +31,7 @@ internal sealed class MyProg
     private string A_s;
     private string B1_s;
     private float A_n;
+    private float B1_n;
     public MyProg(TextReader input, TextWriter output)
     {
         this.input = (input);
@@ -47,6 +50,7 @@ internal sealed class MyProg
         A_s = ("""");
         B1_s = ("""");
         A_n = (0);
+        B1_n = (0);
     }
 
     private void PRINT(string expression)
@@ -65,6 +69,8 @@ internal sealed class MyProg
         A_s = (""same string"");
         B1_s = (""new string"");
         A_n = (2);
+        A_n = (20);
+        B1_n = (3);
         goto L20;
         return false;
     }
