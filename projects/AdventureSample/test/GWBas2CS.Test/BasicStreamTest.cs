@@ -20,8 +20,20 @@ namespace GWBas2CS.Test
             Task<BasicLine[]> result = BasicStream.ReadAsync(s);
 
             result.IsCompleted.Should().BeTrue();
-            result.Result.Should().BeEmpty();
             s.DisposeCount.Should().Be(1);
+            result.Result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void OneLine()
+        {
+            WrappedMemoryStream s = Lines("10 GOTO 10");
+
+            Task<BasicLine[]> result = BasicStream.ReadAsync(s);
+
+            result.IsCompleted.Should().BeTrue();
+            s.DisposeCount.Should().Be(1);
+            result.Result.Should().ContainSingle().Which.ToString().Should().Be("Line(10, Goto(10))");
         }
 
         private static WrappedMemoryStream Lines(params string[] lines)

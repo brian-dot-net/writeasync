@@ -4,18 +4,26 @@
 
 namespace GWBas2CS
 {
+    using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
     using GWParse.Lines;
 
     public static class BasicStream
     {
-        public static Task<BasicLine[]> ReadAsync(Stream input)
+        public static async Task<BasicLine[]> ReadAsync(Stream input)
         {
-            using (input)
+            List<BasicLine> lines = new List<BasicLine>();
+            using (StreamReader reader = new StreamReader(input))
             {
-                return Task.FromResult(new BasicLine[0]);
+                string line = await reader.ReadLineAsync();
+                if (line != null)
+                {
+                    lines.Add(BasicLine.FromString(line));
+                }
             }
+
+            return lines.ToArray();
         }
     }
 }
