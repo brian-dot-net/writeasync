@@ -324,8 +324,8 @@ namespace GWBas2CS
             {
                 switch (name)
                 {
-                    case "Eq": return this.DoEquals(x, y);
-                    case "Ne": return this.DoNotEquals(x, y);
+                    case "Eq": return this.Cond(this.generator.ValueEqualsExpression, x, y);
+                    case "Ne": return this.Cond(this.generator.ValueNotEqualsExpression, x, y);
                     case "Or": return this.generator.BitwiseOrExpression(this.Cast(x), this.Cast(y));
                     case "And": return this.generator.BitwiseAndExpression(this.Cast(x), this.Cast(y));
                     case "Add": return this.generator.AddExpression(x, y);
@@ -334,16 +334,6 @@ namespace GWBas2CS
                     case "Div": return this.generator.DivideExpression(x, y);
                     default: throw new NotSupportedException("Operator:" + name);
                 }
-            }
-
-            private SyntaxNode DoEquals(SyntaxNode x, SyntaxNode y)
-            {
-                return this.Cond(this.generator.ValueEqualsExpression, x, y);
-            }
-
-            private SyntaxNode DoNotEquals(SyntaxNode x, SyntaxNode y)
-            {
-                return this.Cond(this.generator.ValueNotEqualsExpression, x, y);
             }
 
             private SyntaxNode Cond(Func<SyntaxNode, SyntaxNode, SyntaxNode> cond, SyntaxNode x, SyntaxNode y)
