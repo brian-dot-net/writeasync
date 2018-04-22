@@ -57,8 +57,8 @@ namespace GWBas2CS.Test
     {
         this.Init();
         PRINT(""HELLO, WORLD!"");
-        CLS();
-        ; // A comment
+        CLS() // A comment
+        ;
         return false;
     }
 *";

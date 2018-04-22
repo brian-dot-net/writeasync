@@ -520,19 +520,12 @@ namespace GWBas2CS
 
             public void Add(int number, SyntaxNode node)
             {
-                Line line;
-                if (!this.statements.TryGetValue(number, out line))
-                {
-                    line = new Line(number);
-                    this.statements.Add(number, line);
-                }
-
-                line.Add(node);
+                this.Get(number).Add(node);
             }
 
             public void AddComment(int number, SyntaxTrivia comment)
             {
-                this.Add(number, SyntaxFactory.EmptyStatement().WithTrailingTrivia(comment));
+                this.Get(number).Add(comment);
             }
 
             public void AddGoto(int number, int destination)
@@ -559,6 +552,18 @@ namespace GWBas2CS
                 return "L" + number;
             }
 
+            private Line Get(int number)
+            {
+                Line line;
+                if (!this.statements.TryGetValue(number, out line))
+                {
+                    line = new Line(number);
+                    this.statements.Add(number, line);
+                }
+
+                return line;
+            }
+
             private sealed class Line
             {
                 private readonly int number;
@@ -571,6 +576,20 @@ namespace GWBas2CS
                 }
 
                 public void Add(SyntaxNode node) => this.nodes.Add(node);
+
+                public void Add(SyntaxTrivia comment)
+                {
+                    if (this.nodes.Count == 0)
+                    {
+                        this.Add(SyntaxFactory.EmptyStatement().WithTrailingTrivia(comment));
+                    }
+                    else
+                    {
+                        int n = this.nodes.Count - 1;
+                        SyntaxNode last = this.nodes[n];
+                        this.nodes[n] = last.WithTrailingTrivia(comment);
+                    }
+                }
 
                 public IEnumerable<SyntaxNode> Nodes(ISet<int> references)
                 {
