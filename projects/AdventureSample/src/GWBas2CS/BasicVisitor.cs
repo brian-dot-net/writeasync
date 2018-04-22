@@ -296,28 +296,17 @@ namespace GWBas2CS
 
             public void Operator(string name, BasicExpression[] operands)
             {
-                switch (name)
+                operands[0].Accept(this);
+                SyntaxNode x = this.Value;
+                if (operands.Length == 2)
                 {
-                    case "Or":
-                        this.Value = this.Binary(this.generator.BitwiseOrExpression, operands[0], operands[1]);
-                        break;
-                    case "And":
-                        this.Value = this.Binary(this.generator.BitwiseAndExpression, operands[0], operands[1]);
-                        break;
-                    case "Add":
-                        this.Value = this.Binary(this.generator.AddExpression, operands[0], operands[1]);
-                        break;
-                    case "Sub":
-                        this.Value = this.Binary(this.generator.SubtractExpression, operands[0], operands[1]);
-                        break;
-                    case "Mult":
-                        this.Value = this.Binary(this.generator.MultiplyExpression, operands[0], operands[1]);
-                        break;
-                    case "Div":
-                        this.Value = this.Binary(this.generator.DivideExpression, operands[0], operands[1]);
-                        break;
-                    default:
-                        throw new NotSupportedException("Operator:" + name);
+                    operands[1].Accept(this);
+                    SyntaxNode y = this.Value;
+                    this.Value = this.Binary(name, x, y);
+                }
+                else
+                {
+                    throw new NotSupportedException("Operator:" + name);
                 }
             }
 
@@ -326,13 +315,18 @@ namespace GWBas2CS
                 this.Value = this.vars.Add(type, name);
             }
 
-            private SyntaxNode Binary(Func<SyntaxNode, SyntaxNode, SyntaxNode> op, BasicExpression left, BasicExpression right)
+            private SyntaxNode Binary(string name, SyntaxNode x, SyntaxNode y)
             {
-                left.Accept(this);
-                SyntaxNode x = this.Value;
-                right.Accept(this);
-                SyntaxNode y = this.Value;
-                return op(x, y);
+                switch (name)
+                {
+                    case "Or": return this.generator.BitwiseOrExpression(x, y);
+                    case "And": return this.generator.BitwiseAndExpression(x, y);
+                    case "Add": return this.generator.AddExpression(x, y);
+                    case "Sub": return this.generator.SubtractExpression(x, y);
+                    case "Mult": return this.generator.MultiplyExpression(x, y);
+                    case "Div": return this.generator.DivideExpression(x, y);
+                    default: throw new NotSupportedException("Operator:" + name);
+                }
             }
         }
 
