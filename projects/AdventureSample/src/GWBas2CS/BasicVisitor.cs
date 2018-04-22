@@ -110,7 +110,14 @@ namespace GWBas2CS
 
         public void Void(string name)
         {
-            throw new NotImplementedException();
+            switch (name)
+            {
+                case "Cls":
+                    this.AddCls();
+                    break;
+                default:
+                    throw new NotImplementedException("Void:" + name);
+            }
         }
 
         private void Usings(IList<SyntaxNode> declarations)
@@ -196,15 +203,32 @@ namespace GWBas2CS
         {
             ExpressionNode node = new ExpressionNode(this.generator, this.vars, this.methods);
             expr.Accept(node);
-            var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName("PRINT"), node.Value);
+            string name = "PRINT";
+            var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName(name), node.Value);
             this.lines.Add(this.lineNumber, callPrint);
             var output = this.generator.MemberAccessExpression(this.generator.ThisExpression(), this.generator.IdentifierName("output"));
-            var callConsoleWriteLine = this.generator.MemberAccessExpression(output, "WriteLine");
-            SyntaxNode[] printStatements = new SyntaxNode[] { this.generator.InvocationExpression(callConsoleWriteLine, this.generator.IdentifierName("expression")) };
+            var callWriteLine = this.generator.MemberAccessExpression(output, "WriteLine");
+            SyntaxNode[] printStatements = new SyntaxNode[] { this.generator.InvocationExpression(callWriteLine, this.generator.IdentifierName("expression")) };
             SyntaxNode[] parameters = new SyntaxNode[] { this.generator.ParameterDeclaration("expression", type: this.generator.TypeExpression(SpecialType.System_String)) };
-            string name = "PRINT";
             var printMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, parameters: parameters, statements: printStatements);
             this.methods.Add(name, printMethod);
+        }
+
+        private void AddCls()
+        {
+            string name = "CLS";
+            var callCls = this.generator.InvocationExpression(SyntaxFactory.IdentifierName(name));
+            this.lines.Add(this.lineNumber, callCls);
+            var output = this.generator.MemberAccessExpression(this.generator.ThisExpression(), this.generator.IdentifierName("output"));
+            var callWrite = this.generator.MemberAccessExpression(output, "Write");
+            var callClear = this.generator.MemberAccessExpression(this.generator.IdentifierName("Console"), "Clear");
+            SyntaxNode[] clsStatements = new SyntaxNode[]
+            {
+                this.generator.InvocationExpression(callWrite, this.generator.LiteralExpression('\f')),
+                this.generator.InvocationExpression(callClear),
+            };
+            var clsMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, statements: clsStatements);
+            this.methods.Add(name, clsMethod);
         }
 
         private void AddDim(BasicExpression expr)

@@ -22,13 +22,14 @@ namespace GWBas2CS
             return 0;
         }
 
-        private static Task MainAsync(string inputPath, string outputPath)
+        private static async Task MainAsync(string inputPath, string outputPath)
         {
             string name = Path.GetFileNameWithoutExtension(inputPath);
-            return BasicProgram.TranslateAsync(
-                name,
-                Open(inputPath, FileMode.Open, FileAccess.Read, FileShare.Read),
-                Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.None));
+            using (Stream output = Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                Stream input = Open(inputPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                await BasicProgram.TranslateAsync(name, input, output);
+            }
         }
 
         private static Stream Open(string path, FileMode mode, FileAccess access, FileShare share)
