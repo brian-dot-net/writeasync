@@ -257,7 +257,7 @@ namespace GWBas2CS
 
         private void AddDim(BasicExpression expr)
         {
-            ExpressionNode node = new ExpressionNode(this.generator, this.vars, this.methods);
+            ExpressionNode node = new ExpressionNode(this.generator, this.vars, this.methods, true);
             expr.Accept(node);
             this.lines.Add(this.lineNumber, node.Value);
         }
@@ -293,12 +293,14 @@ namespace GWBas2CS
             private readonly SyntaxGenerator generator;
             private readonly Variables vars;
             private readonly Methods methods;
+            private readonly bool dim;
 
-            public ExpressionNode(SyntaxGenerator generator, Variables vars, Methods methods)
+            public ExpressionNode(SyntaxGenerator generator, Variables vars, Methods methods, bool dim = false)
             {
                 this.generator = generator;
                 this.vars = vars;
                 this.methods = methods;
+                this.dim = dim;
             }
 
             public BasicType Type { get; private set; }
@@ -308,7 +310,14 @@ namespace GWBas2CS
             public void Array(BasicType type, string name, BasicExpression[] subs)
             {
                 this.Type = type;
-                this.Value = this.vars.Dim(this.methods, type, name, subs);
+                if (this.dim)
+                {
+                    this.Value = this.vars.Dim(this.methods, type, name, subs);
+                }
+                else
+                {
+                    this.Value = this.vars.Index(this.methods, type, name, subs);
+                }
             }
 
             public void Literal(BasicType type, object o)
@@ -422,6 +431,19 @@ namespace GWBas2CS
                 }
 
                 return this.Add(type, name, subNodes.Length).Dim(methods, subNodes);
+            }
+
+            public SyntaxNode Index(Methods methods, BasicType type, string name, BasicExpression[] subs)
+            {
+                ExpressionNode node = new ExpressionNode(this.generator, this, methods);
+                SyntaxNode[] subNodes = new SyntaxNode[subs.Length];
+                for (int i = 0; i < subs.Length; ++i)
+                {
+                    subs[i].Accept(node);
+                    subNodes[i] = node.Value;
+                }
+
+                return this.Add(type, name, subNodes.Length).Index(subNodes);
             }
 
             public SyntaxNode Add(BasicType type, string name)
@@ -546,6 +568,11 @@ namespace GWBas2CS
                 public SyntaxNode Init()
                 {
                     return this.generator.AssignmentStatement(this.Ref(), this.Default);
+                }
+
+                public SyntaxNode Index(SyntaxNode[] sub)
+                {
+                    return this.generator.ElementAccessExpression(this.Ref(), sub);
                 }
 
                 public SyntaxNode Dim(Methods methods, SyntaxNode[] sub)
