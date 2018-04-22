@@ -54,9 +54,9 @@ namespace GWBas2CS
 
         public void Assign(BasicExpression left, BasicExpression right)
         {
-            ExpressionNode x = new ExpressionNode(this.generator, this.vars);
+            ExpressionNode x = new ExpressionNode(this.generator, this.vars, this.methods);
             left.Accept(x);
-            ExpressionNode y = new ExpressionNode(this.generator, this.vars);
+            ExpressionNode y = new ExpressionNode(this.generator, this.vars, this.methods);
             right.Accept(y);
             this.lines.Add(this.lineNumber, this.generator.AssignmentStatement(x.Value, y.Value));
         }
@@ -194,7 +194,7 @@ namespace GWBas2CS
 
         private void AddPrint(BasicExpression expr)
         {
-            ExpressionNode node = new ExpressionNode(this.generator, this.vars);
+            ExpressionNode node = new ExpressionNode(this.generator, this.vars, this.methods);
             expr.Accept(node);
             var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName("PRINT"), node.Value);
             this.lines.Add(this.lineNumber, callPrint);
@@ -209,34 +209,9 @@ namespace GWBas2CS
 
         private void AddDim(BasicExpression expr)
         {
-            ExpressionNode node = new ExpressionNode(this.generator, this.vars);
+            ExpressionNode node = new ExpressionNode(this.generator, this.vars, this.methods);
             expr.Accept(node);
-            var callDim = node.Value;
-            this.lines.Add(this.lineNumber, callDim);
-            var stype = (expr.Type == BasicType.Str) ? SpecialType.System_String : SpecialType.System_Single;
-            var type = this.generator.TypeExpression(stype);
-            var arr = this.generator.IdentifierName("a");
-            var d1 = this.generator.IdentifierName("d1");
-            var leftS = this.generator.CastExpression(this.generator.TypeExpression(SpecialType.System_Int32), d1);
-            var sub = this.generator.AddExpression(leftS, this.generator.LiteralExpression(1));
-            var arrR = this.generator.ArrayCreationExpression(type, sub);
-            List<SyntaxNode> dimStatements = new List<SyntaxNode>();
-            dimStatements.Add(this.generator.AssignmentStatement(arr, arrR));
-            if (expr.Type == BasicType.Str)
-            {
-                var fill = this.generator.MemberAccessExpression(this.generator.IdentifierName("Array"), "Fill");
-                var callFill = this.generator.InvocationExpression(fill, arr, this.generator.LiteralExpression(string.Empty));
-                dimStatements.Add(callFill);
-            }
-
-            SyntaxNode[] parameters = new SyntaxNode[]
-            {
-                this.generator.ParameterDeclaration("a", type: this.generator.ArrayTypeExpression(type), refKind: RefKind.Out),
-                this.generator.ParameterDeclaration("d1", type: this.generator.TypeExpression(SpecialType.System_Single))
-            };
-            string name = (expr.Type == BasicType.Str) ? "DIM_sa" : "DIM_na";
-            var dimMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, parameters: parameters, statements: dimStatements);
-            this.methods.Add(name, dimMethod);
+            this.lines.Add(this.lineNumber, node.Value);
         }
 
         private sealed class Methods
@@ -269,11 +244,13 @@ namespace GWBas2CS
         {
             private readonly SyntaxGenerator generator;
             private readonly Variables vars;
+            private readonly Methods methods;
 
-            public ExpressionNode(SyntaxGenerator generator, Variables vars)
+            public ExpressionNode(SyntaxGenerator generator, Variables vars, Methods methods)
             {
                 this.generator = generator;
                 this.vars = vars;
+                this.methods = methods;
             }
 
             public BasicType Type { get; private set; }
@@ -283,7 +260,7 @@ namespace GWBas2CS
             public void Array(BasicType type, string name, BasicExpression[] subs)
             {
                 this.Type = type;
-                this.Value = this.vars.Dim(type, name, subs[0]);
+                this.Value = this.vars.Dim(this.methods, type, name, subs[0]);
             }
 
             public void Literal(BasicType type, object o)
@@ -342,11 +319,11 @@ namespace GWBas2CS
                 return this.generator.MethodDeclaration("Init", accessibility: Accessibility.Private, statements: statements);
             }
 
-            public SyntaxNode Dim(BasicType type, string name, BasicExpression sub)
+            public SyntaxNode Dim(Methods methods, BasicType type, string name, BasicExpression sub)
             {
-                ExpressionNode node = new ExpressionNode(this.generator, this);
+                ExpressionNode node = new ExpressionNode(this.generator, this, methods);
                 sub.Accept(node);
-                return this.Add(type, name, 1).Dim(node.Value);
+                return this.Add(type, name, 1).Dim(methods, node.Value);
             }
 
             public SyntaxNode Add(BasicType type, string name)
@@ -396,7 +373,7 @@ namespace GWBas2CS
                     this.subs = subs;
                 }
 
-                private SyntaxNode Type
+                private SyntaxNode ElementType
                 {
                     get
                     {
@@ -406,7 +383,15 @@ namespace GWBas2CS
                             ty = SpecialType.System_String;
                         }
 
-                        SyntaxNode tx = this.generator.TypeExpression(ty);
+                        return this.generator.TypeExpression(ty);
+                    }
+                }
+
+                private SyntaxNode Type
+                {
+                    get
+                    {
+                        SyntaxNode tx = this.ElementType;
                         if (this.subs > 0)
                         {
                             tx = this.generator.ArrayTypeExpression(tx);
@@ -466,9 +451,32 @@ namespace GWBas2CS
                     return this.generator.AssignmentStatement(this.Ref(), this.Default);
                 }
 
-                public SyntaxNode Dim(SyntaxNode sub)
+                public SyntaxNode Dim(Methods methods, SyntaxNode sub)
                 {
-                    var method = this.generator.IdentifierName("DIM" + this.Suffix);
+                    string name = "DIM" + this.Suffix;
+                    var arr = this.generator.IdentifierName("a");
+                    var d1 = this.generator.IdentifierName("d1");
+                    var leftS = this.generator.CastExpression(this.generator.TypeExpression(SpecialType.System_Int32), d1);
+                    var d = this.generator.AddExpression(leftS, this.generator.LiteralExpression(1));
+                    var arrR = this.generator.ArrayCreationExpression(this.ElementType, d);
+                    List<SyntaxNode> dimStatements = new List<SyntaxNode>();
+                    dimStatements.Add(this.generator.AssignmentStatement(arr, arrR));
+                    if (this.type == BasicType.Str)
+                    {
+                        var fill = this.generator.MemberAccessExpression(this.generator.IdentifierName("Array"), "Fill");
+                        var callFill = this.generator.InvocationExpression(fill, arr, this.Default);
+                        dimStatements.Add(callFill);
+                    }
+
+                    SyntaxNode[] parameters = new SyntaxNode[]
+                    {
+                        this.generator.ParameterDeclaration("a", type: this.Type, refKind: RefKind.Out),
+                        this.generator.ParameterDeclaration("d1", type: this.generator.TypeExpression(SpecialType.System_Single))
+                    };
+                    var dimMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, parameters: parameters, statements: dimStatements);
+                    methods.Add(name, dimMethod);
+
+                    var method = this.generator.IdentifierName(name);
                     var arg1 = this.generator.Argument(RefKind.Out, this.Ref());
                     return this.generator.InvocationExpression(method, arg1, sub);
                 }
