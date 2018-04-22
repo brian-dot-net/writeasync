@@ -26,6 +26,7 @@ namespace GWBas2CS.Test
 120 DIM B1(8)
 130 DIM B2(9,10)
 140 CLS
+150 PRINT A$;
 1000 GOTO 20";
             const string Expected = @"using System;
 using System.IO;
@@ -91,6 +92,11 @@ internal sealed class MyProg
         Console.Clear();
     }
 
+    private void PRINT_n(string expression)
+    {
+        this.output.Write(expression);
+    }
+
     private bool Main()
     {
         this.Init();
@@ -110,6 +116,7 @@ internal sealed class MyProg
         DIM1_na(out B1_na, 8);
         DIM2_na(out B2_na, 9, 10);
         CLS();
+        PRINT_n(("""") + (A_s));
         goto L20;
         return false;
     }

@@ -98,5 +98,23 @@ namespace GWBas2CS.Test
 
             actual.Should().Match(Expected);
         }
+
+        [Fact]
+        public void ThreeMixedExprNoBreak()
+        {
+            const string Input = @"10 PRINT A$;"" B "";C;";
+            const string Expected = @"*
+    private bool Main()
+    {
+        this.Init();
+        PRINT_n(((("""") + (A_s)) + ("" B "")) + (C_n));
+        return false;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
     }
 }

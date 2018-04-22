@@ -97,6 +97,9 @@ namespace GWBas2CS
                 case "Print":
                     this.AddPrint(list);
                     break;
+                case "PrintN":
+                    this.AddPrint(list, false);
+                    break;
                 case "Dim":
                     this.AddDim(list);
                     break;
@@ -201,7 +204,7 @@ namespace GWBas2CS
             this.lines.AddGoto(this.lineNumber, destination);
         }
 
-        private void AddPrint(BasicExpression[] exprs)
+        private void AddPrint(BasicExpression[] exprs, bool lineBreak = true)
         {
             ExpressionNode node = new ExpressionNode(this.generator, this.vars, this.methods);
             SyntaxNode arg = this.generator.LiteralExpression(string.Empty);
@@ -211,16 +214,16 @@ namespace GWBas2CS
                 arg = this.generator.AddExpression(arg, node.Value);
             }
 
-            this.AddPrint(arg);
+            this.AddPrint(arg, lineBreak);
         }
 
-        private void AddPrint(SyntaxNode arg)
+        private void AddPrint(SyntaxNode arg, bool lineBreak)
         {
-            string name = "PRINT";
+            string name = "PRINT" + (lineBreak ? string.Empty : "_n");
             var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName(name), arg);
             this.lines.Add(this.lineNumber, callPrint);
             var output = this.generator.MemberAccessExpression(this.generator.ThisExpression(), this.generator.IdentifierName("output"));
-            var callWriteLine = this.generator.MemberAccessExpression(output, "WriteLine");
+            var callWriteLine = this.generator.MemberAccessExpression(output, lineBreak ? "WriteLine" : "Write");
             SyntaxNode[] printStatements = new SyntaxNode[] { this.generator.InvocationExpression(callWriteLine, this.generator.IdentifierName("expression")) };
             SyntaxNode[] parameters = new SyntaxNode[] { this.generator.ParameterDeclaration("expression", type: this.generator.TypeExpression(SpecialType.System_String)) };
             var printMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, parameters: parameters, statements: printStatements);
