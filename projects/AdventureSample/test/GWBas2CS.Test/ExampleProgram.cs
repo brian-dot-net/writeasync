@@ -24,7 +24,8 @@ namespace GWBas2CS.Test
 100 DIM B1$(6)
 110 DIM A(7)
 120 DIM B1(8)
-130 CLS
+130 DIM B2(9,10)
+140 CLS
 1000 GOTO 20";
             const string Expected = @"using System;
 using System.IO;
@@ -37,6 +38,7 @@ internal sealed class MyProg
     private string[] B1_sa;
     private float[] A_na;
     private float[] B1_na;
+    private float[, ] B2_na;
     private string A_s;
     private string B1_s;
     private float A_n;
@@ -67,15 +69,20 @@ internal sealed class MyProg
         this.output.WriteLine(expression);
     }
 
-    private void DIM_sa(out string[] a, float d1)
+    private void DIM1_sa(out string[] a, float d1)
     {
         a = (new string[((int)(d1)) + (1)]);
         Array.Fill(a, """");
     }
 
-    private void DIM_na(out float[] a, float d1)
+    private void DIM1_na(out float[] a, float d1)
     {
         a = (new float[((int)(d1)) + (1)]);
+    }
+
+    private void DIM2_na(out float[, ] a, float d1, float d2)
+    {
+        a = (new float[((int)(d1)) + (1), ((int)(d2)) + (1)]);
     }
 
     private void CLS()
@@ -97,10 +104,11 @@ internal sealed class MyProg
         A_n = (2);
         A_n = (20);
         B1_n = (3);
-        DIM_sa(out A_sa, 5);
-        DIM_sa(out B1_sa, 6);
-        DIM_na(out A_na, 7);
-        DIM_na(out B1_na, 8);
+        DIM1_sa(out A_sa, 5);
+        DIM1_sa(out B1_sa, 6);
+        DIM1_na(out A_na, 7);
+        DIM1_na(out B1_na, 8);
+        DIM2_na(out B2_na, 9, 10);
         CLS();
         goto L20;
         return false;

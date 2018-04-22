@@ -11,6 +11,7 @@ namespace GWBas2CS
     using GWParse.Statements;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Editing;
 
     internal sealed class BasicVisitor : ILineVisitor, IStatementVisitor
@@ -284,7 +285,7 @@ namespace GWBas2CS
             public void Array(BasicType type, string name, BasicExpression[] subs)
             {
                 this.Type = type;
-                this.Value = this.vars.Dim(this.methods, type, name, subs[0]);
+                this.Value = this.vars.Dim(this.methods, type, name, subs);
             }
 
             public void Literal(BasicType type, object o)
@@ -359,11 +360,17 @@ namespace GWBas2CS
                 return this.generator.MethodDeclaration("Init", accessibility: Accessibility.Private, statements: statements);
             }
 
-            public SyntaxNode Dim(Methods methods, BasicType type, string name, BasicExpression sub)
+            public SyntaxNode Dim(Methods methods, BasicType type, string name, BasicExpression[] subs)
             {
                 ExpressionNode node = new ExpressionNode(this.generator, this, methods);
-                sub.Accept(node);
-                return this.Add(type, name, 1).Dim(methods, node.Value);
+                SyntaxNode[] subNodes = new SyntaxNode[subs.Length];
+                for (int i = 0; i < subs.Length; ++i)
+                {
+                    subs[i].Accept(node);
+                    subNodes[i] = node.Value;
+                }
+
+                return this.Add(type, name, subNodes.Length).Dim(methods, subNodes);
             }
 
             public SyntaxNode Add(BasicType type, string name)
@@ -413,17 +420,17 @@ namespace GWBas2CS
                     this.subs = subs;
                 }
 
-                private SyntaxNode ElementType
+                private TypeSyntax ElementType
                 {
                     get
                     {
-                        SpecialType ty = SpecialType.System_Single;
+                        SyntaxKind kind = SyntaxKind.FloatKeyword;
                         if (this.type == BasicType.Str)
                         {
-                            ty = SpecialType.System_String;
+                            kind = SyntaxKind.StringKeyword;
                         }
 
-                        return this.generator.TypeExpression(ty);
+                        return SyntaxFactory.PredefinedType(SyntaxFactory.Token(kind));
                     }
                 }
 
@@ -431,13 +438,12 @@ namespace GWBas2CS
                 {
                     get
                     {
-                        SyntaxNode tx = this.ElementType;
                         if (this.subs > 0)
                         {
-                            tx = this.generator.ArrayTypeExpression(tx);
+                            return this.ArrayType();
                         }
 
-                        return tx;
+                        return this.ElementType;
                     }
                 }
 
@@ -491,14 +497,28 @@ namespace GWBas2CS
                     return this.generator.AssignmentStatement(this.Ref(), this.Default);
                 }
 
-                public SyntaxNode Dim(Methods methods, SyntaxNode sub)
+                public SyntaxNode Dim(Methods methods, SyntaxNode[] sub)
                 {
-                    string name = "DIM" + this.Suffix;
+                    string name = "DIM" + sub.Length + this.Suffix;
                     var arr = this.generator.IdentifierName("a");
-                    var d1 = this.generator.IdentifierName("d1");
-                    var leftS = this.generator.CastExpression(this.generator.TypeExpression(SpecialType.System_Int32), d1);
-                    var d = this.generator.AddExpression(leftS, this.generator.LiteralExpression(1));
-                    var arrR = this.generator.ArrayCreationExpression(this.ElementType, d);
+                    SyntaxNode[] subNodes = new SyntaxNode[sub.Length];
+
+                    List<SyntaxNode> parameters = new List<SyntaxNode>();
+                    parameters.Add(this.generator.ParameterDeclaration("a", type: this.ArrayType(), refKind: RefKind.Out));
+                    for (int i = 0; i < sub.Length; ++i)
+                    {
+                        string n = "d" + (i + 1);
+                        var p = this.generator.ParameterDeclaration(n, type: this.generator.TypeExpression(SpecialType.System_Single));
+                        parameters.Add(p);
+
+                        var dn = this.generator.IdentifierName(n);
+                        var leftS = this.generator.CastExpression(this.generator.TypeExpression(SpecialType.System_Int32), dn);
+
+                        subNodes[i] = this.generator.AddExpression(leftS, this.generator.LiteralExpression(1));
+                    }
+
+                    var arrR = SyntaxFactory.ArrayCreationExpression(this.ArrayType(subNodes));
+
                     List<SyntaxNode> dimStatements = new List<SyntaxNode>();
                     dimStatements.Add(this.generator.AssignmentStatement(arr, arrR));
                     if (this.type == BasicType.Str)
@@ -508,17 +528,42 @@ namespace GWBas2CS
                         dimStatements.Add(callFill);
                     }
 
-                    SyntaxNode[] parameters = new SyntaxNode[]
-                    {
-                        this.generator.ParameterDeclaration("a", type: this.Type, refKind: RefKind.Out),
-                        this.generator.ParameterDeclaration("d1", type: this.generator.TypeExpression(SpecialType.System_Single))
-                    };
                     var dimMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, parameters: parameters, statements: dimStatements);
                     methods.Add(name, dimMethod);
 
                     var method = this.generator.IdentifierName(name);
-                    var arg1 = this.generator.Argument(RefKind.Out, this.Ref());
-                    return this.generator.InvocationExpression(method, arg1, sub);
+                    List<SyntaxNode> args = new List<SyntaxNode>();
+                    args.Add(this.generator.Argument(RefKind.Out, this.Ref()));
+                    args.AddRange(sub);
+                    return this.generator.InvocationExpression(method, args);
+                }
+
+                private ArrayTypeSyntax ArrayType(params SyntaxNode[] nodes)
+                {
+                    List<SyntaxNodeOrToken> sizes = new List<SyntaxNodeOrToken>();
+                    var omit = SyntaxFactory.OmittedArraySizeExpression();
+                    var comma = SyntaxFactory.Token(SyntaxKind.CommaToken);
+
+                    for (int i = 0; i < this.subs; ++i)
+                    {
+                        if (i != 0)
+                        {
+                            sizes.Add(comma);
+                        }
+
+                        if (nodes.Length == 0)
+                        {
+                            sizes.Add(omit);
+                        }
+                        else
+                        {
+                            sizes.Add(nodes[i]);
+                        }
+                    }
+
+                    var rank = SyntaxFactory.ArrayRankSpecifier(SyntaxFactory.SeparatedList<ExpressionSyntax>(sizes));
+
+                    return SyntaxFactory.ArrayType(this.ElementType, SyntaxFactory.SingletonList(rank));
                 }
             }
         }

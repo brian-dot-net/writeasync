@@ -17,7 +17,25 @@ namespace GWBas2CS.Test
     private bool Main()
     {
         this.Init();
-        DIM_na(out A_na, (B_n) + (2));
+        DIM1_na(out A_na, (B_n) + (2));
+        return false;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
+
+        [Fact]
+        public void TwoDimensionsComplexExpression()
+        {
+            const string Input = @"10 DIM A(B+2, C)";
+            const string Expected = @"*
+    private bool Main()
+    {
+        this.Init();
+        DIM2_na(out A_na, (B_n) + (2), C_n);
         return false;
     }
 *";
