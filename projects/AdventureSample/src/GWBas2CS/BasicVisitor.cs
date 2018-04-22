@@ -518,39 +518,39 @@ namespace GWBas2CS
                 this.references = new HashSet<int>();
             }
 
-            public void Add(int line, SyntaxNode node)
+            public void Add(int number, SyntaxNode node)
             {
-                this.statements.Add(line, new Line(line, node, null));
+                Line line;
+                if (!this.statements.TryGetValue(number, out line))
+                {
+                    line = new Line(number);
+                    this.statements.Add(number, line);
+                }
+
+                line.Add(node);
             }
 
-            public void AddComment(int line, SyntaxTrivia comment)
+            public void AddComment(int number, SyntaxTrivia comment)
             {
-                this.statements.Add(line, new Line(line, null, comment));
+                this.Add(number, SyntaxFactory.EmptyStatement().WithTrailingTrivia(comment));
             }
 
-            public void AddGoto(int line, int destination)
+            public void AddGoto(int number, int destination)
             {
                 var label = SyntaxFactory.IdentifierName(Label(destination));
                 var gotoStatement = SyntaxFactory.GotoStatement(SyntaxKind.GotoStatement, label);
-                this.Add(line, gotoStatement);
+                this.Add(number, gotoStatement);
                 this.references.Add(destination);
             }
 
             public IEnumerable<SyntaxNode> Statements()
             {
-                SyntaxTrivia? previous = null;
                 foreach (Line line in this.statements.Values)
                 {
-                    SyntaxTrivia? next = line.Comment;
-                    if (next == null)
+                    foreach (SyntaxNode node in line.Nodes(this.references))
                     {
-                        foreach (SyntaxNode node in line.Nodes(this.references, previous))
-                        {
-                            yield return node;
-                        }
+                        yield return node;
                     }
-
-                    previous = next;
                 }
             }
 
@@ -562,41 +562,26 @@ namespace GWBas2CS
             private sealed class Line
             {
                 private readonly int number;
-                private readonly SyntaxNode node;
-                private readonly SyntaxTrivia? comment;
+                private readonly List<SyntaxNode> nodes;
 
-                public Line(int number, SyntaxNode node, SyntaxTrivia? comment)
+                public Line(int number)
                 {
                     this.number = number;
-                    this.node = node;
-                    this.comment = comment;
+                    this.nodes = new List<SyntaxNode>();
                 }
 
-                public SyntaxTrivia? Comment => this.comment;
+                public void Add(SyntaxNode node) => this.nodes.Add(node);
 
-                public IEnumerable<SyntaxNode> Nodes(ISet<int> references, SyntaxTrivia? previous)
+                public IEnumerable<SyntaxNode> Nodes(ISet<int> references)
                 {
-                    SyntaxNode first = null;
-                    SyntaxNode second = null;
                     if (references.Contains(this.number))
                     {
-                        first = SyntaxFactory.LabeledStatement(Label(this.number), SyntaxFactory.EmptyStatement());
-                        second = this.node;
-                    }
-                    else
-                    {
-                        first = this.node;
+                        yield return SyntaxFactory.LabeledStatement(Label(this.number), SyntaxFactory.EmptyStatement());
                     }
 
-                    if (previous.HasValue)
+                    foreach (SyntaxNode node in this.nodes)
                     {
-                        first = first.WithLeadingTrivia(previous.Value);
-                    }
-
-                    yield return first;
-                    if (second != null)
-                    {
-                        yield return second;
+                        yield return node;
                     }
                 }
             }

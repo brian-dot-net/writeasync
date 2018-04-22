@@ -87,7 +87,7 @@ internal sealed class MyProg
     private bool Main()
     {
         this.Init();
-        // My first BASIC program
+        ; // My first BASIC program
         L20:
             ;
         PRINT(""HELLO, WORLD!"");
