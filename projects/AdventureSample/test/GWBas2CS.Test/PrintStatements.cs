@@ -26,5 +26,41 @@ namespace GWBas2CS.Test
 
             actual.Should().Match(Expected);
         }
+
+        [Fact]
+        public void OneNumExpr()
+        {
+            const string Input = @"10 PRINT A";
+            const string Expected = @"*
+    private bool Main()
+    {
+        this.Init();
+        PRINT(("""") + (A_n));
+        return false;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
+
+        [Fact]
+        public void OneStrExpr()
+        {
+            const string Input = @"10 PRINT A$";
+            const string Expected = @"*
+    private bool Main()
+    {
+        this.Init();
+        PRINT(("""") + (A_s));
+        return false;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
     }
 }
