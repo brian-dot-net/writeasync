@@ -315,12 +315,17 @@ namespace GWBas2CS
                 this.Value = this.vars.Add(type, name);
             }
 
+            private SyntaxNode Cast(SyntaxNode node)
+            {
+                return this.generator.CastExpression(this.generator.TypeExpression(SpecialType.System_Int32), node);
+            }
+
             private SyntaxNode Binary(string name, SyntaxNode x, SyntaxNode y)
             {
                 switch (name)
                 {
-                    case "Or": return this.generator.BitwiseOrExpression(x, y);
-                    case "And": return this.generator.BitwiseAndExpression(x, y);
+                    case "Or": return this.generator.BitwiseOrExpression(this.Cast(x), this.Cast(y));
+                    case "And": return this.generator.BitwiseAndExpression(this.Cast(x), this.Cast(y));
                     case "Add": return this.generator.AddExpression(x, y);
                     case "Sub": return this.generator.SubtractExpression(x, y);
                     case "Mult": return this.generator.MultiplyExpression(x, y);

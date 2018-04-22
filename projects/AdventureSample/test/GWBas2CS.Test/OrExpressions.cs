@@ -17,7 +17,7 @@ namespace GWBas2CS.Test
     private bool Main()
     {
         this.Init();
-        A_n = ((A_n) | (1));
+        A_n = (((int)(A_n)) | ((int)(1)));
         return false;
     }
 *";
@@ -35,7 +35,7 @@ namespace GWBas2CS.Test
     private bool Main()
     {
         this.Init();
-        A_n = (((A_n) | (B_n)) | (2));
+        A_n = (((int)(((int)(A_n)) | ((int)(B_n)))) | ((int)(2)));
         return false;
     }
 *";
