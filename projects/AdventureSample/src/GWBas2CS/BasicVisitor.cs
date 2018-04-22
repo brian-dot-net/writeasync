@@ -298,6 +298,9 @@ namespace GWBas2CS
             {
                 switch (name)
                 {
+                    case "Or":
+                        this.Value = this.Binary(this.generator.BitwiseOrExpression, operands[0], operands[1]);
+                        break;
                     case "And":
                         this.Value = this.Binary(this.generator.BitwiseAndExpression, operands[0], operands[1]);
                         break;
