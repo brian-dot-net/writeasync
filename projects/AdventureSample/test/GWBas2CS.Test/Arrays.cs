@@ -10,7 +10,7 @@ namespace GWBas2CS.Test
     public sealed class Arrays
     {
         [Fact]
-        public void AssignNumOneDimenson()
+        public void AssignNumOneD()
         {
             const string Input = @"10 A(1)=2";
             const string Expected = @"*
@@ -18,6 +18,42 @@ namespace GWBas2CS.Test
     {
         this.Init();
         A_na[1] = (2);
+        return false;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
+
+        [Fact]
+        public void AssignStrOneD()
+        {
+            const string Input = @"10 A$(1)=""x""";
+            const string Expected = @"*
+    private bool Main()
+    {
+        this.Init();
+        A_sa[1] = (""x"");
+        return false;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
+
+        [Fact]
+        public void AssignStrTwoD()
+        {
+            const string Input = @"10 A$(1,B)=C$";
+            const string Expected = @"*
+    private bool Main()
+    {
+        this.Init();
+        A_sa[1, B_n] = (C_s);
         return false;
     }
 *";
