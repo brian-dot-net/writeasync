@@ -17,7 +17,7 @@ namespace GWBas2CS.Test
     private bool Main()
     {
         this.Init();
-        PRINT(""HELLO, WORLD!"");
+        PRINT(("""") + (""HELLO, WORLD!""));
         CLS();
         return false;
     }
@@ -36,7 +36,7 @@ namespace GWBas2CS.Test
     private bool Main()
     {
         this.Init();
-        PRINT(""HELLO, WORLD!"");
+        PRINT(("""") + (""HELLO, WORLD!""));
         CLS();
         CLS();
         return false;
@@ -56,7 +56,7 @@ namespace GWBas2CS.Test
     private bool Main()
     {
         this.Init();
-        PRINT(""HELLO, WORLD!"");
+        PRINT(("""") + (""HELLO, WORLD!""));
         CLS() // A comment
         ;
         return false;

@@ -97,7 +97,7 @@ internal sealed class MyProg
         ; // My first BASIC program
         L20:
             ;
-        PRINT(""HELLO, WORLD!"");
+        PRINT(("""") + (""HELLO, WORLD!""));
         A_s = (""a string"");
         A_s = (""same string"");
         B1_s = (""new string"");

@@ -95,7 +95,7 @@ namespace GWBas2CS
             switch (name)
             {
                 case "Print":
-                    this.AddPrint(list[0]);
+                    this.AddPrint(list);
                     break;
                 case "Dim":
                     this.AddDim(list);
@@ -201,12 +201,23 @@ namespace GWBas2CS
             this.lines.AddGoto(this.lineNumber, destination);
         }
 
-        private void AddPrint(BasicExpression expr)
+        private void AddPrint(BasicExpression[] exprs)
         {
             ExpressionNode node = new ExpressionNode(this.generator, this.vars, this.methods);
-            expr.Accept(node);
+            SyntaxNode arg = this.generator.LiteralExpression(string.Empty);
+            foreach (BasicExpression expr in exprs)
+            {
+                expr.Accept(node);
+                arg = this.generator.AddExpression(arg, node.Value);
+            }
+
+            this.AddPrint(arg);
+        }
+
+        private void AddPrint(SyntaxNode arg)
+        {
             string name = "PRINT";
-            var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName(name), node.Value);
+            var callPrint = this.generator.InvocationExpression(SyntaxFactory.IdentifierName(name), arg);
             this.lines.Add(this.lineNumber, callPrint);
             var output = this.generator.MemberAccessExpression(this.generator.ThisExpression(), this.generator.IdentifierName("output"));
             var callWriteLine = this.generator.MemberAccessExpression(output, "WriteLine");
