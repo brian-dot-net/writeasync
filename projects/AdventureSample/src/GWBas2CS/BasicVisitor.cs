@@ -220,7 +220,15 @@ namespace GWBas2CS
             var leftS = this.generator.CastExpression(this.generator.TypeExpression(SpecialType.System_Int32), d1);
             var sub = this.generator.AddExpression(leftS, this.generator.LiteralExpression(1));
             var arrR = this.generator.ArrayCreationExpression(type, sub);
-            SyntaxNode[] dimStatements = new SyntaxNode[] { this.generator.AssignmentStatement(arr, arrR) };
+            List<SyntaxNode> dimStatements = new List<SyntaxNode>();
+            dimStatements.Add(this.generator.AssignmentStatement(arr, arrR));
+            if (expr.Type == BasicType.Str)
+            {
+                var fill = this.generator.MemberAccessExpression(this.generator.IdentifierName("Array"), "Fill");
+                var callFill = this.generator.InvocationExpression(fill, arr, this.generator.LiteralExpression(string.Empty));
+                dimStatements.Add(callFill);
+            }
+
             SyntaxNode[] parameters = new SyntaxNode[]
             {
                 this.generator.ParameterDeclaration("a", type: this.generator.ArrayTypeExpression(type), refKind: RefKind.Out),

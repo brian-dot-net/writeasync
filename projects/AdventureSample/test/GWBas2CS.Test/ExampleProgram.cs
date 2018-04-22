@@ -69,6 +69,7 @@ internal sealed class MyProg
     private void DIM_sa(out string[] a, float d1)
     {
         a = (new string[((int)(d1)) + (1)]);
+        Array.Fill(a, """");
     }
 
     private void DIM_na(out float[] a, float d1)
