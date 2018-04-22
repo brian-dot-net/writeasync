@@ -321,12 +321,17 @@ namespace GWBas2CS
 
             private Variable Add(BasicType type, string name, int subs)
             {
+                IDictionary<string, Variable> dict;
                 if (type == BasicType.Str)
                 {
-                    return this.Add((subs > 0) ? this.strArrs : this.strs, type, name, subs);
+                    dict = (subs > 0) ? this.strArrs : this.strs;
+                }
+                else
+                {
+                    dict = (subs > 0) ? this.numArrs : this.nums;
                 }
 
-                return this.Add((subs > 0) ? this.numArrs : this.nums, type, name, subs);
+                return this.Add(dict, type, name, subs);
             }
 
             private Variable Add(IDictionary<string, Variable> vars, BasicType type, string name, int subs)
