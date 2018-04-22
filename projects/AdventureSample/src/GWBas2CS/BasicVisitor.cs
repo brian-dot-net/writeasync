@@ -299,7 +299,7 @@ namespace GWBas2CS
                 switch (name)
                 {
                     case "Add":
-                        this.Value = this.DoAdd(operands[0], operands[1]);
+                        this.Value = this.Binary(this.generator.AddExpression, operands[0], operands[1]);
                         break;
                     default:
                         throw new NotSupportedException("Operator:" + name);
@@ -311,13 +311,13 @@ namespace GWBas2CS
                 this.Value = this.vars.Add(type, name);
             }
 
-            private SyntaxNode DoAdd(BasicExpression left, BasicExpression right)
+            private SyntaxNode Binary(Func<SyntaxNode, SyntaxNode, SyntaxNode> op, BasicExpression left, BasicExpression right)
             {
                 left.Accept(this);
                 SyntaxNode x = this.Value;
                 right.Accept(this);
                 SyntaxNode y = this.Value;
-                return this.generator.AddExpression(x, y);
+                return op(x, y);
             }
         }
 
