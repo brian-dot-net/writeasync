@@ -325,6 +325,7 @@ namespace GWBas2CS
                 switch (name)
                 {
                     case "Eq": return this.DoEquals(x, y);
+                    case "Ne": return this.DoNotEquals(x, y);
                     case "Or": return this.generator.BitwiseOrExpression(this.Cast(x), this.Cast(y));
                     case "And": return this.generator.BitwiseAndExpression(this.Cast(x), this.Cast(y));
                     case "Add": return this.generator.AddExpression(x, y);
@@ -341,6 +342,15 @@ namespace GWBas2CS
                 var zero = this.generator.LiteralExpression(0);
                 var neg1 = this.generator.LiteralExpression(-1);
                 var cond = this.generator.ValueEqualsExpression(call, zero);
+                return this.generator.ConditionalExpression(cond, neg1, zero);
+            }
+
+            private SyntaxNode DoNotEquals(SyntaxNode x, SyntaxNode y)
+            {
+                var call = this.generator.InvocationExpression(this.generator.MemberAccessExpression(x, "CompareTo"), y);
+                var zero = this.generator.LiteralExpression(0);
+                var neg1 = this.generator.LiteralExpression(-1);
+                var cond = this.generator.ValueNotEqualsExpression(call, zero);
                 return this.generator.ConditionalExpression(cond, neg1, zero);
             }
         }
