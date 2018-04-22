@@ -44,5 +44,23 @@ namespace GWBas2CS.Test
 
             actual.Should().Match(Expected);
         }
+
+        [Fact]
+        public void ThreeStringOperands()
+        {
+            const string Input = @"10 A$=A$+B$+""x""";
+            const string Expected = @"*
+    private bool Main()
+    {
+        this.Init();
+        A_s = (((A_s) + (B_s)) + (""x""));
+        return false;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
     }
 }
