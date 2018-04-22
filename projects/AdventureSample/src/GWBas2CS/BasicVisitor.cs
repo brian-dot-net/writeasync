@@ -294,12 +294,28 @@ namespace GWBas2CS
 
             public void Operator(string name, BasicExpression[] operands)
             {
-                throw new NotImplementedException();
+                switch (name)
+                {
+                    case "Add":
+                        this.Value = this.DoAdd(operands);
+                        break;
+                    default:
+                        throw new NotSupportedException("Operator:" + name);
+                }
             }
 
             public void Variable(BasicType type, string name)
             {
                 this.Value = this.vars.Add(type, name);
+            }
+
+            private SyntaxNode DoAdd(BasicExpression[] operands)
+            {
+                operands[0].Accept(this);
+                SyntaxNode x = this.Value;
+                operands[1].Accept(this);
+                SyntaxNode y = this.Value;
+                return this.generator.AddExpression(x, y);
             }
         }
 
