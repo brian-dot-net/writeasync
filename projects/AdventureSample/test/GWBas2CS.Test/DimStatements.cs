@@ -44,5 +44,24 @@ namespace GWBas2CS.Test
 
             actual.Should().Match(Expected);
         }
+
+        [Fact]
+        public void TwoArrays()
+        {
+            const string Input = @"10 DIM A(1),B$(2)";
+            const string Expected = @"*
+    private bool Main()
+    {
+        this.Init();
+        DIM1_na(out A_na, 1);
+        DIM1_sa(out B_sa, 2);
+        return false;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
     }
 }

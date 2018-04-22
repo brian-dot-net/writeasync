@@ -98,7 +98,7 @@ namespace GWBas2CS
                     this.AddPrint(list[0]);
                     break;
                 case "Dim":
-                    this.AddDim(list[0]);
+                    this.AddDim(list);
                     break;
                 default:
                     throw new NotImplementedException("Many:" + name);
@@ -231,6 +231,14 @@ namespace GWBas2CS
             };
             var clsMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, statements: clsStatements);
             this.methods.Add(name, clsMethod);
+        }
+
+        private void AddDim(BasicExpression[] exprs)
+        {
+            foreach (BasicExpression expr in exprs)
+            {
+                this.AddDim(expr);
+            }
         }
 
         private void AddDim(BasicExpression expr)
