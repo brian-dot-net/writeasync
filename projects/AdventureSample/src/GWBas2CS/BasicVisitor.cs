@@ -307,6 +307,9 @@ namespace GWBas2CS
                     case "Mult":
                         this.Value = this.Binary(this.generator.MultiplyExpression, operands[0], operands[1]);
                         break;
+                    case "Div":
+                        this.Value = this.Binary(this.generator.DivideExpression, operands[0], operands[1]);
+                        break;
                     default:
                         throw new NotSupportedException("Operator:" + name);
                 }
