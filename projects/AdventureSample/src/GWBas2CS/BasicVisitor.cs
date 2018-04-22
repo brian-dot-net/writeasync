@@ -329,6 +329,7 @@ namespace GWBas2CS
                     case "Le": return this.Cond(this.generator.LessThanOrEqualExpression, x, y);
                     case "Lt": return this.Cond(this.generator.LessThanExpression, x, y);
                     case "Ge": return this.Cond(this.generator.GreaterThanOrEqualExpression, x, y);
+                    case "Gt": return this.Cond(this.generator.GreaterThanExpression, x, y);
                     case "Or": return this.generator.BitwiseOrExpression(this.Cast(x), this.Cast(y));
                     case "And": return this.generator.BitwiseAndExpression(this.Cast(x), this.Cast(y));
                     case "Add": return this.generator.AddExpression(x, y);
