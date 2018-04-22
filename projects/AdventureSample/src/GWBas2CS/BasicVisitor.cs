@@ -17,7 +17,7 @@ namespace GWBas2CS
     {
         private readonly string name;
         private readonly SyntaxGenerator generator;
-        private readonly List<SyntaxNode> intrinsics;
+        private readonly Methods methods;
         private readonly Lines lines;
         private readonly Variables vars;
 
@@ -28,7 +28,7 @@ namespace GWBas2CS
             this.name = name;
             this.generator = SyntaxGenerator.GetGenerator(new AdhocWorkspace(), LanguageNames.CSharp);
             this.lines = new Lines();
-            this.intrinsics = new List<SyntaxNode>();
+            this.methods = new Methods();
             this.vars = new Variables(this.generator);
         }
 
@@ -127,7 +127,7 @@ namespace GWBas2CS
             this.Constructor(classMembers);
             this.RunMethod(classMembers);
             classMembers.Add(this.vars.Init());
-            classMembers.AddRange(this.intrinsics);
+            this.methods.Declare(classMembers);
             this.MainMethod(classMembers);
 
             var classDecl = this.generator.ClassDeclaration(
@@ -202,8 +202,9 @@ namespace GWBas2CS
             var callConsoleWriteLine = this.generator.MemberAccessExpression(output, "WriteLine");
             SyntaxNode[] printStatements = new SyntaxNode[] { this.generator.InvocationExpression(callConsoleWriteLine, this.generator.IdentifierName("expression")) };
             SyntaxNode[] parameters = new SyntaxNode[] { this.generator.ParameterDeclaration("expression", type: this.generator.TypeExpression(SpecialType.System_String)) };
-            var printMethod = this.generator.MethodDeclaration("PRINT", accessibility: Accessibility.Private, parameters: parameters, statements: printStatements);
-            this.intrinsics.Add(printMethod);
+            string name = "PRINT";
+            var printMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, parameters: parameters, statements: printStatements);
+            this.methods.Add(name, printMethod);
         }
 
         private void AddDim(BasicExpression expr)
@@ -227,7 +228,33 @@ namespace GWBas2CS
             };
             string name = (expr.Type == BasicType.Str) ? "DIM_sa" : "DIM_na";
             var dimMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, parameters: parameters, statements: dimStatements);
-            this.intrinsics.Add(dimMethod);
+            this.methods.Add(name, dimMethod);
+        }
+
+        private sealed class Methods
+        {
+            private readonly Dictionary<string, SyntaxNode> methods;
+
+            public Methods()
+            {
+                this.methods = new Dictionary<string, SyntaxNode>();
+            }
+
+            public void Add(string name, SyntaxNode method)
+            {
+                if (!this.methods.ContainsKey(name))
+                {
+                    this.methods.Add(name, method);
+                }
+            }
+
+            public void Declare(IList<SyntaxNode> classMembers)
+            {
+                foreach (SyntaxNode method in this.methods.Values)
+                {
+                    classMembers.Add(method);
+                }
+            }
         }
 
         private sealed class ExpressionNode : IExpressionVisitor
