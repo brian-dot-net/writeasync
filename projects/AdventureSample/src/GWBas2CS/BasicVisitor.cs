@@ -338,20 +338,20 @@ namespace GWBas2CS
 
             private SyntaxNode DoEquals(SyntaxNode x, SyntaxNode y)
             {
-                var call = this.generator.InvocationExpression(this.generator.MemberAccessExpression(x, "CompareTo"), y);
-                var zero = this.generator.LiteralExpression(0);
-                var neg1 = this.generator.LiteralExpression(-1);
-                var cond = this.generator.ValueEqualsExpression(call, zero);
-                return this.generator.ConditionalExpression(cond, neg1, zero);
+                return this.Cond(this.generator.ValueEqualsExpression, x, y);
             }
 
             private SyntaxNode DoNotEquals(SyntaxNode x, SyntaxNode y)
             {
+                return this.Cond(this.generator.ValueNotEqualsExpression, x, y);
+            }
+
+            private SyntaxNode Cond(Func<SyntaxNode, SyntaxNode, SyntaxNode> cond, SyntaxNode x, SyntaxNode y)
+            {
                 var call = this.generator.InvocationExpression(this.generator.MemberAccessExpression(x, "CompareTo"), y);
                 var zero = this.generator.LiteralExpression(0);
                 var neg1 = this.generator.LiteralExpression(-1);
-                var cond = this.generator.ValueNotEqualsExpression(call, zero);
-                return this.generator.ConditionalExpression(cond, neg1, zero);
+                return this.generator.ConditionalExpression(cond(call, zero), neg1, zero);
             }
         }
 
