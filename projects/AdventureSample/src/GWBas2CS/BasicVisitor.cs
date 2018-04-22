@@ -55,11 +55,12 @@ namespace GWBas2CS
 
         public void Assign(BasicExpression left, BasicExpression right)
         {
-            ExpressionNode x = new ExpressionNode(this.generator, this.vars, this.methods);
-            left.Accept(x);
-            ExpressionNode y = new ExpressionNode(this.generator, this.vars, this.methods);
-            right.Accept(y);
-            this.lines.Add(this.lineNumber, this.generator.AssignmentStatement(x.Value, y.Value));
+            ExpressionNode expr = new ExpressionNode(this.generator, this.vars, this.methods);
+            left.Accept(expr);
+            SyntaxNode lval = expr.Value;
+            right.Accept(expr);
+            SyntaxNode rval = expr.Value;
+            this.lines.Add(this.lineNumber, this.generator.AssignmentStatement(lval, rval));
         }
 
         public void For(BasicExpression v, BasicExpression start, BasicExpression end, BasicExpression step)
