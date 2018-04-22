@@ -62,5 +62,41 @@ namespace GWBas2CS.Test
 
             actual.Should().Match(Expected);
         }
+
+        [Fact]
+        public void TwoMixedExpr()
+        {
+            const string Input = @"10 PRINT ""NUMBER"";A";
+            const string Expected = @"*
+    private bool Main()
+    {
+        this.Init();
+        PRINT((("""") + (""NUMBER"")) + (A_n));
+        return false;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
+
+        [Fact]
+        public void ThreeMixedExpr()
+        {
+            const string Input = @"10 PRINT A$;"" B "";C";
+            const string Expected = @"*
+    private bool Main()
+    {
+        this.Init();
+        PRINT(((("""") + (A_s)) + ("" B "")) + (C_n));
+        return false;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
     }
 }
