@@ -277,7 +277,9 @@ namespace GWParse.Expressions
                 from d in Ch.Dollar
                 select v;
 
-            public static readonly Parser<BasicExpression> Index = Lit.Num.Or(Parse.Ref(() => NumAny));
+            public static readonly Parser<BasicExpression> Index =
+                from x in Expr.Any
+                select A.Num(x);
 
             public static readonly Parser<IEnumerable<BasicExpression>> IndexList =
                 from lp in Ch.LeftParen.Token()

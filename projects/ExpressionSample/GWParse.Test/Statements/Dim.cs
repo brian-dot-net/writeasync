@@ -54,6 +54,16 @@ namespace GWParse.Test.Statements
             Test.Good(input, output);
         }
 
+        [InlineData("DIM A(1+2)", "Dim(NumA(A, Add(NumL(1), NumL(2))))")]
+        [InlineData("DIM A(B-C)", "Dim(NumA(A, Sub(NumV(B), NumV(C))))")]
+        [InlineData("DIM A(2*X)", "Dim(NumA(A, Mult(NumL(2), NumV(X))))")]
+        [InlineData("DIM A(Y/1)", "Dim(NumA(A, Div(NumV(Y), NumL(1))))")]
+        [Theory]
+        public void WithOtherOperations(string input, string output)
+        {
+            Test.Good(input, output);
+        }
+
         [InlineData("DIM")]
         [InlineData("DIM ")]
         [InlineData("DIMR")]
