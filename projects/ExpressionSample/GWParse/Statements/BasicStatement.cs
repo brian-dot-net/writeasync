@@ -48,9 +48,17 @@ namespace GWParse.Statements
                 this.sb.Append(name).Append("(").Append(dest).Append(")");
             }
 
-            public void IfThen(BasicExpression cond, BasicStatement ifTrue)
+            public void IfThen(BasicExpression cond, BasicStatement[] ifTrue)
             {
-                this.sb.Append("If(").Append(cond).Append(", ").Append(ifTrue).Append(")");
+                this.sb.Append("If(").Append(cond);
+
+                foreach (BasicStatement stmt in ifTrue)
+                {
+                    this.sb.Append(", ");
+                    this.sb.Append(stmt);
+                }
+
+                this.sb.Append(")");
             }
 
             public void Input(string prompt, BasicExpression v)

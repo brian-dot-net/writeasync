@@ -14,7 +14,7 @@ namespace GWParse.Statements
 
         void Go(string name, int dest);
 
-        void IfThen(BasicExpression cond, BasicStatement ifTrue);
+        void IfThen(BasicExpression cond, BasicStatement[] ifTrue);
 
         void Input(string prompt, BasicExpression v);
 

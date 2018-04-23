@@ -14,6 +14,11 @@ namespace GWParse.Statements
     {
         public static readonly Parser<BasicStatement> Any = Parse.Ref(() => Root);
 
+        public static readonly Parser<IEnumerable<BasicStatement>> List =
+            from head in Any.Once()
+            from rest in Parse.Char(':').Token().Then(_ => Any).Many()
+            select head.Concat(rest);
+
         private static readonly BasicExpression One = BasicExpression.FromString("1");
 
         private static readonly Parser<int> LineNum =
@@ -122,11 +127,11 @@ namespace GWParse.Statements
         private static readonly Parser<BasicStatement> IfThenGoto =
             from cond in IfThenCond
             from n in LineNum
-            select new IfThenStatement(cond, GotoS(n));
+            select new IfThenStatement(cond, new BasicStatement[] { GotoS(n) });
 
         private static readonly Parser<BasicStatement> IfThenNonGoto =
             from cond in IfThenCond
-            from ifT in Parse.Ref(() => Any)
+            from ifT in List
             select new IfThenStatement(cond, ifT);
 
         private static readonly Parser<BasicStatement> IfThen = IfThenNonGoto.Or(IfThenGoto);
