@@ -126,6 +126,9 @@ namespace GWBas2CS
                 case "Return":
                     this.AddReturn();
                     break;
+                case "Run":
+                    this.AddRun();
+                    break;
                 default:
                     throw new NotImplementedException("Void:" + name);
             }
@@ -246,6 +249,12 @@ namespace GWBas2CS
         private void AddReturn()
         {
             this.lines.AddReturn(this.lineNumber);
+        }
+
+        private void AddRun()
+        {
+            var ret = this.generator.ReturnStatement(this.generator.LiteralExpression(1));
+            this.lines.Add(this.lineNumber, ret);
         }
 
         private void AddCls()
