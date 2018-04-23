@@ -83,9 +83,13 @@ namespace GWBas2CS
             }
         }
 
-        public void IfThen(BasicExpression cond, BasicStatement ifTrue)
+        public void IfThen(BasicExpression cond, BasicStatement[] ifTrue)
         {
-            ifTrue.Accept(this);
+            foreach (BasicStatement stmt in ifTrue)
+            {
+                stmt.Accept(this);
+            }
+
             ExpressionNode expr = new ExpressionNode(this.generator, this.vars, this.methods);
             cond.Accept(expr);
             var nz = this.generator.ValueNotEqualsExpression(expr.Value, this.generator.LiteralExpression(0));
