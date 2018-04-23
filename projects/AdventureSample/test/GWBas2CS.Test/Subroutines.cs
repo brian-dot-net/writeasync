@@ -46,5 +46,43 @@ namespace GWBas2CS.Test
 
             actual.Should().Match(Expected);
         }
+
+        [Fact]
+        public void WithEnd()
+        {
+            const string Input =
+@"10 GOSUB 30
+20 GOTO 10
+30 END
+40 RETURN";
+            const string Expected = @"*
+    private int Sub_30()
+    {
+        return 2;
+        return 0;
+    }
+
+    private int Main()
+    {
+        this.Init();
+        L10:
+            ;
+        switch (Sub_30())
+        {
+            case 1:
+                return 1;
+            case 2:
+                return 2;
+        }
+
+        goto L10;
+        return 2;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
     }
 }

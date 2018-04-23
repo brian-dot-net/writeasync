@@ -123,6 +123,9 @@ namespace GWBas2CS
                 case "Cls":
                     this.AddCls();
                     break;
+                case "End":
+                    this.AddEnd();
+                    break;
                 case "Return":
                     this.AddReturn();
                     break;
@@ -249,6 +252,12 @@ namespace GWBas2CS
         private void AddReturn()
         {
             this.lines.AddReturn(this.lineNumber);
+        }
+
+        private void AddEnd()
+        {
+            var ret = this.generator.ReturnStatement(this.generator.LiteralExpression(2));
+            this.lines.Add(this.lineNumber, ret);
         }
 
         private void AddRun()
