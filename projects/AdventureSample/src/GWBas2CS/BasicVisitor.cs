@@ -422,26 +422,14 @@ namespace GWBas2CS
 
             public SyntaxNode Dim(Methods methods, BasicType type, string name, BasicExpression[] subs)
             {
-                ExpressionNode node = new ExpressionNode(this.generator, this, methods);
-                SyntaxNode[] subNodes = new SyntaxNode[subs.Length];
-                for (int i = 0; i < subs.Length; ++i)
-                {
-                    subs[i].Accept(node);
-                    subNodes[i] = node.Value;
-                }
+                SyntaxNode[] subNodes = this.Subscripts(methods, subs);
 
                 return this.Add(type, name, subNodes.Length).Dim(methods, subNodes);
             }
 
             public SyntaxNode Index(Methods methods, BasicType type, string name, BasicExpression[] subs)
             {
-                ExpressionNode node = new ExpressionNode(this.generator, this, methods);
-                SyntaxNode[] subNodes = new SyntaxNode[subs.Length];
-                for (int i = 0; i < subs.Length; ++i)
-                {
-                    subs[i].Accept(node);
-                    subNodes[i] = node.Value;
-                }
+                SyntaxNode[] subNodes = this.Subscripts(methods, subs);
 
                 return this.Add(type, name, subNodes.Length).Index(subNodes);
             }
@@ -449,6 +437,19 @@ namespace GWBas2CS
             public SyntaxNode Add(BasicType type, string name)
             {
                 return this.Add(type, name, 0).Ref();
+            }
+
+            private SyntaxNode[] Subscripts(Methods methods, BasicExpression[] subs)
+            {
+                ExpressionNode node = new ExpressionNode(this.generator, this, methods);
+                SyntaxNode[] subNodes = new SyntaxNode[subs.Length];
+                for (int i = 0; i < subs.Length; ++i)
+                {
+                    subs[i].Accept(node);
+                    subNodes[i] = node.Value;
+                }
+
+                return subNodes;
             }
 
             private Variable Add(BasicType type, string name, int subs)
