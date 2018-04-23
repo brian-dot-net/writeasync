@@ -28,9 +28,11 @@ namespace GWBas2CS.Test
 140 CLS
 150 PRINT A$;
 160 GOSUB 2000
+170 GOSUB 2020
 1000 GOTO 20
 2000 CLS
-2010 RETURN";
+2010 RETURN
+2020 RETURN";
             const string Expected = @"using System;
 using System.IO;
 
@@ -106,6 +108,11 @@ internal sealed class MyProg
         return 0;
     }
 
+    private int Sub_2020()
+    {
+        return 0;
+    }
+
     private bool Main()
     {
         this.Init();
@@ -127,6 +134,14 @@ internal sealed class MyProg
         CLS();
         PRINT_n(("""") + (A_s));
         switch (Sub_2000())
+        {
+            case 1:
+                return true;
+            case 2:
+                return false;
+        }
+
+        switch (Sub_2020())
         {
             case 1:
                 return true;

@@ -160,13 +160,13 @@ namespace GWBas2CS
 
         private void MainMethod(List<SyntaxNode> classMembers)
         {
-            var firstStatement = this.generator.InvocationExpression(this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Init"));
-            this.lines.Add(0, firstStatement);
-            var lastStatement = this.generator.ReturnStatement(this.generator.LiteralExpression(false));
-            this.lines.Add(65535, lastStatement);
+            List<SyntaxNode> statements = new List<SyntaxNode>();
+            statements.Add(this.generator.InvocationExpression(this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Init")));
+            statements.AddRange(this.lines.Main());
+            statements.Add(this.generator.ReturnStatement(this.generator.LiteralExpression(false)));
 
             var boolType = this.generator.TypeExpression(SpecialType.System_Boolean);
-            var mainMethod = this.generator.MethodDeclaration("Main", accessibility: Accessibility.Private, returnType: boolType, statements: this.lines.Main());
+            var mainMethod = this.generator.MethodDeclaration("Main", accessibility: Accessibility.Private, returnType: boolType, statements: statements);
             classMembers.Add(mainMethod);
         }
 
