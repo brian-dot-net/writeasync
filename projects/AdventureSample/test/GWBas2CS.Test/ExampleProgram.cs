@@ -31,6 +31,7 @@ namespace GWBas2CS.Test
 170 GOSUB 2020
 180 GOSUB 2030
 190 INPUT A
+200 IF A=1 THEN 190
 1000 GOTO 20
 2000 CLS
 2010 RETURN
@@ -190,7 +191,14 @@ internal sealed class MyProg
                 return 2;
         }
 
+        L190:
+            ;
         A_n = (INPUT_n(""""));
+        if ((((A_n.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
+        {
+            goto L190;
+        }
+
         goto L20;
         return 2;
     }

@@ -85,7 +85,11 @@ namespace GWBas2CS
 
         public void IfThen(BasicExpression cond, BasicStatement ifTrue)
         {
-            throw new NotImplementedException();
+            ifTrue.Accept(this);
+            ExpressionNode expr = new ExpressionNode(this.generator, this.vars, this.methods);
+            cond.Accept(expr);
+            var nz = this.generator.ValueNotEqualsExpression(expr.Value, this.generator.LiteralExpression(0));
+            this.lines.AddIfThen(this.lineNumber, nz);
         }
 
         public void Input(string prompt, BasicExpression v)
@@ -753,6 +757,11 @@ namespace GWBas2CS
                 this.Get(number).Add(comment);
             }
 
+            public void AddIfThen(int number, SyntaxNode cond)
+            {
+                this.Get(number).Wrap(n => this.generator.IfStatement(cond, n));
+            }
+
             public void AddGoto(int number, int destination)
             {
                 var label = SyntaxFactory.IdentifierName(Label(destination));
@@ -882,6 +891,13 @@ namespace GWBas2CS
                         SyntaxNode last = this.nodes[n];
                         this.nodes[n] = last.WithTrailingTrivia(comment);
                     }
+                }
+
+                public void Wrap(Func<IEnumerable<SyntaxNode>, SyntaxNode> wrap)
+                {
+                    SyntaxNode wrapped = wrap(this.nodes);
+                    this.nodes.Clear();
+                    this.nodes.Add(wrapped);
                 }
 
                 public IEnumerable<SyntaxNode> Nodes(ISet<int> references)
