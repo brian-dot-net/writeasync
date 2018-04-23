@@ -67,5 +67,28 @@ namespace GWBas2CS.Test
 
             actual.Should().Match(Expected);
         }
+
+        [Fact]
+        public void IfThenWithTwo()
+        {
+            const string Input = @"10 IF A=1 THEN PRINT : CLS";
+            const string Expected = @"*
+    private int Main()
+    {
+        this.Init();
+        if ((((A_n.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT("""");
+            CLS();
+        }
+
+        return 2;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
     }
 }
