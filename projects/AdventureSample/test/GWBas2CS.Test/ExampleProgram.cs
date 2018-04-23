@@ -30,6 +30,7 @@ namespace GWBas2CS.Test
 160 GOSUB 2000
 170 GOSUB 2020
 180 GOSUB 2030
+190 INPUT A
 1000 GOTO 20
 2000 CLS
 2010 RETURN
@@ -105,6 +106,22 @@ internal sealed class MyProg
         this.output.Write(expression);
     }
 
+    private float INPUT_n(string prompt)
+    {
+        while (true)
+        {
+            this.output.Write((prompt) + (""? ""));
+            string v = this.input.ReadLine();
+            float r;
+            if (float.TryParse(v, out r))
+            {
+                return r;
+            }
+
+            this.output.WriteLine(""?Redo from start"");
+        }
+    }
+
     private int Sub_2000()
     {
         CLS();
@@ -173,6 +190,7 @@ internal sealed class MyProg
                 return 2;
         }
 
+        A_n = (INPUT_n(""""));
         goto L20;
         return 2;
     }
