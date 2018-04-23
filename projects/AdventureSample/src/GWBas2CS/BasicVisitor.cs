@@ -163,10 +163,10 @@ namespace GWBas2CS
             List<SyntaxNode> statements = new List<SyntaxNode>();
             statements.Add(this.generator.InvocationExpression(this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Init")));
             statements.AddRange(this.lines.Main());
-            statements.Add(this.generator.ReturnStatement(this.generator.LiteralExpression(false)));
+            statements.Add(this.generator.ReturnStatement(this.generator.LiteralExpression(2)));
 
-            var boolType = this.generator.TypeExpression(SpecialType.System_Boolean);
-            var mainMethod = this.generator.MethodDeclaration("Main", accessibility: Accessibility.Private, returnType: boolType, statements: statements);
+            var ret = this.generator.TypeExpression(SpecialType.System_Int32);
+            var mainMethod = this.generator.MethodDeclaration("Main", accessibility: Accessibility.Private, returnType: ret, statements: statements);
             classMembers.Add(mainMethod);
         }
 
@@ -174,8 +174,9 @@ namespace GWBas2CS
         {
             var runCoreMember = this.generator.MemberAccessExpression(this.generator.ThisExpression(), "Main");
             var callRunCore = this.generator.InvocationExpression(runCoreMember);
+            var cond = this.generator.ValueEqualsExpression(callRunCore, this.generator.LiteralExpression(1));
             List<SyntaxNode> runStatements = new List<SyntaxNode>();
-            var whileLoop = this.generator.WhileStatement(callRunCore, null);
+            var whileLoop = this.generator.WhileStatement(cond, null);
             runStatements.Add(whileLoop);
             var runMethod = this.generator.MethodDeclaration("Run", accessibility: Accessibility.Public, statements: runStatements);
 
@@ -701,10 +702,10 @@ namespace GWBas2CS
 
             public void AddGosub(int number, int destination)
             {
-                var retT = this.generator.ReturnStatement(this.generator.LiteralExpression(true));
-                var case1 = this.generator.SwitchSection(this.generator.LiteralExpression(1), new SyntaxNode[] { retT });
-                var retF = this.generator.ReturnStatement(this.generator.LiteralExpression(false));
-                var case2 = this.generator.SwitchSection(this.generator.LiteralExpression(2), new SyntaxNode[] { retF });
+                var ret1 = this.generator.ReturnStatement(this.generator.LiteralExpression(1));
+                var case1 = this.generator.SwitchSection(this.generator.LiteralExpression(1), new SyntaxNode[] { ret1 });
+                var ret2 = this.generator.ReturnStatement(this.generator.LiteralExpression(2));
+                var case2 = this.generator.SwitchSection(this.generator.LiteralExpression(2), new SyntaxNode[] { ret2 });
                 var call = this.generator.InvocationExpression(this.generator.IdentifierName("Sub_" + destination));
                 this.Add(number, this.generator.SwitchStatement(call, case1, case2));
                 this.subStarts.Add(destination);

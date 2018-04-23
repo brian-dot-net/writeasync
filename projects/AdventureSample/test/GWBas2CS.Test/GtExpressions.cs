@@ -14,11 +14,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 A=B>2";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         A_n = (((B_n.CompareTo(2)) > (0)) ? (-1) : (0));
-        return false;
+        return 2;
     }
 *";
 
@@ -32,11 +32,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 A=B$>""x""";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         A_n = (((B_s.CompareTo(""x"")) > (0)) ? (-1) : (0));
-        return false;
+        return 2;
     }
 *";
 
@@ -50,11 +50,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 A=B>C>1";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         A_n = ((((((B_n.CompareTo(C_n)) > (0)) ? (-1) : (0)).CompareTo(1)) > (0)) ? (-1) : (0));
-        return false;
+        return 2;
     }
 *";
 

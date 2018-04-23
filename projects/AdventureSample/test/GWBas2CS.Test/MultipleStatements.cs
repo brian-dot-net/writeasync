@@ -14,12 +14,12 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 PRINT ""HELLO, WORLD!"" : CLS";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         PRINT(("""") + (""HELLO, WORLD!""));
         CLS();
-        return false;
+        return 2;
     }
 *";
 
@@ -33,13 +33,13 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 PRINT ""HELLO, WORLD!"" : CLS : CLS";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         PRINT(("""") + (""HELLO, WORLD!""));
         CLS();
         CLS();
-        return false;
+        return 2;
     }
 *";
 
@@ -53,13 +53,13 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 PRINT ""HELLO, WORLD!"" : CLS : REM A comment";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         PRINT(("""") + (""HELLO, WORLD!""));
         CLS() // A comment
         ;
-        return false;
+        return 2;
     }
 *";
 

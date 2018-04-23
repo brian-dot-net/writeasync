@@ -14,11 +14,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 DIM A(B+2)";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         DIM1_na(out A_na, (B_n) + (2));
-        return false;
+        return 2;
     }
 *";
 
@@ -32,11 +32,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 DIM A(B+2, C)";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         DIM2_na(out A_na, (B_n) + (2), C_n);
-        return false;
+        return 2;
     }
 *";
 
@@ -50,12 +50,12 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 DIM A(1),B$(2)";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         DIM1_na(out A_na, 1);
         DIM1_sa(out B_sa, 2);
-        return false;
+        return 2;
     }
 *";
 

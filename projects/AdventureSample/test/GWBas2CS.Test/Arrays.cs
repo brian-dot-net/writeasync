@@ -14,11 +14,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 A(1)=2";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         A_na[1] = (2);
-        return false;
+        return 2;
     }
 *";
 
@@ -32,11 +32,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 A$(1)=""x""";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         A_sa[1] = (""x"");
-        return false;
+        return 2;
     }
 *";
 
@@ -50,11 +50,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 A$(1,B)=C$";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         A_sa[1, B_n] = (C_s);
-        return false;
+        return 2;
     }
 *";
 

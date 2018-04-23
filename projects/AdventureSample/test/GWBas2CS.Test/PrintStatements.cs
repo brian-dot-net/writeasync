@@ -14,11 +14,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 PRINT";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         PRINT("""");
-        return false;
+        return 2;
     }
 *";
 
@@ -32,11 +32,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 PRINT A";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         PRINT(("""") + (A_n));
-        return false;
+        return 2;
     }
 *";
 
@@ -50,11 +50,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 PRINT A$";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         PRINT(("""") + (A_s));
-        return false;
+        return 2;
     }
 *";
 
@@ -68,11 +68,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 PRINT ""NUMBER"";A";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         PRINT((("""") + (""NUMBER"")) + (A_n));
-        return false;
+        return 2;
     }
 *";
 
@@ -86,11 +86,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 PRINT A$;"" B "";C";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         PRINT(((("""") + (A_s)) + ("" B "")) + (C_n));
-        return false;
+        return 2;
     }
 *";
 
@@ -104,11 +104,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 PRINT A$;"" B "";C;";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         PRINT_n(((("""") + (A_s)) + ("" B "")) + (C_n));
-        return false;
+        return 2;
     }
 *";
 

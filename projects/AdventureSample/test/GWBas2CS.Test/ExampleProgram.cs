@@ -60,7 +60,7 @@ internal sealed class MyProg
 
     public void Run()
     {
-        while (this.Main())
+        while ((this.Main()) == (1))
         {
         }
     }
@@ -121,15 +121,15 @@ internal sealed class MyProg
         switch (Sub_2000())
         {
             case 1:
-                return true;
+                return 1;
             case 2:
-                return false;
+                return 2;
         }
 
         return 0;
     }
 
-    private bool Main()
+    private int Main()
     {
         this.Init();
         ; // My first BASIC program
@@ -152,29 +152,29 @@ internal sealed class MyProg
         switch (Sub_2000())
         {
             case 1:
-                return true;
+                return 1;
             case 2:
-                return false;
+                return 2;
         }
 
         switch (Sub_2020())
         {
             case 1:
-                return true;
+                return 1;
             case 2:
-                return false;
+                return 2;
         }
 
         switch (Sub_2030())
         {
             case 1:
-                return true;
+                return 1;
             case 2:
-                return false;
+                return 2;
         }
 
         goto L20;
-        return false;
+        return 2;
     }
 }";
 

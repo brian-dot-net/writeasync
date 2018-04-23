@@ -14,11 +14,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 A=A*1";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         A_n = ((A_n) * (1));
-        return false;
+        return 2;
     }
 *";
 
@@ -32,11 +32,11 @@ namespace GWBas2CS.Test
         {
             const string Input = @"10 A=A*B*2";
             const string Expected = @"*
-    private bool Main()
+    private int Main()
     {
         this.Init();
         A_n = (((A_n) * (B_n)) * (2));
-        return false;
+        return 2;
     }
 *";
 
