@@ -28,7 +28,7 @@ namespace GWBas2CS
         {
             this.name = name;
             this.generator = SyntaxGenerator.GetGenerator(new AdhocWorkspace(), LanguageNames.CSharp);
-            this.lines = new Lines();
+            this.lines = new Lines(this.generator);
             this.methods = new Methods();
             this.vars = new Variables(this.generator);
         }
@@ -75,6 +75,9 @@ namespace GWBas2CS
                 case "Goto":
                     this.AddGoto(dest);
                     break;
+                case "Gosub":
+                    this.AddGosub(dest);
+                    break;
                 default:
                     throw new NotImplementedException("Go:" + name);
             }
@@ -120,6 +123,9 @@ namespace GWBas2CS
                 case "Cls":
                     this.AddCls();
                     break;
+                case "Return":
+                    this.AddReturn();
+                    break;
                 default:
                     throw new NotImplementedException("Void:" + name);
             }
@@ -140,6 +146,7 @@ namespace GWBas2CS
             this.RunMethod(classMembers);
             classMembers.Add(this.vars.Init());
             this.methods.Declare(classMembers);
+            classMembers.AddRange(this.lines.Subroutines());
             this.MainMethod(classMembers);
 
             var classDecl = this.generator.ClassDeclaration(
@@ -159,7 +166,7 @@ namespace GWBas2CS
             this.lines.Add(65535, lastStatement);
 
             var boolType = this.generator.TypeExpression(SpecialType.System_Boolean);
-            var mainMethod = this.generator.MethodDeclaration("Main", accessibility: Accessibility.Private, returnType: boolType, statements: this.lines.Statements());
+            var mainMethod = this.generator.MethodDeclaration("Main", accessibility: Accessibility.Private, returnType: boolType, statements: this.lines.Main());
             classMembers.Add(mainMethod);
         }
 
@@ -204,6 +211,11 @@ namespace GWBas2CS
             this.lines.AddGoto(this.lineNumber, destination);
         }
 
+        private void AddGosub(int destination)
+        {
+            this.lines.AddGosub(this.lineNumber, destination);
+        }
+
         private void AddPrint(BasicExpression[] exprs, bool lineBreak = true)
         {
             ExpressionNode node = new ExpressionNode(this.generator, this.vars, this.methods);
@@ -228,6 +240,11 @@ namespace GWBas2CS
             SyntaxNode[] parameters = new SyntaxNode[] { this.generator.ParameterDeclaration("expression", type: this.generator.TypeExpression(SpecialType.System_String)) };
             var printMethod = this.generator.MethodDeclaration(name, accessibility: Accessibility.Private, parameters: parameters, statements: printStatements);
             this.methods.Add(name, printMethod);
+        }
+
+        private void AddReturn()
+        {
+            this.lines.AddReturn(this.lineNumber);
         }
 
         private void AddCls()
@@ -649,13 +666,19 @@ namespace GWBas2CS
 
         private sealed class Lines
         {
+            private readonly SyntaxGenerator generator;
             private readonly SortedList<int, Line> statements;
             private readonly HashSet<int> references;
+            private readonly HashSet<int> subStarts;
+            private readonly HashSet<int> subEnds;
 
-            public Lines()
+            public Lines(SyntaxGenerator generator)
             {
+                this.generator = generator;
                 this.statements = new SortedList<int, Line>();
                 this.references = new HashSet<int>();
+                this.subStarts = new HashSet<int>();
+                this.subEnds = new HashSet<int>();
             }
 
             public void Add(int number, SyntaxNode node)
@@ -676,13 +699,81 @@ namespace GWBas2CS
                 this.references.Add(destination);
             }
 
-            public IEnumerable<SyntaxNode> Statements()
+            public void AddGosub(int number, int destination)
             {
-                foreach (Line line in this.statements.Values)
+                var retT = this.generator.ReturnStatement(this.generator.LiteralExpression(true));
+                var case1 = this.generator.SwitchSection(this.generator.LiteralExpression(1), new SyntaxNode[] { retT });
+                var retF = this.generator.ReturnStatement(this.generator.LiteralExpression(false));
+                var case2 = this.generator.SwitchSection(this.generator.LiteralExpression(2), new SyntaxNode[] { retF });
+                var call = this.generator.InvocationExpression(this.generator.IdentifierName("Sub_" + destination));
+                this.Add(number, this.generator.SwitchStatement(call, case1, case2));
+                this.subStarts.Add(destination);
+            }
+
+            public void AddReturn(int number)
+            {
+                var ret = this.generator.ReturnStatement(this.generator.LiteralExpression(0));
+                this.Add(number, ret);
+                this.subEnds.Add(number);
+            }
+
+            public IEnumerable<SyntaxNode> Subroutines()
+            {
+                string subName = null;
+                List<SyntaxNode> subLines = new List<SyntaxNode>();
+                foreach (KeyValuePair<int, Line> line in this.statements)
                 {
-                    foreach (SyntaxNode node in line.Nodes(this.references))
+                    if (subName == null)
                     {
-                        yield return node;
+                        if (this.subStarts.Contains(line.Key))
+                        {
+                            subName = "Sub_" + line.Key;
+                        }
+                    }
+
+                    if (subName != null)
+                    {
+                        subLines.AddRange(line.Value.Nodes(this.references));
+                        if (this.subEnds.Contains(line.Key))
+                        {
+                            var ret = this.generator.TypeExpression(SpecialType.System_Int32);
+                            yield return this.generator.MethodDeclaration(
+                                subName,
+                                returnType: ret,
+                                accessibility: Accessibility.Private,
+                                statements: subLines);
+                            subName = null;
+                            subLines.Clear();
+                        }
+                    }
+                }
+            }
+
+            public IEnumerable<SyntaxNode> Main()
+            {
+                bool readingSub = false;
+                foreach (KeyValuePair<int, Line> line in this.statements)
+                {
+                    if (readingSub)
+                    {
+                        if (this.subEnds.Contains(line.Key))
+                        {
+                            readingSub = false;
+                        }
+                    }
+                    else
+                    {
+                        if (this.subStarts.Contains(line.Key))
+                        {
+                            readingSub = true;
+                        }
+                        else
+                        {
+                            foreach (SyntaxNode node in line.Value.Nodes(this.references))
+                            {
+                                yield return node;
+                            }
+                        }
                     }
                 }
             }

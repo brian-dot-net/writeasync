@@ -27,7 +27,10 @@ namespace GWBas2CS.Test
 130 DIM B2(9,10)
 140 CLS
 150 PRINT A$;
-1000 GOTO 20";
+160 GOSUB 2000
+1000 GOTO 20
+2000 CLS
+2010 RETURN";
             const string Expected = @"using System;
 using System.IO;
 
@@ -97,6 +100,12 @@ internal sealed class MyProg
         this.output.Write(expression);
     }
 
+    private int Sub_2000()
+    {
+        CLS();
+        return 0;
+    }
+
     private bool Main()
     {
         this.Init();
@@ -117,6 +126,14 @@ internal sealed class MyProg
         DIM2_na(out B2_na, 9, 10);
         CLS();
         PRINT_n(("""") + (A_s));
+        switch (Sub_2000())
+        {
+            case 1:
+                return true;
+            case 2:
+                return false;
+        }
+
         goto L20;
         return false;
     }
