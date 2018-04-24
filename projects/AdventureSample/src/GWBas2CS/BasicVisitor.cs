@@ -416,7 +416,11 @@ namespace GWBas2CS
             {
                 operands[0].Accept(this);
                 SyntaxNode x = this.Value;
-                if (operands.Length == 2)
+                if (operands.Length == 1)
+                {
+                    this.Value = this.Unary(name, x);
+                }
+                else if (operands.Length == 2)
                 {
                     operands[1].Accept(this);
                     SyntaxNode y = this.Value;
@@ -436,6 +440,15 @@ namespace GWBas2CS
             private SyntaxNode Cast(SyntaxNode node)
             {
                 return this.generator.CastExpression(this.generator.TypeExpression(SpecialType.System_Int32), node);
+            }
+
+            private SyntaxNode Unary(string name, SyntaxNode x)
+            {
+                switch (name)
+                {
+                    case "Len": return this.Len(x);
+                    default: throw new NotSupportedException("Operator:" + name);
+                }
             }
 
             private SyntaxNode Binary(string name, SyntaxNode x, SyntaxNode y)
@@ -464,6 +477,11 @@ namespace GWBas2CS
                 var zero = this.generator.LiteralExpression(0);
                 var neg1 = this.generator.LiteralExpression(-1);
                 return this.generator.ConditionalExpression(cond(call, zero), neg1, zero);
+            }
+
+            private SyntaxNode Len(SyntaxNode x)
+            {
+                return this.generator.MemberAccessExpression(x, "Length");
             }
         }
 
