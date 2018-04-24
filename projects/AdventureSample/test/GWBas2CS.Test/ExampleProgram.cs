@@ -34,6 +34,9 @@ namespace GWBas2CS.Test
 200 IF A=1 THEN 190
 210 READ A
 220 READ A$
+230 FOR I=1 TO 10
+240 PRINT I
+250 NEXT I
 1000 GOTO 20
 2000 CLS
 2001 DATA 1
@@ -60,6 +63,7 @@ internal sealed class MyProg
     private string B1_s;
     private float A_n;
     private float B1_n;
+    private float I_n;
     public MyProg(TextReader input, TextWriter output)
     {
         this.input = (input);
@@ -82,6 +86,7 @@ internal sealed class MyProg
         B1_s = ("""");
         A_n = (0);
         B1_n = (0);
+        I_n = (0);
     }
 
     private void PRINT(string expression)
@@ -220,6 +225,13 @@ internal sealed class MyProg
 
         A_n = (READ_n());
         A_s = (READ_s());
+        I_n = (1);
+        while ((I_n) <= (10))
+        {
+            PRINT(("""") + (I_n));
+            I_n = ((I_n) + (1));
+        }
+
         goto L20;
         return 2;
     }

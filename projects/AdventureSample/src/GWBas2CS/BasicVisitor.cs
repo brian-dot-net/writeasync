@@ -67,7 +67,16 @@ namespace GWBas2CS
 
         public void For(BasicExpression v, BasicExpression start, BasicExpression end, BasicExpression step)
         {
-            throw new NotImplementedException();
+            ExpressionNode expr = new ExpressionNode(this.generator, this.vars, this.methods);
+            v.Accept(expr);
+            var vx = expr.Value;
+            start.Accept(expr);
+            var sx = expr.Value;
+            end.Accept(expr);
+            var ex = expr.Value;
+            step.Accept(expr);
+            var sp = expr.Value;
+            this.lines.For(this.lineNumber, vx, sx, ex, sp);
         }
 
         public void Go(string name, int dest)
@@ -116,6 +125,9 @@ namespace GWBas2CS
                 case "Dim":
                     this.AddDim(list);
                     break;
+                case "Next":
+                    this.AddNext(list[0]);
+                    break;
                 case "Print":
                     this.AddPrint(list);
                     break;
@@ -154,6 +166,14 @@ namespace GWBas2CS
                 default:
                     throw new NotImplementedException("Void:" + name);
             }
+        }
+
+        private void AddNext(BasicExpression v)
+        {
+            ExpressionNode expr = new ExpressionNode(this.generator, this.vars, this.methods);
+            v.Accept(expr);
+            var vx = expr.Value;
+            this.lines.Next(this.lineNumber, vx);
         }
 
         private void Usings(IList<SyntaxNode> declarations)
@@ -845,6 +865,7 @@ namespace GWBas2CS
             private readonly HashSet<int> references;
             private readonly HashSet<int> subStarts;
             private readonly HashSet<int> subEnds;
+            private readonly Loops loops;
 
             public Lines(SyntaxGenerator generator)
             {
@@ -853,6 +874,7 @@ namespace GWBas2CS
                 this.references = new HashSet<int>();
                 this.subStarts = new HashSet<int>();
                 this.subEnds = new HashSet<int>();
+                this.loops = new Loops();
             }
 
             public void Add(int number, SyntaxNode node)
@@ -957,6 +979,44 @@ namespace GWBas2CS
                 }
             }
 
+            public void For(int number, SyntaxNode vx, SyntaxNode sx, SyntaxNode ex, SyntaxNode sp)
+            {
+                this.loops.Push(number, vx, sx, ex, sp);
+            }
+
+            public void Next(int end, SyntaxNode vx)
+            {
+                Tuple<int, SyntaxNode, SyntaxNode, SyntaxNode, SyntaxNode> t = this.loops.Pop(vx);
+                int start = t.Item1;
+                List<SyntaxNode> body = new List<SyntaxNode>();
+                foreach (int n in this.statements.Keys.ToArray())
+                {
+                    if (n >= end)
+                    {
+                        break;
+                    }
+                    else if (n >= start)
+                    {
+                        body.AddRange(this.statements[n].Nodes());
+                        this.statements.Remove(n);
+                    }
+                }
+
+                var sx = t.Item3;
+                var ex = t.Item4;
+                var sp = t.Item5;
+
+                var inc = this.generator.AddExpression(vx, sp);
+                body.Add(this.generator.AssignmentStatement(vx, inc));
+
+                var init = this.generator.AssignmentStatement(vx, sx);
+                this.Add(start, init);
+
+                var cond = this.generator.LessThanOrEqualExpression(vx, ex);
+                var loop = this.generator.WhileStatement(cond, body);
+                this.Add(end, loop);
+            }
+
             private static string Label(int number)
             {
                 return "L" + number;
@@ -972,6 +1032,32 @@ namespace GWBas2CS
                 }
 
                 return line;
+            }
+
+            private sealed class Loops
+            {
+                private readonly Stack<Tuple<int, SyntaxNode, SyntaxNode, SyntaxNode, SyntaxNode>> loops;
+
+                public Loops()
+                {
+                    this.loops = new Stack<Tuple<int, SyntaxNode, SyntaxNode, SyntaxNode, SyntaxNode>>();
+                }
+
+                public void Push(int number, SyntaxNode vx, SyntaxNode sx, SyntaxNode ex, SyntaxNode sp)
+                {
+                    this.loops.Push(Tuple.Create(number, vx, sx, ex, sp));
+                }
+
+                public Tuple<int, SyntaxNode, SyntaxNode, SyntaxNode, SyntaxNode> Pop(SyntaxNode vx)
+                {
+                    var t = this.loops.Pop();
+                    if (!t.Item2.IsEquivalentTo(vx))
+                    {
+                        throw new InvalidProgramException("NEXT (" + vx + ") does not match FOR (" + t.Item2 + ").");
+                    }
+
+                    return t;
+                }
             }
 
             private sealed class Line
@@ -1008,9 +1094,9 @@ namespace GWBas2CS
                     this.nodes.Add(wrapped);
                 }
 
-                public IEnumerable<SyntaxNode> Nodes(ISet<int> references)
+                public IEnumerable<SyntaxNode> Nodes(ISet<int> references = null)
                 {
-                    if (references.Contains(this.number))
+                    if ((references != null) && references.Contains(this.number))
                     {
                         yield return SyntaxFactory.LabeledStatement(Label(this.number), SyntaxFactory.EmptyStatement());
                     }
