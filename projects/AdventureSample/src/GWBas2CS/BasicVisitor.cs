@@ -21,6 +21,7 @@ namespace GWBas2CS
         private readonly Methods methods;
         private readonly Lines lines;
         private readonly Variables vars;
+        private readonly DataValues data;
 
         private int lineNumber;
 
@@ -31,6 +32,7 @@ namespace GWBas2CS
             this.lines = new Lines(this.generator);
             this.methods = new Methods();
             this.vars = new Variables(this.generator);
+            this.data = new DataValues(this.generator);
         }
 
         public override string ToString()
@@ -108,14 +110,20 @@ namespace GWBas2CS
         {
             switch (name)
             {
+                case "Data":
+                    this.AddData(list[0]);
+                    break;
+                case "Dim":
+                    this.AddDim(list);
+                    break;
                 case "Print":
                     this.AddPrint(list);
                     break;
                 case "PrintN":
                     this.AddPrint(list, false);
                     break;
-                case "Dim":
-                    this.AddDim(list);
+                case "Read":
+                    this.AddRead(list[0]);
                     break;
                 default:
                     throw new NotImplementedException("Many:" + name);
@@ -151,17 +159,17 @@ namespace GWBas2CS
         private void Usings(IList<SyntaxNode> declarations)
         {
             declarations.Add(this.generator.NamespaceImportDeclaration("System"));
+            declarations.Add(this.generator.NamespaceImportDeclaration("System.Collections"));
             declarations.Add(this.generator.NamespaceImportDeclaration("System.IO"));
         }
 
         private void Class(IList<SyntaxNode> declarations)
         {
             List<SyntaxNode> classMembers = new List<SyntaxNode>();
-
             this.Fields(classMembers);
             this.Constructor(classMembers);
             this.RunMethod(classMembers);
-            classMembers.Add(this.vars.Init());
+            classMembers.Add(this.vars.Init(this.data));
             this.methods.Declare(classMembers);
             classMembers.AddRange(this.lines.Subroutines());
             this.MainMethod(classMembers);
@@ -221,6 +229,7 @@ namespace GWBas2CS
         {
             classMembers.Add(this.generator.FieldDeclaration("input", this.generator.IdentifierName("TextReader"), accessibility: Accessibility.Private, modifiers: DeclarationModifiers.ReadOnly));
             classMembers.Add(this.generator.FieldDeclaration("output", this.generator.IdentifierName("TextWriter"), accessibility: Accessibility.Private, modifiers: DeclarationModifiers.ReadOnly));
+            classMembers.AddRange(this.data.Fields());
             classMembers.AddRange(this.vars.Fields());
         }
 
@@ -232,6 +241,30 @@ namespace GWBas2CS
         private void AddGosub(int destination)
         {
             this.lines.AddGosub(this.lineNumber, destination);
+        }
+
+        private void AddData(BasicExpression expr)
+        {
+            ExpressionNode left = new ExpressionNode(this.generator, this.vars, this.methods);
+            expr.Accept(left);
+            this.data.Add(left.Value);
+        }
+
+        private void AddRead(BasicExpression expr)
+        {
+            ExpressionNode left = new ExpressionNode(this.generator, this.vars, this.methods);
+            expr.Accept(left);
+            SyntaxNode lval = left.Value;
+            string name = "READ_" + (expr.Type == BasicType.Num ? "n" : "s");
+            var rval = this.generator.InvocationExpression(this.generator.IdentifierName(name));
+            this.lines.Add(this.lineNumber, this.generator.AssignmentStatement(lval, rval));
+            var st = expr.Type == BasicType.Num ? SpecialType.System_Single : SpecialType.System_String;
+            var type = this.generator.TypeExpression(st);
+            var callDequeue = this.generator.MemberAccessExpression(this.generator.IdentifierName("DATA"), "Dequeue");
+            var deq = this.generator.CastExpression(type, this.generator.InvocationExpression(callDequeue));
+            SyntaxNode[] readStatements = new SyntaxNode[] { this.generator.ReturnStatement(deq) };
+            var readMethod = this.generator.MethodDeclaration(name, returnType: type, accessibility: Accessibility.Private, statements: readStatements);
+            this.methods.Add(name, readMethod);
         }
 
         private void AddPrint(BasicExpression[] exprs, bool lineBreak = true)
@@ -485,6 +518,41 @@ namespace GWBas2CS
             }
         }
 
+        private sealed class DataValues
+        {
+            private readonly SyntaxGenerator generator;
+            private readonly List<SyntaxNode> values;
+
+            public DataValues(SyntaxGenerator generator)
+            {
+                this.generator = generator;
+                this.values = new List<SyntaxNode>();
+            }
+
+            public IEnumerable<SyntaxNode> Fields()
+            {
+                yield return this.generator.FieldDeclaration("DATA", this.generator.IdentifierName("Queue"), Accessibility.Private);
+            }
+
+            public void Add(SyntaxNode value)
+            {
+                this.values.Add(value);
+            }
+
+            public IEnumerable<SyntaxNode> Init()
+            {
+                var newQ = this.generator.ObjectCreationExpression(this.generator.IdentifierName("Queue"));
+                var d = this.generator.IdentifierName("DATA");
+                yield return this.generator.AssignmentStatement(d, newQ);
+
+                var callEnqueue = this.generator.MemberAccessExpression(d, "Enqueue");
+                foreach (var value in this.values)
+                {
+                    yield return this.generator.InvocationExpression(callEnqueue, value);
+                }
+            }
+        }
+
         private sealed class Variables
         {
             private readonly SyntaxGenerator generator;
@@ -514,9 +582,11 @@ namespace GWBas2CS
                 }
             }
 
-            public SyntaxNode Init()
+            public SyntaxNode Init(DataValues data)
             {
                 List<SyntaxNode> statements = new List<SyntaxNode>();
+                statements.AddRange(data.Init());
+
                 foreach (Variable v in this.Scalars)
                 {
                     statements.Add(v.Init());

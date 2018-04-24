@@ -32,19 +32,25 @@ namespace GWBas2CS.Test
 180 GOSUB 2030
 190 INPUT A
 200 IF A=1 THEN 190
+210 READ A
+220 READ A$
 1000 GOTO 20
 2000 CLS
+2001 DATA 1
 2010 RETURN
 2020 RETURN
 2030 GOSUB 2000
-2040 RETURN";
+2040 RETURN
+3000 DATA x";
             const string Expected = @"using System;
+using System.Collections;
 using System.IO;
 
 internal sealed class MyProg
 {
     private readonly TextReader input;
     private readonly TextWriter output;
+    private Queue DATA;
     private string[] A_sa;
     private string[] B1_sa;
     private float[] A_na;
@@ -69,6 +75,9 @@ internal sealed class MyProg
 
     private void Init()
     {
+        DATA = (new Queue());
+        DATA.Enqueue(1);
+        DATA.Enqueue(""x"");
         A_s = ("""");
         B1_s = ("""");
         A_n = (0);
@@ -121,6 +130,16 @@ internal sealed class MyProg
 
             this.output.WriteLine(""?Redo from start"");
         }
+    }
+
+    private float READ_n()
+    {
+        return (float)(DATA.Dequeue());
+    }
+
+    private string READ_s()
+    {
+        return (string)(DATA.Dequeue());
     }
 
     private int Sub_2000()
@@ -199,6 +218,8 @@ internal sealed class MyProg
             goto L190;
         }
 
+        A_n = (READ_n());
+        A_s = (READ_s());
         goto L20;
         return 2;
     }
