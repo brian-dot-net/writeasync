@@ -111,7 +111,7 @@ namespace GWBas2CS
             switch (name)
             {
                 case "Data":
-                    this.AddData(list[0]);
+                    this.AddData(list);
                     break;
                 case "Dim":
                     this.AddDim(list);
@@ -123,7 +123,7 @@ namespace GWBas2CS
                     this.AddPrint(list, false);
                     break;
                 case "Read":
-                    this.AddRead(list[0]);
+                    this.AddRead(list);
                     break;
                 default:
                     throw new NotImplementedException("Many:" + name);
@@ -243,11 +243,27 @@ namespace GWBas2CS
             this.lines.AddGosub(this.lineNumber, destination);
         }
 
+        private void AddData(BasicExpression[] exprs)
+        {
+            foreach (var expr in exprs)
+            {
+                this.AddData(expr);
+            }
+        }
+
         private void AddData(BasicExpression expr)
         {
             ExpressionNode left = new ExpressionNode(this.generator, this.vars, this.methods);
             expr.Accept(left);
             this.data.Add(left.Value);
+        }
+
+        private void AddRead(BasicExpression[] exprs)
+        {
+            foreach (var expr in exprs)
+            {
+                this.AddRead(expr);
+            }
         }
 
         private void AddRead(BasicExpression expr)
