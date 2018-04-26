@@ -37,6 +37,7 @@ namespace GWBas2CS.Test
 230 FOR I=1 TO 10
 240 PRINT I
 250 NEXT I
+260 A$=MID$(A$,A,1)
 1000 GOTO 20
 2000 CLS
 2001 DATA 1
@@ -147,6 +148,22 @@ internal sealed class MyProg
         return (string)(DATA.Dequeue());
     }
 
+    private string MID_s(string x, int n, int m)
+    {
+        if ((n) > (x.Length))
+        {
+            return """";
+        }
+
+        int l = ((x.Length) - (n)) + (1);
+        if ((m) > (l))
+        {
+            m = (l);
+        }
+
+        return x.Substring((n) - (1), m);
+    }
+
     private int Sub_2000()
     {
         CLS();
@@ -232,6 +249,7 @@ internal sealed class MyProg
             I_n = ((I_n) + (1));
         }
 
+        A_s = (MID_s(A_s, (int)(A_n), (int)(1)));
         goto L20;
         return 2;
     }

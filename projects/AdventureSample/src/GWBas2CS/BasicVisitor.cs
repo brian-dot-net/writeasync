@@ -495,6 +495,14 @@ namespace GWBas2CS
                     SyntaxNode y = this.Value;
                     this.Value = this.Binary(name, x, y);
                 }
+                else if (operands.Length == 3)
+                {
+                    operands[1].Accept(this);
+                    SyntaxNode y = this.Value;
+                    operands[2].Accept(this);
+                    SyntaxNode z = this.Value;
+                    this.Value = this.Ternary(name, x, y, z);
+                }
                 else
                 {
                     throw new NotSupportedException("Operator:" + name);
@@ -506,7 +514,7 @@ namespace GWBas2CS
                 this.Value = this.vars.Add(type, name);
             }
 
-            private SyntaxNode Cast(SyntaxNode node)
+            private SyntaxNode CastInt(SyntaxNode node)
             {
                 return this.generator.CastExpression(this.generator.TypeExpression(SpecialType.System_Int32), node);
             }
@@ -530,12 +538,21 @@ namespace GWBas2CS
                     case "Lt": return this.Cond(this.generator.LessThanExpression, x, y);
                     case "Ge": return this.Cond(this.generator.GreaterThanOrEqualExpression, x, y);
                     case "Gt": return this.Cond(this.generator.GreaterThanExpression, x, y);
-                    case "Or": return this.generator.BitwiseOrExpression(this.Cast(x), this.Cast(y));
-                    case "And": return this.generator.BitwiseAndExpression(this.Cast(x), this.Cast(y));
+                    case "Or": return this.generator.BitwiseOrExpression(this.CastInt(x), this.CastInt(y));
+                    case "And": return this.generator.BitwiseAndExpression(this.CastInt(x), this.CastInt(y));
                     case "Add": return this.generator.AddExpression(x, y);
                     case "Sub": return this.generator.SubtractExpression(x, y);
                     case "Mult": return this.generator.MultiplyExpression(x, y);
                     case "Div": return this.generator.DivideExpression(x, y);
+                    default: throw new NotSupportedException("Operator:" + name);
+                }
+            }
+
+            private SyntaxNode Ternary(string name, SyntaxNode x, SyntaxNode y, SyntaxNode z)
+            {
+                switch (name)
+                {
+                    case "Mid": return this.Mid(x, y, z);
                     default: throw new NotSupportedException("Operator:" + name);
                 }
             }
@@ -551,6 +568,47 @@ namespace GWBas2CS
             private SyntaxNode Len(SyntaxNode x)
             {
                 return this.generator.MemberAccessExpression(x, "Length");
+            }
+
+            private SyntaxNode Mid(SyntaxNode x, SyntaxNode n, SyntaxNode m)
+            {
+                string name = "MID_s";
+                var callMid = this.generator.InvocationExpression(this.generator.IdentifierName(name), x, this.CastInt(n), this.CastInt(m));
+                var intT = this.generator.TypeExpression(SpecialType.System_Int32);
+                var retE = this.generator.ReturnStatement(this.generator.LiteralExpression(string.Empty));
+                var nv = this.generator.IdentifierName("n");
+                var xv = this.generator.IdentifierName("x");
+                var len = this.generator.MemberAccessExpression(xv, "Length");
+                var gtL = this.generator.GreaterThanExpression(nv, len);
+                var ifN = this.generator.IfStatement(gtL, new SyntaxNode[] { retE });
+                var sub = this.generator.SubtractExpression(len, nv);
+                var one = this.generator.LiteralExpression(1);
+                var setL = this.generator.LocalDeclarationStatement(intT, "l", this.generator.AddExpression(sub, one));
+                var mv = this.generator.IdentifierName("m");
+                var lv = this.generator.IdentifierName("l");
+                var gt = this.generator.GreaterThanExpression(mv, lv);
+                var ifM = this.generator.IfStatement(gt, new SyntaxNode[] { this.generator.AssignmentStatement(mv, lv) });
+                var n1 = this.generator.SubtractExpression(nv, one);
+                var callSubstr = this.generator.MemberAccessExpression(xv, "Substring");
+                var retSubstr = this.generator.ReturnStatement(this.generator.InvocationExpression(callSubstr, n1, mv));
+                SyntaxNode[] midStatements = new SyntaxNode[]
+                {
+                    ifN,
+                    setL,
+                    ifM,
+                    retSubstr
+                };
+                var strT = this.generator.TypeExpression(SpecialType.System_String);
+                SyntaxNode[] parameters = new SyntaxNode[]
+                {
+                    this.generator.ParameterDeclaration("x", type: strT),
+                    this.generator.ParameterDeclaration("n", type: intT),
+                    this.generator.ParameterDeclaration("m", type: intT)
+                };
+                var midMethod = this.generator.MethodDeclaration(name, parameters: parameters, returnType: strT, accessibility: Accessibility.Private, statements: midStatements);
+                this.methods.Add(name, midMethod);
+
+                return callMid;
             }
         }
 
