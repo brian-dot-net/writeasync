@@ -544,6 +544,7 @@ namespace GWBas2CS
                     case "Sub": return this.generator.SubtractExpression(x, y);
                     case "Mult": return this.generator.MultiplyExpression(x, y);
                     case "Div": return this.generator.DivideExpression(x, y);
+                    case "Left": return this.Left(x, y);
                     default: throw new NotSupportedException("Operator:" + name);
                 }
             }
@@ -568,6 +569,37 @@ namespace GWBas2CS
             private SyntaxNode Len(SyntaxNode x)
             {
                 return this.generator.MemberAccessExpression(x, "Length");
+            }
+
+            private SyntaxNode Left(SyntaxNode x, SyntaxNode n)
+            {
+                string name = "LEFT_s";
+                var callLeft = this.generator.InvocationExpression(this.generator.IdentifierName(name), x, this.CastInt(n));
+                var intT = this.generator.TypeExpression(SpecialType.System_Int32);
+                var nv = this.generator.IdentifierName("n");
+                var xv = this.generator.IdentifierName("x");
+                var retX = this.generator.ReturnStatement(xv);
+                var len = this.generator.MemberAccessExpression(xv, "Length");
+                var gtL = this.generator.GreaterThanExpression(nv, len);
+                var ifN = this.generator.IfStatement(gtL, new SyntaxNode[] { retX });
+                var zero = this.generator.LiteralExpression(0);
+                var callSubstr = this.generator.MemberAccessExpression(xv, "Substring");
+                var retSubstr = this.generator.ReturnStatement(this.generator.InvocationExpression(callSubstr, zero, nv));
+                SyntaxNode[] leftStatements = new SyntaxNode[]
+                {
+                    ifN,
+                    retSubstr
+                };
+                var strT = this.generator.TypeExpression(SpecialType.System_String);
+                SyntaxNode[] parameters = new SyntaxNode[]
+                {
+                    this.generator.ParameterDeclaration("x", type: strT),
+                    this.generator.ParameterDeclaration("n", type: intT),
+                };
+                var midMethod = this.generator.MethodDeclaration(name, parameters: parameters, returnType: strT, accessibility: Accessibility.Private, statements: leftStatements);
+                this.methods.Add(name, midMethod);
+
+                return callLeft;
             }
 
             private SyntaxNode Mid(SyntaxNode x, SyntaxNode n, SyntaxNode m)
