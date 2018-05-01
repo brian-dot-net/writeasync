@@ -959,8 +959,7 @@ namespace GWBas2CS
             private readonly SyntaxGenerator generator;
             private readonly SortedList<int, Line> statements;
             private readonly HashSet<int> references;
-            private readonly HashSet<int> subStarts;
-            private readonly HashSet<int> subEnds;
+            private readonly SubLines subLines;
             private readonly Loops loops;
 
             public Lines(SyntaxGenerator generator)
@@ -968,8 +967,7 @@ namespace GWBas2CS
                 this.generator = generator;
                 this.statements = new SortedList<int, Line>();
                 this.references = new HashSet<int>();
-                this.subStarts = new HashSet<int>();
-                this.subEnds = new HashSet<int>();
+                this.subLines = new SubLines();
                 this.loops = new Loops();
             }
 
@@ -1004,43 +1002,40 @@ namespace GWBas2CS
                 var case2 = this.generator.SwitchSection(this.generator.LiteralExpression(2), new SyntaxNode[] { ret2 });
                 var call = this.generator.InvocationExpression(this.generator.IdentifierName("Sub_" + destination));
                 this.Add(number, this.generator.SwitchStatement(call, case1, case2));
-                this.subStarts.Add(destination);
+                this.subLines.AddStart(destination);
             }
 
             public void AddReturn(int number)
             {
                 var ret = this.generator.ReturnStatement(this.generator.LiteralExpression(0));
                 this.Add(number, ret);
-                this.subEnds.Add(number);
+                this.subLines.AddEnd(number);
             }
 
             public IEnumerable<SyntaxNode> Subroutines()
             {
                 string subName = null;
-                List<SyntaxNode> subLines = new List<SyntaxNode>();
+                List<SyntaxNode> statements = new List<SyntaxNode>();
                 foreach (KeyValuePair<int, Line> line in this.statements)
                 {
-                    if (subName == null)
+                    if ((subName == null) && this.subLines.IsStart(line.Key))
                     {
-                        if (this.subStarts.Contains(line.Key))
-                        {
-                            subName = "Sub_" + line.Key;
-                        }
+                        subName = "Sub_" + line.Key;
                     }
 
                     if (subName != null)
                     {
-                        subLines.AddRange(line.Value.Nodes(this.references));
-                        if (this.subEnds.Contains(line.Key))
+                        statements.AddRange(line.Value.Nodes(this.references));
+                        if (this.subLines.IsEnd(line.Key))
                         {
                             var ret = this.generator.TypeExpression(SpecialType.System_Int32);
                             yield return this.generator.MethodDeclaration(
                                 subName,
                                 returnType: ret,
                                 accessibility: Accessibility.Private,
-                                statements: subLines);
+                                statements: statements);
                             subName = null;
-                            subLines.Clear();
+                            statements.Clear();
                         }
                     }
                 }
@@ -1053,14 +1048,14 @@ namespace GWBas2CS
                 {
                     if (readingSub)
                     {
-                        if (this.subEnds.Contains(line.Key))
+                        if (this.subLines.IsEnd(line.Key))
                         {
                             readingSub = false;
                         }
                     }
                     else
                     {
-                        if (this.subStarts.Contains(line.Key))
+                        if (this.subLines.IsStart(line.Key))
                         {
                             readingSub = true;
                         }
@@ -1202,6 +1197,37 @@ namespace GWBas2CS
                         yield return node;
                     }
                 }
+            }
+
+            private sealed class SubLines
+            {
+                private readonly List<int> starts;
+                private readonly List<int> ends;
+
+                public SubLines()
+                {
+                    this.starts = new List<int>();
+                    this.ends = new List<int>();
+                }
+
+                public void AddStart(int n) => Add(this.starts, n);
+
+                public bool IsStart(int n) => Find(this.starts, n);
+
+                public void AddEnd(int n) => Add(this.ends, n);
+
+                public bool IsEnd(int n) => Find(this.ends, n);
+
+                private static void Add(List<int> list, int n)
+                {
+                    int i = list.BinarySearch(n);
+                    if (i < 0)
+                    {
+                        list.Insert(~i, n);
+                    }
+                }
+
+                private static bool Find(List<int> list, int n) => list.BinarySearch(n) >= 0;
             }
         }
     }
