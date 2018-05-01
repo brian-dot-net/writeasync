@@ -524,6 +524,7 @@ namespace GWBas2CS
                 switch (name)
                 {
                     case "Len": return this.Len(x);
+                    case "Neg": return this.Neg(x);
                     default: throw new NotSupportedException("Operator:" + name);
                 }
             }
@@ -569,6 +570,11 @@ namespace GWBas2CS
             private SyntaxNode Len(SyntaxNode x)
             {
                 return this.generator.MemberAccessExpression(x, "Length");
+            }
+
+            private SyntaxNode Neg(SyntaxNode x)
+            {
+                return this.generator.NegateExpression(x);
             }
 
             private SyntaxNode Left(SyntaxNode x, SyntaxNode n)

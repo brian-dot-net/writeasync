@@ -39,6 +39,7 @@ namespace GWBas2CS.Test
 250 NEXT I
 260 A$=MID$(A$,A,1)
 270 A$=LEFT$(A$,A)
+280 A=-1
 1000 GOTO 20
 2000 CLS
 2001 DATA 1
@@ -262,6 +263,7 @@ internal sealed class MyProg
 
         A_s = (MID_s(A_s, (int)(A_n), (int)(1)));
         A_s = (LEFT_s(A_s, (int)(A_n)));
+        A_n = (-(1));
         goto L20;
         return 2;
     }
