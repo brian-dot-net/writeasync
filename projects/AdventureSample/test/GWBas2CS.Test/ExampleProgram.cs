@@ -237,11 +237,11 @@ internal sealed class MyProg
         A_n = (2);
         A_n = (20);
         B1_n = (3);
-        DIM1_sa(out A_sa, 5);
-        DIM1_sa(out B1_sa, 6);
-        DIM1_na(out A_na, 7);
-        DIM1_na(out B1_na, 8);
-        DIM2_na(out B2_na, 9, 10);
+        DIM1_sa(out A_sa, (int)(5));
+        DIM1_sa(out B1_sa, (int)(6));
+        DIM1_na(out A_na, (int)(7));
+        DIM1_na(out B1_na, (int)(8));
+        DIM2_na(out B2_na, (int)(9), (int)(10));
         CLS();
         PRINT_n(("""") + (A_s));
         switch (Sub_2000())
@@ -289,8 +289,8 @@ internal sealed class MyProg
         A_s = (LEFT_s(A_s, (int)(A_n)));
         A_n = (-(1));
         A_s = (INPUT_s(""""));
-        C_sa[0] = (""ok"");
-        D_na[1] = (2);
+        C_sa[(int)(0)] = (""ok"");
+        D_na[(int)(1)] = (2);
         goto L20;
         return 2;
     }

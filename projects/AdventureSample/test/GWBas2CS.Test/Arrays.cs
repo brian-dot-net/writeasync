@@ -17,7 +17,7 @@ namespace GWBas2CS.Test
     private int Main()
     {
         this.Init();
-        A_na[1] = (2);
+        A_na[(int)(1)] = (2);
         return 2;
     }
 *";
@@ -35,7 +35,7 @@ namespace GWBas2CS.Test
     private int Main()
     {
         this.Init();
-        A_sa[1] = (""x"");
+        A_sa[(int)(1)] = (""x"");
         return 2;
     }
 *";
@@ -53,7 +53,7 @@ namespace GWBas2CS.Test
     private int Main()
     {
         this.Init();
-        A_sa[1, B_n] = (C_s);
+        A_sa[(int)(1), (int)(B_n)] = (C_s);
         return 2;
     }
 *";

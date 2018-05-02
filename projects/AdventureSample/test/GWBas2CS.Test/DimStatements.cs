@@ -17,7 +17,7 @@ namespace GWBas2CS.Test
     private int Main()
     {
         this.Init();
-        DIM1_na(out A_na, (B_n) + (2));
+        DIM1_na(out A_na, (int)((B_n) + (2)));
         return 2;
     }
 *";
@@ -35,7 +35,7 @@ namespace GWBas2CS.Test
     private int Main()
     {
         this.Init();
-        DIM2_na(out A_na, (B_n) + (2), C_n);
+        DIM2_na(out A_na, (int)((B_n) + (2)), (int)(C_n));
         return 2;
     }
 *";
@@ -53,8 +53,8 @@ namespace GWBas2CS.Test
     private int Main()
     {
         this.Init();
-        DIM1_na(out A_na, 1);
-        DIM1_sa(out B_sa, 2);
+        DIM1_na(out A_na, (int)(1));
+        DIM1_sa(out B_sa, (int)(2));
         return 2;
     }
 *";

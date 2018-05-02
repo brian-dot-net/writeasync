@@ -804,10 +804,11 @@ namespace GWBas2CS
             {
                 ExpressionNode node = new ExpressionNode(this.generator, this, methods);
                 SyntaxNode[] subNodes = new SyntaxNode[subs.Length];
+                var intT = this.generator.TypeExpression(SpecialType.System_Int32);
                 for (int i = 0; i < subs.Length; ++i)
                 {
                     subs[i].Accept(node);
-                    subNodes[i] = node.Value;
+                    subNodes[i] = this.generator.CastExpression(intT, node.Value);
                 }
 
                 return subNodes;
