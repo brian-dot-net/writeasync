@@ -114,20 +114,20 @@ internal sealed class MyProg
         this.output.WriteLine(expression);
     }
 
-    private void DIM1_sa(out string[] a, float d1)
+    private void DIM1_sa(out string[] a, int d1)
     {
-        a = (new string[((int)(d1)) + (1)]);
+        a = (new string[(d1) + (1)]);
         Array.Fill(a, """");
     }
 
-    private void DIM1_na(out float[] a, float d1)
+    private void DIM1_na(out float[] a, int d1)
     {
-        a = (new float[((int)(d1)) + (1)]);
+        a = (new float[(d1) + (1)]);
     }
 
-    private void DIM2_na(out float[, ] a, float d1, float d2)
+    private void DIM2_na(out float[, ] a, int d1, int d2)
     {
-        a = (new float[((int)(d1)) + (1), ((int)(d2)) + (1)]);
+        a = (new float[(d1) + (1), (d2) + (1)]);
     }
 
     private void CLS()

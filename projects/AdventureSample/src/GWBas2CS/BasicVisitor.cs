@@ -971,13 +971,11 @@ namespace GWBas2CS
                     for (int i = 0; i < sub.Length; ++i)
                     {
                         string n = "d" + (i + 1);
-                        var p = this.generator.ParameterDeclaration(n, type: this.generator.TypeExpression(SpecialType.System_Single));
+                        var p = this.generator.ParameterDeclaration(n, type: this.generator.TypeExpression(SpecialType.System_Int32));
                         parameters.Add(p);
 
                         var dn = this.generator.IdentifierName(n);
-                        var leftS = this.generator.CastExpression(this.generator.TypeExpression(SpecialType.System_Int32), dn);
-
-                        subNodes[i] = this.generator.AddExpression(leftS, this.generator.LiteralExpression(1));
+                        subNodes[i] = this.generator.AddExpression(dn, this.generator.LiteralExpression(1));
                     }
 
                     var arrR = SyntaxFactory.ArrayCreationExpression(this.ArrayType(subNodes));
