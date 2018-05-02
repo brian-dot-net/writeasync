@@ -769,6 +769,15 @@ namespace GWBas2CS
                     statements.Add(v.Init());
                 }
 
+                foreach (Variable a in this.Arrays)
+                {
+                    SyntaxNode i = a.Init();
+                    if (i != null)
+                    {
+                        statements.Add(i);
+                    }
+                }
+
                 return this.generator.MethodDeclaration("Init", accessibility: Accessibility.Private, statements: statements);
             }
 
@@ -898,6 +907,22 @@ namespace GWBas2CS
                 {
                     get
                     {
+                        switch (this.subs)
+                        {
+                            case 0:
+                                return this.DefaultElement;
+                            case 1:
+                                return this.generator.ArrayCreationExpression(this.ElementType, this.generator.LiteralExpression(11));
+                            default:
+                                return null;
+                        }
+                    }
+                }
+
+                private SyntaxNode DefaultElement
+                {
+                    get
+                    {
                         object lit = 0;
                         if (this.type == BasicType.Str)
                         {
@@ -920,7 +945,13 @@ namespace GWBas2CS
 
                 public SyntaxNode Init()
                 {
-                    return this.generator.AssignmentStatement(this.Ref(), this.Default);
+                    SyntaxNode d = this.Default;
+                    if (d == null)
+                    {
+                        return null;
+                    }
+
+                    return this.generator.AssignmentStatement(this.Ref(), d);
                 }
 
                 public SyntaxNode Index(SyntaxNode[] sub)
@@ -955,7 +986,7 @@ namespace GWBas2CS
                     if (this.type == BasicType.Str)
                     {
                         var fill = this.generator.MemberAccessExpression(this.generator.IdentifierName("Array"), "Fill");
-                        var callFill = this.generator.InvocationExpression(fill, arr, this.Default);
+                        var callFill = this.generator.InvocationExpression(fill, arr, this.DefaultElement);
                         dimStatements.Add(callFill);
                     }
 

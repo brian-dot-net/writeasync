@@ -41,6 +41,8 @@ namespace GWBas2CS.Test
 270 A$=LEFT$(A$,A)
 280 A=-1
 290 INPUT A$
+300 C$(0)=""ok""
+310 D(1)=2
 1000 GOTO 20
 2000 CLS
 2001 DATA 1
@@ -66,9 +68,11 @@ internal sealed class MyProg
     private Queue DATA;
     private string[] A_sa;
     private string[] B1_sa;
+    private string[] C_sa;
     private float[] A_na;
     private float[] B1_na;
     private float[, ] B2_na;
+    private float[] D_na;
     private string A_s;
     private string B1_s;
     private float A_n;
@@ -97,6 +101,12 @@ internal sealed class MyProg
         A_n = (0);
         B1_n = (0);
         I_n = (0);
+        A_sa = (new string[11]);
+        B1_sa = (new string[11]);
+        C_sa = (new string[11]);
+        A_na = (new float[11]);
+        B1_na = (new float[11]);
+        D_na = (new float[11]);
     }
 
     private void PRINT(string expression)
@@ -279,6 +289,8 @@ internal sealed class MyProg
         A_s = (LEFT_s(A_s, (int)(A_n)));
         A_n = (-(1));
         A_s = (INPUT_s(""""));
+        C_sa[0] = (""ok"");
+        D_na[1] = (2);
         goto L20;
         return 2;
     }
