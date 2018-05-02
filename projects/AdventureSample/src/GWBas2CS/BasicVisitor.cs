@@ -1014,27 +1014,29 @@ namespace GWBas2CS
 
             public IEnumerable<SyntaxNode> Subroutines()
             {
-                string subName = null;
                 List<SyntaxNode> statements = new List<SyntaxNode>();
+                IDictionary<int, int> subs = this.subLines.Compile();
+                int start = 0;
+                int end = 0;
                 foreach (KeyValuePair<int, Line> line in this.statements)
                 {
-                    if ((subName == null) && this.subLines.IsStart(line.Key))
+                    if ((start == 0) && subs.TryGetValue(line.Key, out end))
                     {
-                        subName = "Sub_" + line.Key;
+                        start = line.Key;
                     }
 
-                    if (subName != null)
+                    if (start != 0)
                     {
                         statements.AddRange(line.Value.Nodes(this.references));
-                        if (this.subLines.IsEnd(line.Key))
+                        if (end == line.Key)
                         {
                             var ret = this.generator.TypeExpression(SpecialType.System_Int32);
                             yield return this.generator.MethodDeclaration(
-                                subName,
+                                "Sub_" + start,
                                 returnType: ret,
                                 accessibility: Accessibility.Private,
                                 statements: statements);
-                            subName = null;
+                            start = 0;
                             statements.Clear();
                         }
                     }
@@ -1043,23 +1045,20 @@ namespace GWBas2CS
 
             public IEnumerable<SyntaxNode> Main()
             {
-                bool readingSub = false;
+                IDictionary<int, int> subs = this.subLines.Compile();
+                int end = 0;
                 foreach (KeyValuePair<int, Line> line in this.statements)
                 {
-                    if (readingSub)
+                    if (end > 0)
                     {
-                        if (this.subLines.IsEnd(line.Key))
+                        if (end == line.Key)
                         {
-                            readingSub = false;
+                            end = 0;
                         }
                     }
                     else
                     {
-                        if (this.subLines.IsStart(line.Key))
-                        {
-                            readingSub = true;
-                        }
-                        else
+                        if (!subs.TryGetValue(line.Key, out end))
                         {
                             foreach (SyntaxNode node in line.Value.Nodes(this.references))
                             {
@@ -1212,11 +1211,31 @@ namespace GWBas2CS
 
                 public void AddStart(int n) => Add(this.starts, n);
 
-                public bool IsStart(int n) => Find(this.starts, n);
-
                 public void AddEnd(int n) => Add(this.ends, n);
 
-                public bool IsEnd(int n) => Find(this.ends, n);
+                public IDictionary<int, int> Compile()
+                {
+                    Dictionary<int, int> subs = new Dictionary<int, int>();
+                    int i = 0;
+                    foreach (int end in this.ends)
+                    {
+                        int start = this.starts[i];
+                        if (start <= end)
+                        {
+                            subs[start] = end;
+                            if (i < this.starts.Count - 1)
+                            {
+                                ++i;
+                            }
+                        }
+                        else
+                        {
+                            subs[this.starts[i - 1]] = end;
+                        }
+                    }
+
+                    return subs;
+                }
 
                 private static void Add(List<int> list, int n)
                 {
