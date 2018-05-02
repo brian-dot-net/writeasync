@@ -121,7 +121,14 @@ namespace GWBas2CS
             ExpressionNode expr = new ExpressionNode(this.generator, this.vars, this.methods);
             v.Accept(expr);
             SyntaxNode lval = expr.Value;
-            this.AddInput(prompt, lval);
+            if (v.Type == BasicType.Num)
+            {
+                this.AddInputN(prompt, lval);
+            }
+            else
+            {
+                this.AddInputS(prompt, lval);
+            }
         }
 
         public void Many(string name, BasicExpression[] list)
@@ -338,7 +345,7 @@ namespace GWBas2CS
             this.methods.Add(name, printMethod);
         }
 
-        private void AddInput(string prompt, SyntaxNode lval)
+        private void AddInputN(string prompt, SyntaxNode lval)
         {
             string name = "INPUT_n";
             var rval = this.generator.InvocationExpression(this.generator.IdentifierName(name), this.generator.LiteralExpression(prompt));
@@ -375,6 +382,35 @@ namespace GWBas2CS
             SyntaxNode[] parameters = new SyntaxNode[] { this.generator.ParameterDeclaration("prompt", type: this.generator.TypeExpression(SpecialType.System_String)) };
             var ret = this.generator.TypeExpression(SpecialType.System_Single);
             var inputMethod = this.generator.MethodDeclaration(name, returnType: ret, accessibility: Accessibility.Private, parameters: parameters, statements: inputStatements);
+            this.methods.Add(name, inputMethod);
+        }
+
+        private void AddInputS(string prompt, SyntaxNode lval)
+        {
+            string name = "INPUT_s";
+            var rval = this.generator.InvocationExpression(this.generator.IdentifierName(name), this.generator.LiteralExpression(prompt));
+            this.lines.Add(this.lineNumber, this.generator.AssignmentStatement(lval, rval));
+            var output = this.generator.MemberAccessExpression(this.generator.ThisExpression(), this.generator.IdentifierName("output"));
+            var callWrite = this.generator.MemberAccessExpression(output, "Write");
+            var promptQ = this.generator.AddExpression(this.generator.IdentifierName("prompt"), this.generator.LiteralExpression("? "));
+            var writePrompt = this.generator.InvocationExpression(callWrite, promptQ);
+            var input = this.generator.MemberAccessExpression(this.generator.ThisExpression(), this.generator.IdentifierName("input"));
+            var callReadLine = this.generator.MemberAccessExpression(input, "ReadLine");
+            var read = this.generator.InvocationExpression(callReadLine);
+            var assignStr = this.generator.LocalDeclarationStatement(this.generator.TypeExpression(SpecialType.System_String), "v", read);
+            var callTrim = this.generator.MemberAccessExpression(this.generator.IdentifierName("v"), "Trim");
+            var trim = this.generator.InvocationExpression(callTrim);
+            var retTrim = this.generator.ReturnStatement(trim);
+
+            SyntaxNode[] inputStatements = new SyntaxNode[]
+            {
+                writePrompt,
+                assignStr,
+                retTrim
+            };
+            var strT = this.generator.TypeExpression(SpecialType.System_String);
+            SyntaxNode[] parameters = new SyntaxNode[] { this.generator.ParameterDeclaration("prompt", type: strT) };
+            var inputMethod = this.generator.MethodDeclaration(name, returnType: strT, accessibility: Accessibility.Private, parameters: parameters, statements: inputStatements);
             this.methods.Add(name, inputMethod);
         }
 

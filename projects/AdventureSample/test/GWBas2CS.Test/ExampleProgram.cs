@@ -40,6 +40,7 @@ namespace GWBas2CS.Test
 260 A$=MID$(A$,A,1)
 270 A$=LEFT$(A$,A)
 280 A=-1
+290 INPUT A$
 1000 GOTO 20
 2000 CLS
 2001 DATA 1
@@ -182,6 +183,13 @@ internal sealed class MyProg
         return x.Substring(0, n);
     }
 
+    private string INPUT_s(string prompt)
+    {
+        this.output.Write((prompt) + (""? ""));
+        string v = this.input.ReadLine();
+        return v.Trim();
+    }
+
     private int Sub_2000()
     {
         CLS();
@@ -270,6 +278,7 @@ internal sealed class MyProg
         A_s = (MID_s(A_s, (int)(A_n), (int)(1)));
         A_s = (LEFT_s(A_s, (int)(A_n)));
         A_n = (-(1));
+        A_s = (INPUT_s(""""));
         goto L20;
         return 2;
     }
