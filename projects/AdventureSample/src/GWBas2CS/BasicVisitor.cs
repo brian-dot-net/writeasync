@@ -1169,6 +1169,7 @@ namespace GWBas2CS
 
             public void For(int number, SyntaxNode vx, SyntaxNode sx, SyntaxNode ex, SyntaxNode sp)
             {
+                this.Get(number).Add(null);
                 this.loops.Push(number, vx, sx, ex, sp);
             }
 
@@ -1183,7 +1184,18 @@ namespace GWBas2CS
                     {
                         break;
                     }
-                    else if (n >= start)
+                    else if (n == start)
+                    {
+                        IEnumerable<SyntaxNode> nodes = null;
+                        Line line = this.statements[n];
+                        line.Reduce(ns =>
+                        {
+                            nodes = ns;
+                            return Enumerable.Empty<SyntaxNode>();
+                        });
+                        body.AddRange(nodes);
+                    }
+                    else if (n > start)
                     {
                         body.AddRange(this.statements[n].Nodes());
                         this.statements.Remove(n);

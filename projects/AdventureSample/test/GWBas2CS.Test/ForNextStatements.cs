@@ -10,6 +10,34 @@ namespace GWBas2CS.Test
     public sealed class ForNextStatements
     {
         [Fact]
+        public void ManyStatementsOneLine()
+        {
+            const string Input =
+@"10 CLS : FOR I=1 TO 5
+20 A=I*2
+30 NEXT I";
+            const string Expected = @"*
+    private int Main()
+    {
+        this.Init();
+        CLS();
+        I_n = (1);
+        while ((I_n) <= (5))
+        {
+            A_n = ((I_n) * (2));
+            I_n = ((I_n) + (1));
+        }
+
+        return 2;
+    }
+*";
+
+            string actual = Test.Translate("MyProg", Input);
+
+            actual.Should().Match(Expected);
+        }
+
+        [Fact]
         public void TwoNested()
         {
             const string Input =
