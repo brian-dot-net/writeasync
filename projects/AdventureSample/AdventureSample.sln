@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GWParse", "..\ExpressionSam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adventure", "src\Adventure\Adventure.csproj", "{657B91C0-278D-44EB-9C92-CF750571D6DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adventure.Test", "test\Adventure.Test\Adventure.Test.csproj", "{EBFBA72E-1F14-47ED-ADD7-2C042139690D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,10 @@ Global
 		{657B91C0-278D-44EB-9C92-CF750571D6DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{657B91C0-278D-44EB-9C92-CF750571D6DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{657B91C0-278D-44EB-9C92-CF750571D6DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBFBA72E-1F14-47ED-ADD7-2C042139690D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBFBA72E-1F14-47ED-ADD7-2C042139690D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBFBA72E-1F14-47ED-ADD7-2C042139690D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBFBA72E-1F14-47ED-ADD7-2C042139690D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 		{25C0DFB4-EF35-4D03-9CCE-F9122E1E6ED7} = {154293B8-6003-48A9-AEC9-18578572FBD5}
 		{6A56EFCB-E5D6-4288-A3E5-87E07C7E7712} = {03FBB861-3CAA-4635-8D32-A7B4F6DFEE31}
 		{657B91C0-278D-44EB-9C92-CF750571D6DA} = {154293B8-6003-48A9-AEC9-18578572FBD5}
+		{EBFBA72E-1F14-47ED-ADD7-2C042139690D} = {03FBB861-3CAA-4635-8D32-A7B4F6DFEE31}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {40D7A5B7-00D5-4D4A-B7F6-D61B32640934}
