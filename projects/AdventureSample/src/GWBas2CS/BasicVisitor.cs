@@ -105,6 +105,7 @@ namespace GWBas2CS
 
         public void IfThen(BasicExpression cond, BasicStatement[] ifTrue)
         {
+            this.lines.If(this.lineNumber);
             foreach (BasicStatement stmt in ifTrue)
             {
                 stmt.Accept(this);
@@ -113,7 +114,7 @@ namespace GWBas2CS
             ExpressionNode expr = new ExpressionNode(this.generator, this.vars, this.methods);
             cond.Accept(expr);
             var nz = this.generator.ValueNotEqualsExpression(expr.Value, this.generator.LiteralExpression(0));
-            this.lines.AddIfThen(this.lineNumber, nz);
+            this.lines.Then(this.lineNumber, nz);
         }
 
         public void Input(string prompt, BasicExpression v)
@@ -1073,9 +1074,14 @@ namespace GWBas2CS
                 this.Get(number).Add(comment);
             }
 
-            public void AddIfThen(int number, SyntaxNode cond)
+            public void If(int number)
             {
-                this.Get(number).Wrap(n => this.generator.IfStatement(cond, n));
+                this.Get(number).Add(null);
+            }
+
+            public void Then(int number, SyntaxNode cond)
+            {
+                this.Get(number).Reduce(n => new SyntaxNode[] { this.generator.IfStatement(cond, n) });
             }
 
             public void AddGoto(int number, int destination)
@@ -1269,11 +1275,20 @@ namespace GWBas2CS
                     }
                 }
 
-                public void Wrap(Func<IEnumerable<SyntaxNode>, SyntaxNode> wrap)
+                public void Reduce(Func<IEnumerable<SyntaxNode>, IEnumerable<SyntaxNode>> op)
                 {
-                    SyntaxNode wrapped = wrap(this.nodes);
+                    int i = 0;
+                    while (this.nodes[i++] != null)
+                    {
+                    }
+
+                    List<SyntaxNode> start = new List<SyntaxNode>(this.nodes.Take(i - 1));
+                    List<SyntaxNode> end = new List<SyntaxNode>(this.nodes.Skip(i));
                     this.nodes.Clear();
-                    this.nodes.Add(wrapped);
+                    this.nodes.AddRange(start);
+
+                    IEnumerable<SyntaxNode> reduced = op(end);
+                    this.nodes.AddRange(reduced);
                 }
 
                 public IEnumerable<SyntaxNode> Nodes(ISet<int> references = null)
