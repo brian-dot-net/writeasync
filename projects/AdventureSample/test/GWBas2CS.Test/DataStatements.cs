@@ -19,7 +19,7 @@ namespace GWBas2CS.Test
     private void Init()
     {
         DATA = (new Queue());
-        DATA.Enqueue(234);
+        DATA.Enqueue((float)(234));
         DATA.Enqueue(""abc"");
         Y_s = ("""");
         X_n = (0);

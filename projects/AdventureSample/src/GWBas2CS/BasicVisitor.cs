@@ -291,7 +291,14 @@ namespace GWBas2CS
         {
             ExpressionNode left = new ExpressionNode(this.generator, this.vars, this.methods);
             expr.Accept(left);
-            this.data.Add(left.Value);
+            SyntaxNode node = left.Value;
+            if (expr.Type == BasicType.Num)
+            {
+                SyntaxNode floatT = this.generator.TypeExpression(SpecialType.System_Single);
+                node = this.generator.CastExpression(floatT, node);
+            }
+
+            this.data.Add(node);
         }
 
         private void AddRead(BasicExpression[] exprs)

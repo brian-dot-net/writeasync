@@ -94,7 +94,7 @@ internal sealed class MyProg
     private void Init()
     {
         DATA = (new Queue());
-        DATA.Enqueue(1);
+        DATA.Enqueue((float)(1));
         DATA.Enqueue(""x"");
         A_s = ("""");
         B1_s = ("""");
