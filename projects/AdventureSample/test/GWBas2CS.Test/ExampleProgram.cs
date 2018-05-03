@@ -147,6 +147,12 @@ internal sealed class MyProg
         {
             this.output.Write((prompt) + (""? ""));
             string v = this.input.ReadLine();
+            v = (v.Trim());
+            if ((v.Length) == (0))
+            {
+                return 0;
+            }
+
             float r;
             if (float.TryParse(v, out r))
             {

@@ -365,10 +365,18 @@ namespace GWBas2CS
             var callReadLine = this.generator.MemberAccessExpression(input, "ReadLine");
             var read = this.generator.InvocationExpression(callReadLine);
             var assignStr = this.generator.LocalDeclarationStatement(this.generator.TypeExpression(SpecialType.System_String), "v", read);
+            var vx = this.generator.IdentifierName("v");
+            var callTrim = this.generator.MemberAccessExpression(vx, "Trim");
+            var trimStr = this.generator.AssignmentStatement(vx, this.generator.InvocationExpression(callTrim));
+            var z = this.generator.LiteralExpression(0);
+            var len = this.generator.MemberAccessExpression(vx, "Length");
+            var empty = this.generator.ValueEqualsExpression(len, z);
+            var retZ = this.generator.ReturnStatement(z);
+            var ifEmpty = this.generator.IfStatement(empty, new SyntaxNode[] { retZ });
             var declR = this.generator.LocalDeclarationStatement(this.generator.TypeExpression(SpecialType.System_Single), "r");
             var callTryParse = this.generator.MemberAccessExpression(this.generator.TypeExpression(SpecialType.System_Single), "TryParse");
             var argR = this.generator.Argument(RefKind.Out, this.generator.IdentifierName("r"));
-            var tryParse = this.generator.InvocationExpression(callTryParse, this.generator.IdentifierName("v"), argR);
+            var tryParse = this.generator.InvocationExpression(callTryParse, vx, argR);
             var retR = this.generator.ReturnStatement(this.generator.IdentifierName("r"));
             var ifParse = this.generator.IfStatement(tryParse, new SyntaxNode[] { retR });
             var callWriteLine = this.generator.MemberAccessExpression(output, "WriteLine");
@@ -378,6 +386,8 @@ namespace GWBas2CS
             {
                 writePrompt,
                 assignStr,
+                trimStr,
+                ifEmpty,
                 declR,
                 ifParse,
                 writeError
