@@ -1074,7 +1074,7 @@ internal sealed class adventure
 
         if ((((R_n.CompareTo(2)) != (0)) ? (-1) : (0)) != (0))
         {
-            PRINT(("") + ("THERE'S NO CA81NET HERE!"));
+            PRINT(("") + ("THERE'S NO CABINET HERE!"));
             goto L100;
         }
 
