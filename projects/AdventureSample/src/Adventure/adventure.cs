@@ -39,7 +39,6 @@ internal sealed class adventure
     private float FL_n;
     private float RO_n;
     private float DI_n;
-    private float O_n;
     private float J_n;
     private float A_n;
     public adventure(TextReader input, TextWriter output)
@@ -243,7 +242,6 @@ internal sealed class adventure
         FL_n = (0);
         RO_n = (0);
         DI_n = (0);
-        O_n = (0);
         J_n = (0);
         A_n = (0);
         R_sa = (new string[11]);
@@ -1402,7 +1400,7 @@ internal sealed class adventure
 
         PRINT(("") + ("THE GUARD, NOTICING YOUR SWORD,"));
         PRINT(("") + ("WISELY RETREATS INTO THE CASTLE."));
-        MA_na[(int)(16), (int)(O_n)] = (17);
+        MA_na[(int)(16), (int)(0)] = (17);
         OB_na[(int)(13)] = (0);
         goto L100;
         L4900:
