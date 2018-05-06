@@ -1323,33 +1323,9 @@ internal sealed class adventure
             goto L4700;
         }
 
-        if ((((noun.CompareTo("FAN")) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU CAN'T WAVE THAT!"));
-        }
-        else if ((((int)(((objectRooms[(int)(12)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(12)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("YOU DON'T HAVE THE FAN!"));
-        }
-        else if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU FEEL A REFRESHING BREEZE!"));
-        }
-        else
-        {
-            PRINT(("") + ("A POWERFUL BREEZE PROPELS THE BOAT"));
-            PRINT(("") + ("TO THE OPPOSITE SHORE!"));
-            if ((((objectRooms[(int)(11)].CompareTo(140)) == (0)) ? (-1) : (0)) != (0))
-            {
-                objectRooms[(int)(11)] = (142);
-            }
-            else
-            {
-                objectRooms[(int)(11)] = (140);
-            }
-        }
-
+        Wave();
         goto L100;
+
         L4700:
         ;
         if ((((int)(((verb.CompareTo("LEA")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("EXI")) != (0)) ? (-1) : (0)))) != (0))
@@ -1389,6 +1365,35 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private void Wave()
+    {
+        if ((((noun.CompareTo("FAN")) != (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("YOU CAN'T WAVE THAT!"));
+        }
+        else if ((((int)(((objectRooms[(int)(12)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(12)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("YOU DON'T HAVE THE FAN!"));
+        }
+        else if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("YOU FEEL A REFRESHING BREEZE!"));
+        }
+        else
+        {
+            PRINT(("") + ("A POWERFUL BREEZE PROPELS THE BOAT"));
+            PRINT(("") + ("TO THE OPPOSITE SHORE!"));
+            if ((((objectRooms[(int)(11)].CompareTo(140)) == (0)) ? (-1) : (0)) != (0))
+            {
+                objectRooms[(int)(11)] = (142);
+            }
+            else
+            {
+                objectRooms[(int)(11)] = (140);
+            }
+        }
     }
 
     private bool Leave()
