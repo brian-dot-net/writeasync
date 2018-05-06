@@ -1229,24 +1229,7 @@ internal sealed class adventure
         }
         else
         {
-            bool ret2;
-            if ((((int)(((objectRooms[(int)(3)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(3)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-            {
-                PRINT(("") + ("YOU DON'T HAVE THE SALT!"));
-                ret2 = false;
-            }
-            else if ((((saltPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("THE SHAKER IS EMPTY!"));
-                ret2 = false;
-            }
-            else
-            {
-                saltPoured = (1);
-                ret2 = true;
-            }
-
-            ret = ret2;
+            ret = PourSalt();
         }
 
         if (ret)
@@ -1278,6 +1261,28 @@ internal sealed class adventure
         else
         {
             formulaPoured = (1);
+            ret = true;
+        }
+
+        return ret;
+    }
+
+    private bool PourSalt()
+    {
+        bool ret;
+        if ((((int)(((objectRooms[(int)(3)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(3)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("YOU DON'T HAVE THE SALT!"));
+            ret = false;
+        }
+        else if ((((saltPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("THE SHAKER IS EMPTY!"));
+            ret = false;
+        }
+        else
+        {
+            saltPoured = (1);
             ret = true;
         }
 
