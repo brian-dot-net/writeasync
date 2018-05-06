@@ -996,44 +996,7 @@ internal sealed class adventure
             goto L3700;
         }
 
-        if ((((noun.CompareTo("DIA")) != (0)) ? (-1) : (0)) != (0))
-        {
-            if ((((noun.CompareTo("DIC")) != (0)) ? (-1) : (0)) != (0))
-            {
-                if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
-                {
-                    PRINT(("") + ("YOU CAN'T READ THAT!"));
-                }
-                else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-                {
-                    PRINT(("") + ("THERE'S NO BOTTLE HERE!"));
-                }
-                else
-                {
-                    PRINT(("") + ("IT READS: 'SECRET FORMULA'."));
-                }
-            }
-            else if ((((int)(((objectRooms[(int)(4)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(4)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-            {
-                PRINT(("") + ("YOU DON'T SEE A DICTIONARY!"));
-            }
-            else
-            {
-                PRINT(("") + ("IT SAYS: SODIUM CHLORIDE IS"));
-                PRINT(("") + ("COMMON TABLE SALT."));
-            }
-        }
-        else if ((((int)(((objectRooms[(int)(0)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(0)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("THERE'S NO DIARY HERE!"));
-        }
-        else
-        {
-            PRINT(("") + ("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE"));
-            PRINT(("") + ("FORMULA TO RAINWATER, TO REACH THE"));
-            PRINT(("") + ("OTHER WORLD.' "));
-        }
-
+        Read();
         goto L100;
 
         L3700:
@@ -1153,6 +1116,47 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private void Read()
+    {
+        if ((((noun.CompareTo("DIA")) != (0)) ? (-1) : (0)) != (0))
+        {
+            if ((((noun.CompareTo("DIC")) != (0)) ? (-1) : (0)) != (0))
+            {
+                if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
+                {
+                    PRINT(("") + ("YOU CAN'T READ THAT!"));
+                }
+                else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+                {
+                    PRINT(("") + ("THERE'S NO BOTTLE HERE!"));
+                }
+                else
+                {
+                    PRINT(("") + ("IT READS: 'SECRET FORMULA'."));
+                }
+            }
+            else if ((((int)(((objectRooms[(int)(4)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(4)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            {
+                PRINT(("") + ("YOU DON'T SEE A DICTIONARY!"));
+            }
+            else
+            {
+                PRINT(("") + ("IT SAYS: SODIUM CHLORIDE IS"));
+                PRINT(("") + ("COMMON TABLE SALT."));
+            }
+        }
+        else if ((((int)(((objectRooms[(int)(0)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(0)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("THERE'S NO DIARY HERE!"));
+        }
+        else
+        {
+            PRINT(("") + ("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE"));
+            PRINT(("") + ("FORMULA TO RAINWATER, TO REACH THE"));
+            PRINT(("") + ("OTHER WORLD.' "));
+        }
     }
 
     private void Open()
