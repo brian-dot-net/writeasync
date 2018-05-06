@@ -728,55 +728,7 @@ internal sealed class adventure
             goto L2500;
         }
 
-        int ret = 0;
-        if ((((noun.CompareTo("NOR")) == (0)) ? (-1) : (0)) != (0))
-        {
-            DI_n = (0);
-        }
-        else if ((((noun.CompareTo("SOU")) == (0)) ? (-1) : (0)) != (0))
-        {
-            DI_n = (1);
-        }
-        else if ((((noun.CompareTo("EAS")) == (0)) ? (-1) : (0)) != (0))
-        {
-            DI_n = (2);
-        }
-        else if ((((noun.CompareTo("WES")) == (0)) ? (-1) : (0)) != (0))
-        {
-            DI_n = (3);
-        }
-        else if ((((noun.CompareTo("UP")) == (0)) ? (-1) : (0)) != (0))
-        {
-            DI_n = (4);
-        }
-        else if ((((noun.CompareTo("DOW")) == (0)) ? (-1) : (0)) != (0))
-        {
-            DI_n = (5);
-        }
-        else if ((((int)(((noun.CompareTo("BOA")) == (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(11)].CompareTo((currentRoom) + (128))) == (0)) ? (-1) : (0)))) != (0))
-        {
-            currentRoom = (13);
-            ret = 1;
-        }
-        else
-        {
-            PRINT(("") + ("YOU CAN'T GO THERE!"));
-            ret = 2;
-        }
-
-        bool ret2;
-        if (ret == 0)
-        {
-            ret2 = Go();
-        }
-        else if (ret == 1)
-        {
-            ret2 = true;
-        }
-        else
-        {
-            ret2 = false;
-        }
+        bool ret2 = Go2();
 
         if (ret2)
         {
@@ -985,6 +937,61 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private bool Go2()
+    {
+        int ret = 0;
+        if ((((noun.CompareTo("NOR")) == (0)) ? (-1) : (0)) != (0))
+        {
+            DI_n = (0);
+        }
+        else if ((((noun.CompareTo("SOU")) == (0)) ? (-1) : (0)) != (0))
+        {
+            DI_n = (1);
+        }
+        else if ((((noun.CompareTo("EAS")) == (0)) ? (-1) : (0)) != (0))
+        {
+            DI_n = (2);
+        }
+        else if ((((noun.CompareTo("WES")) == (0)) ? (-1) : (0)) != (0))
+        {
+            DI_n = (3);
+        }
+        else if ((((noun.CompareTo("UP")) == (0)) ? (-1) : (0)) != (0))
+        {
+            DI_n = (4);
+        }
+        else if ((((noun.CompareTo("DOW")) == (0)) ? (-1) : (0)) != (0))
+        {
+            DI_n = (5);
+        }
+        else if ((((int)(((noun.CompareTo("BOA")) == (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(11)].CompareTo((currentRoom) + (128))) == (0)) ? (-1) : (0)))) != (0))
+        {
+            currentRoom = (13);
+            ret = 1;
+        }
+        else
+        {
+            PRINT(("") + ("YOU CAN'T GO THERE!"));
+            ret = 2;
+        }
+
+        bool ret2;
+        if (ret == 0)
+        {
+            ret2 = Go();
+        }
+        else if (ret == 1)
+        {
+            ret2 = true;
+        }
+        else
+        {
+            ret2 = false;
+        }
+
+        return ret2;
     }
 
     private bool Go()
