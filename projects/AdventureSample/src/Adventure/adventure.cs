@@ -1382,32 +1382,29 @@ internal sealed class adventure
         if ((((noun.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("WHOM DO YOU WANT TO FIGHT?"));
-            goto L100;
         }
-
-        if ((((noun.CompareTo("GUA")) != (0)) ? (-1) : (0)) != (0))
+        else if ((((noun.CompareTo("GUA")) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T FIGHT HIM!"));
-            goto L100;
         }
-
-        if ((((currentRoom.CompareTo(16)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((currentRoom.CompareTo(16)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THERE'S NO GUARD HERE!"));
-            goto L100;
         }
-
-        if ((((objectRooms[(int)(10)].CompareTo(-(1))) != (0)) ? (-1) : (0)) != (0))
+        else if ((((objectRooms[(int)(10)].CompareTo(-(1))) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU DON'T HAVE A WEAPON!"));
-            goto L100;
+        }
+        else
+        {
+            PRINT(("") + ("THE GUARD, NOTICING YOUR SWORD,"));
+            PRINT(("") + ("WISELY RETREATS INTO THE CASTLE."));
+            map[(int)(16), (int)(0)] = (17);
+            objectRooms[(int)(13)] = (0);
         }
 
-        PRINT(("") + ("THE GUARD, NOTICING YOUR SWORD,"));
-        PRINT(("") + ("WISELY RETREATS INTO THE CASTLE."));
-        map[(int)(16), (int)(0)] = (17);
-        objectRooms[(int)(13)] = (0);
         goto L100;
+
         L4900:
         ;
         if ((((verb.CompareTo("WEA")) != (0)) ? (-1) : (0)) != (0))
