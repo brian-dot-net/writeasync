@@ -915,40 +915,7 @@ internal sealed class adventure
 
         L2910:
         ;
-        if ((((noun.CompareTo("GRO")) != (0)) ? (-1) : (0)) != (0))
-        {
-            FindRoomForObject();
-
-            if ((((int)(((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-            {
-                PRINT(("") + ("IT'S NOT HERE!"));
-            }
-            else if ((((noun.CompareTo("BOT")) == (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("THERE'S SOMETHING WRITTEN ON IT!"));
-            }
-            else if ((((noun.CompareTo("CAS")) == (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("THERE'S A JEWEL INSIDE!"));
-            }
-            else if ((((noun.CompareTo("BAR")) == (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("IT'S FILLED WITH RAINWATER."));
-            }
-            else
-            {
-                PRINT(("") + ("YOU SEE NOTHING UNUSUAL."));
-            }
-        }
-        else if ((((currentRoom.CompareTo(6)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("IT LOOKS LIKE GROUND!"));
-        }
-        else
-        {
-            PRINT(("") + ("IT LOOKS LIKE SOMETHING'S BURIED HERE."));
-        }
-
+        Examine();
         goto L100;
 
         L3400:
@@ -1093,6 +1060,43 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private void Examine()
+    {
+        if ((((noun.CompareTo("GRO")) != (0)) ? (-1) : (0)) != (0))
+        {
+            FindRoomForObject();
+
+            if ((((int)(((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            {
+                PRINT(("") + ("IT'S NOT HERE!"));
+            }
+            else if ((((noun.CompareTo("BOT")) == (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("THERE'S SOMETHING WRITTEN ON IT!"));
+            }
+            else if ((((noun.CompareTo("CAS")) == (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("THERE'S A JEWEL INSIDE!"));
+            }
+            else if ((((noun.CompareTo("BAR")) == (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("IT'S FILLED WITH RAINWATER."));
+            }
+            else
+            {
+                PRINT(("") + ("YOU SEE NOTHING UNUSUAL."));
+            }
+        }
+        else if ((((currentRoom.CompareTo(6)) != (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("IT LOOKS LIKE GROUND!"));
+        }
+        else
+        {
+            PRINT(("") + ("IT LOOKS LIKE SOMETHING'S BURIED HERE."));
+        }
     }
 
     private int Quit()
