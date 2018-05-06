@@ -1190,36 +1190,7 @@ internal sealed class adventure
             goto L4300;
         }
 
-        if ((((noun.CompareTo("TRE")) != (0)) ? (-1) : (0)) != (0))
-        {
-            if ((((noun.CompareTo("LAD")) != (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("IT WON'T DO ANY GOOD."));
-            }
-            else if ((((int)(((objectRooms[(int)(7)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(7)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-            {
-                PRINT(("") + ("YOU DON'T HAVE THE LADDER!"));
-            }
-            else if ((((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("WHATEVER FOR?"));
-            }
-            else
-            {
-                PRINT(("") + ("THE LADDER SINKS UNDER YOUR WEIGHT!"));
-                PRINT(("") + ("IT DISAPPEARS INTO THE GROUND!"));
-                objectRooms[(int)(7)] = (0);
-            }
-        }
-        else if ((((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("THERE'S NO TREE HERE!"));
-        }
-        else
-        {
-            PRINT(("") + ("YOU CAN'T REACH THE BRANCHES!"));
-        }
-
+        Climb();
         goto L100;
 
         L4300:
@@ -1305,6 +1276,39 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private void Climb()
+    {
+        if ((((noun.CompareTo("TRE")) != (0)) ? (-1) : (0)) != (0))
+        {
+            if ((((noun.CompareTo("LAD")) != (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("IT WON'T DO ANY GOOD."));
+            }
+            else if ((((int)(((objectRooms[(int)(7)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(7)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            {
+                PRINT(("") + ("YOU DON'T HAVE THE LADDER!"));
+            }
+            else if ((((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("WHATEVER FOR?"));
+            }
+            else
+            {
+                PRINT(("") + ("THE LADDER SINKS UNDER YOUR WEIGHT!"));
+                PRINT(("") + ("IT DISAPPEARS INTO THE GROUND!"));
+                objectRooms[(int)(7)] = (0);
+            }
+        }
+        else if ((((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("THERE'S NO TREE HERE!"));
+        }
+        else
+        {
+            PRINT(("") + ("YOU CAN'T REACH THE BRANCHES!"));
+        }
     }
 
     private bool Jump()
