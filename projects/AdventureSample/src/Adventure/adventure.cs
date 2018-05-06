@@ -1225,49 +1225,60 @@ internal sealed class adventure
         bool ret;
         if ((((noun.CompareTo("SAL")) != (0)) ? (-1) : (0)) != (0))
         {
-            if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("YOU CAN'T POUR THAT!"));
-                ret = false;
-            }
-            else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-            {
-                PRINT(("") + ("YOU DON'T HAVE THE BOTTLE!"));
-                ret = false;
-            }
-            else if ((((formulaPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("THE BOTTLE IS EMPTY!"));
-                ret = false;
-            }
-            else
-            {
-                formulaPoured = (1);
-                ret = true;
-            }
+            ret = PourFormula();
         }
         else
         {
+            bool ret2;
             if ((((int)(((objectRooms[(int)(3)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(3)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
             {
                 PRINT(("") + ("YOU DON'T HAVE THE SALT!"));
-                ret = false;
+                ret2 = false;
             }
             else if ((((saltPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
             {
                 PRINT(("") + ("THE SHAKER IS EMPTY!"));
-                ret = false;
+                ret2 = false;
             }
             else
             {
                 saltPoured = (1);
-                ret = true;
+                ret2 = true;
             }
+
+            ret = ret2;
         }
 
         if (ret)
         {
             ret = PourMixture();
+        }
+
+        return ret;
+    }
+
+    private bool PourFormula()
+    {
+        bool ret;
+        if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("YOU CAN'T POUR THAT!"));
+            ret = false;
+        }
+        else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("YOU DON'T HAVE THE BOTTLE!"));
+            ret = false;
+        }
+        else if ((((formulaPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("THE BOTTLE IS EMPTY!"));
+            ret = false;
+        }
+        else
+        {
+            formulaPoured = (1);
+            ret = true;
         }
 
         return ret;
