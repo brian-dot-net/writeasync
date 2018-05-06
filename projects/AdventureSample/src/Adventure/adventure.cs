@@ -1320,28 +1320,25 @@ internal sealed class adventure
 
     private bool Jump()
     {
-        bool ret;
         if ((((int)(((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0))) & ((int)(((currentRoom.CompareTo(8)) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("WHEE! THAT WAS FUN!"));
-            ret = false;
+            return false;
         }
         else if ((((currentRoom.CompareTo(8)) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU GRAB A HIGHER BRANCH ON THE"));
             PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
             currentRoom = (19);
-            ret = true;
+            return true;
         }
         else
         {
             PRINT(("") + ("YOU GRAB THE LOWEST BRANCH OF THE"));
             PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
             currentRoom = (8);
-            ret = true;
+            return true;
         }
-
-        return ret;
     }
 
     private void Dig()
