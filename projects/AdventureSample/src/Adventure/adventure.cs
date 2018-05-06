@@ -1240,27 +1240,34 @@ internal sealed class adventure
             goto L4400;
         }
 
+        bool ret;
         if ((((int)(((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0))) & ((int)(((currentRoom.CompareTo(8)) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("WHEE! THAT WAS FUN!"));
-            goto L100;
+            ret = false;
         }
-
-        if ((((currentRoom.CompareTo(8)) == (0)) ? (-1) : (0)) != (0))
+        else if ((((currentRoom.CompareTo(8)) == (0)) ? (-1) : (0)) != (0))
         {
-            goto L4350;
+            PRINT(("") + ("YOU GRAB A HIGHER BRANCH ON THE"));
+            PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
+            currentRoom = (19);
+            ret = true;
+        }
+        else
+        {
+            PRINT(("") + ("YOU GRAB THE LOWEST BRANCH OF THE"));
+            PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
+            currentRoom = (8);
+            ret = true;
         }
 
-        PRINT(("") + ("YOU GRAB THE LOWEST BRANCH OF THE"));
-        PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
-        currentRoom = (8);
-        goto L90;
-        L4350:
-        ;
-        PRINT(("") + ("YOU GRAB A HIGHER BRANCH ON THE"));
-        PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
-        currentRoom = (19);
-        goto L90;
+        if (ret)
+        {
+            goto L90;
+        }
+
+        goto L100;
+
         L4400:
         ;
         if ((((verb.CompareTo("DIG")) != (0)) ? (-1) : (0)) != (0))
