@@ -1015,31 +1015,27 @@ internal sealed class adventure
         ;
         if ((((noun.CompareTo("DIC")) != (0)) ? (-1) : (0)) != (0))
         {
-            goto L3590;
+            if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("YOU CAN'T READ THAT!"));
+            }
+            else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            {
+                PRINT(("") + ("THERE'S NO BOTTLE HERE!"));
+            }
+            else
+            {
+                PRINT(("") + ("IT READS: 'SECRET FORMULA'."));
+            }
         }
-
-        if ((((int)(((objectRooms[(int)(4)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(4)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if ((((int)(((objectRooms[(int)(4)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(4)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("YOU DON'T SEE A DICTIONARY!"));
-            goto L100;
-        }
-
-        PRINT(("") + ("IT SAYS: SODIUM CHLORIDE IS"));
-        PRINT(("") + ("COMMON TABLE SALT."));
-        goto L100;
-        L3590:
-        ;
-        if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU CAN'T READ THAT!"));
-        }
-        else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("THERE'S NO BOTTLE HERE!"));
         }
         else
         {
-            PRINT(("") + ("IT READS: 'SECRET FORMULA'."));
+            PRINT(("") + ("IT SAYS: SODIUM CHLORIDE IS"));
+            PRINT(("") + ("COMMON TABLE SALT."));
         }
 
         goto L100;
