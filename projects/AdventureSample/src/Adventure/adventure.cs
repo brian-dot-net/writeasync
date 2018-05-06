@@ -1118,46 +1118,50 @@ internal sealed class adventure
             goto L4100;
         }
 
+        bool ret;
         if ((((noun.CompareTo("SAL")) != (0)) ? (-1) : (0)) != (0))
         {
             if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
             {
                 PRINT(("") + ("YOU CAN'T POUR THAT!"));
-                goto L100;
+                ret = false;
             }
-
-            if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
             {
                 PRINT(("") + ("YOU DON'T HAVE THE BOTTLE!"));
-                goto L100;
+                ret = false;
             }
-
-            if ((((formulaPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
+            else if ((((formulaPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
             {
                 PRINT(("") + ("THE BOTTLE IS EMPTY!"));
-                goto L100;
+                ret = false;
             }
-
-            formulaPoured = (1);
+            else
+            {
+                formulaPoured = (1);
+                ret = true;
+            }
         }
         else
         {
             if ((((int)(((objectRooms[(int)(3)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(3)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
             {
                 PRINT(("") + ("YOU DON'T HAVE THE SALT!"));
-                goto L100;
+                ret = false;
             }
-
-            if ((((saltPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
+            else if ((((saltPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
             {
                 PRINT(("") + ("THE SHAKER IS EMPTY!"));
-                goto L100;
+                ret = false;
             }
-
-            saltPoured = (1);
+            else
+            {
+                saltPoured = (1);
+                ret = true;
+            }
         }
 
-        if (PourMixture())
+        if (ret && PourMixture())
         {
             goto L90;
         }
