@@ -806,42 +806,35 @@ internal sealed class adventure
         if ((((FL_n.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T GET THAT!"));
-            goto L100;
         }
-
-        if ((((RO_n.CompareTo(-(1))) == (0)) ? (-1) : (0)) != (0))
+        else if ((((RO_n.CompareTo(-(1))) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU ALREADY HAVE IT!"));
-            goto L100;
         }
-
-        if ((((objectRooms[(int)(I_n)].CompareTo(127)) > (0)) ? (-1) : (0)) != (0))
+        else if ((((objectRooms[(int)(I_n)].CompareTo(127)) > (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T GET THAT!"));
-            goto L100;
         }
-
-        if ((((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THAT'S NOT HERE!"));
-            goto L100;
         }
-
-        if ((((inventoryItems.CompareTo(maxInventoryItems)) > (0)) ? (-1) : (0)) != (0))
+        else if ((((inventoryItems.CompareTo(maxInventoryItems)) > (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T CARRY ANY MORE."));
-            goto L100;
         }
-
-        if ((((int)(((currentRoom.CompareTo(18)) == (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("RUB")) == (0)) ? (-1) : (0)))) != (0))
+        else if ((((int)(((currentRoom.CompareTo(18)) == (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("RUB")) == (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("CONGRATULATIONS! YOU'VE WON!"));
             return PlayAgain();
         }
+        else
+        {
+            inventoryItems = ((inventoryItems) + (1));
+            objectRooms[(int)(I_n)] = (-(1));
+            PRINT(("") + ("TAKEN."));
+        }
 
-        inventoryItems = ((inventoryItems) + (1));
-        objectRooms[(int)(I_n)] = (-(1));
-        PRINT(("") + ("TAKEN."));
         goto L100;
 
         L2600:
