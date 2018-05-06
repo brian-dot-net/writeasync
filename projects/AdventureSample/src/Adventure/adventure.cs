@@ -836,7 +836,7 @@ internal sealed class adventure
         if ((((int)(((currentRoom.CompareTo(18)) == (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("RUB")) == (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("CONGRATULATIONS! YOU'VE WON!"));
-            goto L3430;
+            return PlayAgain();
         }
 
         inventoryItems = ((inventoryItems) + (1));
@@ -974,7 +974,6 @@ internal sealed class adventure
             goto L100;
         }
 
-        L3430:
         return PlayAgain();
 
         L3500:
