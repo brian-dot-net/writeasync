@@ -1358,8 +1358,7 @@ internal sealed class adventure
             goto L4800;
         }
 
-        bool ret = Leave();
-        if (ret)
+        if (Leave())
         {
             goto L90;
         }
