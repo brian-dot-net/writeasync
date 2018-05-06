@@ -1268,28 +1268,7 @@ internal sealed class adventure
             goto L4500;
         }
 
-        if ((((int)(((int)(((noun.CompareTo("HOL")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("GRO")) != (0)) ? (-1) : (0))))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("YOU CAN'T DIG THAT!"));
-        }
-        else if ((((int)(((objectRooms[(int)(8)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(8)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("YOU DON'T HAVE A SHOVEL!"));
-        }
-        else if ((((currentRoom.CompareTo(6)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU DON'T FIND ANYTHING."));
-        }
-        else if ((((objectRooms[(int)(10)].CompareTo(0)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("THERE'S NOTHING ELSE THERE!"));
-        }
-        else
-        {
-            PRINT(("") + ("THERE'S SOMETHING THERE!"));
-            objectRooms[(int)(10)] = (6);
-        }
-
+        Dig();
         goto L100;
 
         L4500:
@@ -1351,6 +1330,31 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private void Dig()
+    {
+        if ((((int)(((int)(((noun.CompareTo("HOL")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("GRO")) != (0)) ? (-1) : (0))))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("YOU CAN'T DIG THAT!"));
+        }
+        else if ((((int)(((objectRooms[(int)(8)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(8)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("YOU DON'T HAVE A SHOVEL!"));
+        }
+        else if ((((currentRoom.CompareTo(6)) != (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("YOU DON'T FIND ANYTHING."));
+        }
+        else if ((((objectRooms[(int)(10)].CompareTo(0)) != (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("THERE'S NOTHING ELSE THERE!"));
+        }
+        else
+        {
+            PRINT(("") + ("THERE'S SOMETHING THERE!"));
+            objectRooms[(int)(10)] = (6);
+        }
     }
 
     private void Row()
