@@ -1395,24 +1395,21 @@ internal sealed class adventure
 
     private bool Leave()
     {
-        bool ret;
         if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("PLEASE GIVE A DIRECTION!"));
-            ret = false;
+            return false;
         }
         else if ((((int)(((noun.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("HUH?"));
-            ret = false;
+            return false;
         }
         else
         {
             currentRoom = ((objectRooms[(int)(11)]) - (128));
-            ret = true;
+            return true;
         }
-
-        return ret;
     }
 
     private void Fight()
