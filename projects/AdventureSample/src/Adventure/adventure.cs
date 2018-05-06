@@ -763,22 +763,7 @@ internal sealed class adventure
             goto L100;
         }
 
-        bool ret = false;
-        if ((((int)(((map[(int)(currentRoom), (int)(DI_n)].CompareTo(0)) > (0)) ? (-1) : (0))) & ((int)(((map[(int)(currentRoom), (int)(DI_n)].CompareTo(128)) < (0)) ? (-1) : (0)))) != (0))
-        {
-            currentRoom = (map[(int)(currentRoom), (int)(DI_n)]);
-            ret = true;
-        }
-        else if ((((map[(int)(currentRoom), (int)(DI_n)].CompareTo(128)) == (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("THE GUARD WON'T LET YOU!"));
-        }
-        else
-        {
-            PRINT(("") + ("YOU CAN'T GO THERE!"));
-        }
-
-        if (ret)
+        if (Go())
         {
             goto L90;
         }
@@ -985,6 +970,26 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private bool Go()
+    {
+        bool ret = false;
+        if ((((int)(((map[(int)(currentRoom), (int)(DI_n)].CompareTo(0)) > (0)) ? (-1) : (0))) & ((int)(((map[(int)(currentRoom), (int)(DI_n)].CompareTo(128)) < (0)) ? (-1) : (0)))) != (0))
+        {
+            currentRoom = (map[(int)(currentRoom), (int)(DI_n)]);
+            ret = true;
+        }
+        else if ((((map[(int)(currentRoom), (int)(DI_n)].CompareTo(128)) == (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("THE GUARD WON'T LET YOU!"));
+        }
+        else
+        {
+            PRINT(("") + ("YOU CAN'T GO THERE!"));
+        }
+
+        return ret;
     }
 
     private bool Get()
