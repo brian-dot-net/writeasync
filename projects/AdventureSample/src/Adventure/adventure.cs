@@ -803,6 +803,7 @@ internal sealed class adventure
 
         FindRoomForObject();
 
+        bool ret = false;
         if ((((FL_n.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T GET THAT!"));
@@ -826,13 +827,18 @@ internal sealed class adventure
         else if ((((int)(((currentRoom.CompareTo(18)) == (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("RUB")) == (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("CONGRATULATIONS! YOU'VE WON!"));
-            return PlayAgain();
+            ret = true;
         }
         else
         {
             inventoryItems = ((inventoryItems) + (1));
             objectRooms[(int)(I_n)] = (-(1));
             PRINT(("") + ("TAKEN."));
+        }
+
+        if (ret)
+        {
+            return PlayAgain();
         }
 
         goto L100;
