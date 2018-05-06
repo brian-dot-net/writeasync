@@ -1171,23 +1171,7 @@ internal sealed class adventure
         formulaPoured = (1);
         PRINT(("") + ("POURED!"));
         L4010:
-        ;
-        bool ret;
-        if ((((mixtureCount.CompareTo(3)) < (0)) ? (-1) : (0)) != (0))
-        {
-            ret = false;
-        }
-        else
-        {
-            PRINT(("") + ("THERE IS AN EXPLOSION!"));
-            PRINT(("") + ("EVERYTHING GOES BLACK!"));
-            PRINT(("") + ("SUDDENLY YOU ARE ... "));
-            PRINT(("") + (" ... SOMEWHERE ELSE!"));
-            currentRoom = (6);
-            ret = true;
-        }
-
-        if (ret)
+        if (CheckMixture())
         {
             goto L90;
         }
@@ -1287,6 +1271,26 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private bool CheckMixture()
+    {
+        bool ret;
+        if ((((mixtureCount.CompareTo(3)) < (0)) ? (-1) : (0)) != (0))
+        {
+            ret = false;
+        }
+        else
+        {
+            PRINT(("") + ("THERE IS AN EXPLOSION!"));
+            PRINT(("") + ("EVERYTHING GOES BLACK!"));
+            PRINT(("") + ("SUDDENLY YOU ARE ... "));
+            PRINT(("") + (" ... SOMEWHERE ELSE!"));
+            currentRoom = (6);
+            ret = true;
+        }
+
+        return ret;
     }
 
     private void Climb()
