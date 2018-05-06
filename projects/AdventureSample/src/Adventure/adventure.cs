@@ -636,7 +636,7 @@ internal sealed class adventure
         ; // *** PARSER
         ; // 
         L100:
-            ;
+        ;
         PRINT("");
         command = ("");
         command = (INPUT_s("WHAT NOW"));
@@ -649,7 +649,7 @@ internal sealed class adventure
         verb = ("");
         noun = ("");
         L120:
-            ;
+        ;
         C_n = ((C_n) + (1));
         if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
         {
@@ -665,7 +665,7 @@ internal sealed class adventure
         verb = ((verb) + (wordPart));
         goto L120;
         L150:
-            ;
+        ;
         C_n = ((C_n) + (1));
         if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
         {
@@ -681,7 +681,7 @@ internal sealed class adventure
         noun = ((noun) + (wordPart));
         goto L150;
         L180:
-            ;
+        ;
         if ((((verb.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
         {
             goto L100;
@@ -722,7 +722,7 @@ internal sealed class adventure
         ; // Routine for the verb 'GO'.
         ; // 
         L2000:
-            ;
+        ;
         if ((((verb.CompareTo("GO")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L2500;
@@ -771,13 +771,13 @@ internal sealed class adventure
         }
 
         L2390:
-            ;
+        ;
         PRINT(("") + ("YOU CAN'T GO THERE!"));
         goto L100;
         ; // 
         ; // 
         L2400:
-            ;
+        ;
         if ((((int)(((map[(int)(currentRoom), (int)(DI_n)].CompareTo(0)) > (0)) ? (-1) : (0))) & ((int)(((map[(int)(currentRoom), (int)(DI_n)].CompareTo(128)) < (0)) ? (-1) : (0)))) != (0))
         {
             currentRoom = (map[(int)(currentRoom), (int)(DI_n)]);
@@ -795,7 +795,7 @@ internal sealed class adventure
         ; // 
         ; // *** 'GET' ROUTINE
         L2500:
-            ;
+        ;
         if ((((int)(((verb.CompareTo("GET")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("TAK")) != (0)) ? (-1) : (0)))) != (0))
         {
             goto L2600;
@@ -845,7 +845,7 @@ internal sealed class adventure
         goto L100;
         ; // *** 'DROP' ROUTINE
         L2600:
-            ;
+        ;
         if ((((int)(((verb.CompareTo("DRO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("THR")) != (0)) ? (-1) : (0)))) != (0))
         {
             goto L2700;
@@ -865,7 +865,7 @@ internal sealed class adventure
         goto L100;
         ; // *** 'INVENTORY' ROUTINE
         L2700:
-            ;
+        ;
         if ((((int)(((verb.CompareTo("INV")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("I")) != (0)) ? (-1) : (0)))) != (0))
         {
             goto L2800;
@@ -893,7 +893,7 @@ internal sealed class adventure
         goto L100;
         ; // *** 'LOOK' ROUTINE
         L2800:
-            ;
+        ;
         if ((((int)(((verb.CompareTo("LOO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("L")) != (0)) ? (-1) : (0)))) != (0))
         {
             goto L2900;
@@ -907,14 +907,14 @@ internal sealed class adventure
         goto L90;
         ; // *** 'EXAMINE' ROUTINE
         L2900:
-            ;
+        ;
         if ((((verb.CompareTo("EXA")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3400;
         }
 
         L2910:
-            ;
+        ;
         if ((((noun.CompareTo("GRO")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L2940;
@@ -929,7 +929,7 @@ internal sealed class adventure
         PRINT(("") + ("IT LOOKS LIKE SOMETHING'S BURIED HERE."));
         goto L100;
         L2940:
-            ;
+        ;
         ; // 
 
         FindRoomForObject();
@@ -961,7 +961,7 @@ internal sealed class adventure
         PRINT(("") + ("YOU SEE NOTHING UNUSUAL."));
         goto L100;
         L3400:
-            ;
+        ;
         if ((((verb.CompareTo("QUI")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3500;
@@ -975,7 +975,7 @@ internal sealed class adventure
         }
 
         L3430:
-            ;
+        ;
         PRINT_n(("") + ("WOULD YOU LIKE TO PLAY AGAIN (Y/N)"));
         quit = (INPUT_s(""));
         if ((((quit.CompareTo("Y")) == (0)) ? (-1) : (0)) != (0))
@@ -990,7 +990,7 @@ internal sealed class adventure
 
         goto L3430;
         L3500:
-            ;
+        ;
         if ((((verb.CompareTo("REA")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3700;
@@ -1012,7 +1012,7 @@ internal sealed class adventure
         PRINT(("") + ("OTHER WORLD.' "));
         goto L100;
         L3560:
-            ;
+        ;
         if ((((noun.CompareTo("DIC")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3590;
@@ -1028,7 +1028,7 @@ internal sealed class adventure
         PRINT(("") + ("COMMON TABLE SALT."));
         goto L100;
         L3590:
-            ;
+        ;
         if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3620;
@@ -1043,12 +1043,12 @@ internal sealed class adventure
         PRINT(("") + ("IT READS: 'SECRET FORMULA'."));
         goto L100;
         L3620:
-            ;
+        ;
         ; // 
         PRINT(("") + ("YOU CAN'T READ THAT!"));
         goto L100;
         L3700:
-            ;
+        ;
         if ((((verb.CompareTo("OPE")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3900;
@@ -1069,7 +1069,7 @@ internal sealed class adventure
         PRINT(("") + ("SOMETHING FELL OUT!"));
         goto L100;
         L3740:
-            ;
+        ;
         if ((((noun.CompareTo("CAB")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3770;
@@ -1085,7 +1085,7 @@ internal sealed class adventure
         objectRooms[(int)(3)] = (2);
         goto L100;
         L3770:
-            ;
+        ;
         if ((((noun.CompareTo("CAS")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3890;
@@ -1108,11 +1108,11 @@ internal sealed class adventure
         objectRooms[(int)(15)] = (18);
         goto L100;
         L3890:
-            ;
+        ;
         PRINT(("") + ("YOU CAN'T OPEN THAT!"));
         goto L100;
         L3900:
-            ;
+        ;
         if ((((verb.CompareTo("POU")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4100;
@@ -1144,7 +1144,7 @@ internal sealed class adventure
         PRINT(("") + ("POURED!"));
         goto L4010;
         L3960:
-            ;
+        ;
         if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T POUR THAT!"));
@@ -1171,7 +1171,7 @@ internal sealed class adventure
         formulaPoured = (1);
         PRINT(("") + ("POURED!"));
         L4010:
-            ;
+        ;
         if ((((mixtureCount.CompareTo(3)) < (0)) ? (-1) : (0)) != (0))
         {
             goto L100;
@@ -1184,7 +1184,7 @@ internal sealed class adventure
         currentRoom = (6);
         goto L90;
         L4100:
-            ;
+        ;
         if ((((verb.CompareTo("CLI")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4300;
@@ -1204,7 +1204,7 @@ internal sealed class adventure
         PRINT(("") + ("YOU CAN'T REACH THE BRANCHES!"));
         goto L100;
         L4140:
-            ;
+        ;
         if ((((noun.CompareTo("LAD")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4290;
@@ -1226,15 +1226,15 @@ internal sealed class adventure
         objectRooms[(int)(7)] = (0);
         goto L100;
         L4180:
-            ;
+        ;
         PRINT(("") + ("WHATEVER FOR?"));
         goto L100;
         L4290:
-            ;
+        ;
         PRINT(("") + ("IT WON'T DO ANY GOOD."));
         goto L100;
         L4300:
-            ;
+        ;
         if ((((verb.CompareTo("JUM")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4400;
@@ -1256,13 +1256,13 @@ internal sealed class adventure
         currentRoom = (8);
         goto L90;
         L4350:
-            ;
+        ;
         PRINT(("") + ("YOU GRAB A HIGHER BRANCH ON THE"));
         PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
         currentRoom = (19);
         goto L90;
         L4400:
-            ;
+        ;
         if ((((verb.CompareTo("DIG")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4500;
@@ -1296,7 +1296,7 @@ internal sealed class adventure
         objectRooms[(int)(10)] = (6);
         goto L100;
         L4500:
-            ;
+        ;
         if ((((verb.CompareTo("ROW")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4600;
@@ -1317,7 +1317,7 @@ internal sealed class adventure
         PRINT(("") + ("YOU DON'T HAVE AN OAR!"));
         goto L100;
         L4600:
-            ;
+        ;
         if ((((verb.CompareTo("WAV")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4700;
@@ -1352,7 +1352,7 @@ internal sealed class adventure
         objectRooms[(int)(11)] = (140);
         goto L100;
         L4700:
-            ;
+        ;
         if ((((int)(((verb.CompareTo("LEA")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("EXI")) != (0)) ? (-1) : (0)))) != (0))
         {
             goto L4800;
@@ -1373,7 +1373,7 @@ internal sealed class adventure
         currentRoom = ((objectRooms[(int)(11)]) - (128));
         goto L90;
         L4800:
-            ;
+        ;
         if ((((verb.CompareTo("FIG")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4900;
@@ -1409,12 +1409,24 @@ internal sealed class adventure
         objectRooms[(int)(13)] = (0);
         goto L100;
         L4900:
-            ;
+        ;
         if ((((verb.CompareTo("WEA")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L5000;
         }
 
+        Wear();
+        goto L100;
+
+        L5000:
+        ;
+        ; // 
+        PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
+        goto L100;
+    }
+
+    private void Wear()
+    {
         if ((((noun.CompareTo("GLO")) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T WEAR THAT!"));
@@ -1428,12 +1440,5 @@ internal sealed class adventure
             PRINT(("") + ("YOU ARE NOW WEARING THE GLOVES."));
             wearingGloves = (1);
         }
-
-        goto L100;
-        L5000:
-            ;
-        ; // 
-        PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
-        goto L100;
     }
 }
