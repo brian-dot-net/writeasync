@@ -1118,50 +1118,7 @@ internal sealed class adventure
             goto L4100;
         }
 
-        bool ret;
-        if ((((noun.CompareTo("SAL")) != (0)) ? (-1) : (0)) != (0))
-        {
-            if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("YOU CAN'T POUR THAT!"));
-                ret = false;
-            }
-            else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-            {
-                PRINT(("") + ("YOU DON'T HAVE THE BOTTLE!"));
-                ret = false;
-            }
-            else if ((((formulaPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("THE BOTTLE IS EMPTY!"));
-                ret = false;
-            }
-            else
-            {
-                formulaPoured = (1);
-                ret = true;
-            }
-        }
-        else
-        {
-            if ((((int)(((objectRooms[(int)(3)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(3)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-            {
-                PRINT(("") + ("YOU DON'T HAVE THE SALT!"));
-                ret = false;
-            }
-            else if ((((saltPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("THE SHAKER IS EMPTY!"));
-                ret = false;
-            }
-            else
-            {
-                saltPoured = (1);
-                ret = true;
-            }
-        }
-
-        if (ret && PourMixture())
+        if (Pour())
         {
             goto L90;
         }
@@ -1261,6 +1218,59 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private bool Pour()
+    {
+        bool ret;
+        if ((((noun.CompareTo("SAL")) != (0)) ? (-1) : (0)) != (0))
+        {
+            if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("YOU CAN'T POUR THAT!"));
+                ret = false;
+            }
+            else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            {
+                PRINT(("") + ("YOU DON'T HAVE THE BOTTLE!"));
+                ret = false;
+            }
+            else if ((((formulaPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("THE BOTTLE IS EMPTY!"));
+                ret = false;
+            }
+            else
+            {
+                formulaPoured = (1);
+                ret = true;
+            }
+        }
+        else
+        {
+            if ((((int)(((objectRooms[(int)(3)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(3)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            {
+                PRINT(("") + ("YOU DON'T HAVE THE SALT!"));
+                ret = false;
+            }
+            else if ((((saltPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("THE SHAKER IS EMPTY!"));
+                ret = false;
+            }
+            else
+            {
+                saltPoured = (1);
+                ret = true;
+            }
+        }
+
+        if (ret)
+        {
+            ret = PourMixture();
+        }
+
+        return ret;
     }
 
     private bool PourMixture()
