@@ -967,14 +967,20 @@ internal sealed class adventure
             goto L3500;
         }
 
+        int ret = 0;
         PRINT_n(("") + ("ARE YOU SURE YOU WANT TO QUIT (Y/N)"));
         quit = (INPUT_s(""));
-        if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) != (0))
+        if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) == (0))
         {
-            goto L100;
+            ret = PlayAgain();
         }
 
-        return PlayAgain();
+        if (ret != 0)
+        {
+            return ret;
+        }
+
+        goto L100;
 
         L3500:
         ;
