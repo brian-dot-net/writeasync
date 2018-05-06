@@ -1056,49 +1056,45 @@ internal sealed class adventure
 
         if ((((noun.CompareTo("BOX")) != (0)) ? (-1) : (0)) != (0))
         {
-            goto L3740;
-        }
-
-        if ((((int)(((objectRooms[(int)(1)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(1)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("THERE'S NO BOX HERE!"));
-            goto L100;
-        }
-
-        objectRooms[(int)(6)] = (currentRoom);
-        PRINT(("") + ("SOMETHING FELL OUT!"));
-        goto L100;
-        L3740:
-        ;
-        if ((((noun.CompareTo("CAB")) != (0)) ? (-1) : (0)) != (0))
-        {
-            if ((((noun.CompareTo("CAS")) != (0)) ? (-1) : (0)) != (0))
+            if ((((noun.CompareTo("CAB")) != (0)) ? (-1) : (0)) != (0))
             {
-                PRINT(("") + ("YOU CAN'T OPEN THAT!"));
+                if ((((noun.CompareTo("CAS")) != (0)) ? (-1) : (0)) != (0))
+                {
+                    PRINT(("") + ("YOU CAN'T OPEN THAT!"));
+                }
+                else if ((((currentRoom.CompareTo(18)) != (0)) ? (-1) : (0)) != (0))
+                {
+                    PRINT(("") + ("THERE'S NO CASE HERE!"));
+                }
+                else if ((((wearingGloves.CompareTo(1)) != (0)) ? (-1) : (0)) != (0))
+                {
+                    PRINT(("") + ("THE CASE IS ELECTRIFIED!"));
+                }
+                else
+                {
+                    PRINT(("") + ("THE GLOVES INSULATE AGAINST THE"));
+                    PRINT(("") + ("ELECTRICITY! THE CASE OPENS!"));
+                    objectRooms[(int)(15)] = (18);
+                }
             }
-            else if ((((currentRoom.CompareTo(18)) != (0)) ? (-1) : (0)) != (0))
+            else if ((((currentRoom.CompareTo(2)) != (0)) ? (-1) : (0)) != (0))
             {
-                PRINT(("") + ("THERE'S NO CASE HERE!"));
-            }
-            else if ((((wearingGloves.CompareTo(1)) != (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("THE CASE IS ELECTRIFIED!"));
+                PRINT(("") + ("THERE'S NO CABINET HERE!"));
             }
             else
             {
-                PRINT(("") + ("THE GLOVES INSULATE AGAINST THE"));
-                PRINT(("") + ("ELECTRICITY! THE CASE OPENS!"));
-                objectRooms[(int)(15)] = (18);
+                PRINT(("") + ("THERE'S SOMETHING INSIDE!"));
+                objectRooms[(int)(3)] = (2);
             }
         }
-        else if ((((currentRoom.CompareTo(2)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((int)(((objectRooms[(int)(1)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(1)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
-            PRINT(("") + ("THERE'S NO CABINET HERE!"));
+            PRINT(("") + ("THERE'S NO BOX HERE!"));
         }
         else
         {
-            PRINT(("") + ("THERE'S SOMETHING INSIDE!"));
-            objectRooms[(int)(3)] = (2);
+            objectRooms[(int)(6)] = (currentRoom);
+            PRINT(("") + ("SOMETHING FELL OUT!"));
         }
 
         goto L100;
