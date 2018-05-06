@@ -856,12 +856,14 @@ internal sealed class adventure
         if ((((int)(((FL_n.CompareTo(0)) == (0)) ? (-1) : (0))) | ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("YOU DON'T HAVE THAT!"));
-            goto L100;
+        }
+        else
+        {
+            inventoryItems = ((inventoryItems) - (1));
+            objectRooms[(int)(I_n)] = (currentRoom);
+            PRINT(("") + ("DROPPED."));
         }
 
-        inventoryItems = ((inventoryItems) - (1));
-        objectRooms[(int)(I_n)] = (currentRoom);
-        PRINT(("") + ("DROPPED."));
         goto L100;
 
         L2700:
