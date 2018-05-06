@@ -792,8 +792,7 @@ internal sealed class adventure
         }
 
         goto L2390;
-        ; // 
-        ; // *** 'GET' ROUTINE
+
         L2500:
         ;
         if ((((int)(((verb.CompareTo("GET")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("TAK")) != (0)) ? (-1) : (0)))) != (0))
@@ -1000,7 +999,6 @@ internal sealed class adventure
     {
         FindRoomForObject();
 
-        bool ret = false;
         if ((((FL_n.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T GET THAT!"));
@@ -1024,7 +1022,7 @@ internal sealed class adventure
         else if ((((int)(((currentRoom.CompareTo(18)) == (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("RUB")) == (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("CONGRATULATIONS! YOU'VE WON!"));
-            ret = true;
+            return true;
         }
         else
         {
@@ -1033,7 +1031,7 @@ internal sealed class adventure
             PRINT(("") + ("TAKEN."));
         }
 
-        return ret;
+        return false;
     }
 
     private void Drop()
