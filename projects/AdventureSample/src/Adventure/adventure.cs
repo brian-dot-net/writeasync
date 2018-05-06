@@ -1302,19 +1302,7 @@ internal sealed class adventure
             goto L4600;
         }
 
-        if ((((int)(((noun.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("HOW CAN YOU ROW THAT?"));
-        }
-        else if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU'RE NOT IN THE BOAT!"));
-        }
-        else
-        {
-            PRINT(("") + ("YOU DON'T HAVE AN OAR!"));
-        }
-
+        Row();
         goto L100;
 
         L4600:
@@ -1366,6 +1354,22 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private void Row()
+    {
+        if ((((int)(((noun.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("HOW CAN YOU ROW THAT?"));
+        }
+        else if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("YOU'RE NOT IN THE BOAT!"));
+        }
+        else
+        {
+            PRINT(("") + ("YOU DON'T HAVE AN OAR!"));
+        }
     }
 
     private void Wave()
