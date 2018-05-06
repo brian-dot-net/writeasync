@@ -57,171 +57,244 @@ internal sealed class adventure
     private void Init()
     {
         DATA = (new Queue());
+
+        // LIVING ROOM
         DATA.Enqueue((float)(4));
         DATA.Enqueue((float)(3));
         DATA.Enqueue((float)(2));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // KITCHEN
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(1));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // LIBRARY
         DATA.Enqueue((float)(1));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // FRONT YARD
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(1));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(5));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // GARAGE
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(4));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // OPEN FIELD
         DATA.Enqueue((float)(9));
         DATA.Enqueue((float)(7));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // EDGE OF FOREST
         DATA.Enqueue((float)(6));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // BRANCH OF TREE
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(7));
+
+        // LONG, WINDING ROAD (1)
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(6));
         DATA.Enqueue((float)(10));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // LONG, WINDING ROAD (2)
         DATA.Enqueue((float)(11));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(9));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // LONG, WINDING ROAD (3)
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(10));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(12));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // SOUTH BANK OF RIVER
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(11));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // BOAT
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // NORTH BANK OF RIVER
         DATA.Enqueue((float)(15));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // WELL-TRAVELED ROAD
         DATA.Enqueue((float)(16));
         DATA.Enqueue((float)(14));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // SOUTH OF CASTLE
         DATA.Enqueue((float)(128));
         DATA.Enqueue((float)(15));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
+
+        // NARROW HALL
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(18));
         DATA.Enqueue((float)(0));
+
+        // LARGE HALL
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(17));
+
+        // TOP OF TREE
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(0));
         DATA.Enqueue((float)(8));
+
+        // OBJECT #0
         DATA.Enqueue("AN OLD DIARY");
         DATA.Enqueue("DIA");
         DATA.Enqueue((float)(1));
+
+        // OBJECT #1
         DATA.Enqueue("A SMALL BOX");
         DATA.Enqueue("BOX");
         DATA.Enqueue((float)(1));
+
+        // OBJECT #2
         DATA.Enqueue("CABINET");
         DATA.Enqueue("CAB");
         DATA.Enqueue((float)(130));
+
+        // OBJECT #3
         DATA.Enqueue("A SALT SHAKER");
         DATA.Enqueue("SAL");
         DATA.Enqueue((float)(0));
+
+        // OBJECT #4
         DATA.Enqueue("A DICTIONARY");
         DATA.Enqueue("DIC");
         DATA.Enqueue((float)(3));
+
+        // OBJECT #5
         DATA.Enqueue("WOODEN BARREL");
         DATA.Enqueue("BAR");
         DATA.Enqueue((float)(133));
+
+        // OBJECT #6
         DATA.Enqueue("A SMALL BOTTLE");
         DATA.Enqueue("BOT");
         DATA.Enqueue((float)(0));
+
+        // OBJECT #7
         DATA.Enqueue("A LADDER");
         DATA.Enqueue("LAD");
         DATA.Enqueue((float)(4));
+
+        // OBJECT #8
         DATA.Enqueue("A SHOVEL");
         DATA.Enqueue("SHO");
         DATA.Enqueue((float)(5));
+
+        // OBJECT #9
         DATA.Enqueue("A TREE");
         DATA.Enqueue("TRE");
         DATA.Enqueue((float)(135));
+
+        // OBJECT #10
         DATA.Enqueue("A GOLDEN SWORD");
         DATA.Enqueue("SWO");
         DATA.Enqueue((float)(0));
+
+        // OBJECT #11
         DATA.Enqueue("A WOODEN BOAT");
         DATA.Enqueue("BOA");
         DATA.Enqueue((float)(140));
+
+        // OBJECT #12
         DATA.Enqueue("A MAGIC FAN");
         DATA.Enqueue("FAN");
         DATA.Enqueue((float)(8));
+
+        // OBJECT #13
         DATA.Enqueue("A NASTY-LOOKING GUARD");
         DATA.Enqueue("GUA");
         DATA.Enqueue((float)(144));
+
+        // OBJECT #14
         DATA.Enqueue("A GLASS CASE");
         DATA.Enqueue("CAS");
         DATA.Enqueue((float)(146));
+
+        // OBJECT #15
         DATA.Enqueue("A GLOWING RUBY");
         DATA.Enqueue("RUB");
         DATA.Enqueue((float)(0));
+
+        // OBJECT #17
         DATA.Enqueue("A PAIR OF RUBBER GLOVES");
         DATA.Enqueue("GLO");
         DATA.Enqueue((float)(19));
+
         command = ("");
         verb = ("");
         noun = ("");
@@ -1430,57 +1503,5 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
-        ; // 
-        ; // The following routine reads the map data into
-        ; // the map array, MA(ROOM, DIRECTION).
-        ; // 
-        ; // 
-        ; // LIVING ROOM
-        ; // KITCHEN
-        ; // LIBRARY
-        ; // FRONT YARD
-        ; // GARAGE
-        ; // OPEN FIELD
-        ; // EDGE OF FOREST
-        ; // BRANCH OF TREE
-        ; // LONG, WINDING ROAD (1)
-        ; // LONG, WINDING ROAD (2)
-        ; // LONG, WINDING ROAD (3)
-        ; // SOUTH BANK OF RIVER
-        ; // BOAT
-        ; // NORTH BANK OF RIVER
-        ; // WELL-TRAVELED ROAD
-        ; // SOUTH OF CASTLE
-        ; // NARROW HALL
-        ; // LARGE HALL
-        ; // TOP OF TREE
-        ; // 
-        ; // The following subroutine reads the object data
-        ; // into the three object arrays, OB(X), OB$(X), and
-        ; // O2$(X).
-        ; // 
-        ; // 
-        ; // OBJECT #0
-        ; // OBJECT #1
-        ; // OBJECT #2
-        ; // OBJECT #3
-        ; // OBJECT #4
-        ; // OBJECT #5
-        ; // OBJECT #6
-        ; // OBJECT #7
-        ; // OBJECT #8
-        ; // OBJECT #9
-        ; // OBJECT #10
-        ; // OBJECT #11
-        ; // OBJECT #12
-        ; // OBJECT #13
-        ; // OBJECT #14
-        ; // OBJECT #15
-        ; // OBJECT #17
-        ; // 
-        ; // 
-#pragma warning disable CS0162 // Unreachable code detected
-        return 2;
-#pragma warning restore CS0162 // Unreachable code detected
     }
 }
