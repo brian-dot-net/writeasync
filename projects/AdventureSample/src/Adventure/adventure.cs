@@ -728,6 +728,7 @@ internal sealed class adventure
             goto L2500;
         }
 
+        int ret = 0;
         if ((((noun.CompareTo("NOR")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (0);
@@ -755,15 +756,29 @@ internal sealed class adventure
         else if ((((int)(((noun.CompareTo("BOA")) == (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(11)].CompareTo((currentRoom) + (128))) == (0)) ? (-1) : (0)))) != (0))
         {
             currentRoom = (13);
-            goto L90;
+            ret = 1;
         }
         else
         {
             PRINT(("") + ("YOU CAN'T GO THERE!"));
-            goto L100;
+            ret = 2;
         }
 
-        if (Go())
+        bool ret2;
+        if (ret == 0)
+        {
+            ret2 = Go();
+        }
+        else if (ret == 1)
+        {
+            ret2 = true;
+        }
+        else
+        {
+            ret2 = false;
+        }
+
+        if (ret2)
         {
             goto L90;
         }
