@@ -1358,23 +1358,7 @@ internal sealed class adventure
             goto L4800;
         }
 
-        bool ret;
-        if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("PLEASE GIVE A DIRECTION!"));
-            ret = false;
-        }
-        else if ((((int)(((noun.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("HUH?"));
-            ret = false;
-        }
-        else
-        {
-            currentRoom = ((objectRooms[(int)(11)]) - (128));
-            ret = true;
-        }
-
+        bool ret = Leave();
         if (ret)
         {
             goto L90;
@@ -1407,6 +1391,28 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private bool Leave()
+    {
+        bool ret;
+        if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("PLEASE GIVE A DIRECTION!"));
+            ret = false;
+        }
+        else if ((((int)(((noun.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("HUH?"));
+            ret = false;
+        }
+        else
+        {
+            currentRoom = ((objectRooms[(int)(11)]) - (128));
+            ret = true;
+        }
+
+        return ret;
     }
 
     private void Fight()
