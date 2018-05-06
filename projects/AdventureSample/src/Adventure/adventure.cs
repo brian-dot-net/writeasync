@@ -1157,14 +1157,7 @@ internal sealed class adventure
             saltPoured = (1);
         }
 
-        if ((((currentRoom.CompareTo(5)) == (0)) ? (-1) : (0)) != (0))
-        {
-            mixtureCount = ((mixtureCount) + (1));
-        }
-
-        PRINT(("") + ("POURED!"));
-
-        if (CheckMixture())
+        if (PourMixture())
         {
             goto L90;
         }
@@ -1266,8 +1259,15 @@ internal sealed class adventure
         goto L100;
     }
 
-    private bool CheckMixture()
+    private bool PourMixture()
     {
+        if ((((currentRoom.CompareTo(5)) == (0)) ? (-1) : (0)) != (0))
+        {
+            mixtureCount = ((mixtureCount) + (1));
+        }
+
+        PRINT(("") + ("POURED!"));
+
         bool ret;
         if ((((mixtureCount.CompareTo(3)) < (0)) ? (-1) : (0)) != (0))
         {
