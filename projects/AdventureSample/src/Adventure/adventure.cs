@@ -1305,17 +1305,18 @@ internal sealed class adventure
         if ((((int)(((noun.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("HOW CAN YOU ROW THAT?"));
-            goto L100;
         }
-
-        if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU'RE NOT IN THE BOAT!"));
-            goto L100;
+        }
+        else
+        {
+            PRINT(("") + ("YOU DON'T HAVE AN OAR!"));
         }
 
-        PRINT(("") + ("YOU DON'T HAVE AN OAR!"));
         goto L100;
+
         L4600:
         ;
         if ((((verb.CompareTo("WAV")) != (0)) ? (-1) : (0)) != (0))
