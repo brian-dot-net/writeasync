@@ -1418,17 +1418,17 @@ internal sealed class adventure
         if ((((noun.CompareTo("GLO")) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T WEAR THAT!"));
-            goto L100;
         }
-
-        if ((((int)(((objectRooms[(int)(16)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(16)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if ((((int)(((objectRooms[(int)(16)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(16)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("YOU DON'T HAVE THE GLOVES."));
-            goto L100;
+        }
+        else
+        {
+            PRINT(("") + ("YOU ARE NOW WEARING THE GLOVES."));
+            wearingGloves = (1);
         }
 
-        PRINT(("") + ("YOU ARE NOW WEARING THE GLOVES."));
-        wearingGloves = (1);
         goto L100;
         L5000:
             ;
