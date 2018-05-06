@@ -1240,28 +1240,7 @@ internal sealed class adventure
             goto L4400;
         }
 
-        bool ret;
-        if ((((int)(((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0))) & ((int)(((currentRoom.CompareTo(8)) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("WHEE! THAT WAS FUN!"));
-            ret = false;
-        }
-        else if ((((currentRoom.CompareTo(8)) == (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU GRAB A HIGHER BRANCH ON THE"));
-            PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
-            currentRoom = (19);
-            ret = true;
-        }
-        else
-        {
-            PRINT(("") + ("YOU GRAB THE LOWEST BRANCH OF THE"));
-            PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
-            currentRoom = (8);
-            ret = true;
-        }
-
-        if (ret)
+        if (Jump())
         {
             goto L90;
         }
@@ -1337,6 +1316,32 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private bool Jump()
+    {
+        bool ret;
+        if ((((int)(((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0))) & ((int)(((currentRoom.CompareTo(8)) != (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("WHEE! THAT WAS FUN!"));
+            ret = false;
+        }
+        else if ((((currentRoom.CompareTo(8)) == (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("YOU GRAB A HIGHER BRANCH ON THE"));
+            PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
+            currentRoom = (19);
+            ret = true;
+        }
+        else
+        {
+            PRINT(("") + ("YOU GRAB THE LOWEST BRANCH OF THE"));
+            PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
+            currentRoom = (8);
+            ret = true;
+        }
+
+        return ret;
     }
 
     private void Dig()
