@@ -290,7 +290,7 @@ internal sealed class adventure
         DATA.Enqueue("RUB");
         DATA.Enqueue((float)(0));
 
-        // OBJECT #17
+        // OBJECT #16
         DATA.Enqueue("A PAIR OF RUBBER GLOVES");
         DATA.Enqueue("GLO");
         DATA.Enqueue((float)(19));
