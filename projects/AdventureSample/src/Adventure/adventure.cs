@@ -843,7 +843,7 @@ internal sealed class adventure
         objectRooms[(int)(I_n)] = (-(1));
         PRINT(("") + ("TAKEN."));
         goto L100;
-        ; // *** 'DROP' ROUTINE
+
         L2600:
         ;
         if ((((int)(((verb.CompareTo("DRO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("THR")) != (0)) ? (-1) : (0)))) != (0))
@@ -851,19 +851,7 @@ internal sealed class adventure
             goto L2700;
         }
 
-        FindRoomForObject();
-
-        if ((((int)(((FL_n.CompareTo(0)) == (0)) ? (-1) : (0))) | ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("YOU DON'T HAVE THAT!"));
-        }
-        else
-        {
-            inventoryItems = ((inventoryItems) - (1));
-            objectRooms[(int)(I_n)] = (currentRoom);
-            PRINT(("") + ("DROPPED."));
-        }
-
+        Drop();
         goto L100;
 
         L2700:
@@ -1042,6 +1030,22 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private void Drop()
+    {
+        FindRoomForObject();
+
+        if ((((int)(((FL_n.CompareTo(0)) == (0)) ? (-1) : (0))) | ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("YOU DON'T HAVE THAT!"));
+        }
+        else
+        {
+            inventoryItems = ((inventoryItems) - (1));
+            objectRooms[(int)(I_n)] = (currentRoom);
+            PRINT(("") + ("DROPPED."));
+        }
     }
 
     private void Inventory()
