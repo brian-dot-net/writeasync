@@ -19,11 +19,11 @@ internal sealed class adventure
     private string[] directions;
     private float[] objectRooms;
     private float[, ] map;
-    private string CM_s;
-    private string V_s;
-    private string N_s;
-    private string W_s;
-    private string QU_s;
+    private string command;
+    private string verb;
+    private string noun;
+    private string wordPart;
+    private string quit;
     private float NR_n;
     private float NO_n;
     private float ND_n;
@@ -222,11 +222,11 @@ internal sealed class adventure
         DATA.Enqueue("A PAIR OF RUBBER GLOVES");
         DATA.Enqueue("GLO");
         DATA.Enqueue((float)(19));
-        CM_s = ("");
-        V_s = ("");
-        N_s = ("");
-        W_s = ("");
-        QU_s = ("");
+        command = ("");
+        verb = ("");
+        noun = ("");
+        wordPart = ("");
+        quit = ("");
         NR_n = (0);
         NO_n = (0);
         ND_n = (0);
@@ -407,7 +407,7 @@ internal sealed class adventure
         I_n = (0);
         while ((I_n) <= ((NO_n) - (1)))
         {
-            if ((((objectTags[(int)(I_n)].CompareTo(N_s)) == (0)) ? (-1) : (0)) != (0))
+            if ((((objectTags[(int)(I_n)].CompareTo(noun)) == (0)) ? (-1) : (0)) != (0))
             {
                 FL_n = (1);
                 RO_n = (objectRooms[(int)(I_n)]);
@@ -616,73 +616,73 @@ internal sealed class adventure
         L100:
             ;
         PRINT("");
-        CM_s = ("");
-        CM_s = (INPUT_s("WHAT NOW"));
-        if ((((CM_s.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
+        command = ("");
+        command = (INPUT_s("WHAT NOW"));
+        if ((((command.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
         {
             goto L100;
         }
 
         C_n = (0);
-        V_s = ("");
-        N_s = ("");
+        verb = ("");
+        noun = ("");
         L120:
             ;
         C_n = ((C_n) + (1));
-        if ((((C_n.CompareTo(CM_s.Length)) > (0)) ? (-1) : (0)) != (0))
+        if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
         {
             goto L150;
         }
 
-        W_s = (MID_s(CM_s, (int)(C_n), (int)(1)));
-        if ((((W_s.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
+        wordPart = (MID_s(command, (int)(C_n), (int)(1)));
+        if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
         {
             goto L150;
         }
 
-        V_s = ((V_s) + (W_s));
+        verb = ((verb) + (wordPart));
         goto L120;
         L150:
             ;
         C_n = ((C_n) + (1));
-        if ((((C_n.CompareTo(CM_s.Length)) > (0)) ? (-1) : (0)) != (0))
+        if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
         {
             goto L180;
         }
 
-        W_s = (MID_s(CM_s, (int)(C_n), (int)(1)));
-        if ((((W_s.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
+        wordPart = (MID_s(command, (int)(C_n), (int)(1)));
+        if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
         {
             goto L180;
         }
 
-        N_s = ((N_s) + (W_s));
+        noun = ((noun) + (wordPart));
         goto L150;
         L180:
             ;
-        if ((((V_s.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
         {
             goto L100;
         }
 
-        if ((((V_s.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
+        if ((((verb.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
         {
-            V_s = (LEFT_s(V_s, (int)(3)));
+            verb = (LEFT_s(verb, (int)(3)));
         }
 
-        if ((((N_s.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
+        if ((((noun.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
         {
-            N_s = (LEFT_s(N_s, (int)(3)));
+            noun = (LEFT_s(noun, (int)(3)));
         }
 
-        if ((((N_s.CompareTo("SHA")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("SHA")) == (0)) ? (-1) : (0)) != (0))
         {
-            N_s = ("SAL");
+            noun = ("SAL");
         }
 
-        if ((((N_s.CompareTo("FOR")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("FOR")) == (0)) ? (-1) : (0)) != (0))
         {
-            N_s = ("BOT");
+            noun = ("BOT");
         }
 
         ; // 
@@ -701,48 +701,48 @@ internal sealed class adventure
         ; // 
         L2000:
             ;
-        if ((((V_s.CompareTo("GO")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("GO")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L2500;
         }
 
-        if ((((N_s.CompareTo("NOR")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("NOR")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (0);
             goto L2400;
         }
 
-        if ((((N_s.CompareTo("SOU")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("SOU")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (1);
             goto L2400;
         }
 
-        if ((((N_s.CompareTo("EAS")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("EAS")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (2);
             goto L2400;
         }
 
-        if ((((N_s.CompareTo("WES")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("WES")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (3);
             goto L2400;
         }
 
-        if ((((N_s.CompareTo("UP")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("UP")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (4);
             goto L2400;
         }
 
-        if ((((N_s.CompareTo("DOW")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("DOW")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (5);
             goto L2400;
         }
 
-        if ((((int)(((N_s.CompareTo("BOA")) == (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(11)].CompareTo((R_n) + (128))) == (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((noun.CompareTo("BOA")) == (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(11)].CompareTo((R_n) + (128))) == (0)) ? (-1) : (0)))) != (0))
         {
             R_n = (13);
             goto L90;
@@ -774,7 +774,7 @@ internal sealed class adventure
         ; // *** 'GET' ROUTINE
         L2500:
             ;
-        if ((((int)(((V_s.CompareTo("GET")) != (0)) ? (-1) : (0))) & ((int)(((V_s.CompareTo("TAK")) != (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((verb.CompareTo("GET")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("TAK")) != (0)) ? (-1) : (0)))) != (0))
         {
             goto L2600;
         }
@@ -817,7 +817,7 @@ internal sealed class adventure
             goto L100;
         }
 
-        if ((((int)(((R_n.CompareTo(18)) == (0)) ? (-1) : (0))) & ((int)(((N_s.CompareTo("RUB")) == (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((R_n.CompareTo(18)) == (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("RUB")) == (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("CONGRATULATIONS! YOU'VE WON!"));
             goto L3430;
@@ -830,7 +830,7 @@ internal sealed class adventure
         ; // *** 'DROP' ROUTINE
         L2600:
             ;
-        if ((((int)(((V_s.CompareTo("DRO")) != (0)) ? (-1) : (0))) & ((int)(((V_s.CompareTo("THR")) != (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((verb.CompareTo("DRO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("THR")) != (0)) ? (-1) : (0)))) != (0))
         {
             goto L2700;
         }
@@ -856,7 +856,7 @@ internal sealed class adventure
         ; // *** 'INVENTORY' ROUTINE
         L2700:
             ;
-        if ((((int)(((V_s.CompareTo("INV")) != (0)) ? (-1) : (0))) & ((int)(((V_s.CompareTo("I")) != (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((verb.CompareTo("INV")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("I")) != (0)) ? (-1) : (0)))) != (0))
         {
             goto L2800;
         }
@@ -884,12 +884,12 @@ internal sealed class adventure
         ; // *** 'LOOK' ROUTINE
         L2800:
             ;
-        if ((((int)(((V_s.CompareTo("LOO")) != (0)) ? (-1) : (0))) & ((int)(((V_s.CompareTo("L")) != (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((verb.CompareTo("LOO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("L")) != (0)) ? (-1) : (0)))) != (0))
         {
             goto L2900;
         }
 
-        if ((((N_s.CompareTo("")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L2910;
         }
@@ -898,14 +898,14 @@ internal sealed class adventure
         ; // *** 'EXAMINE' ROUTINE
         L2900:
             ;
-        if ((((V_s.CompareTo("EXA")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("EXA")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3400;
         }
 
         L2910:
             ;
-        if ((((N_s.CompareTo("GRO")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("GRO")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L2940;
         }
@@ -935,19 +935,19 @@ internal sealed class adventure
             goto L100;
         }
 
-        if ((((N_s.CompareTo("BOT")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("BOT")) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THERE'S SOMETHING WRITTEN ON IT!"));
             goto L100;
         }
 
-        if ((((N_s.CompareTo("CAS")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("CAS")) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THERE'S A JEWEL INSIDE!"));
             goto L100;
         }
 
-        if ((((N_s.CompareTo("BAR")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("BAR")) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("IT'S FILLED WITH RAINWATER."));
             goto L100;
@@ -957,14 +957,14 @@ internal sealed class adventure
         goto L100;
         L3400:
             ;
-        if ((((V_s.CompareTo("QUI")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("QUI")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3500;
         }
 
         PRINT_n(("") + ("ARE YOU SURE YOU WANT TO QUIT (Y/N)"));
-        QU_s = (INPUT_s(""));
-        if ((((QU_s.CompareTo("N")) == (0)) ? (-1) : (0)) != (0))
+        quit = (INPUT_s(""));
+        if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) != (0))
         {
             goto L100;
         }
@@ -972,13 +972,13 @@ internal sealed class adventure
         L3430:
             ;
         PRINT_n(("") + ("WOULD YOU LIKE TO PLAY AGAIN (Y/N)"));
-        QU_s = (INPUT_s(""));
-        if ((((QU_s.CompareTo("Y")) == (0)) ? (-1) : (0)) != (0))
+        quit = (INPUT_s(""));
+        if ((((quit.CompareTo("Y")) == (0)) ? (-1) : (0)) != (0))
         {
             return 1;
         }
 
-        if ((((QU_s.CompareTo("N")) == (0)) ? (-1) : (0)) != (0))
+        if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) != (0))
         {
             return 2;
         }
@@ -986,12 +986,12 @@ internal sealed class adventure
         goto L3430;
         L3500:
             ;
-        if ((((V_s.CompareTo("REA")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("REA")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3700;
         }
 
-        if ((((N_s.CompareTo("DIA")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("DIA")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3560;
         }
@@ -1008,7 +1008,7 @@ internal sealed class adventure
         goto L100;
         L3560:
             ;
-        if ((((N_s.CompareTo("DIC")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("DIC")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3590;
         }
@@ -1024,7 +1024,7 @@ internal sealed class adventure
         goto L100;
         L3590:
             ;
-        if ((((N_s.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3620;
         }
@@ -1044,12 +1044,12 @@ internal sealed class adventure
         goto L100;
         L3700:
             ;
-        if ((((V_s.CompareTo("OPE")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("OPE")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3900;
         }
 
-        if ((((N_s.CompareTo("BOX")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("BOX")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3740;
         }
@@ -1065,7 +1065,7 @@ internal sealed class adventure
         goto L100;
         L3740:
             ;
-        if ((((N_s.CompareTo("CAB")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("CAB")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3770;
         }
@@ -1081,7 +1081,7 @@ internal sealed class adventure
         goto L100;
         L3770:
             ;
-        if ((((N_s.CompareTo("CAS")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("CAS")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3890;
         }
@@ -1108,12 +1108,12 @@ internal sealed class adventure
         goto L100;
         L3900:
             ;
-        if ((((V_s.CompareTo("POU")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("POU")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4100;
         }
 
-        if ((((N_s.CompareTo("SAL")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("SAL")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L3960;
         }
@@ -1140,7 +1140,7 @@ internal sealed class adventure
         goto L4010;
         L3960:
             ;
-        if ((((N_s.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T POUR THAT!"));
             goto L100;
@@ -1180,12 +1180,12 @@ internal sealed class adventure
         goto L90;
         L4100:
             ;
-        if ((((V_s.CompareTo("CLI")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("CLI")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4300;
         }
 
-        if ((((N_s.CompareTo("TRE")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("TRE")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4140;
         }
@@ -1200,7 +1200,7 @@ internal sealed class adventure
         goto L100;
         L4140:
             ;
-        if ((((N_s.CompareTo("LAD")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("LAD")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4290;
         }
@@ -1230,7 +1230,7 @@ internal sealed class adventure
         goto L100;
         L4300:
             ;
-        if ((((V_s.CompareTo("JUM")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("JUM")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4400;
         }
@@ -1258,12 +1258,12 @@ internal sealed class adventure
         goto L90;
         L4400:
             ;
-        if ((((V_s.CompareTo("DIG")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("DIG")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4500;
         }
 
-        if ((((int)(((int)(((N_s.CompareTo("HOL")) != (0)) ? (-1) : (0))) & ((int)(((N_s.CompareTo("GRO")) != (0)) ? (-1) : (0))))) & ((int)(((N_s.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((int)(((noun.CompareTo("HOL")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("GRO")) != (0)) ? (-1) : (0))))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("YOU CAN'T DIG THAT!"));
             goto L100;
@@ -1292,12 +1292,12 @@ internal sealed class adventure
         goto L100;
         L4500:
             ;
-        if ((((V_s.CompareTo("ROW")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("ROW")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4600;
         }
 
-        if ((((int)(((N_s.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((N_s.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((noun.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("HOW CAN YOU ROW THAT?"));
             goto L100;
@@ -1313,12 +1313,12 @@ internal sealed class adventure
         goto L100;
         L4600:
             ;
-        if ((((V_s.CompareTo("WAV")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("WAV")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4700;
         }
 
-        if ((((N_s.CompareTo("FAN")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("FAN")) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T WAVE THAT!"));
             goto L100;
@@ -1348,7 +1348,7 @@ internal sealed class adventure
         goto L100;
         L4700:
             ;
-        if ((((int)(((V_s.CompareTo("LEA")) != (0)) ? (-1) : (0))) & ((int)(((V_s.CompareTo("EXI")) != (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((verb.CompareTo("LEA")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("EXI")) != (0)) ? (-1) : (0)))) != (0))
         {
             goto L4800;
         }
@@ -1359,7 +1359,7 @@ internal sealed class adventure
             goto L100;
         }
 
-        if ((((int)(((N_s.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((N_s.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((noun.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("HUH?"));
             goto L100;
@@ -1369,18 +1369,18 @@ internal sealed class adventure
         goto L90;
         L4800:
             ;
-        if ((((V_s.CompareTo("FIG")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("FIG")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L4900;
         }
 
-        if ((((N_s.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("WHOM DO YOU WANT TO FIGHT?"));
             goto L100;
         }
 
-        if ((((N_s.CompareTo("GUA")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("GUA")) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T FIGHT HIM!"));
             goto L100;
@@ -1405,12 +1405,12 @@ internal sealed class adventure
         goto L100;
         L4900:
             ;
-        if ((((V_s.CompareTo("WEA")) != (0)) ? (-1) : (0)) != (0))
+        if ((((verb.CompareTo("WEA")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L5000;
         }
 
-        if ((((N_s.CompareTo("GLO")) != (0)) ? (-1) : (0)) != (0))
+        if ((((noun.CompareTo("GLO")) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T WEAR THAT!"));
             goto L100;
