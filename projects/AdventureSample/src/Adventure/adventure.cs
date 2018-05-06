@@ -421,7 +421,7 @@ internal sealed class adventure
         }
     }
 
-    private int PrintDirections()
+    private void PrintDirections()
     {
         PRINT_n(("") + ("YOU CAN GO: "));
         I_n = (0);
@@ -436,10 +436,9 @@ internal sealed class adventure
         }
 
         PRINT("");
-        return 0;
     }
 
-    private int PrintObjects()
+    private void PrintObjects()
     {
         PRINT(("") + ("YOU CAN SEE: "));
         FL_n = (0);
@@ -459,22 +458,19 @@ internal sealed class adventure
         {
             PRINT(("") + (" NOTHING OF INTEREST"));
         }
-
-        return 0;
     }
 
-    private int PrintDescription()
+    private void PrintDescription()
     {
         PRINT("");
         PRINT((("") + ("YOU ARE ")) + (roomDescriptions[(int)(currentRoom)]));
-        return 0;
     }
 
-    private int FindRoomForObject()
+    private void FindRoomForObject()
     {
         if ((((numberOfObjects.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
         {
-            return 0;
+            return;
         }
 
         I_n = (0);
@@ -491,7 +487,8 @@ internal sealed class adventure
         }
 
         FL_n = (0);
-        return 0;
+        return;
+
         L1050:
             ;
         RO_n = (objectRooms[(int)(I_n)]);
@@ -499,15 +496,13 @@ internal sealed class adventure
         {
             RO_n = ((RO_n) - (128));
         }
-
-        return 0;
     }
 
-    private int InitMap()
+    private void InitMap()
     {
         if ((((numberOfRooms.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
         {
-            return 0;
+            return;
         }
 
         directions[(int)(0)] = ("NORTH");
@@ -528,15 +523,13 @@ internal sealed class adventure
 
             I_n = ((I_n) + (1));
         }
-
-        return 0;
     }
 
-    private int InitObjects()
+    private void InitObjects()
     {
         if ((((numberOfObjects.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
         {
-            return 0;
+            return;
         }
 
         I_n = (0);
@@ -547,11 +540,9 @@ internal sealed class adventure
             objectRooms[(int)(I_n)] = (READ_n());
             I_n = ((I_n) + (1));
         }
-
-        return 0;
     }
 
-    private int InitDescriptions()
+    private void InitDescriptions()
     {
         roomDescriptions[(int)(1)] = ("IN YOUR LIVING ROOM.");
         roomDescriptions[(int)(2)] = ("IN THE KITCHEN.");
@@ -572,10 +563,9 @@ internal sealed class adventure
         roomDescriptions[(int)(17)] = ("IN A NARROW HALL.");
         roomDescriptions[(int)(18)] = ("IN A LARGE HALL.");
         roomDescriptions[(int)(19)] = ("ON THE TOP OF A TREE.");
-        return 0;
     }
 
-    private int PrintIntro()
+    private void PrintIntro()
     {
         PRINT(("") + ("ALL YOUR LIFE YOU HAD HEARD THE STORIES"));
         PRINT(("") + ("ABOUT YOUR CRAZY UNCLE SIMON. HE WAS AN"));
@@ -593,7 +583,6 @@ internal sealed class adventure
         PRINT(("") + ("THE INSTRUCTIONS FOR GOING THERE TO"));
         PRINT(("") + ("FIND IT."));
         A_n = (INPUT_n(""));
-        return 0;
     }
 
     private int Main()
@@ -617,29 +606,12 @@ internal sealed class adventure
         PRINT(("") + ("Please stand by .... "));
         PRINT("");
         PRINT("");
-        switch (InitMap())
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-        }
 
-        switch (InitObjects())
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-        }
+        InitMap();
 
-        switch (InitDescriptions())
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-        } // initialize arrays
+        InitObjects();
+
+        InitDescriptions();
 
         currentRoom = (1);
         inventoryItems = (0);
@@ -647,41 +619,18 @@ internal sealed class adventure
         formulaPoured = (0);
         mixtureCount = (1);
         wearingGloves = (0);
-        switch (PrintIntro())
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-        } // Execute introductory sequence, if any.
+
+        PrintIntro();
 
         CLS() // Put a statement here to clear the screen.
         ;
         L90:
-            ;
-        switch (PrintDescription())
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-        }
+        ;
+        PrintDescription();
 
-        switch (PrintDirections())
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-        }
+        PrintDirections();
 
-        switch (PrintObjects())
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-        }
+        PrintObjects();
 
         ; // 
         ; // *** PARSER
@@ -852,13 +801,7 @@ internal sealed class adventure
             goto L2600;
         }
 
-        switch (FindRoomForObject())
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-        }
+        FindRoomForObject();
 
         if ((((FL_n.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
         {
@@ -908,13 +851,7 @@ internal sealed class adventure
             goto L2700;
         }
 
-        switch (FindRoomForObject())
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-        }
+        FindRoomForObject();
 
         if ((((int)(((FL_n.CompareTo(0)) == (0)) ? (-1) : (0))) | ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
@@ -994,13 +931,8 @@ internal sealed class adventure
         L2940:
             ;
         ; // 
-        switch (FindRoomForObject())
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 2;
-        }
+
+        FindRoomForObject();
 
         if ((((int)(((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
