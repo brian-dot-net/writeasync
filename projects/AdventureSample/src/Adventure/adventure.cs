@@ -1326,30 +1326,29 @@ internal sealed class adventure
         if ((((noun.CompareTo("FAN")) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T WAVE THAT!"));
-            goto L100;
         }
-
-        if ((((int)(((objectRooms[(int)(12)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(12)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if ((((int)(((objectRooms[(int)(12)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(12)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("YOU DON'T HAVE THE FAN!"));
-            goto L100;
         }
-
-        if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU FEEL A REFRESHING BREEZE!"));
-            goto L100;
         }
-
-        PRINT(("") + ("A POWERFUL BREEZE PROPELS THE BOAT"));
-        PRINT(("") + ("TO THE OPPOSITE SHORE!"));
-        if ((((objectRooms[(int)(11)].CompareTo(140)) == (0)) ? (-1) : (0)) != (0))
+        else
         {
-            objectRooms[(int)(11)] = (142);
-            goto L100;
+            PRINT(("") + ("A POWERFUL BREEZE PROPELS THE BOAT"));
+            PRINT(("") + ("TO THE OPPOSITE SHORE!"));
+            if ((((objectRooms[(int)(11)].CompareTo(140)) == (0)) ? (-1) : (0)) != (0))
+            {
+                objectRooms[(int)(11)] = (142);
+            }
+            else
+            {
+                objectRooms[(int)(11)] = (140);
+            }
         }
 
-        objectRooms[(int)(11)] = (140);
         goto L100;
         L4700:
         ;
