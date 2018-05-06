@@ -924,10 +924,10 @@ internal sealed class adventure
             goto L3500;
         }
 
-        int ret = Quit();
-        if (ret != 0)
+        int q = Quit();
+        if (q != 0)
         {
-            return ret;
+            return q;
         }
 
         goto L100;
