@@ -917,42 +917,36 @@ internal sealed class adventure
         ;
         if ((((noun.CompareTo("GRO")) != (0)) ? (-1) : (0)) != (0))
         {
-            goto L2940;
-        }
+            FindRoomForObject();
 
-        if ((((currentRoom.CompareTo(6)) != (0)) ? (-1) : (0)) != (0))
+            if ((((int)(((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            {
+                PRINT(("") + ("IT'S NOT HERE!"));
+            }
+            else if ((((noun.CompareTo("BOT")) == (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("THERE'S SOMETHING WRITTEN ON IT!"));
+            }
+            else if ((((noun.CompareTo("CAS")) == (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("THERE'S A JEWEL INSIDE!"));
+            }
+            else if ((((noun.CompareTo("BAR")) == (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("IT'S FILLED WITH RAINWATER."));
+            }
+            else
+            {
+                PRINT(("") + ("YOU SEE NOTHING UNUSUAL."));
+            }
+        }
+        else if ((((currentRoom.CompareTo(6)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("IT LOOKS LIKE GROUND!"));
-            goto L100;
-        }
-
-        PRINT(("") + ("IT LOOKS LIKE SOMETHING'S BURIED HERE."));
-        goto L100;
-        L2940:
-        ;
-        ; // 
-
-        FindRoomForObject();
-
-        if ((((int)(((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("IT'S NOT HERE!"));
-        }
-        else if ((((noun.CompareTo("BOT")) == (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("THERE'S SOMETHING WRITTEN ON IT!"));
-        }
-        else if ((((noun.CompareTo("CAS")) == (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("THERE'S A JEWEL INSIDE!"));
-        }
-        else if ((((noun.CompareTo("BAR")) == (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("IT'S FILLED WITH RAINWATER."));
         }
         else
         {
-            PRINT(("") + ("YOU SEE NOTHING UNUSUAL."));
+            PRINT(("") + ("IT LOOKS LIKE SOMETHING'S BURIED HERE."));
         }
 
         goto L100;
