@@ -1072,37 +1072,33 @@ internal sealed class adventure
         ;
         if ((((noun.CompareTo("CAB")) != (0)) ? (-1) : (0)) != (0))
         {
-            goto L3770;
+            if ((((noun.CompareTo("CAS")) != (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("YOU CAN'T OPEN THAT!"));
+            }
+            else if ((((currentRoom.CompareTo(18)) != (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("THERE'S NO CASE HERE!"));
+            }
+            else if ((((wearingGloves.CompareTo(1)) != (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("THE CASE IS ELECTRIFIED!"));
+            }
+            else
+            {
+                PRINT(("") + ("THE GLOVES INSULATE AGAINST THE"));
+                PRINT(("") + ("ELECTRICITY! THE CASE OPENS!"));
+                objectRooms[(int)(15)] = (18);
+            }
         }
-
-        if ((((currentRoom.CompareTo(2)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((currentRoom.CompareTo(2)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THERE'S NO CABINET HERE!"));
-            goto L100;
-        }
-
-        PRINT(("") + ("THERE'S SOMETHING INSIDE!"));
-        objectRooms[(int)(3)] = (2);
-        goto L100;
-        L3770:
-        ;
-        if ((((noun.CompareTo("CAS")) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU CAN'T OPEN THAT!"));
-        }
-        else if ((((currentRoom.CompareTo(18)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("THERE'S NO CASE HERE!"));
-        }
-        else if ((((wearingGloves.CompareTo(1)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("THE CASE IS ELECTRIFIED!"));
         }
         else
         {
-            PRINT(("") + ("THE GLOVES INSULATE AGAINST THE"));
-            PRINT(("") + ("ELECTRICITY! THE CASE OPENS!"));
-            objectRooms[(int)(15)] = (18);
+            PRINT(("") + ("THERE'S SOMETHING INSIDE!"));
+            objectRooms[(int)(3)] = (2);
         }
 
         goto L100;
