@@ -1242,51 +1242,45 @@ internal sealed class adventure
 
     private bool PourFormula()
     {
-        bool ret;
         if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU CAN'T POUR THAT!"));
-            ret = false;
+            return false;
         }
         else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("YOU DON'T HAVE THE BOTTLE!"));
-            ret = false;
+            return false;
         }
         else if ((((formulaPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THE BOTTLE IS EMPTY!"));
-            ret = false;
+            return false;
         }
         else
         {
             formulaPoured = (1);
-            ret = true;
+            return true;
         }
-
-        return ret;
     }
 
     private bool PourSalt()
     {
-        bool ret;
         if ((((int)(((objectRooms[(int)(3)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(3)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("YOU DON'T HAVE THE SALT!"));
-            ret = false;
+            return false;
         }
         else if ((((saltPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THE SHAKER IS EMPTY!"));
-            ret = false;
+            return false;
         }
         else
         {
             saltPoured = (1);
-            ret = true;
+            return true;
         }
-
-        return ret;
     }
 
     private bool PourMixture()
