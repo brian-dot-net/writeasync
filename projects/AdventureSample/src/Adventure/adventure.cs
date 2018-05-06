@@ -801,42 +801,7 @@ internal sealed class adventure
             goto L2600;
         }
 
-        FindRoomForObject();
-
-        bool ret = false;
-        if ((((FL_n.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU CAN'T GET THAT!"));
-        }
-        else if ((((RO_n.CompareTo(-(1))) == (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU ALREADY HAVE IT!"));
-        }
-        else if ((((objectRooms[(int)(I_n)].CompareTo(127)) > (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU CAN'T GET THAT!"));
-        }
-        else if ((((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("THAT'S NOT HERE!"));
-        }
-        else if ((((inventoryItems.CompareTo(maxInventoryItems)) > (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("YOU CAN'T CARRY ANY MORE."));
-        }
-        else if ((((int)(((currentRoom.CompareTo(18)) == (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("RUB")) == (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("CONGRATULATIONS! YOU'VE WON!"));
-            ret = true;
-        }
-        else
-        {
-            inventoryItems = ((inventoryItems) + (1));
-            objectRooms[(int)(I_n)] = (-(1));
-            PRINT(("") + ("TAKEN."));
-        }
-
-        if (ret)
+        if (Get())
         {
             return PlayAgain();
         }
@@ -1029,6 +994,46 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private bool Get()
+    {
+        FindRoomForObject();
+
+        bool ret = false;
+        if ((((FL_n.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("YOU CAN'T GET THAT!"));
+        }
+        else if ((((RO_n.CompareTo(-(1))) == (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("YOU ALREADY HAVE IT!"));
+        }
+        else if ((((objectRooms[(int)(I_n)].CompareTo(127)) > (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("YOU CAN'T GET THAT!"));
+        }
+        else if ((((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("THAT'S NOT HERE!"));
+        }
+        else if ((((inventoryItems.CompareTo(maxInventoryItems)) > (0)) ? (-1) : (0)) != (0))
+        {
+            PRINT(("") + ("YOU CAN'T CARRY ANY MORE."));
+        }
+        else if ((((int)(((currentRoom.CompareTo(18)) == (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("RUB")) == (0)) ? (-1) : (0)))) != (0))
+        {
+            PRINT(("") + ("CONGRATULATIONS! YOU'VE WON!"));
+            ret = true;
+        }
+        else
+        {
+            inventoryItems = ((inventoryItems) + (1));
+            objectRooms[(int)(I_n)] = (-(1));
+            PRINT(("") + ("TAKEN."));
+        }
+
+        return ret;
     }
 
     private void Drop()
