@@ -763,22 +763,27 @@ internal sealed class adventure
             goto L100;
         }
 
+        bool ret = false;
         if ((((int)(((map[(int)(currentRoom), (int)(DI_n)].CompareTo(0)) > (0)) ? (-1) : (0))) & ((int)(((map[(int)(currentRoom), (int)(DI_n)].CompareTo(128)) < (0)) ? (-1) : (0)))) != (0))
         {
             currentRoom = (map[(int)(currentRoom), (int)(DI_n)]);
-            goto L90;
+            ret = true;
         }
-
-        if ((((map[(int)(currentRoom), (int)(DI_n)].CompareTo(128)) == (0)) ? (-1) : (0)) != (0))
+        else if ((((map[(int)(currentRoom), (int)(DI_n)].CompareTo(128)) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THE GUARD WON'T LET YOU!"));
-            goto L100;
         }
         else
         {
             PRINT(("") + ("YOU CAN'T GO THERE!"));
-            goto L100;
         }
+
+        if (ret)
+        {
+            goto L90;
+        }
+
+        goto L100;
 
         L2500:
         ;
