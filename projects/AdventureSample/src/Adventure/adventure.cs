@@ -1106,15 +1106,14 @@ internal sealed class adventure
 
     private int Quit()
     {
-        int ret = 0;
         PRINT_n(("") + ("ARE YOU SURE YOU WANT TO QUIT (Y/N)"));
         quit = (INPUT_s(""));
         if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) == (0))
         {
-            ret = PlayAgain();
+            return PlayAgain();
         }
 
-        return ret;
+        return 0;
     }
 
     private int PlayAgain()
