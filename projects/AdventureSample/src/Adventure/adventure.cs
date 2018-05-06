@@ -998,44 +998,40 @@ internal sealed class adventure
 
         if ((((noun.CompareTo("DIA")) != (0)) ? (-1) : (0)) != (0))
         {
-            goto L3560;
-        }
-
-        if ((((int)(((objectRooms[(int)(0)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(0)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("THERE'S NO DIARY HERE!"));
-            goto L100;
-        }
-
-        PRINT(("") + ("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE"));
-        PRINT(("") + ("FORMULA TO RAINWATER, TO REACH THE"));
-        PRINT(("") + ("OTHER WORLD.' "));
-        goto L100;
-        L3560:
-        ;
-        if ((((noun.CompareTo("DIC")) != (0)) ? (-1) : (0)) != (0))
-        {
-            if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
+            if ((((noun.CompareTo("DIC")) != (0)) ? (-1) : (0)) != (0))
             {
-                PRINT(("") + ("YOU CAN'T READ THAT!"));
+                if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
+                {
+                    PRINT(("") + ("YOU CAN'T READ THAT!"));
+                }
+                else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+                {
+                    PRINT(("") + ("THERE'S NO BOTTLE HERE!"));
+                }
+                else
+                {
+                    PRINT(("") + ("IT READS: 'SECRET FORMULA'."));
+                }
             }
-            else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            else if ((((int)(((objectRooms[(int)(4)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(4)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
             {
-                PRINT(("") + ("THERE'S NO BOTTLE HERE!"));
+                PRINT(("") + ("YOU DON'T SEE A DICTIONARY!"));
             }
             else
             {
-                PRINT(("") + ("IT READS: 'SECRET FORMULA'."));
+                PRINT(("") + ("IT SAYS: SODIUM CHLORIDE IS"));
+                PRINT(("") + ("COMMON TABLE SALT."));
             }
         }
-        else if ((((int)(((objectRooms[(int)(4)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(4)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if ((((int)(((objectRooms[(int)(0)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(0)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
-            PRINT(("") + ("YOU DON'T SEE A DICTIONARY!"));
+            PRINT(("") + ("THERE'S NO DIARY HERE!"));
         }
         else
         {
-            PRINT(("") + ("IT SAYS: SODIUM CHLORIDE IS"));
-            PRINT(("") + ("COMMON TABLE SALT."));
+            PRINT(("") + ("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE"));
+            PRINT(("") + ("FORMULA TO RAINWATER, TO REACH THE"));
+            PRINT(("") + ("OTHER WORLD.' "));
         }
 
         goto L100;
