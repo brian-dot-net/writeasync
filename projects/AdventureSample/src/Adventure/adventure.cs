@@ -975,20 +975,21 @@ internal sealed class adventure
         }
 
         L3430:
-        ;
-        PRINT_n(("") + ("WOULD YOU LIKE TO PLAY AGAIN (Y/N)"));
-        quit = (INPUT_s(""));
-        if ((((quit.CompareTo("Y")) == (0)) ? (-1) : (0)) != (0))
+        while (true)
         {
-            return 1;
+            PRINT_n(("") + ("WOULD YOU LIKE TO PLAY AGAIN (Y/N)"));
+            quit = (INPUT_s(""));
+            if ((((quit.CompareTo("Y")) == (0)) ? (-1) : (0)) != (0))
+            {
+                return 1;
+            }
+
+            if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) != (0))
+            {
+                return 2;
+            }
         }
 
-        if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) != (0))
-        {
-            return 2;
-        }
-
-        goto L3430;
         L3500:
         ;
         if ((((verb.CompareTo("REA")) != (0)) ? (-1) : (0)) != (0))
