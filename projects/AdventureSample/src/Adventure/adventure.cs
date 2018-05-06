@@ -1192,47 +1192,36 @@ internal sealed class adventure
 
         if ((((noun.CompareTo("TRE")) != (0)) ? (-1) : (0)) != (0))
         {
-            goto L4140;
+            if ((((noun.CompareTo("LAD")) != (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("IT WON'T DO ANY GOOD."));
+            }
+            else if ((((int)(((objectRooms[(int)(7)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(7)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            {
+                PRINT(("") + ("YOU DON'T HAVE THE LADDER!"));
+            }
+            else if ((((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0)) != (0))
+            {
+                PRINT(("") + ("WHATEVER FOR?"));
+            }
+            else
+            {
+                PRINT(("") + ("THE LADDER SINKS UNDER YOUR WEIGHT!"));
+                PRINT(("") + ("IT DISAPPEARS INTO THE GROUND!"));
+                objectRooms[(int)(7)] = (0);
+            }
         }
-
-        if ((((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THERE'S NO TREE HERE!"));
-            goto L100;
         }
-
-        PRINT(("") + ("YOU CAN'T REACH THE BRANCHES!"));
-        goto L100;
-        L4140:
-        ;
-        if ((((noun.CompareTo("LAD")) != (0)) ? (-1) : (0)) != (0))
+        else
         {
-            goto L4290;
+            PRINT(("") + ("YOU CAN'T REACH THE BRANCHES!"));
         }
 
-        if ((((int)(((objectRooms[(int)(7)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(7)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-        {
-            PRINT(("") + ("YOU DON'T HAVE THE LADDER!"));
-            goto L100;
-        }
+        goto L100;
 
-        if ((((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L4180;
-        }
-
-        PRINT(("") + ("THE LADDER SINKS UNDER YOUR WEIGHT!"));
-        PRINT(("") + ("IT DISAPPEARS INTO THE GROUND!"));
-        objectRooms[(int)(7)] = (0);
-        goto L100;
-        L4180:
-        ;
-        PRINT(("") + ("WHATEVER FOR?"));
-        goto L100;
-        L4290:
-        ;
-        PRINT(("") + ("IT WON'T DO ANY GOOD."));
-        goto L100;
         L4300:
         ;
         if ((((verb.CompareTo("JUM")) != (0)) ? (-1) : (0)) != (0))
