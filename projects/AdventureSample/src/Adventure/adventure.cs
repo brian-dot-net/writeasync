@@ -937,29 +937,26 @@ internal sealed class adventure
         if ((((int)(((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("IT'S NOT HERE!"));
-            goto L100;
         }
-
-        if ((((noun.CompareTo("BOT")) == (0)) ? (-1) : (0)) != (0))
+        else if ((((noun.CompareTo("BOT")) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THERE'S SOMETHING WRITTEN ON IT!"));
-            goto L100;
         }
-
-        if ((((noun.CompareTo("CAS")) == (0)) ? (-1) : (0)) != (0))
+        else if ((((noun.CompareTo("CAS")) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THERE'S A JEWEL INSIDE!"));
-            goto L100;
         }
-
-        if ((((noun.CompareTo("BAR")) == (0)) ? (-1) : (0)) != (0))
+        else if ((((noun.CompareTo("BAR")) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("IT'S FILLED WITH RAINWATER."));
-            goto L100;
+        }
+        else
+        {
+            PRINT(("") + ("YOU SEE NOTHING UNUSUAL."));
         }
 
-        PRINT(("") + ("YOU SEE NOTHING UNUSUAL."));
         goto L100;
+
         L3400:
         ;
         if ((((verb.CompareTo("QUI")) != (0)) ? (-1) : (0)) != (0))
