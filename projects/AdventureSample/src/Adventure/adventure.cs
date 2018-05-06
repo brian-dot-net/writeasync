@@ -1172,17 +1172,28 @@ internal sealed class adventure
         PRINT(("") + ("POURED!"));
         L4010:
         ;
+        bool ret;
         if ((((mixtureCount.CompareTo(3)) < (0)) ? (-1) : (0)) != (0))
         {
-            goto L100;
+            ret = false;
+        }
+        else
+        {
+            PRINT(("") + ("THERE IS AN EXPLOSION!"));
+            PRINT(("") + ("EVERYTHING GOES BLACK!"));
+            PRINT(("") + ("SUDDENLY YOU ARE ... "));
+            PRINT(("") + (" ... SOMEWHERE ELSE!"));
+            currentRoom = (6);
+            ret = true;
         }
 
-        PRINT(("") + ("THERE IS AN EXPLOSION!"));
-        PRINT(("") + ("EVERYTHING GOES BLACK!"));
-        PRINT(("") + ("SUDDENLY YOU ARE ... "));
-        PRINT(("") + (" ... SOMEWHERE ELSE!"));
-        currentRoom = (6);
-        goto L90;
+        if (ret)
+        {
+            goto L90;
+        }
+
+        goto L100;
+
         L4100:
         ;
         if ((((verb.CompareTo("CLI")) != (0)) ? (-1) : (0)) != (0))
