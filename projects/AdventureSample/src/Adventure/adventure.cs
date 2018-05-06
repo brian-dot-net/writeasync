@@ -1379,6 +1379,28 @@ internal sealed class adventure
             goto L4900;
         }
 
+        Fight();
+        goto L100;
+
+        L4900:
+        ;
+        if ((((verb.CompareTo("WEA")) != (0)) ? (-1) : (0)) != (0))
+        {
+            goto L5000;
+        }
+
+        Wear();
+        goto L100;
+
+        L5000:
+        ;
+        ; // 
+        PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
+        goto L100;
+    }
+
+    private void Fight()
+    {
         if ((((noun.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("WHOM DO YOU WANT TO FIGHT?"));
@@ -1402,24 +1424,6 @@ internal sealed class adventure
             map[(int)(16), (int)(0)] = (17);
             objectRooms[(int)(13)] = (0);
         }
-
-        goto L100;
-
-        L4900:
-        ;
-        if ((((verb.CompareTo("WEA")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L5000;
-        }
-
-        Wear();
-        goto L100;
-
-        L5000:
-        ;
-        ; // 
-        PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
-        goto L100;
     }
 
     private void Wear()
