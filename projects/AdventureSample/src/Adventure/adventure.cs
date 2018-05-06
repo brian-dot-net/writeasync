@@ -891,7 +891,7 @@ internal sealed class adventure
         }
 
         goto L100;
-        ; // *** 'LOOK' ROUTINE
+
         L2800:
         ;
         if ((((int)(((verb.CompareTo("LOO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("L")) != (0)) ? (-1) : (0)))) != (0))
@@ -899,13 +899,12 @@ internal sealed class adventure
             goto L2900;
         }
 
-        if ((((noun.CompareTo("")) != (0)) ? (-1) : (0)) != (0))
+        if (Look())
         {
-            Examine();
-            goto L100;
+            goto L90;
         }
 
-        goto L90;
+        goto L100;
 
         L2900:
         ;
@@ -1059,6 +1058,18 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private bool Look()
+    {
+        bool ret = true;
+        if ((((noun.CompareTo("")) != (0)) ? (-1) : (0)) != (0))
+        {
+            Examine();
+            ret = false;
+        }
+
+        return ret;
     }
 
     private void Examine()
