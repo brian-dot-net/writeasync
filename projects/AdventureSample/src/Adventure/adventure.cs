@@ -731,44 +731,38 @@ internal sealed class adventure
         if ((((noun.CompareTo("NOR")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (0);
-            goto L2400;
         }
-
-        if ((((noun.CompareTo("SOU")) == (0)) ? (-1) : (0)) != (0))
+        else if ((((noun.CompareTo("SOU")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (1);
-            goto L2400;
         }
-
-        if ((((noun.CompareTo("EAS")) == (0)) ? (-1) : (0)) != (0))
+        else if ((((noun.CompareTo("EAS")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (2);
-            goto L2400;
         }
-
-        if ((((noun.CompareTo("WES")) == (0)) ? (-1) : (0)) != (0))
+        else if ((((noun.CompareTo("WES")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (3);
-            goto L2400;
         }
-
-        if ((((noun.CompareTo("UP")) == (0)) ? (-1) : (0)) != (0))
+        else if ((((noun.CompareTo("UP")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (4);
-            goto L2400;
         }
-
-        if ((((noun.CompareTo("DOW")) == (0)) ? (-1) : (0)) != (0))
+        else if ((((noun.CompareTo("DOW")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = (5);
-            goto L2400;
         }
-
-        if ((((int)(((noun.CompareTo("BOA")) == (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(11)].CompareTo((currentRoom) + (128))) == (0)) ? (-1) : (0)))) != (0))
+        else if ((((int)(((noun.CompareTo("BOA")) == (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(11)].CompareTo((currentRoom) + (128))) == (0)) ? (-1) : (0)))) != (0))
         {
             currentRoom = (13);
             goto L90;
         }
+        else
+        {
+            goto L2390;
+        }
+
+        goto L2400;
 
         L2390:
         ;
