@@ -1271,30 +1271,27 @@ internal sealed class adventure
         if ((((int)(((int)(((noun.CompareTo("HOL")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("GRO")) != (0)) ? (-1) : (0))))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("YOU CAN'T DIG THAT!"));
-            goto L100;
         }
-
-        if ((((int)(((objectRooms[(int)(8)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(8)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if ((((int)(((objectRooms[(int)(8)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(8)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("YOU DON'T HAVE A SHOVEL!"));
-            goto L100;
         }
-
-        if ((((currentRoom.CompareTo(6)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((currentRoom.CompareTo(6)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("YOU DON'T FIND ANYTHING."));
-            goto L100;
         }
-
-        if ((((objectRooms[(int)(10)].CompareTo(0)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((objectRooms[(int)(10)].CompareTo(0)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THERE'S NOTHING ELSE THERE!"));
-            goto L100;
+        }
+        else
+        {
+            PRINT(("") + ("THERE'S SOMETHING THERE!"));
+            objectRooms[(int)(10)] = (6);
         }
 
-        PRINT(("") + ("THERE'S SOMETHING THERE!"));
-        objectRooms[(int)(10)] = (6);
         goto L100;
+
         L4500:
         ;
         if ((((verb.CompareTo("ROW")) != (0)) ? (-1) : (0)) != (0))
