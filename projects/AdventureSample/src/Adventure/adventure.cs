@@ -1146,7 +1146,7 @@ internal sealed class adventure
             goto L100;
         }
 
-        if ((((int)(((OB_na[(int)(6)].CompareTo(R_n)) != (0)) ? (-1) : (0))) & ((int)(((OB_na[(int)(3)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((OB_na[(int)(6)].CompareTo(R_n)) != (0)) ? (-1) : (0))) & ((int)(((OB_na[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("YOU DON'T HAVE THE BOTTLE!"));
             goto L100;
