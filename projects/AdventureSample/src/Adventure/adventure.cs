@@ -1088,29 +1088,25 @@ internal sealed class adventure
         ;
         if ((((noun.CompareTo("CAS")) != (0)) ? (-1) : (0)) != (0))
         {
-            goto L3890;
+            PRINT(("") + ("YOU CAN'T OPEN THAT!"));
         }
-
-        if ((((currentRoom.CompareTo(18)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((currentRoom.CompareTo(18)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THERE'S NO CASE HERE!"));
-            goto L100;
         }
-
-        if ((((wearingGloves.CompareTo(1)) != (0)) ? (-1) : (0)) != (0))
+        else if ((((wearingGloves.CompareTo(1)) != (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THE CASE IS ELECTRIFIED!"));
-            goto L100;
+        }
+        else
+        {
+            PRINT(("") + ("THE GLOVES INSULATE AGAINST THE"));
+            PRINT(("") + ("ELECTRICITY! THE CASE OPENS!"));
+            objectRooms[(int)(15)] = (18);
         }
 
-        PRINT(("") + ("THE GLOVES INSULATE AGAINST THE"));
-        PRINT(("") + ("ELECTRICITY! THE CASE OPENS!"));
-        objectRooms[(int)(15)] = (18);
         goto L100;
-        L3890:
-        ;
-        PRINT(("") + ("YOU CAN'T OPEN THAT!"));
-        goto L100;
+
         L3900:
         ;
         if ((((verb.CompareTo("POU")) != (0)) ? (-1) : (0)) != (0))
