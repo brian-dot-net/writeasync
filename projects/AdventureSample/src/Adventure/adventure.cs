@@ -1031,22 +1031,19 @@ internal sealed class adventure
         ;
         if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
         {
-            goto L3620;
+            PRINT(("") + ("YOU CAN'T READ THAT!"));
         }
-
-        if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
         {
             PRINT(("") + ("THERE'S NO BOTTLE HERE!"));
-            goto L100;
+        }
+        else
+        {
+            PRINT(("") + ("IT READS: 'SECRET FORMULA'."));
         }
 
-        PRINT(("") + ("IT READS: 'SECRET FORMULA'."));
         goto L100;
-        L3620:
-        ;
-        ; // 
-        PRINT(("") + ("YOU CAN'T READ THAT!"));
-        goto L100;
+
         L3700:
         ;
         if ((((verb.CompareTo("OPE")) != (0)) ? (-1) : (0)) != (0))
