@@ -421,7 +421,7 @@ internal sealed class adventure
         }
     }
 
-    private int Sub_500()
+    private int PrintDirections()
     {
         PRINT_n(("") + ("YOU CAN GO: "));
         I_n = (0);
@@ -439,7 +439,7 @@ internal sealed class adventure
         return 0;
     }
 
-    private int Sub_600()
+    private int PrintObjects()
     {
         PRINT(("") + ("YOU CAN SEE: "));
         FL_n = (0);
@@ -463,14 +463,14 @@ internal sealed class adventure
         return 0;
     }
 
-    private int Sub_700()
+    private int PrintDescription()
     {
         PRINT("");
         PRINT((("") + ("YOU ARE ")) + (roomDescriptions[(int)(currentRoom)]));
         return 0;
     }
 
-    private int Sub_1000()
+    private int FindRoomForObject()
     {
         if ((((numberOfObjects.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
         {
@@ -503,7 +503,7 @@ internal sealed class adventure
         return 0;
     }
 
-    private int Sub_25000()
+    private int InitMap()
     {
         if ((((numberOfRooms.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
         {
@@ -532,7 +532,7 @@ internal sealed class adventure
         return 0;
     }
 
-    private int Sub_26000()
+    private int InitObjects()
     {
         if ((((numberOfObjects.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
         {
@@ -551,7 +551,7 @@ internal sealed class adventure
         return 0;
     }
 
-    private int Sub_27000()
+    private int InitDescriptions()
     {
         roomDescriptions[(int)(1)] = ("IN YOUR LIVING ROOM.");
         roomDescriptions[(int)(2)] = ("IN THE KITCHEN.");
@@ -575,7 +575,7 @@ internal sealed class adventure
         return 0;
     }
 
-    private int Sub_30000()
+    private int PrintIntro()
     {
         PRINT(("") + ("ALL YOUR LIFE YOU HAD HEARD THE STORIES"));
         PRINT(("") + ("ABOUT YOUR CRAZY UNCLE SIMON. HE WAS AN"));
@@ -617,7 +617,7 @@ internal sealed class adventure
         PRINT(("") + ("Please stand by .... "));
         PRINT("");
         PRINT("");
-        switch (Sub_25000())
+        switch (InitMap())
         {
             case 1:
                 return 1;
@@ -625,7 +625,7 @@ internal sealed class adventure
                 return 2;
         }
 
-        switch (Sub_26000())
+        switch (InitObjects())
         {
             case 1:
                 return 1;
@@ -633,7 +633,7 @@ internal sealed class adventure
                 return 2;
         }
 
-        switch (Sub_27000())
+        switch (InitDescriptions())
         {
             case 1:
                 return 1;
@@ -647,7 +647,7 @@ internal sealed class adventure
         formulaPoured = (0);
         mixtureCount = (1);
         wearingGloves = (0);
-        switch (Sub_30000())
+        switch (PrintIntro())
         {
             case 1:
                 return 1;
@@ -659,7 +659,7 @@ internal sealed class adventure
         ;
         L90:
             ;
-        switch (Sub_700())
+        switch (PrintDescription())
         {
             case 1:
                 return 1;
@@ -667,7 +667,7 @@ internal sealed class adventure
                 return 2;
         }
 
-        switch (Sub_500())
+        switch (PrintDirections())
         {
             case 1:
                 return 1;
@@ -675,7 +675,7 @@ internal sealed class adventure
                 return 2;
         }
 
-        switch (Sub_600())
+        switch (PrintObjects())
         {
             case 1:
                 return 1;
@@ -852,7 +852,7 @@ internal sealed class adventure
             goto L2600;
         }
 
-        switch (Sub_1000())
+        switch (FindRoomForObject())
         {
             case 1:
                 return 1;
@@ -908,7 +908,7 @@ internal sealed class adventure
             goto L2700;
         }
 
-        switch (Sub_1000())
+        switch (FindRoomForObject())
         {
             case 1:
                 return 1;
@@ -994,7 +994,7 @@ internal sealed class adventure
         L2940:
             ;
         ; // 
-        switch (Sub_1000())
+        switch (FindRoomForObject())
         {
             case 1:
                 return 1;
