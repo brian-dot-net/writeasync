@@ -901,11 +901,12 @@ internal sealed class adventure
 
         if ((((noun.CompareTo("")) != (0)) ? (-1) : (0)) != (0))
         {
-            goto L2910;
+            Examine();
+            goto L100;
         }
 
         goto L90;
-        ; // *** 'EXAMINE' ROUTINE
+
         L2900:
         ;
         if ((((verb.CompareTo("EXA")) != (0)) ? (-1) : (0)) != (0))
@@ -913,8 +914,6 @@ internal sealed class adventure
             goto L3400;
         }
 
-        L2910:
-        ;
         Examine();
         goto L100;
 
