@@ -975,20 +975,7 @@ internal sealed class adventure
         }
 
         L3430:
-        while (true)
-        {
-            PRINT_n(("") + ("WOULD YOU LIKE TO PLAY AGAIN (Y/N)"));
-            quit = (INPUT_s(""));
-            if ((((quit.CompareTo("Y")) == (0)) ? (-1) : (0)) != (0))
-            {
-                return 1;
-            }
-
-            if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) != (0))
-            {
-                return 2;
-            }
-        }
+        return PlayAgain();
 
         L3500:
         ;
@@ -1117,6 +1104,24 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private int PlayAgain()
+    {
+        while (true)
+        {
+            PRINT_n(("") + ("WOULD YOU LIKE TO PLAY AGAIN (Y/N)"));
+            quit = (INPUT_s(""));
+            if ((((quit.CompareTo("Y")) == (0)) ? (-1) : (0)) != (0))
+            {
+                return 1;
+            }
+
+            if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) != (0))
+            {
+                return 2;
+            }
+        }
     }
 
     private void Read()
