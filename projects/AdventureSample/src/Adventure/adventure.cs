@@ -634,7 +634,7 @@ internal sealed class adventure
         {
             Parser();
 
-            if ((((verb.CompareTo("GO")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "GO")
             {
                 goto L2500;
             }
@@ -647,8 +647,7 @@ internal sealed class adventure
             continue;
 
             L2500:
-            ;
-            if ((((int)(((verb.CompareTo("GET")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("TAK")) != (0)) ? (-1) : (0)))) != (0))
+            if ((verb != "GET") && (verb != "TAK"))
             {
                 goto L2600;
             }
@@ -661,8 +660,7 @@ internal sealed class adventure
             continue;
 
             L2600:
-            ;
-            if ((((int)(((verb.CompareTo("DRO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("THR")) != (0)) ? (-1) : (0)))) != (0))
+            if ((verb != "DRO") && (verb != "THR"))
             {
                 goto L2700;
             }
@@ -671,8 +669,7 @@ internal sealed class adventure
             continue;
 
             L2700:
-            ;
-            if ((((int)(((verb.CompareTo("INV")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("I")) != (0)) ? (-1) : (0)))) != (0))
+            if ((verb != "INV") && (verb != "I"))
             {
                 goto L2800;
             }
@@ -681,8 +678,7 @@ internal sealed class adventure
             continue;
 
             L2800:
-            ;
-            if ((((int)(((verb.CompareTo("LOO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("L")) != (0)) ? (-1) : (0)))) != (0))
+            if ((verb != "LOO") && (verb != "L"))
             {
                 goto L2900;
             }
@@ -695,8 +691,7 @@ internal sealed class adventure
             continue;
 
             L2900:
-            ;
-            if ((((verb.CompareTo("EXA")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "EXA")
             {
                 goto L3400;
             }
@@ -705,8 +700,7 @@ internal sealed class adventure
             continue;
 
             L3400:
-            ;
-            if ((((verb.CompareTo("QUI")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "QUI")
             {
                 goto L3500;
             }
@@ -720,8 +714,7 @@ internal sealed class adventure
             continue;
 
             L3500:
-            ;
-            if ((((verb.CompareTo("REA")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "REA")
             {
                 goto L3700;
             }
@@ -730,8 +723,7 @@ internal sealed class adventure
             continue;
 
             L3700:
-            ;
-            if ((((verb.CompareTo("OPE")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "OPE")
             {
                 goto L3900;
             }
@@ -740,8 +732,7 @@ internal sealed class adventure
             continue;
 
             L3900:
-            ;
-            if ((((verb.CompareTo("POU")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "POU")
             {
                 goto L4100;
             }
@@ -754,8 +745,7 @@ internal sealed class adventure
             continue;
 
             L4100:
-            ;
-            if ((((verb.CompareTo("CLI")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "CLI")
             {
                 goto L4300;
             }
@@ -764,8 +754,7 @@ internal sealed class adventure
             continue;
 
             L4300:
-            ;
-            if ((((verb.CompareTo("JUM")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "JUM")
             {
                 goto L4400;
             }
@@ -778,8 +767,7 @@ internal sealed class adventure
             continue;
 
             L4400:
-            ;
-            if ((((verb.CompareTo("DIG")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "DIG")
             {
                 goto L4500;
             }
@@ -788,8 +776,7 @@ internal sealed class adventure
             continue;
 
             L4500:
-            ;
-            if ((((verb.CompareTo("ROW")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "ROW")
             {
                 goto L4600;
             }
@@ -798,8 +785,7 @@ internal sealed class adventure
             continue;
 
             L4600:
-            ;
-            if ((((verb.CompareTo("WAV")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "WAV")
             {
                 goto L4700;
             }
@@ -808,8 +794,7 @@ internal sealed class adventure
             continue;
 
             L4700:
-            ;
-            if ((((int)(((verb.CompareTo("LEA")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("EXI")) != (0)) ? (-1) : (0)))) != (0))
+            if ((verb != "LEA") && (verb != "EXI"))
             {
                 goto L4800;
             }
@@ -822,8 +807,7 @@ internal sealed class adventure
             continue;
 
             L4800:
-            ;
-            if ((((verb.CompareTo("FIG")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "FIG")
             {
                 goto L4900;
             }
@@ -832,8 +816,7 @@ internal sealed class adventure
             continue;
 
             L4900:
-            ;
-            if ((((verb.CompareTo("WEA")) != (0)) ? (-1) : (0)) != (0))
+            if (verb != "WEA")
             {
                 goto L5000;
             }
