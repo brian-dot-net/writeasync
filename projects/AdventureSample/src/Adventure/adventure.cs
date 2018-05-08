@@ -636,71 +636,7 @@ internal sealed class adventure
         L100:
         ;
 
-        do
-        {
-            PRINT("");
-            command = ("");
-            command = (INPUT_s("WHAT NOW"));
-        }
-        while (command == "");
-
-        C_n = (0);
-        verb = ("");
-        noun = ("");
-
-        while (true)
-        {
-            C_n = ((C_n) + (1));
-            if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
-            {
-                break;
-            }
-
-            wordPart = (MID_s(command, (int)(C_n), (int)(1)));
-            if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
-            {
-                break;
-            }
-
-            verb = ((verb) + (wordPart));
-        }
-
-        while (true)
-        {
-            C_n = ((C_n) + (1));
-            if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
-            {
-                break;
-            }
-
-            wordPart = (MID_s(command, (int)(C_n), (int)(1)));
-            if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
-            {
-                break;
-            }
-
-            noun = ((noun) + (wordPart));
-        }
-
-        if ((((verb.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
-        {
-            verb = (LEFT_s(verb, (int)(3)));
-        }
-
-        if ((((noun.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
-        {
-            noun = (LEFT_s(noun, (int)(3)));
-        }
-
-        if ((((noun.CompareTo("SHA")) == (0)) ? (-1) : (0)) != (0))
-        {
-            noun = ("SAL");
-        }
-
-        if ((((noun.CompareTo("FOR")) == (0)) ? (-1) : (0)) != (0))
-        {
-            noun = ("BOT");
-        }
+        Parser();
 
         if ((((verb.CompareTo("GO")) != (0)) ? (-1) : (0)) != (0))
         {
@@ -914,6 +850,75 @@ internal sealed class adventure
         ; // 
         PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         goto L100;
+    }
+
+    private void Parser()
+    {
+        do
+        {
+            PRINT("");
+            command = ("");
+            command = (INPUT_s("WHAT NOW"));
+        }
+        while (command == "");
+
+        C_n = (0);
+        verb = ("");
+        noun = ("");
+
+        while (true)
+        {
+            C_n = ((C_n) + (1));
+            if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
+            {
+                break;
+            }
+
+            wordPart = (MID_s(command, (int)(C_n), (int)(1)));
+            if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
+            {
+                break;
+            }
+
+            verb = ((verb) + (wordPart));
+        }
+
+        while (true)
+        {
+            C_n = ((C_n) + (1));
+            if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
+            {
+                break;
+            }
+
+            wordPart = (MID_s(command, (int)(C_n), (int)(1)));
+            if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
+            {
+                break;
+            }
+
+            noun = ((noun) + (wordPart));
+        }
+
+        if ((((verb.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
+        {
+            verb = (LEFT_s(verb, (int)(3)));
+        }
+
+        if ((((noun.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
+        {
+            noun = (LEFT_s(noun, (int)(3)));
+        }
+
+        if ((((noun.CompareTo("SHA")) == (0)) ? (-1) : (0)) != (0))
+        {
+            noun = ("SAL");
+        }
+
+        if ((((noun.CompareTo("FOR")) == (0)) ? (-1) : (0)) != (0))
+        {
+            noun = ("BOT");
+        }
     }
 
     private bool Go()
