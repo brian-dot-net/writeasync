@@ -941,7 +941,6 @@ internal sealed class adventure
 
     private bool Go2()
     {
-        int ret = 0;
         if ((((noun.CompareTo("NOR")) == (0)) ? (-1) : (0)) != (0))
         {
             DI_n = 0;
@@ -969,29 +968,15 @@ internal sealed class adventure
         else if ((((int)(((noun.CompareTo("BOA")) == (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(11)].CompareTo((currentRoom) + (128))) == (0)) ? (-1) : (0)))) != (0))
         {
             currentRoom = (13);
-            ret = 1;
+            return true;
         }
         else
         {
             PRINT(("") + ("YOU CAN'T GO THERE!"));
-            ret = 2;
+            return false;
         }
 
-        bool ret2;
-        if (ret == 0)
-        {
-            ret2 = Go();
-        }
-        else if (ret == 1)
-        {
-            ret2 = true;
-        }
-        else
-        {
-            ret2 = false;
-        }
-
-        return ret2;
+        return Go();
     }
 
     private bool Go()
