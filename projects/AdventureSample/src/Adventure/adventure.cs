@@ -38,7 +38,6 @@ internal sealed class adventure
     private float I_n;
     private float FL_n;
     private float RO_n;
-    private int DI_n;
     private float J_n;
     private float A_n;
     public adventure(TextReader input, TextWriter output)
@@ -314,7 +313,6 @@ internal sealed class adventure
         I_n = (0);
         FL_n = (0);
         RO_n = (0);
-        DI_n = (0);
         J_n = (0);
         A_n = (0);
         roomDescriptions = (new string[11]);
@@ -728,9 +726,7 @@ internal sealed class adventure
             goto L2500;
         }
 
-        bool ret2 = Go2();
-
-        if (ret2)
+        if (Go())
         {
             goto L90;
         }
@@ -939,31 +935,32 @@ internal sealed class adventure
         goto L100;
     }
 
-    private bool Go2()
+    private bool Go()
     {
+        int dir;
         if ((((noun.CompareTo("NOR")) == (0)) ? (-1) : (0)) != (0))
         {
-            DI_n = 0;
+            dir = 0;
         }
         else if ((((noun.CompareTo("SOU")) == (0)) ? (-1) : (0)) != (0))
         {
-            DI_n = 1;
+            dir = 1;
         }
         else if ((((noun.CompareTo("EAS")) == (0)) ? (-1) : (0)) != (0))
         {
-            DI_n = 2;
+            dir = 2;
         }
         else if ((((noun.CompareTo("WES")) == (0)) ? (-1) : (0)) != (0))
         {
-            DI_n = 3;
+            dir = 3;
         }
         else if ((((noun.CompareTo("UP")) == (0)) ? (-1) : (0)) != (0))
         {
-            DI_n = 4;
+            dir = 4;
         }
         else if ((((noun.CompareTo("DOW")) == (0)) ? (-1) : (0)) != (0))
         {
-            DI_n = 5;
+            dir = 5;
         }
         else if ((((int)(((noun.CompareTo("BOA")) == (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(11)].CompareTo((currentRoom) + (128))) == (0)) ? (-1) : (0)))) != (0))
         {
@@ -976,18 +973,18 @@ internal sealed class adventure
             return false;
         }
 
-        return Go();
+        return Move(dir);
     }
 
-    private bool Go()
+    private bool Move(int dir)
     {
         bool ret = false;
-        if ((((int)(((map[(int)(currentRoom), DI_n].CompareTo(0)) > (0)) ? (-1) : (0))) & ((int)(((map[(int)(currentRoom), DI_n].CompareTo(128)) < (0)) ? (-1) : (0)))) != (0))
+        if ((((int)(((map[(int)(currentRoom), dir].CompareTo(0)) > (0)) ? (-1) : (0))) & ((int)(((map[(int)(currentRoom), dir].CompareTo(128)) < (0)) ? (-1) : (0)))) != (0))
         {
-            currentRoom = (map[(int)(currentRoom), DI_n]);
+            currentRoom = (map[(int)(currentRoom), dir]);
             ret = true;
         }
-        else if ((((map[(int)(currentRoom), DI_n].CompareTo(128)) == (0)) ? (-1) : (0)) != (0))
+        else if ((((map[(int)(currentRoom), dir].CompareTo(128)) == (0)) ? (-1) : (0)) != (0))
         {
             PRINT(("") + ("THE GUARD WON'T LET YOU!"));
         }
