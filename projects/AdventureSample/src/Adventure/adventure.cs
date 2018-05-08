@@ -635,13 +635,14 @@ internal sealed class adventure
         ; // 
         L100:
         ;
-        PRINT("");
-        command = ("");
-        command = (INPUT_s("WHAT NOW"));
-        if ((((command.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
+
+        do
         {
-            goto L100;
+            PRINT("");
+            command = ("");
+            command = (INPUT_s("WHAT NOW"));
         }
+        while (command == "");
 
         C_n = (0);
         verb = ("");
@@ -705,22 +706,6 @@ internal sealed class adventure
             noun = ("BOT");
         }
 
-        ; // 
-        ; // 
-        goto L2000; // Execute verb routines.
-        ; // 
-        ; // *** DIRECTIONS
-        ; // 
-        ; // 
-        ; // 
-        ; // 
-        ; // ** ROOM DESCRIPTION
-        ; // 
-        ; // 
-        ; // Routine for the verb 'GO'.
-        ; // 
-        L2000:
-        ;
         if ((((verb.CompareTo("GO")) != (0)) ? (-1) : (0)) != (0))
         {
             goto L2500;
