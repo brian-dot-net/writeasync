@@ -18,7 +18,7 @@ internal sealed class adventure
     private string[] objectTags;
     private string[] directions;
     private float[] objectRooms;
-    private float[, ] map;
+    private float[,] map;
     private string command;
     private string verb;
     private string noun;
@@ -339,7 +339,7 @@ internal sealed class adventure
         a = (new float[(d1) + (1)]);
     }
 
-    private void DIM2_na(out float[, ] a, int d1, int d2)
+    private void DIM2_na(out float[,] a, int d1, int d2)
     {
         a = (new float[(d1) + (1), (d2) + (1)]);
     }
@@ -488,7 +488,7 @@ internal sealed class adventure
         return;
 
         L1050:
-            ;
+        ;
         RO_n = (objectRooms[(int)(I_n)]);
         if ((((RO_n.CompareTo(127)) > (0)) ? (-1) : (0)) != (0))
         {
@@ -647,43 +647,39 @@ internal sealed class adventure
         C_n = (0);
         verb = ("");
         noun = ("");
-        L120:
-        ;
-        C_n = ((C_n) + (1));
-        if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
+
+        while (true)
         {
-            goto L150;
+            C_n = ((C_n) + (1));
+            if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
+            {
+                break;
+            }
+
+            wordPart = (MID_s(command, (int)(C_n), (int)(1)));
+            if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
+            {
+                break;
+            }
+
+            verb = ((verb) + (wordPart));
         }
 
-        wordPart = (MID_s(command, (int)(C_n), (int)(1)));
-        if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
+        while (true)
         {
-            goto L150;
-        }
+            C_n = ((C_n) + (1));
+            if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
+            {
+                break;
+            }
 
-        verb = ((verb) + (wordPart));
-        goto L120;
-        L150:
-        ;
-        C_n = ((C_n) + (1));
-        if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
-        {
-            goto L180;
-        }
+            wordPart = (MID_s(command, (int)(C_n), (int)(1)));
+            if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
+            {
+                break;
+            }
 
-        wordPart = (MID_s(command, (int)(C_n), (int)(1)));
-        if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
-        {
-            goto L180;
-        }
-
-        noun = ((noun) + (wordPart));
-        goto L150;
-        L180:
-        ;
-        if ((((verb.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
-        {
-            goto L100;
+            noun = ((noun) + (wordPart));
         }
 
         if ((((verb.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
