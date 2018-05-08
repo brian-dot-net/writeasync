@@ -620,212 +620,213 @@ internal sealed class adventure
 
         PrintIntro();
 
-        CLS() // Put a statement here to clear the screen.
-        ;
-        L90:
-        ;
-        PrintDescription();
-
-        PrintDirections();
-
-        PrintObjects();
+        CLS();
 
         while (true)
         {
-            Parser();
+            PrintDescription();
 
-            if (verb != "GO")
+            PrintDirections();
+
+            PrintObjects();
+
+            while (true)
             {
-                goto L2500;
+                Parser();
+
+                if (verb != "GO")
+                {
+                    goto L2500;
+                }
+
+                if (Go())
+                {
+                    break;
+                }
+
+                continue;
+
+                L2500:
+                if ((verb != "GET") && (verb != "TAK"))
+                {
+                    goto L2600;
+                }
+
+                if (Get())
+                {
+                    return PlayAgain();
+                }
+
+                continue;
+
+                L2600:
+                if ((verb != "DRO") && (verb != "THR"))
+                {
+                    goto L2700;
+                }
+
+                Drop();
+                continue;
+
+                L2700:
+                if ((verb != "INV") && (verb != "I"))
+                {
+                    goto L2800;
+                }
+
+                Inventory();
+                continue;
+
+                L2800:
+                if ((verb != "LOO") && (verb != "L"))
+                {
+                    goto L2900;
+                }
+
+                if (Look())
+                {
+                    break;
+                }
+
+                continue;
+
+                L2900:
+                if (verb != "EXA")
+                {
+                    goto L3400;
+                }
+
+                Examine();
+                continue;
+
+                L3400:
+                if (verb != "QUI")
+                {
+                    goto L3500;
+                }
+
+                int q = Quit();
+                if (q != 0)
+                {
+                    return q;
+                }
+
+                continue;
+
+                L3500:
+                if (verb != "REA")
+                {
+                    goto L3700;
+                }
+
+                Read();
+                continue;
+
+                L3700:
+                if (verb != "OPE")
+                {
+                    goto L3900;
+                }
+
+                Open();
+                continue;
+
+                L3900:
+                if (verb != "POU")
+                {
+                    goto L4100;
+                }
+
+                if (Pour())
+                {
+                    break;
+                }
+
+                continue;
+
+                L4100:
+                if (verb != "CLI")
+                {
+                    goto L4300;
+                }
+
+                Climb();
+                continue;
+
+                L4300:
+                if (verb != "JUM")
+                {
+                    goto L4400;
+                }
+
+                if (Jump())
+                {
+                    break;
+                }
+
+                continue;
+
+                L4400:
+                if (verb != "DIG")
+                {
+                    goto L4500;
+                }
+
+                Dig();
+                continue;
+
+                L4500:
+                if (verb != "ROW")
+                {
+                    goto L4600;
+                }
+
+                Row();
+                continue;
+
+                L4600:
+                if (verb != "WAV")
+                {
+                    goto L4700;
+                }
+
+                Wave();
+                continue;
+
+                L4700:
+                if ((verb != "LEA") && (verb != "EXI"))
+                {
+                    goto L4800;
+                }
+
+                if (Leave())
+                {
+                    break;
+                }
+
+                continue;
+
+                L4800:
+                if (verb != "FIG")
+                {
+                    goto L4900;
+                }
+
+                Fight();
+                continue;
+
+                L4900:
+                if (verb != "WEA")
+                {
+                    goto L5000;
+                }
+
+                Wear();
+                continue;
+
+                L5000:
+                PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
             }
-
-            if (Go())
-            {
-                goto L90;
-            }
-
-            continue;
-
-            L2500:
-            if ((verb != "GET") && (verb != "TAK"))
-            {
-                goto L2600;
-            }
-
-            if (Get())
-            {
-                return PlayAgain();
-            }
-
-            continue;
-
-            L2600:
-            if ((verb != "DRO") && (verb != "THR"))
-            {
-                goto L2700;
-            }
-
-            Drop();
-            continue;
-
-            L2700:
-            if ((verb != "INV") && (verb != "I"))
-            {
-                goto L2800;
-            }
-
-            Inventory();
-            continue;
-
-            L2800:
-            if ((verb != "LOO") && (verb != "L"))
-            {
-                goto L2900;
-            }
-
-            if (Look())
-            {
-                goto L90;
-            }
-
-            continue;
-
-            L2900:
-            if (verb != "EXA")
-            {
-                goto L3400;
-            }
-
-            Examine();
-            continue;
-
-            L3400:
-            if (verb != "QUI")
-            {
-                goto L3500;
-            }
-
-            int q = Quit();
-            if (q != 0)
-            {
-                return q;
-            }
-
-            continue;
-
-            L3500:
-            if (verb != "REA")
-            {
-                goto L3700;
-            }
-
-            Read();
-            continue;
-
-            L3700:
-            if (verb != "OPE")
-            {
-                goto L3900;
-            }
-
-            Open();
-            continue;
-
-            L3900:
-            if (verb != "POU")
-            {
-                goto L4100;
-            }
-
-            if (Pour())
-            {
-                goto L90;
-            }
-
-            continue;
-
-            L4100:
-            if (verb != "CLI")
-            {
-                goto L4300;
-            }
-
-            Climb();
-            continue;
-
-            L4300:
-            if (verb != "JUM")
-            {
-                goto L4400;
-            }
-
-            if (Jump())
-            {
-                goto L90;
-            }
-
-            continue;
-
-            L4400:
-            if (verb != "DIG")
-            {
-                goto L4500;
-            }
-
-            Dig();
-            continue;
-
-            L4500:
-            if (verb != "ROW")
-            {
-                goto L4600;
-            }
-
-            Row();
-            continue;
-
-            L4600:
-            if (verb != "WAV")
-            {
-                goto L4700;
-            }
-
-            Wave();
-            continue;
-
-            L4700:
-            if ((verb != "LEA") && (verb != "EXI"))
-            {
-                goto L4800;
-            }
-
-            if (Leave())
-            {
-                goto L90;
-            }
-
-            continue;
-
-            L4800:
-            if (verb != "FIG")
-            {
-                goto L4900;
-            }
-
-            Fight();
-            continue;
-
-            L4900:
-            if (verb != "WEA")
-            {
-                goto L5000;
-            }
-
-            Wear();
-            continue;
-
-            L5000:
-            PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         }
     }
 
