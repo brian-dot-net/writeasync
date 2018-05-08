@@ -630,226 +630,220 @@ internal sealed class adventure
 
         PrintObjects();
 
-        ; // 
-        ; // *** PARSER
-        ; // 
-        L100:
-        ;
-
-        Parser();
-
-        if ((((verb.CompareTo("GO")) != (0)) ? (-1) : (0)) != (0))
+        while (true)
         {
-            goto L2500;
+            Parser();
+
+            if ((((verb.CompareTo("GO")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L2500;
+            }
+
+            if (Go())
+            {
+                goto L90;
+            }
+
+            continue;
+
+            L2500:
+            ;
+            if ((((int)(((verb.CompareTo("GET")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("TAK")) != (0)) ? (-1) : (0)))) != (0))
+            {
+                goto L2600;
+            }
+
+            if (Get())
+            {
+                return PlayAgain();
+            }
+
+            continue;
+
+            L2600:
+            ;
+            if ((((int)(((verb.CompareTo("DRO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("THR")) != (0)) ? (-1) : (0)))) != (0))
+            {
+                goto L2700;
+            }
+
+            Drop();
+            continue;
+
+            L2700:
+            ;
+            if ((((int)(((verb.CompareTo("INV")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("I")) != (0)) ? (-1) : (0)))) != (0))
+            {
+                goto L2800;
+            }
+
+            Inventory();
+            continue;
+
+            L2800:
+            ;
+            if ((((int)(((verb.CompareTo("LOO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("L")) != (0)) ? (-1) : (0)))) != (0))
+            {
+                goto L2900;
+            }
+
+            if (Look())
+            {
+                goto L90;
+            }
+
+            continue;
+
+            L2900:
+            ;
+            if ((((verb.CompareTo("EXA")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L3400;
+            }
+
+            Examine();
+            continue;
+
+            L3400:
+            ;
+            if ((((verb.CompareTo("QUI")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L3500;
+            }
+
+            int q = Quit();
+            if (q != 0)
+            {
+                return q;
+            }
+
+            continue;
+
+            L3500:
+            ;
+            if ((((verb.CompareTo("REA")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L3700;
+            }
+
+            Read();
+            continue;
+
+            L3700:
+            ;
+            if ((((verb.CompareTo("OPE")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L3900;
+            }
+
+            Open();
+            continue;
+
+            L3900:
+            ;
+            if ((((verb.CompareTo("POU")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L4100;
+            }
+
+            if (Pour())
+            {
+                goto L90;
+            }
+
+            continue;
+
+            L4100:
+            ;
+            if ((((verb.CompareTo("CLI")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L4300;
+            }
+
+            Climb();
+            continue;
+
+            L4300:
+            ;
+            if ((((verb.CompareTo("JUM")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L4400;
+            }
+
+            if (Jump())
+            {
+                goto L90;
+            }
+
+            continue;
+
+            L4400:
+            ;
+            if ((((verb.CompareTo("DIG")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L4500;
+            }
+
+            Dig();
+            continue;
+
+            L4500:
+            ;
+            if ((((verb.CompareTo("ROW")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L4600;
+            }
+
+            Row();
+            continue;
+
+            L4600:
+            ;
+            if ((((verb.CompareTo("WAV")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L4700;
+            }
+
+            Wave();
+            continue;
+
+            L4700:
+            ;
+            if ((((int)(((verb.CompareTo("LEA")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("EXI")) != (0)) ? (-1) : (0)))) != (0))
+            {
+                goto L4800;
+            }
+
+            if (Leave())
+            {
+                goto L90;
+            }
+
+            continue;
+
+            L4800:
+            ;
+            if ((((verb.CompareTo("FIG")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L4900;
+            }
+
+            Fight();
+            continue;
+
+            L4900:
+            ;
+            if ((((verb.CompareTo("WEA")) != (0)) ? (-1) : (0)) != (0))
+            {
+                goto L5000;
+            }
+
+            Wear();
+            continue;
+
+            L5000:
+            PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         }
-
-        if (Go())
-        {
-            goto L90;
-        }
-
-        goto L100;
-
-        L2500:
-        ;
-        if ((((int)(((verb.CompareTo("GET")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("TAK")) != (0)) ? (-1) : (0)))) != (0))
-        {
-            goto L2600;
-        }
-
-        if (Get())
-        {
-            return PlayAgain();
-        }
-
-        goto L100;
-
-        L2600:
-        ;
-        if ((((int)(((verb.CompareTo("DRO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("THR")) != (0)) ? (-1) : (0)))) != (0))
-        {
-            goto L2700;
-        }
-
-        Drop();
-        goto L100;
-
-        L2700:
-        ;
-        if ((((int)(((verb.CompareTo("INV")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("I")) != (0)) ? (-1) : (0)))) != (0))
-        {
-            goto L2800;
-        }
-
-        Inventory();
-        goto L100;
-
-        L2800:
-        ;
-        if ((((int)(((verb.CompareTo("LOO")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("L")) != (0)) ? (-1) : (0)))) != (0))
-        {
-            goto L2900;
-        }
-
-        if (Look())
-        {
-            goto L90;
-        }
-
-        goto L100;
-
-        L2900:
-        ;
-        if ((((verb.CompareTo("EXA")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L3400;
-        }
-
-        Examine();
-        goto L100;
-
-        L3400:
-        ;
-        if ((((verb.CompareTo("QUI")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L3500;
-        }
-
-        int q = Quit();
-        if (q != 0)
-        {
-            return q;
-        }
-
-        goto L100;
-
-        L3500:
-        ;
-        if ((((verb.CompareTo("REA")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L3700;
-        }
-
-        Read();
-        goto L100;
-
-        L3700:
-        ;
-        if ((((verb.CompareTo("OPE")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L3900;
-        }
-
-        Open();
-        goto L100;
-
-        L3900:
-        ;
-        if ((((verb.CompareTo("POU")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L4100;
-        }
-
-        if (Pour())
-        {
-            goto L90;
-        }
-
-        goto L100;
-
-        L4100:
-        ;
-        if ((((verb.CompareTo("CLI")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L4300;
-        }
-
-        Climb();
-        goto L100;
-
-        L4300:
-        ;
-        if ((((verb.CompareTo("JUM")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L4400;
-        }
-
-        if (Jump())
-        {
-            goto L90;
-        }
-
-        goto L100;
-
-        L4400:
-        ;
-        if ((((verb.CompareTo("DIG")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L4500;
-        }
-
-        Dig();
-        goto L100;
-
-        L4500:
-        ;
-        if ((((verb.CompareTo("ROW")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L4600;
-        }
-
-        Row();
-        goto L100;
-
-        L4600:
-        ;
-        if ((((verb.CompareTo("WAV")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L4700;
-        }
-
-        Wave();
-        goto L100;
-
-        L4700:
-        ;
-        if ((((int)(((verb.CompareTo("LEA")) != (0)) ? (-1) : (0))) & ((int)(((verb.CompareTo("EXI")) != (0)) ? (-1) : (0)))) != (0))
-        {
-            goto L4800;
-        }
-
-        if (Leave())
-        {
-            goto L90;
-        }
-
-        goto L100;
-
-        L4800:
-        ;
-        if ((((verb.CompareTo("FIG")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L4900;
-        }
-
-        Fight();
-        goto L100;
-
-        L4900:
-        ;
-        if ((((verb.CompareTo("WEA")) != (0)) ? (-1) : (0)) != (0))
-        {
-            goto L5000;
-        }
-
-        Wear();
-        goto L100;
-
-        L5000:
-        ;
-        ; // 
-        PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
-        goto L100;
     }
 
     private void Parser()
