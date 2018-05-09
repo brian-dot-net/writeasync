@@ -36,7 +36,6 @@ internal sealed class adventure
     private float I_n;
     private float FL_n;
     private float RO_n;
-    private float J_n;
     private float A_n;
     public adventure(TextReader input, TextWriter output)
     {
@@ -309,7 +308,6 @@ internal sealed class adventure
         I_n = (0);
         FL_n = (0);
         RO_n = (0);
-        J_n = (0);
         A_n = (0);
         roomDescriptions = (new string[11]);
         objectNames = (new string[11]);
@@ -484,28 +482,24 @@ internal sealed class adventure
 
     private void InitMap()
     {
-        if ((((numberOfRooms.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
+        if (numberOfRooms == 0)
         {
             return;
         }
 
-        directions[(int)(0)] = ("NORTH");
-        directions[(int)(1)] = ("SOUTH");
-        directions[(int)(2)] = ("EAST");
-        directions[(int)(3)] = ("WEST");
-        directions[(int)(4)] = ("UP");
-        directions[(int)(5)] = ("DOWN");
-        I_n = (1);
-        while ((I_n) <= (numberOfRooms))
-        {
-            J_n = (0);
-            while ((J_n) <= ((numberOfDirections) - (1)))
-            {
-                map[(int)(I_n), (int)(J_n)] = (READ_n());
-                J_n = ((J_n) + (1));
-            }
+        directions[0] = "NORTH";
+        directions[1] = "SOUTH";
+        directions[2] = "EAST";
+        directions[3] = "WEST";
+        directions[4] = "UP";
+        directions[5] = "DOWN";
 
-            I_n = ((I_n) + (1));
+        for (int i = 1; i <= numberOfRooms; ++i)
+        {
+            for (int j = 0; j < numberOfDirections; ++j)
+            {
+                map[i, j] = READ_n();
+            }
         }
     }
 
