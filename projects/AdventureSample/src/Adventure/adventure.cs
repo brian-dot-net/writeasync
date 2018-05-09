@@ -846,36 +846,36 @@ internal sealed class adventure
     {
         FindRoomForObject();
 
-        if ((((FL_n.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
+        if (FL_n == 0)
         {
-            PRINT(("") + ("YOU CAN'T GET THAT!"));
+            PRINT("YOU CAN'T GET THAT!");
         }
-        else if ((((RO_n.CompareTo(-(1))) == (0)) ? (-1) : (0)) != (0))
+        else if (RO_n == -1)
         {
-            PRINT(("") + ("YOU ALREADY HAVE IT!"));
+            PRINT("YOU ALREADY HAVE IT!");
         }
-        else if ((((objectRooms[(int)(I_n)].CompareTo(127)) > (0)) ? (-1) : (0)) != (0))
+        else if (objectRooms[(int)(I_n)] > 127)
         {
-            PRINT(("") + ("YOU CAN'T GET THAT!"));
+            PRINT("YOU CAN'T GET THAT!");
         }
-        else if ((((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0)) != (0))
+        else if (RO_n != currentRoom)
         {
-            PRINT(("") + ("THAT'S NOT HERE!"));
+            PRINT("THAT'S NOT HERE!");
         }
-        else if ((((inventoryItems.CompareTo(maxInventoryItems)) > (0)) ? (-1) : (0)) != (0))
+        else if (inventoryItems > maxInventoryItems)
         {
-            PRINT(("") + ("YOU CAN'T CARRY ANY MORE."));
+            PRINT("YOU CAN'T CARRY ANY MORE.");
         }
-        else if ((((int)(((currentRoom.CompareTo(18)) == (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("RUB")) == (0)) ? (-1) : (0)))) != (0))
+        else if ((currentRoom == 18) && (noun == "RUB"))
         {
-            PRINT(("") + ("CONGRATULATIONS! YOU'VE WON!"));
+            PRINT("CONGRATULATIONS! YOU'VE WON!");
             return true;
         }
         else
         {
-            inventoryItems = ((inventoryItems) + (1));
-            objectRooms[(int)(I_n)] = (-(1));
-            PRINT(("") + ("TAKEN."));
+            ++inventoryItems;
+            objectRooms[(int)(I_n)] = -1;
+            PRINT("TAKEN.");
         }
 
         return false;
