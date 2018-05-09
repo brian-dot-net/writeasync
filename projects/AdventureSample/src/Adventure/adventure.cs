@@ -505,18 +505,16 @@ internal sealed class adventure
 
     private void InitObjects()
     {
-        if ((((numberOfObjects.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
+        if (numberOfObjects == 0)
         {
             return;
         }
 
-        I_n = (0);
-        while ((I_n) <= ((numberOfObjects) - (1)))
+        for (int i = 0; i < numberOfObjects; ++i)
         {
-            objectNames[(int)(I_n)] = (READ_s());
-            objectTags[(int)(I_n)] = (READ_s());
-            objectRooms[(int)(I_n)] = (READ_n());
-            I_n = ((I_n) + (1));
+            objectNames[i] = READ_s();
+            objectTags[i] = READ_s();
+            objectRooms[i] = READ_n();
         }
     }
 
