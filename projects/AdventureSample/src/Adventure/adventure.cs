@@ -431,23 +431,20 @@ internal sealed class adventure
 
     private void PrintObjects()
     {
-        PRINT(("") + ("YOU CAN SEE: "));
-        FL_n = (0);
-        I_n = (0);
-        while ((I_n) <= ((numberOfObjects) - (1)))
+        PRINT("YOU CAN SEE: ");
+        bool atLeastOne = false;
+        for (int i = 0; i < numberOfObjects; ++i)
         {
-            if ((((currentRoom.CompareTo(((int)(objectRooms[(int)(I_n)])) & ((int)(127)))) == (0)) ? (-1) : (0)) != (0))
+            if (currentRoom == ((int)objectRooms[i] & 127))
             {
-                PRINT((("") + (" ")) + (objectNames[(int)(I_n)]));
-                FL_n = (1);
+                PRINT(" " + objectNames[i]);
+                atLeastOne = true;
             }
-
-            I_n = ((I_n) + (1));
         }
 
-        if ((((FL_n.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
+        if (!atLeastOne)
         {
-            PRINT(("") + (" NOTHING OF INTEREST"));
+            PRINT(" NOTHING OF INTEREST");
         }
     }
 
