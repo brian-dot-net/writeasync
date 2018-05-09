@@ -918,14 +918,13 @@ internal sealed class adventure
 
     private bool Look()
     {
-        bool ret = true;
-        if ((((noun.CompareTo("")) != (0)) ? (-1) : (0)) != (0))
+        if (noun == "")
         {
-            Examine();
-            ret = false;
+            return true;
         }
 
-        return ret;
+        Examine();
+        return false;
     }
 
     private void Examine()
