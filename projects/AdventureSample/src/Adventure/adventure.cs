@@ -899,23 +899,20 @@ internal sealed class adventure
 
     private void Inventory()
     {
-        FL_n = (0);
-        PRINT(("") + ("YOU ARE CARRYING:"));
-        I_n = (0);
-        while ((I_n) <= ((numberOfObjects) - (1)))
+        bool atLeastOne = false;
+        PRINT("YOU ARE CARRYING:");
+        for (int i = 0; i < numberOfObjects; ++i)
         {
-            if ((((objectRooms[(int)(I_n)].CompareTo(-(1))) == (0)) ? (-1) : (0)) != (0))
+            if (objectRooms[i] == -1)
             {
-                PRINT((("") + (" ")) + (objectNames[(int)(I_n)]));
-                FL_n = (1);
+                PRINT(" " + objectNames[i]);
+                atLeastOne = true;
             }
-
-            I_n = ((I_n) + (1));
         }
 
-        if ((((FL_n.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
+        if (!atLeastOne)
         {
-            PRINT(("") + (" NOTHING"));
+            PRINT(" NOTHING");
         }
     }
 
