@@ -783,38 +783,38 @@ internal sealed class adventure
     private bool Go()
     {
         int dir;
-        if ((((noun.CompareTo("NOR")) == (0)) ? (-1) : (0)) != (0))
+        if (noun == "NOR")
         {
             dir = 0;
         }
-        else if ((((noun.CompareTo("SOU")) == (0)) ? (-1) : (0)) != (0))
+        else if (noun == "SOU")
         {
             dir = 1;
         }
-        else if ((((noun.CompareTo("EAS")) == (0)) ? (-1) : (0)) != (0))
+        else if (noun == "EAS")
         {
             dir = 2;
         }
-        else if ((((noun.CompareTo("WES")) == (0)) ? (-1) : (0)) != (0))
+        else if (noun == "WES")
         {
             dir = 3;
         }
-        else if ((((noun.CompareTo("UP")) == (0)) ? (-1) : (0)) != (0))
+        else if (noun == "UP")
         {
             dir = 4;
         }
-        else if ((((noun.CompareTo("DOW")) == (0)) ? (-1) : (0)) != (0))
+        else if (noun == "DOW")
         {
             dir = 5;
         }
-        else if ((((int)(((noun.CompareTo("BOA")) == (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(11)].CompareTo((currentRoom) + (128))) == (0)) ? (-1) : (0)))) != (0))
+        else if ((noun == "BOA") && (objectRooms[11] == (currentRoom + 128)))
         {
-            currentRoom = (13);
+            currentRoom = 13;
             return true;
         }
         else
         {
-            PRINT(("") + ("YOU CAN'T GO THERE!"));
+            PRINT("YOU CAN'T GO THERE!");
             return false;
         }
 
