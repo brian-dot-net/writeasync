@@ -36,7 +36,7 @@ internal sealed class adventure
     private float I_n;
     private float FL_n;
     private float RO_n;
-    private float A_n;
+
     public adventure(TextReader input, TextWriter output)
     {
         this.input = (input);
@@ -308,7 +308,6 @@ internal sealed class adventure
         I_n = (0);
         FL_n = (0);
         RO_n = (0);
-        A_n = (0);
         roomDescriptions = (new string[11]);
         objectNames = (new string[11]);
         objectTags = (new string[11]);
@@ -543,22 +542,22 @@ internal sealed class adventure
 
     private void PrintIntro()
     {
-        PRINT(("") + ("ALL YOUR LIFE YOU HAD HEARD THE STORIES"));
-        PRINT(("") + ("ABOUT YOUR CRAZY UNCLE SIMON. HE WAS AN"));
-        PRINT(("") + ("INVENTOR, WHO KEPT DISAPPEARING FOR"));
-        PRINT(("") + ("LONG PERIODS OF TIME, NEVER TELLING"));
-        PRINT(("") + ("ANYONE WHERE HE HAD BEEN."));
+        PRINT("ALL YOUR LIFE YOU HAD HEARD THE STORIES");
+        PRINT("ABOUT YOUR CRAZY UNCLE SIMON. HE WAS AN");
+        PRINT("INVENTOR, WHO KEPT DISAPPEARING FOR");
+        PRINT("LONG PERIODS OF TIME, NEVER TELLING");
+        PRINT("ANYONE WHERE HE HAD BEEN.");
         PRINT("");
-        PRINT(("") + ("YOU NEVER BELIEVED THE STORIES, BUT"));
-        PRINT(("") + ("WHEN YOUR UNCLE DIED AND LEFT YOU HIS"));
-        PRINT(("") + ("DIARY, YOU LEARNED THAT THEY WERE TRUE."));
-        PRINT(("") + ("YOUR UNCLE HAD DISCOVERED A MAGIC"));
-        PRINT(("") + ("LAND, AND A SECRET FORMULA THAT COULD"));
-        PRINT(("") + ("TAKE HIM THERE. IN THAT LAND WAS A"));
-        PRINT(("") + ("MAGIC RUBY, AND HIS DIARY CONTAINED"));
-        PRINT(("") + ("THE INSTRUCTIONS FOR GOING THERE TO"));
-        PRINT(("") + ("FIND IT."));
-        A_n = (INPUT_n(""));
+        PRINT("YOU NEVER BELIEVED THE STORIES, BUT");
+        PRINT("WHEN YOUR UNCLE DIED AND LEFT YOU HIS");
+        PRINT("DIARY, YOU LEARNED THAT THEY WERE TRUE.");
+        PRINT("YOUR UNCLE HAD DISCOVERED A MAGIC");
+        PRINT("LAND, AND A SECRET FORMULA THAT COULD");
+        PRINT("TAKE HIM THERE. IN THAT LAND WAS A");
+        PRINT("MAGIC RUBY, AND HIS DIARY CONTAINED");
+        PRINT("THE INSTRUCTIONS FOR GOING THERE TO");
+        PRINT("FIND IT.");
+        INPUT_n("");
     }
 
     private int Main()
