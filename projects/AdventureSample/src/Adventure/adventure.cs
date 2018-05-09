@@ -732,29 +732,18 @@ internal sealed class adventure
                 continue;
 
                 L3900:
-                if (verb != "POU")
+                if (verb == "POU")
                 {
-                    goto L4100;
+                    if (Pour())
+                    {
+                        break;
+                    }
                 }
-
-                if (Pour())
+                else if (verb == "CLI")
                 {
-                    break;
+                    Climb();
                 }
-
-                continue;
-
-                L4100:
-                if (verb != "CLI")
-                {
-                    goto L4300;
-                }
-
-                Climb();
-                continue;
-
-                L4300:
-                if (verb == "JUM")
+                else if (verb == "JUM")
                 {
                     if (Jump())
                     {
