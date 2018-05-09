@@ -794,29 +794,18 @@ internal sealed class adventure
                 continue;
 
                 L4700:
-                if ((verb != "LEA") && (verb != "EXI"))
+                if ((verb == "LEA") || (verb == "EXI"))
                 {
-                    goto L4800;
+                    if (Leave())
+                    {
+                        break;
+                    }
                 }
-
-                if (Leave())
+                else if (verb == "FIG")
                 {
-                    break;
+                    Fight();
                 }
-
-                continue;
-
-                L4800:
-                if (verb != "FIG")
-                {
-                    goto L4900;
-                }
-
-                Fight();
-                continue;
-
-                L4900:
-                if (verb == "WEA")
+                else if (verb == "WEA")
                 {
                     Wear();
                 }
