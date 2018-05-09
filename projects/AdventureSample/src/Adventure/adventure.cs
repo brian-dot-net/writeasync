@@ -754,29 +754,18 @@ internal sealed class adventure
                 continue;
 
                 L4300:
-                if (verb != "JUM")
+                if (verb == "JUM")
                 {
-                    goto L4400;
+                    if (Jump())
+                    {
+                        break;
+                    }
                 }
-
-                if (Jump())
+                else if (verb == "DIG")
                 {
-                    break;
+                    Dig();
                 }
-
-                continue;
-
-                L4400:
-                if (verb != "DIG")
-                {
-                    goto L4500;
-                }
-
-                Dig();
-                continue;
-
-                L4500:
-                if (verb == "ROW")
+                else if (verb == "ROW")
                 {
                     Row();
                 }
