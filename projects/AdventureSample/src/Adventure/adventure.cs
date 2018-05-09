@@ -21,7 +21,6 @@ internal sealed class adventure
     private float[,] map;
     private string verb;
     private string noun;
-    private string wordPart;
     private string quit;
     private float numberOfRooms;
     private float numberOfObjects;
@@ -293,7 +292,6 @@ internal sealed class adventure
 
         verb = ("");
         noun = ("");
-        wordPart = ("");
         quit = ("");
         numberOfRooms = (0);
         numberOfObjects = (0);
@@ -724,61 +722,61 @@ internal sealed class adventure
         while (command == "");
 
         int c = 0;
-        verb = ("");
-        noun = ("");
+        verb = "";
+        noun = "";
 
         while (true)
         {
             c = c + 1;
-            if ((((c.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
+            if (c > command.Length)
             {
                 break;
             }
 
-            wordPart = (MID_s(command, c, (int)(1)));
-            if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
+            string wordPart = MID_s(command, c, 1);
+            if (wordPart == " ")
             {
                 break;
             }
 
-            verb = ((verb) + (wordPart));
+            verb += wordPart;
         }
 
         while (true)
         {
             c = c + 1;
-            if ((((c.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
+            if (c > command.Length)
             {
                 break;
             }
 
-            wordPart = (MID_s(command, c, (int)(1)));
-            if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
+            string wordPart = MID_s(command, c, 1);
+            if (wordPart == " ")
             {
                 break;
             }
 
-            noun = ((noun) + (wordPart));
+            noun += wordPart;
         }
 
-        if ((((verb.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
+        if (verb.Length > 3)
         {
-            verb = (LEFT_s(verb, (int)(3)));
+            verb = LEFT_s(verb, 3);
         }
 
-        if ((((noun.Length.CompareTo(3)) > (0)) ? (-1) : (0)) != (0))
+        if (noun.Length > 3)
         {
-            noun = (LEFT_s(noun, (int)(3)));
+            noun = LEFT_s(noun, 3);
         }
 
-        if ((((noun.CompareTo("SHA")) == (0)) ? (-1) : (0)) != (0))
+        if (noun == "SHA")
         {
-            noun = ("SAL");
+            noun = "SAL";
         }
 
-        if ((((noun.CompareTo("FOR")) == (0)) ? (-1) : (0)) != (0))
+        if (noun == "FOR")
         {
-            noun = ("BOT");
+            noun = "BOT";
         }
     }
 
