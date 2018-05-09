@@ -997,42 +997,45 @@ internal sealed class adventure
 
     private void Read()
     {
-        if ((((noun.CompareTo("DIA")) != (0)) ? (-1) : (0)) != (0))
+        if (noun == "DIA")
         {
-            if ((((noun.CompareTo("DIC")) != (0)) ? (-1) : (0)) != (0))
+            if ((objectRooms[0] != currentRoom) && (objectRooms[0] != -1))
             {
-                if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
-                {
-                    PRINT(("") + ("YOU CAN'T READ THAT!"));
-                }
-                else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-                {
-                    PRINT(("") + ("THERE'S NO BOTTLE HERE!"));
-                }
-                else
-                {
-                    PRINT(("") + ("IT READS: 'SECRET FORMULA'."));
-                }
-            }
-            else if ((((int)(((objectRooms[(int)(4)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(4)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-            {
-                PRINT(("") + ("YOU DON'T SEE A DICTIONARY!"));
+                PRINT("THERE'S NO DIARY HERE!");
             }
             else
             {
-                PRINT(("") + ("IT SAYS: SODIUM CHLORIDE IS"));
-                PRINT(("") + ("COMMON TABLE SALT."));
+                PRINT("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE");
+                PRINT("FORMULA TO RAINWATER, TO REACH THE");
+                PRINT("OTHER WORLD.' ");
             }
         }
-        else if ((((int)(((objectRooms[(int)(0)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(0)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if (noun == "DIC")
         {
-            PRINT(("") + ("THERE'S NO DIARY HERE!"));
+            if ((objectRooms[4] != currentRoom) && (objectRooms[4] != -1))
+            {
+                PRINT("YOU DON'T SEE A DICTIONARY!");
+            }
+            else
+            {
+                PRINT("IT SAYS: SODIUM CHLORIDE IS");
+                PRINT("COMMON TABLE SALT.");
+            }
+        }
+        else if (noun == "BOT")
+        {
+            if ((objectRooms[6] != currentRoom) && (objectRooms[6] != -1))
+            {
+                PRINT("THERE'S NO BOTTLE HERE!");
+            }
+            else
+            {
+                PRINT("IT READS: 'SECRET FORMULA'.");
+            }
         }
         else
         {
-            PRINT(("") + ("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE"));
-            PRINT(("") + ("FORMULA TO RAINWATER, TO REACH THE"));
-            PRINT(("") + ("OTHER WORLD.' "));
+            PRINT("YOU CAN'T READ THAT!");
         }
     }
 
