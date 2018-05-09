@@ -634,20 +634,14 @@ internal sealed class adventure
             {
                 Parser();
 
-                if (verb != "GO")
+                if (verb == "GO")
                 {
-                    goto L2500;
+                    if (Go())
+                    {
+                        break;
+                    }
                 }
-
-                if (Go())
-                {
-                    break;
-                }
-
-                continue;
-
-                L2500:
-                if ((verb == "GET") || (verb == "TAK"))
+                else if ((verb == "GET") || (verb == "TAK"))
                 {
                     if (Get())
                     {
