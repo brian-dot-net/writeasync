@@ -816,16 +816,14 @@ internal sealed class adventure
                 continue;
 
                 L4900:
-                if (verb != "WEA")
+                if (verb == "WEA")
                 {
-                    goto L5000;
+                    Wear();
                 }
-
-                Wear();
-                continue;
-
-                L5000:
-                PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
+                else
+                {
+                    PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
+                }
             }
         }
     }
