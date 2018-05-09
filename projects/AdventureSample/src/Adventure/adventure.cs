@@ -647,29 +647,18 @@ internal sealed class adventure
                 continue;
 
                 L2500:
-                if ((verb != "GET") && (verb != "TAK"))
+                if ((verb == "GET") || (verb == "TAK"))
                 {
-                    goto L2600;
+                    if (Get())
+                    {
+                        return PlayAgain();
+                    }
                 }
-
-                if (Get())
+                else if ((verb == "DRO") || (verb == "THR"))
                 {
-                    return PlayAgain();
+                    Drop();
                 }
-
-                continue;
-
-                L2600:
-                if ((verb != "DRO") && (verb != "THR"))
-                {
-                    goto L2700;
-                }
-
-                Drop();
-                continue;
-
-                L2700:
-                if ((verb == "INV") || (verb == "I"))
+                else if ((verb == "INV") || (verb == "I"))
                 {
                     Inventory();
                 }
