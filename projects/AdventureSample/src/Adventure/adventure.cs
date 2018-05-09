@@ -691,30 +691,19 @@ internal sealed class adventure
                 continue;
 
                 L2900:
-                if (verb != "EXA")
+                if (verb == "EXA")
                 {
-                    goto L3400;
+                    Examine();
                 }
-
-                Examine();
-                continue;
-
-                L3400:
-                if (verb != "QUI")
+                else if (verb == "QUI")
                 {
-                    goto L3500;
+                    int q = Quit();
+                    if (q != 0)
+                    {
+                        return q;
+                    }
                 }
-
-                int q = Quit();
-                if (q != 0)
-                {
-                    return q;
-                }
-
-                continue;
-
-                L3500:
-                if (verb == "REA")
+                else if (verb == "REA")
                 {
                     Read();
                 }
