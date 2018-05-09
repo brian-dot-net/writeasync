@@ -824,18 +824,18 @@ internal sealed class adventure
     private bool Move(int dir)
     {
         bool ret = false;
-        if ((((int)(((map[(int)(currentRoom), dir].CompareTo(0)) > (0)) ? (-1) : (0))) & ((int)(((map[(int)(currentRoom), dir].CompareTo(128)) < (0)) ? (-1) : (0)))) != (0))
+        if ((map[(int)(currentRoom), dir] > 0) && (map[(int)(currentRoom), dir] < 128))
         {
-            currentRoom = (map[(int)(currentRoom), dir]);
+            currentRoom = map[(int)(currentRoom), dir];
             ret = true;
         }
-        else if ((((map[(int)(currentRoom), dir].CompareTo(128)) == (0)) ? (-1) : (0)) != (0))
+        else if (map[(int)(currentRoom), dir] == 128)
         {
-            PRINT(("") + ("THE GUARD WON'T LET YOU!"));
+            PRINT("THE GUARD WON'T LET YOU!");
         }
         else
         {
-            PRINT(("") + ("YOU CAN'T GO THERE!"));
+            PRINT("YOU CAN'T GO THERE!");
         }
 
         return ret;
