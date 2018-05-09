@@ -823,13 +823,14 @@ internal sealed class adventure
 
     private bool Move(int dir)
     {
-        bool ret = false;
-        if ((map[(int)(currentRoom), dir] > 0) && (map[(int)(currentRoom), dir] < 128))
+        float next = map[(int)(currentRoom), dir];
+        if ((next > 0) && (next < 128))
         {
-            currentRoom = map[(int)(currentRoom), dir];
-            ret = true;
+            currentRoom = next;
+            return true;
         }
-        else if (map[(int)(currentRoom), dir] == 128)
+
+        if (next == 128)
         {
             PRINT("THE GUARD WON'T LET YOU!");
         }
@@ -838,7 +839,7 @@ internal sealed class adventure
             PRINT("YOU CAN'T GO THERE!");
         }
 
-        return ret;
+        return false;
     }
 
     private bool Get()
