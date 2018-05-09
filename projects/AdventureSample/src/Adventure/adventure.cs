@@ -669,29 +669,18 @@ internal sealed class adventure
                 continue;
 
                 L2700:
-                if ((verb != "INV") && (verb != "I"))
+                if ((verb == "INV") || (verb == "I"))
                 {
-                    goto L2800;
+                    Inventory();
                 }
-
-                Inventory();
-                continue;
-
-                L2800:
-                if ((verb != "LOO") && (verb != "L"))
+                else if ((verb == "LOO") || (verb == "L"))
                 {
-                    goto L2900;
+                    if (Look())
+                    {
+                        break;
+                    }
                 }
-
-                if (Look())
-                {
-                    break;
-                }
-
-                continue;
-
-                L2900:
-                if (verb == "EXA")
+                else if (verb == "EXA")
                 {
                     Examine();
                 }
