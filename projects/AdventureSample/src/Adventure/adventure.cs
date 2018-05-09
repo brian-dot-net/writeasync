@@ -456,31 +456,28 @@ internal sealed class adventure
 
     private void FindRoomForObject()
     {
-        if ((((numberOfObjects.CompareTo(0)) == (0)) ? (-1) : (0)) != (0))
+        if (numberOfObjects == 0)
         {
             return;
         }
 
-        FL_n = (0);
-        I_n = (0);
-        while ((I_n) <= ((numberOfObjects) - (1)))
+        FL_n = 0;
+        for (I_n = 0; I_n < numberOfObjects; ++I_n)
         {
-            if ((((objectTags[(int)(I_n)].CompareTo(noun)) == (0)) ? (-1) : (0)) != (0))
+            if (objectTags[(int)(I_n)] == noun)
             {
-                FL_n = (1);
-                RO_n = (objectRooms[(int)(I_n)]);
+                FL_n = 1;
+                RO_n = objectRooms[(int)(I_n)];
                 break;
             }
-
-            I_n = ((I_n) + (1));
         }
 
         if (FL_n != 0)
         {
-            RO_n = (objectRooms[(int)(I_n)]);
-            if ((((RO_n.CompareTo(127)) > (0)) ? (-1) : (0)) != (0))
+            RO_n = objectRooms[(int)(I_n)];
+            if (RO_n > 127)
             {
-                RO_n = ((RO_n) - (128));
+                RO_n -= 128;
             }
         }
     }
