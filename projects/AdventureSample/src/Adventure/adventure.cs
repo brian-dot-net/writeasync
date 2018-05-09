@@ -520,25 +520,25 @@ internal sealed class adventure
 
     private void InitDescriptions()
     {
-        roomDescriptions[(int)(1)] = ("IN YOUR LIVING ROOM.");
-        roomDescriptions[(int)(2)] = ("IN THE KITCHEN.");
-        roomDescriptions[(int)(3)] = ("IN THE LIBRARY.");
-        roomDescriptions[(int)(4)] = ("IN THE FRONT YARD.");
-        roomDescriptions[(int)(5)] = ("IN THE GARAGE.");
-        roomDescriptions[(int)(6)] = ("IN AN OPEN FIELD.");
-        roomDescriptions[(int)(7)] = ("AT THE EDGE OF A FOREST.");
-        roomDescriptions[(int)(8)] = ("ON A BRANCH OF A TREE.");
-        roomDescriptions[(int)(9)] = ("ON A LONG, WINDING ROAD.");
-        roomDescriptions[(int)(10)] = ("ON A LONG, WINDING ROAD.");
-        roomDescriptions[(int)(11)] = ("ON A LONG, WINDING ROAD.");
-        roomDescriptions[(int)(12)] = ("ON THE SOUTH BANK OF A RIVER.");
-        roomDescriptions[(int)(13)] = ("INSIDE THE WOODEN BOAT.");
-        roomDescriptions[(int)(14)] = ("ON THE NORTH BANK OF A RIVER.");
-        roomDescriptions[(int)(15)] = ("ON A WELL-TRAVELED ROAD.");
-        roomDescriptions[(int)(16)] = ("IN FRONT OF A LARGE CASTLE.");
-        roomDescriptions[(int)(17)] = ("IN A NARROW HALL.");
-        roomDescriptions[(int)(18)] = ("IN A LARGE HALL.");
-        roomDescriptions[(int)(19)] = ("ON THE TOP OF A TREE.");
+        roomDescriptions[1] = "IN YOUR LIVING ROOM.";
+        roomDescriptions[2] = "IN THE KITCHEN.";
+        roomDescriptions[3] = "IN THE LIBRARY.";
+        roomDescriptions[4] = "IN THE FRONT YARD.";
+        roomDescriptions[5] = "IN THE GARAGE.";
+        roomDescriptions[6] = "IN AN OPEN FIELD.";
+        roomDescriptions[7] = "AT THE EDGE OF A FOREST.";
+        roomDescriptions[8] = "ON A BRANCH OF A TREE.";
+        roomDescriptions[9] = "ON A LONG, WINDING ROAD.";
+        roomDescriptions[10] = "ON A LONG, WINDING ROAD.";
+        roomDescriptions[11] = "ON A LONG, WINDING ROAD.";
+        roomDescriptions[12] = "ON THE SOUTH BANK OF A RIVER.";
+        roomDescriptions[13] = "INSIDE THE WOODEN BOAT.";
+        roomDescriptions[14] = "ON THE NORTH BANK OF A RIVER.";
+        roomDescriptions[15] = "ON A WELL-TRAVELED ROAD.";
+        roomDescriptions[16] = "IN FRONT OF A LARGE CASTLE.";
+        roomDescriptions[17] = "IN A NARROW HALL.";
+        roomDescriptions[18] = "IN A LARGE HALL.";
+        roomDescriptions[19] = "ON THE TOP OF A TREE.";
     }
 
     private void PrintIntro()
