@@ -929,38 +929,41 @@ internal sealed class adventure
 
     private void Examine()
     {
-        if ((((noun.CompareTo("GRO")) != (0)) ? (-1) : (0)) != (0))
+        if (noun == "GRO")
         {
-            FindRoomForObject();
-
-            if ((((int)(((RO_n.CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+            if (currentRoom != 6)
             {
-                PRINT(("") + ("IT'S NOT HERE!"));
-            }
-            else if ((((noun.CompareTo("BOT")) == (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("THERE'S SOMETHING WRITTEN ON IT!"));
-            }
-            else if ((((noun.CompareTo("CAS")) == (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("THERE'S A JEWEL INSIDE!"));
-            }
-            else if ((((noun.CompareTo("BAR")) == (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("IT'S FILLED WITH RAINWATER."));
+                PRINT("IT LOOKS LIKE GROUND!");
             }
             else
             {
-                PRINT(("") + ("YOU SEE NOTHING UNUSUAL."));
+                PRINT("IT LOOKS LIKE SOMETHING'S BURIED HERE.");
             }
-        }
-        else if ((((currentRoom.CompareTo(6)) != (0)) ? (-1) : (0)) != (0))
-        {
-            PRINT(("") + ("IT LOOKS LIKE GROUND!"));
         }
         else
         {
-            PRINT(("") + ("IT LOOKS LIKE SOMETHING'S BURIED HERE."));
+            FindRoomForObject();
+
+            if ((RO_n != currentRoom) && (RO_n != -1))
+            {
+                PRINT("IT'S NOT HERE!");
+            }
+            else if (noun == "BOT")
+            {
+                PRINT("THERE'S SOMETHING WRITTEN ON IT!");
+            }
+            else if (noun == "CAS")
+            {
+                PRINT("THERE'S A JEWEL INSIDE!");
+            }
+            else if (noun == "BAR")
+            {
+                PRINT("IT'S FILLED WITH RAINWATER.");
+            }
+            else
+            {
+                PRINT("YOU SEE NOTHING UNUSUAL.");
+            }
         }
     }
 
