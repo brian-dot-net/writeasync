@@ -885,15 +885,15 @@ internal sealed class adventure
     {
         FindRoomForObject();
 
-        if ((((int)(((FL_n.CompareTo(0)) == (0)) ? (-1) : (0))) | ((int)(((RO_n.CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        if ((FL_n == 0) || (RO_n != -1))
         {
-            PRINT(("") + ("YOU DON'T HAVE THAT!"));
+            PRINT("YOU DON'T HAVE THAT!");
         }
         else
         {
-            inventoryItems = ((inventoryItems) - (1));
-            objectRooms[(int)(I_n)] = (currentRoom);
-            PRINT(("") + ("DROPPED."));
+            --inventoryItems;
+            objectRooms[(int)(I_n)] = currentRoom;
+            PRINT("DROPPED.");
         }
     }
 
