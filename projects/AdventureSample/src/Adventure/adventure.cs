@@ -714,25 +714,15 @@ internal sealed class adventure
                 continue;
 
                 L3500:
-                if (verb != "REA")
+                if (verb == "REA")
                 {
-                    goto L3700;
+                    Read();
                 }
-
-                Read();
-                continue;
-
-                L3700:
-                if (verb != "OPE")
+                else if (verb == "OPE")
                 {
-                    goto L3900;
+                    Open();
                 }
-
-                Open();
-                continue;
-
-                L3900:
-                if (verb == "POU")
+                else if (verb == "POU")
                 {
                     if (Pour())
                     {
