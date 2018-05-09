@@ -19,7 +19,6 @@ internal sealed class adventure
     private string[] directions;
     private float[] objectRooms;
     private float[,] map;
-    private string command;
     private string verb;
     private string noun;
     private string wordPart;
@@ -293,7 +292,6 @@ internal sealed class adventure
         DATA.Enqueue("GLO");
         DATA.Enqueue((float)(19));
 
-        command = ("");
         verb = ("");
         noun = ("");
         wordPart = ("");
@@ -735,10 +733,10 @@ internal sealed class adventure
 
     private void Parser()
     {
+        string command = "";
         do
         {
             PRINT("");
-            command = ("");
             command = (INPUT_s("WHAT NOW"));
         }
         while (command == "");
