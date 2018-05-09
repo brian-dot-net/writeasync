@@ -776,25 +776,15 @@ internal sealed class adventure
                 continue;
 
                 L4500:
-                if (verb != "ROW")
+                if (verb == "ROW")
                 {
-                    goto L4600;
+                    Row();
                 }
-
-                Row();
-                continue;
-
-                L4600:
-                if (verb != "WAV")
+                else if (verb == "WAV")
                 {
-                    goto L4700;
+                    Wave();
                 }
-
-                Wave();
-                continue;
-
-                L4700:
-                if ((verb == "LEA") || (verb == "EXI"))
+                else if ((verb == "LEA") || (verb == "EXI"))
                 {
                     if (Leave())
                     {
