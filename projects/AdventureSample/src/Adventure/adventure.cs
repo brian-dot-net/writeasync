@@ -471,6 +471,7 @@ internal sealed class adventure
             return;
         }
 
+        FL_n = (0);
         I_n = (0);
         while ((I_n) <= ((numberOfObjects) - (1)))
         {
@@ -478,21 +479,19 @@ internal sealed class adventure
             {
                 FL_n = (1);
                 RO_n = (objectRooms[(int)(I_n)]);
-                goto L1050;
+                break;
             }
 
             I_n = ((I_n) + (1));
         }
 
-        FL_n = (0);
-        return;
-
-        L1050:
-        ;
-        RO_n = (objectRooms[(int)(I_n)]);
-        if ((((RO_n.CompareTo(127)) > (0)) ? (-1) : (0)) != (0))
+        if (FL_n != 0)
         {
-            RO_n = ((RO_n) - (128));
+            RO_n = (objectRooms[(int)(I_n)]);
+            if ((((RO_n.CompareTo(127)) > (0)) ? (-1) : (0)) != (0))
+            {
+                RO_n = ((RO_n) - (128));
+            }
         }
     }
 
