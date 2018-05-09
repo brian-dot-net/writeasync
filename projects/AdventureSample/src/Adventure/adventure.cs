@@ -34,7 +34,6 @@ internal sealed class adventure
     private float formulaPoured;
     private float mixtureCount;
     private float wearingGloves;
-    private float C_n;
     private float I_n;
     private float FL_n;
     private float RO_n;
@@ -309,7 +308,6 @@ internal sealed class adventure
         formulaPoured = (0);
         mixtureCount = (0);
         wearingGloves = (0);
-        C_n = (0);
         I_n = (0);
         FL_n = (0);
         RO_n = (0);
@@ -745,19 +743,19 @@ internal sealed class adventure
         }
         while (command == "");
 
-        C_n = (0);
+        int c = 0;
         verb = ("");
         noun = ("");
 
         while (true)
         {
-            C_n = ((C_n) + (1));
-            if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
+            c = c + 1;
+            if ((((c.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
             {
                 break;
             }
 
-            wordPart = (MID_s(command, (int)(C_n), (int)(1)));
+            wordPart = (MID_s(command, c, (int)(1)));
             if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
             {
                 break;
@@ -768,13 +766,13 @@ internal sealed class adventure
 
         while (true)
         {
-            C_n = ((C_n) + (1));
-            if ((((C_n.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
+            c = c + 1;
+            if ((((c.CompareTo(command.Length)) > (0)) ? (-1) : (0)) != (0))
             {
                 break;
             }
 
-            wordPart = (MID_s(command, (int)(C_n), (int)(1)));
+            wordPart = (MID_s(command, c, (int)(1)));
             if ((((wordPart.CompareTo(" ")) == (0)) ? (-1) : (0)) != (0))
             {
                 break;
