@@ -21,7 +21,6 @@ internal sealed class adventure
     private float[,] map;
     private string verb;
     private string noun;
-    private string quit;
     private float numberOfRooms;
     private float numberOfObjects;
     private float numberOfDirections;
@@ -292,7 +291,6 @@ internal sealed class adventure
 
         verb = ("");
         noun = ("");
-        quit = ("");
         numberOfRooms = (0);
         numberOfObjects = (0);
         numberOfDirections = (0);
@@ -969,9 +967,9 @@ internal sealed class adventure
 
     private int Quit()
     {
-        PRINT_n(("") + ("ARE YOU SURE YOU WANT TO QUIT (Y/N)"));
-        quit = (INPUT_s(""));
-        if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) == (0))
+        PRINT_n("ARE YOU SURE YOU WANT TO QUIT (Y/N)");
+        string quit = INPUT_s("");
+        if (quit != "N")
         {
             return PlayAgain();
         }
@@ -983,14 +981,14 @@ internal sealed class adventure
     {
         while (true)
         {
-            PRINT_n(("") + ("WOULD YOU LIKE TO PLAY AGAIN (Y/N)"));
-            quit = (INPUT_s(""));
-            if ((((quit.CompareTo("Y")) == (0)) ? (-1) : (0)) != (0))
+            PRINT_n("WOULD YOU LIKE TO PLAY AGAIN (Y/N)");
+            string quit = INPUT_s("");
+            if (quit == "Y")
             {
                 return 1;
             }
 
-            if ((((quit.CompareTo("N")) == (0)) ? (-1) : (0)) != (0))
+            if (quit == "N")
             {
                 return 2;
             }
