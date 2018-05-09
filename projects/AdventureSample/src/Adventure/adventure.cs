@@ -417,16 +417,13 @@ internal sealed class adventure
 
     private void PrintDirections()
     {
-        PRINT_n(("") + ("YOU CAN GO: "));
-        I_n = (0);
-        while ((I_n) <= (5))
+        PRINT_n("YOU CAN GO: ");
+        for (int i = 0; i <= 5; ++i)
         {
-            if ((((map[(int)(currentRoom), (int)(I_n)].CompareTo(0)) > (0)) ? (-1) : (0)) != (0))
+            if (map[(int)(currentRoom), i] > 0)
             {
-                PRINT_n((("") + (directions[(int)(I_n)])) + (" "));
+                PRINT_n(directions[i] + " ");
             }
-
-            I_n = ((I_n) + (1));
         }
 
         PRINT("");
