@@ -21,19 +21,19 @@ internal sealed class adventure
     private float[,] map;
     private string verb;
     private string noun;
-    private float numberOfRooms;
-    private float numberOfObjects;
-    private float numberOfDirections;
-    private float maxInventoryItems;
-    private float currentRoom;
-    private float inventoryItems;
+    private int numberOfRooms;
+    private int numberOfObjects;
+    private int numberOfDirections;
+    private int maxInventoryItems;
+    private int currentRoom;
+    private int inventoryItems;
     private float saltPoured;
     private float formulaPoured;
     private float mixtureCount;
     private float wearingGloves;
-    private float I_n;
-    private float FL_n;
-    private float RO_n;
+    private int I_n;
+    private int FL_n;
+    private int RO_n;
 
     public adventure(TextReader input, TextWriter output)
     {
@@ -460,14 +460,14 @@ internal sealed class adventure
             if (objectTags[(int)(I_n)] == noun)
             {
                 FL_n = 1;
-                RO_n = objectRooms[(int)(I_n)];
+                RO_n = (int)objectRooms[I_n];
                 break;
             }
         }
 
         if (FL_n != 0)
         {
-            RO_n = objectRooms[(int)(I_n)];
+            RO_n = (int)objectRooms[I_n];
             if (RO_n > 127)
             {
                 RO_n -= 128;
@@ -821,7 +821,7 @@ internal sealed class adventure
 
     private bool Move(int dir)
     {
-        float next = map[(int)(currentRoom), dir];
+        int next = (int)map[(int)(currentRoom), dir];
         if ((next > 0) && (next < 128))
         {
             currentRoom = next;
@@ -1317,7 +1317,7 @@ internal sealed class adventure
         }
         else
         {
-            currentRoom = objectRooms[11] - 128;
+            currentRoom = (int)objectRooms[11] - 128;
             return true;
         }
     }
