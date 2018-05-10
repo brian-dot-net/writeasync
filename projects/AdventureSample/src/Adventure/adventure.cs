@@ -1176,34 +1176,37 @@ internal sealed class adventure
 
     private void Climb()
     {
-        if ((((noun.CompareTo("TRE")) != (0)) ? (-1) : (0)) != (0))
+        if (noun == "TRE")
         {
-            if ((((noun.CompareTo("LAD")) != (0)) ? (-1) : (0)) != (0))
+            if (currentRoom != 7)
             {
-                PRINT(("") + ("IT WON'T DO ANY GOOD."));
-            }
-            else if ((((int)(((objectRooms[(int)(7)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(7)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
-            {
-                PRINT(("") + ("YOU DON'T HAVE THE LADDER!"));
-            }
-            else if ((((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("WHATEVER FOR?"));
+                PRINT("THERE'S NO TREE HERE!");
             }
             else
             {
-                PRINT(("") + ("THE LADDER SINKS UNDER YOUR WEIGHT!"));
-                PRINT(("") + ("IT DISAPPEARS INTO THE GROUND!"));
-                objectRooms[(int)(7)] = (0);
+                PRINT("YOU CAN'T REACH THE BRANCHES!");
             }
         }
-        else if ((((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0)) != (0))
+        else if (noun == "LAD")
         {
-            PRINT(("") + ("THERE'S NO TREE HERE!"));
+            if ((objectRooms[7] != currentRoom) && (objectRooms[7] != -1))
+            {
+                PRINT("YOU DON'T HAVE THE LADDER!");
+            }
+            else if (currentRoom != 7)
+            {
+                PRINT("WHATEVER FOR?");
+            }
+            else
+            {
+                PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
+                PRINT("IT DISAPPEARS INTO THE GROUND!");
+                objectRooms[7] = 0;
+            }
         }
         else
         {
-            PRINT(("") + ("YOU CAN'T REACH THE BRANCHES!"));
+            PRINT("IT WON'T DO ANY GOOD.");
         }
     }
 
