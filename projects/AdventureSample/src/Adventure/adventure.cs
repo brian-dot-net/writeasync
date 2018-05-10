@@ -1090,22 +1090,22 @@ internal sealed class adventure
 
     private bool Pour()
     {
-        bool ret;
-        if ((((noun.CompareTo("SAL")) != (0)) ? (-1) : (0)) != (0))
+        bool poured;
+        if (noun == "SAL")
         {
-            ret = PourFormula();
+            poured = PourSalt();
         }
         else
         {
-            ret = PourSalt();
+            poured = PourFormula();
         }
 
-        if (ret)
+        if (poured)
         {
-            ret = PourMixture();
+            poured = PourMixture();
         }
 
-        return ret;
+        return poured;
     }
 
     private bool PourFormula()
