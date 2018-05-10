@@ -1095,9 +1095,14 @@ internal sealed class adventure
         {
             poured = PourSalt();
         }
-        else
+        else if (noun == "BOT")
         {
             poured = PourFormula();
+        }
+        else
+        {
+            PRINT("YOU CAN'T POUR THAT!");
+            poured = false;
         }
 
         if (poured)
@@ -1110,12 +1115,7 @@ internal sealed class adventure
 
     private bool PourFormula()
     {
-        if (noun != "BOT")
-        {
-            PRINT("YOU CAN'T POUR THAT!");
-            return false;
-        }
-        else if ((objectRooms[6] != currentRoom) && (objectRooms[6] != -1))
+        if ((objectRooms[6] != currentRoom) && (objectRooms[6] != -1))
         {
             PRINT("YOU DON'T HAVE THE BOTTLE!");
             return false;
