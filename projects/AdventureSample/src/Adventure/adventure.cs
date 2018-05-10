@@ -1276,29 +1276,29 @@ internal sealed class adventure
 
     private void Wave()
     {
-        if ((((noun.CompareTo("FAN")) != (0)) ? (-1) : (0)) != (0))
+        if (noun != "FAN")
         {
-            PRINT(("") + ("YOU CAN'T WAVE THAT!"));
+            PRINT("YOU CAN'T WAVE THAT!");
         }
-        else if ((((int)(((objectRooms[(int)(12)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(12)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if ((objectRooms[12] != currentRoom) && (objectRooms[12] != -1))
         {
-            PRINT(("") + ("YOU DON'T HAVE THE FAN!"));
+            PRINT("YOU DON'T HAVE THE FAN!");
         }
-        else if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
+        else if (currentRoom != 13)
         {
-            PRINT(("") + ("YOU FEEL A REFRESHING BREEZE!"));
+            PRINT("YOU FEEL A REFRESHING BREEZE!");
         }
         else
         {
-            PRINT(("") + ("A POWERFUL BREEZE PROPELS THE BOAT"));
-            PRINT(("") + ("TO THE OPPOSITE SHORE!"));
-            if ((((objectRooms[(int)(11)].CompareTo(140)) == (0)) ? (-1) : (0)) != (0))
+            PRINT("A POWERFUL BREEZE PROPELS THE BOAT");
+            PRINT("TO THE OPPOSITE SHORE!");
+            if (objectRooms[11] == 140)
             {
-                objectRooms[(int)(11)] = (142);
+                objectRooms[11] = 142;
             }
             else
             {
-                objectRooms[(int)(11)] = (140);
+                objectRooms[11] = 140;
             }
         }
     }
