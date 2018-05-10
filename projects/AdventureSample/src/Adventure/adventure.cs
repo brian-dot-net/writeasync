@@ -1324,28 +1324,28 @@ internal sealed class adventure
 
     private void Fight()
     {
-        if ((((noun.CompareTo("")) == (0)) ? (-1) : (0)) != (0))
+        if (noun == "")
         {
-            PRINT(("") + ("WHOM DO YOU WANT TO FIGHT?"));
+            PRINT("WHOM DO YOU WANT TO FIGHT?");
         }
-        else if ((((noun.CompareTo("GUA")) != (0)) ? (-1) : (0)) != (0))
+        else if (noun != "GUA")
         {
             PRINT(("") + ("YOU CAN'T FIGHT HIM!"));
         }
-        else if ((((currentRoom.CompareTo(16)) != (0)) ? (-1) : (0)) != (0))
+        else if (currentRoom != 16)
         {
-            PRINT(("") + ("THERE'S NO GUARD HERE!"));
+            PRINT("THERE'S NO GUARD HERE!");
         }
-        else if ((((objectRooms[(int)(10)].CompareTo(-(1))) != (0)) ? (-1) : (0)) != (0))
+        else if (objectRooms[10] != -1)
         {
-            PRINT(("") + ("YOU DON'T HAVE A WEAPON!"));
+            PRINT("YOU DON'T HAVE A WEAPON!");
         }
         else
         {
-            PRINT(("") + ("THE GUARD, NOTICING YOUR SWORD,"));
-            PRINT(("") + ("WISELY RETREATS INTO THE CASTLE."));
-            map[(int)(16), (int)(0)] = (17);
-            objectRooms[(int)(13)] = (0);
+            PRINT("THE GUARD, NOTICING YOUR SWORD,");
+            PRINT("WISELY RETREATS INTO THE CASTLE.");
+            map[16, 0] = 17;
+            objectRooms[13] = 0;
         }
     }
 
