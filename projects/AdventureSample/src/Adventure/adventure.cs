@@ -1041,47 +1041,50 @@ internal sealed class adventure
 
     private void Open()
     {
-        if ((((noun.CompareTo("BOX")) != (0)) ? (-1) : (0)) != (0))
+        if (noun == "BOX")
         {
-            if ((((noun.CompareTo("CAB")) != (0)) ? (-1) : (0)) != (0))
+            if ((objectRooms[1] != currentRoom) && (objectRooms[1] != -1))
             {
-                if ((((noun.CompareTo("CAS")) != (0)) ? (-1) : (0)) != (0))
-                {
-                    PRINT(("") + ("YOU CAN'T OPEN THAT!"));
-                }
-                else if ((((currentRoom.CompareTo(18)) != (0)) ? (-1) : (0)) != (0))
-                {
-                    PRINT(("") + ("THERE'S NO CASE HERE!"));
-                }
-                else if ((((wearingGloves.CompareTo(1)) != (0)) ? (-1) : (0)) != (0))
-                {
-                    PRINT(("") + ("THE CASE IS ELECTRIFIED!"));
-                }
-                else
-                {
-                    PRINT(("") + ("THE GLOVES INSULATE AGAINST THE"));
-                    PRINT(("") + ("ELECTRICITY! THE CASE OPENS!"));
-                    objectRooms[(int)(15)] = (18);
-                }
-            }
-            else if ((((currentRoom.CompareTo(2)) != (0)) ? (-1) : (0)) != (0))
-            {
-                PRINT(("") + ("THERE'S NO CABINET HERE!"));
+                PRINT("THERE'S NO BOX HERE!");
             }
             else
             {
-                PRINT(("") + ("THERE'S SOMETHING INSIDE!"));
-                objectRooms[(int)(3)] = (2);
+                objectRooms[6] = currentRoom;
+                PRINT("SOMETHING FELL OUT!");
             }
         }
-        else if ((((int)(((objectRooms[(int)(1)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(1)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if (noun == "CAB")
         {
-            PRINT(("") + ("THERE'S NO BOX HERE!"));
+            if (currentRoom != 2)
+            {
+                PRINT("THERE'S NO CABINET HERE!");
+            }
+            else
+            {
+                PRINT("THERE'S SOMETHING INSIDE!");
+                objectRooms[3] = 2;
+            }
+        }
+        else if (noun == "CAS")
+        {
+            if (currentRoom != 18)
+            {
+                PRINT("THERE'S NO CASE HERE!");
+            }
+            else if (wearingGloves != 1)
+            {
+                PRINT("THE CASE IS ELECTRIFIED!");
+            }
+            else
+            {
+                PRINT("THE GLOVES INSULATE AGAINST THE");
+                PRINT("ELECTRICITY! THE CASE OPENS!");
+                objectRooms[15] = 18;
+            }
         }
         else
         {
-            objectRooms[(int)(6)] = (currentRoom);
-            PRINT(("") + ("SOMETHING FELL OUT!"));
+            PRINT("YOU CAN'T OPEN THAT!");
         }
     }
 
