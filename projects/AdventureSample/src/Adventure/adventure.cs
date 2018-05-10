@@ -1153,29 +1153,25 @@ internal sealed class adventure
 
     private bool PourMixture()
     {
-        if ((((currentRoom.CompareTo(5)) == (0)) ? (-1) : (0)) != (0))
+        if (currentRoom == 5)
         {
-            mixtureCount = ((mixtureCount) + (1));
+            ++mixtureCount;
         }
 
-        PRINT(("") + ("POURED!"));
+        PRINT("POURED!");
 
-        bool ret;
-        if ((((mixtureCount.CompareTo(3)) < (0)) ? (-1) : (0)) != (0))
+        if (mixtureCount < 3)
         {
-            ret = false;
-        }
-        else
-        {
-            PRINT(("") + ("THERE IS AN EXPLOSION!"));
-            PRINT(("") + ("EVERYTHING GOES BLACK!"));
-            PRINT(("") + ("SUDDENLY YOU ARE ... "));
-            PRINT(("") + (" ... SOMEWHERE ELSE!"));
-            currentRoom = (6);
-            ret = true;
+            return false;
         }
 
-        return ret;
+        PRINT("THERE IS AN EXPLOSION!");
+        PRINT("EVERYTHING GOES BLACK!");
+        PRINT("SUDDENLY YOU ARE ... ");
+        PRINT(" ... SOMEWHERE ELSE!");
+
+        currentRoom = 6;
+        return true;
     }
 
     private void Climb()
