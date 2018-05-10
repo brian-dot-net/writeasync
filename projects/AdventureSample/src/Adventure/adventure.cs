@@ -1305,19 +1305,19 @@ internal sealed class adventure
 
     private bool Leave()
     {
-        if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
+        if (currentRoom != 13)
         {
-            PRINT(("") + ("PLEASE GIVE A DIRECTION!"));
+            PRINT("PLEASE GIVE A DIRECTION!");
             return false;
         }
-        else if ((((int)(((noun.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
+        else if ((noun != "BOA") && (noun != ""))
         {
-            PRINT(("") + ("HUH?"));
+            PRINT("HUH?");
             return false;
         }
         else
         {
-            currentRoom = ((objectRooms[(int)(11)]) - (128));
+            currentRoom = objectRooms[11] - 128;
             return true;
         }
     }
