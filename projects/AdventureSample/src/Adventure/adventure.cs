@@ -1351,18 +1351,18 @@ internal sealed class adventure
 
     private void Wear()
     {
-        if ((((noun.CompareTo("GLO")) != (0)) ? (-1) : (0)) != (0))
+        if (noun != "GLO")
         {
-            PRINT(("") + ("YOU CAN'T WEAR THAT!"));
+            PRINT("YOU CAN'T WEAR THAT!");
         }
-        else if ((((int)(((objectRooms[(int)(16)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(16)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if ((objectRooms[16] != currentRoom) && (objectRooms[16] != -1))
         {
-            PRINT(("") + ("YOU DON'T HAVE THE GLOVES."));
+            PRINT("YOU DON'T HAVE THE GLOVES.");
         }
         else
         {
-            PRINT(("") + ("YOU ARE NOW WEARING THE GLOVES."));
-            wearingGloves = (1);
+            PRINT("YOU ARE NOW WEARING THE GLOVES.");
+            wearingGloves = 1;
         }
     }
 }
