@@ -1212,23 +1212,23 @@ internal sealed class adventure
 
     private bool Jump()
     {
-        if ((((int)(((currentRoom.CompareTo(7)) != (0)) ? (-1) : (0))) & ((int)(((currentRoom.CompareTo(8)) != (0)) ? (-1) : (0)))) != (0))
+        if ((currentRoom != 7) && (currentRoom != 8))
         {
-            PRINT(("") + ("WHEE! THAT WAS FUN!"));
+            PRINT("WHEE! THAT WAS FUN!");
             return false;
         }
-        else if ((((currentRoom.CompareTo(8)) == (0)) ? (-1) : (0)) != (0))
+        else if (currentRoom == 8)
         {
-            PRINT(("") + ("YOU GRAB A HIGHER BRANCH ON THE"));
-            PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
-            currentRoom = (19);
+            PRINT("YOU GRAB A HIGHER BRANCH ON THE");
+            PRINT("TREE AND PULL YOURSELF UP....");
+            currentRoom = 19;
             return true;
         }
         else
         {
-            PRINT(("") + ("YOU GRAB THE LOWEST BRANCH OF THE"));
-            PRINT(("") + ("TREE AND PULL YOURSELF UP...."));
-            currentRoom = (8);
+            PRINT("YOU GRAB THE LOWEST BRANCH OF THE");
+            PRINT("TREE AND PULL YOURSELF UP....");
+            currentRoom = 8;
             return true;
         }
     }
