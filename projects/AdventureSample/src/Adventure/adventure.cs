@@ -1260,17 +1260,17 @@ internal sealed class adventure
 
     private void Row()
     {
-        if ((((int)(((noun.CompareTo("BOA")) != (0)) ? (-1) : (0))) & ((int)(((noun.CompareTo("")) != (0)) ? (-1) : (0)))) != (0))
+        if ((noun != "BOA") && (noun != ""))
         {
-            PRINT(("") + ("HOW CAN YOU ROW THAT?"));
+            PRINT("HOW CAN YOU ROW THAT?");
         }
-        else if ((((currentRoom.CompareTo(13)) != (0)) ? (-1) : (0)) != (0))
+        else if (currentRoom != 13)
         {
-            PRINT(("") + ("YOU'RE NOT IN THE BOAT!"));
+            PRINT("YOU'RE NOT IN THE BOAT!");
         }
         else
         {
-            PRINT(("") + ("YOU DON'T HAVE AN OAR!"));
+            PRINT("YOU DON'T HAVE AN OAR!");
         }
     }
 
