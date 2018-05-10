@@ -1110,24 +1110,24 @@ internal sealed class adventure
 
     private bool PourFormula()
     {
-        if ((((noun.CompareTo("BOT")) != (0)) ? (-1) : (0)) != (0))
+        if (noun != "BOT")
         {
-            PRINT(("") + ("YOU CAN'T POUR THAT!"));
+            PRINT("YOU CAN'T POUR THAT!");
             return false;
         }
-        else if ((((int)(((objectRooms[(int)(6)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(6)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        else if ((objectRooms[6] != currentRoom) && (objectRooms[6] != -1))
         {
-            PRINT(("") + ("YOU DON'T HAVE THE BOTTLE!"));
+            PRINT("YOU DON'T HAVE THE BOTTLE!");
             return false;
         }
-        else if ((((formulaPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
+        else if (formulaPoured == 1)
         {
-            PRINT(("") + ("THE BOTTLE IS EMPTY!"));
+            PRINT("THE BOTTLE IS EMPTY!");
             return false;
         }
         else
         {
-            formulaPoured = (1);
+            formulaPoured = 1;
             return true;
         }
     }
