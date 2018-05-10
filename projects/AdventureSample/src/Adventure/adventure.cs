@@ -1134,19 +1134,19 @@ internal sealed class adventure
 
     private bool PourSalt()
     {
-        if ((((int)(((objectRooms[(int)(3)].CompareTo(currentRoom)) != (0)) ? (-1) : (0))) & ((int)(((objectRooms[(int)(3)].CompareTo(-(1))) != (0)) ? (-1) : (0)))) != (0))
+        if ((objectRooms[3] != currentRoom) && (objectRooms[3] != -1))
         {
-            PRINT(("") + ("YOU DON'T HAVE THE SALT!"));
+            PRINT("YOU DON'T HAVE THE SALT!");
             return false;
         }
-        else if ((((saltPoured.CompareTo(1)) == (0)) ? (-1) : (0)) != (0))
+        else if (saltPoured == 1)
         {
-            PRINT(("") + ("THE SHAKER IS EMPTY!"));
+            PRINT("THE SHAKER IS EMPTY!");
             return false;
         }
         else
         {
-            saltPoured = (1);
+            saltPoured = 1;
             return true;
         }
     }
