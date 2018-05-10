@@ -403,7 +403,7 @@ internal sealed class adventure
         PRINT_n("YOU CAN GO: ");
         for (int i = 0; i <= 5; ++i)
         {
-            if (map[(int)(currentRoom), i] > 0)
+            if (map[currentRoom, i] > 0)
             {
                 PRINT_n(directions[i] + " ");
             }
@@ -418,7 +418,7 @@ internal sealed class adventure
         bool atLeastOne = false;
         for (int i = 0; i < numberOfObjects; ++i)
         {
-            if (currentRoom == ((int)objectRooms[i] & 127))
+            if (currentRoom == (objectRooms[i] & 127))
             {
                 PRINT(" " + objectNames[i]);
                 atLeastOne = true;
@@ -434,7 +434,7 @@ internal sealed class adventure
     private void PrintDescription()
     {
         PRINT("");
-        PRINT((("") + ("YOU ARE ")) + (roomDescriptions[(int)(currentRoom)]));
+        PRINT((("") + ("YOU ARE ")) + (roomDescriptions[currentRoom]));
     }
 
     private void FindRoomForObject()
@@ -447,17 +447,17 @@ internal sealed class adventure
         FL_n = 0;
         for (I_n = 0; I_n < numberOfObjects; ++I_n)
         {
-            if (objectTags[(int)(I_n)] == noun)
+            if (objectTags[I_n] == noun)
             {
                 FL_n = 1;
-                RO_n = (int)objectRooms[I_n];
+                RO_n = objectRooms[I_n];
                 break;
             }
         }
 
         if (FL_n != 0)
         {
-            RO_n = (int)objectRooms[I_n];
+            RO_n = objectRooms[I_n];
             if (RO_n > 127)
             {
                 RO_n -= 128;
@@ -559,10 +559,10 @@ internal sealed class adventure
         numberOfObjects = (17);
         numberOfDirections = (6);
         maxInventoryItems = (5);
-        DIM1_sa(out roomDescriptions, (int)(numberOfRooms));
+        DIM1_sa(out roomDescriptions, numberOfRooms);
         objectRooms = new int[numberOfObjects + 1];
-        DIM1_sa(out objectNames, (int)(numberOfObjects));
-        DIM1_sa(out objectTags, (int)(numberOfObjects));
+        DIM1_sa(out objectNames, numberOfObjects);
+        DIM1_sa(out objectTags, numberOfObjects);
         map = new int[numberOfRooms + 1, numberOfDirections + 1];
         PRINT(("") + ("Please stand by .... "));
         PRINT("");
@@ -811,7 +811,7 @@ internal sealed class adventure
 
     private bool Move(int dir)
     {
-        int next = (int)map[(int)(currentRoom), dir];
+        int next = map[currentRoom, dir];
         if ((next > 0) && (next < 128))
         {
             currentRoom = next;
@@ -842,7 +842,7 @@ internal sealed class adventure
         {
             PRINT("YOU ALREADY HAVE IT!");
         }
-        else if (objectRooms[(int)(I_n)] > 127)
+        else if (objectRooms[I_n] > 127)
         {
             PRINT("YOU CAN'T GET THAT!");
         }
@@ -862,7 +862,7 @@ internal sealed class adventure
         else
         {
             ++inventoryItems;
-            objectRooms[(int)(I_n)] = -1;
+            objectRooms[I_n] = -1;
             PRINT("TAKEN.");
         }
 
@@ -880,7 +880,7 @@ internal sealed class adventure
         else
         {
             --inventoryItems;
-            objectRooms[(int)(I_n)] = currentRoom;
+            objectRooms[I_n] = currentRoom;
             PRINT("DROPPED.");
         }
     }
@@ -1307,7 +1307,7 @@ internal sealed class adventure
         }
         else
         {
-            currentRoom = (int)objectRooms[11] - 128;
+            currentRoom = objectRooms[11] - 128;
             return true;
         }
     }
