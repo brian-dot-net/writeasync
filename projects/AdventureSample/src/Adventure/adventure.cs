@@ -17,8 +17,8 @@ internal sealed class adventure
     private string[] objectNames;
     private string[] objectTags;
     private string[] directions;
-    private float[] objectRooms;
-    private float[,] map;
+    private int[] objectRooms;
+    private int[,] map;
     private string verb;
     private string noun;
     private int numberOfRooms;
@@ -53,241 +53,241 @@ internal sealed class adventure
         DATA = (new Queue());
 
         // LIVING ROOM
-        DATA.Enqueue((float)(4));
-        DATA.Enqueue((float)(3));
-        DATA.Enqueue((float)(2));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(4);
+        DATA.Enqueue(3);
+        DATA.Enqueue(2);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // KITCHEN
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(1));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(1);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // LIBRARY
-        DATA.Enqueue((float)(1));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(1);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // FRONT YARD
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(1));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(5));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
+        DATA.Enqueue(1);
+        DATA.Enqueue(0);
+        DATA.Enqueue(5);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // GARAGE
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(4));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(4);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // OPEN FIELD
-        DATA.Enqueue((float)(9));
-        DATA.Enqueue((float)(7));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(9);
+        DATA.Enqueue(7);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // EDGE OF FOREST
-        DATA.Enqueue((float)(6));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(6);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // BRANCH OF TREE
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(7));
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(7);
 
         // LONG, WINDING ROAD (1)
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(6));
-        DATA.Enqueue((float)(10));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
+        DATA.Enqueue(6);
+        DATA.Enqueue(10);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // LONG, WINDING ROAD (2)
-        DATA.Enqueue((float)(11));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(9));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(11);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(9);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // LONG, WINDING ROAD (3)
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(10));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(12));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
+        DATA.Enqueue(10);
+        DATA.Enqueue(0);
+        DATA.Enqueue(12);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // SOUTH BANK OF RIVER
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(11));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(11);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // BOAT
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // NORTH BANK OF RIVER
-        DATA.Enqueue((float)(15));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(15);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // WELL-TRAVELED ROAD
-        DATA.Enqueue((float)(16));
-        DATA.Enqueue((float)(14));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(16);
+        DATA.Enqueue(14);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // SOUTH OF CASTLE
-        DATA.Enqueue((float)(128));
-        DATA.Enqueue((float)(15));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(128);
+        DATA.Enqueue(15);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
 
         // NARROW HALL
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(18));
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(18);
+        DATA.Enqueue(0);
 
         // LARGE HALL
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(17));
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(17);
 
         // TOP OF TREE
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(0));
-        DATA.Enqueue((float)(8));
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(0);
+        DATA.Enqueue(8);
 
         // OBJECT #0
         DATA.Enqueue("AN OLD DIARY");
         DATA.Enqueue("DIA");
-        DATA.Enqueue((float)(1));
+        DATA.Enqueue(1);
 
         // OBJECT #1
         DATA.Enqueue("A SMALL BOX");
         DATA.Enqueue("BOX");
-        DATA.Enqueue((float)(1));
+        DATA.Enqueue(1);
 
         // OBJECT #2
         DATA.Enqueue("CABINET");
         DATA.Enqueue("CAB");
-        DATA.Enqueue((float)(130));
+        DATA.Enqueue(130);
 
         // OBJECT #3
         DATA.Enqueue("A SALT SHAKER");
         DATA.Enqueue("SAL");
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
 
         // OBJECT #4
         DATA.Enqueue("A DICTIONARY");
         DATA.Enqueue("DIC");
-        DATA.Enqueue((float)(3));
+        DATA.Enqueue(3);
 
         // OBJECT #5
         DATA.Enqueue("WOODEN BARREL");
         DATA.Enqueue("BAR");
-        DATA.Enqueue((float)(133));
+        DATA.Enqueue(133);
 
         // OBJECT #6
         DATA.Enqueue("A SMALL BOTTLE");
         DATA.Enqueue("BOT");
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
 
         // OBJECT #7
         DATA.Enqueue("A LADDER");
         DATA.Enqueue("LAD");
-        DATA.Enqueue((float)(4));
+        DATA.Enqueue(4);
 
         // OBJECT #8
         DATA.Enqueue("A SHOVEL");
         DATA.Enqueue("SHO");
-        DATA.Enqueue((float)(5));
+        DATA.Enqueue(5);
 
         // OBJECT #9
         DATA.Enqueue("A TREE");
         DATA.Enqueue("TRE");
-        DATA.Enqueue((float)(135));
+        DATA.Enqueue(135);
 
         // OBJECT #10
         DATA.Enqueue("A GOLDEN SWORD");
         DATA.Enqueue("SWO");
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
 
         // OBJECT #11
         DATA.Enqueue("A WOODEN BOAT");
         DATA.Enqueue("BOA");
-        DATA.Enqueue((float)(140));
+        DATA.Enqueue(140);
 
         // OBJECT #12
         DATA.Enqueue("A MAGIC FAN");
         DATA.Enqueue("FAN");
-        DATA.Enqueue((float)(8));
+        DATA.Enqueue(8);
 
         // OBJECT #13
         DATA.Enqueue("A NASTY-LOOKING GUARD");
         DATA.Enqueue("GUA");
-        DATA.Enqueue((float)(144));
+        DATA.Enqueue(144);
 
         // OBJECT #14
         DATA.Enqueue("A GLASS CASE");
         DATA.Enqueue("CAS");
-        DATA.Enqueue((float)(146));
+        DATA.Enqueue(146);
 
         // OBJECT #15
         DATA.Enqueue("A GLOWING RUBY");
         DATA.Enqueue("RUB");
-        DATA.Enqueue((float)(0));
+        DATA.Enqueue(0);
 
         // OBJECT #16
         DATA.Enqueue("A PAIR OF RUBBER GLOVES");
         DATA.Enqueue("GLO");
-        DATA.Enqueue((float)(19));
+        DATA.Enqueue(19);
 
         verb = ("");
         noun = ("");
@@ -304,11 +304,11 @@ internal sealed class adventure
         I_n = (0);
         FL_n = (0);
         RO_n = (0);
-        roomDescriptions = (new string[11]);
-        objectNames = (new string[11]);
-        objectTags = (new string[11]);
-        directions = (new string[11]);
-        objectRooms = (new float[11]);
+        roomDescriptions = new string[11];
+        objectNames = new string[11];
+        objectTags = new string[11];
+        directions = new string[11];
+        objectRooms = new int[11];
     }
 
     private void CLS()
@@ -321,16 +321,6 @@ internal sealed class adventure
     {
         a = (new string[(d1) + (1)]);
         Array.Fill(a, "");
-    }
-
-    private void DIM1_na(out float[] a, int d1)
-    {
-        a = (new float[(d1) + (1)]);
-    }
-
-    private void DIM2_na(out float[,] a, int d1, int d2)
-    {
-        a = (new float[(d1) + (1), (d2) + (1)]);
     }
 
     private void PRINT(string expression)
@@ -376,9 +366,9 @@ internal sealed class adventure
         this.output.Write(expression);
     }
 
-    private float READ_n()
+    private int READ_n()
     {
-        return (float)(DATA.Dequeue());
+        return (int)DATA.Dequeue();
     }
 
     private string READ_s()
@@ -570,10 +560,10 @@ internal sealed class adventure
         numberOfDirections = (6);
         maxInventoryItems = (5);
         DIM1_sa(out roomDescriptions, (int)(numberOfRooms));
-        DIM1_na(out objectRooms, (int)(numberOfObjects));
+        objectRooms = new int[numberOfObjects + 1];
         DIM1_sa(out objectNames, (int)(numberOfObjects));
         DIM1_sa(out objectTags, (int)(numberOfObjects));
-        DIM2_na(out map, (int)(numberOfRooms), (int)(numberOfDirections));
+        map = new int[numberOfRooms + 1, numberOfDirections + 1];
         PRINT(("") + ("Please stand by .... "));
         PRINT("");
         PRINT("");
