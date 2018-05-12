@@ -642,11 +642,11 @@ internal sealed class adventure
         }
         else if (verb == "REA")
         {
-            Read();
+            return Read();
         }
         else if (verb == "OPE")
         {
-            Open();
+            return Open();
         }
         else if (verb == "POU")
         {
@@ -654,7 +654,7 @@ internal sealed class adventure
         }
         else if (verb == "CLI")
         {
-            Climb();
+            return Climb();
         }
         else if (verb == "JUM")
         {
@@ -984,7 +984,7 @@ internal sealed class adventure
         }
     }
 
-    private void Read()
+    private int Read()
     {
         if (noun == "DIA")
         {
@@ -1026,9 +1026,11 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T READ THAT!");
         }
+
+        return VerbResult.Idle;
     }
 
-    private void Open()
+    private int Open()
     {
         if (noun == "BOX")
         {
@@ -1075,6 +1077,8 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T OPEN THAT!");
         }
+
+        return VerbResult.Idle;
     }
 
     private int Pour()
@@ -1168,7 +1172,7 @@ internal sealed class adventure
         return true;
     }
 
-    private void Climb()
+    private int Climb()
     {
         if (noun == "TRE")
         {
@@ -1202,6 +1206,8 @@ internal sealed class adventure
         {
             PRINT("IT WON'T DO ANY GOOD.");
         }
+
+        return VerbResult.Idle;
     }
 
     private int Jump()
