@@ -603,7 +603,7 @@ internal sealed class adventure
             {
                 Parser();
 
-                VerbResult ret = HandleVerb(verbRoutines, unknown);
+                VerbResult ret = verbRoutines.Handle(verb, unknown);
                 if (ret == VerbResult.Idle)
                 {
                     // NO-OP
@@ -650,17 +650,6 @@ internal sealed class adventure
     private void AddVerb(VerbRoutines verbRoutines, string v, Func<VerbResult> handler)
     {
         verbRoutines.D.Add(v, handler);
-    }
-
-    private VerbResult HandleVerb(VerbRoutines verbRoutines, Func<VerbResult> unknown)
-    {
-        Func<VerbResult> verbRoutine;
-        if (!verbRoutines.D.TryGetValue(verb, out verbRoutine))
-        {
-            verbRoutine = unknown;
-        }
-
-        return verbRoutine();
     }
 
     private VerbResult UnknownVerb()
@@ -1363,5 +1352,16 @@ internal sealed class adventure
         }
 
         public Dictionary<string, Func<VerbResult>> D => verbRoutines;
+
+        public VerbResult Handle(string verb, Func<VerbResult> unknown)
+        {
+            Func<VerbResult> verbRoutine;
+            if (!this.verbRoutines.TryGetValue(verb, out verbRoutine))
+            {
+                verbRoutine = unknown;
+            }
+
+            return verbRoutine();
+        }
     }
 }
