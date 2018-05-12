@@ -11,6 +11,11 @@ using Adventure;
 
 internal sealed class adventure
 {
+    private const int NumberOfRooms = 19;
+    private const int NumberOfObjects = 17;
+    private const int NumberOfDirections = 6;
+    private const int MaxInventoryItems = 5;
+
     private readonly TextReader input;
     private readonly TextWriter output;
     private Queue DATA;
@@ -20,10 +25,6 @@ internal sealed class adventure
     private string[] directions;
     private int[] objectRooms;
     private int[,] map;
-    private int numberOfRooms;
-    private int numberOfObjects;
-    private int numberOfDirections;
-    private int maxInventoryItems;
     private int currentRoom;
     private int inventoryItems;
     private float saltPoured;
@@ -288,10 +289,6 @@ internal sealed class adventure
         DATA.Enqueue("GLO");
         DATA.Enqueue(19);
 
-        numberOfRooms = (0);
-        numberOfObjects = (0);
-        numberOfDirections = (0);
-        maxInventoryItems = (0);
         currentRoom = (0);
         inventoryItems = (0);
         saltPoured = (0);
@@ -387,7 +384,7 @@ internal sealed class adventure
     {
         PRINT("YOU CAN SEE: ");
         bool atLeastOne = false;
-        for (int i = 0; i < numberOfObjects; ++i)
+        for (int i = 0; i < NumberOfObjects; ++i)
         {
             if (currentRoom == (objectRooms[i] & 127))
             {
@@ -410,13 +407,8 @@ internal sealed class adventure
 
     private void FindRoomForObject(string noun)
     {
-        if (numberOfObjects == 0)
-        {
-            return;
-        }
-
         FL_n = 0;
-        for (I_n = 0; I_n < numberOfObjects; ++I_n)
+        for (I_n = 0; I_n < NumberOfObjects; ++I_n)
         {
             if (objectTags[I_n] == noun)
             {
@@ -438,11 +430,6 @@ internal sealed class adventure
 
     private void InitMap()
     {
-        if (numberOfRooms == 0)
-        {
-            return;
-        }
-
         directions[0] = "NORTH";
         directions[1] = "SOUTH";
         directions[2] = "EAST";
@@ -450,9 +437,9 @@ internal sealed class adventure
         directions[4] = "UP";
         directions[5] = "DOWN";
 
-        for (int i = 1; i <= numberOfRooms; ++i)
+        for (int i = 1; i <= NumberOfRooms; ++i)
         {
-            for (int j = 0; j < numberOfDirections; ++j)
+            for (int j = 0; j < NumberOfDirections; ++j)
             {
                 map[i, j] = READ_n();
             }
@@ -461,12 +448,7 @@ internal sealed class adventure
 
     private void InitObjects()
     {
-        if (numberOfObjects == 0)
-        {
-            return;
-        }
-
-        for (int i = 0; i < numberOfObjects; ++i)
+        for (int i = 0; i < NumberOfObjects; ++i)
         {
             objectNames[i] = READ_s();
             objectTags[i] = READ_s();
@@ -524,17 +506,13 @@ internal sealed class adventure
         ; // **
         ; // ** An adventure game
         ; // 
-        CLS() // Put a statement here to clear the screen. If you are using a Radio Shack Model I, III, or 4, add a CLEAR statement. (See text.)
-        ;
-        numberOfRooms = (19);
-        numberOfObjects = (17);
-        numberOfDirections = (6);
-        maxInventoryItems = (5);
-        DIM1_sa(out roomDescriptions, numberOfRooms);
-        objectRooms = new int[numberOfObjects + 1];
-        DIM1_sa(out objectNames, numberOfObjects);
-        DIM1_sa(out objectTags, numberOfObjects);
-        map = new int[numberOfRooms + 1, numberOfDirections + 1];
+        CLS();
+
+        DIM1_sa(out roomDescriptions, NumberOfRooms);
+        objectRooms = new int[NumberOfObjects + 1];
+        DIM1_sa(out objectNames, NumberOfObjects);
+        DIM1_sa(out objectTags, NumberOfObjects);
+        map = new int[NumberOfRooms + 1, NumberOfDirections + 1];
         PRINT(("") + ("Please stand by .... "));
         PRINT("");
         PRINT("");
@@ -722,7 +700,7 @@ internal sealed class adventure
         {
             PRINT("THAT'S NOT HERE!");
         }
-        else if (inventoryItems > maxInventoryItems)
+        else if (inventoryItems > MaxInventoryItems)
         {
             PRINT("YOU CAN'T CARRY ANY MORE.");
         }
@@ -763,7 +741,7 @@ internal sealed class adventure
     {
         bool atLeastOne = false;
         PRINT("YOU ARE CARRYING:");
-        for (int i = 0; i < numberOfObjects; ++i)
+        for (int i = 0; i < NumberOfObjects; ++i)
         {
             if (objectRooms[i] == -1)
             {
