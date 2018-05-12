@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 internal sealed class adventure
@@ -585,6 +586,8 @@ internal sealed class adventure
 
         CLS();
 
+        Dictionary<string, Func<int>> verbRoutines = new Dictionary<string, Func<int>>();
+
         while (true)
         {
             PrintDescription();
@@ -597,7 +600,7 @@ internal sealed class adventure
             {
                 Parser();
 
-                int ret = HandleVerb();
+                int ret = HandleVerb(verbRoutines);
                 if (ret == 0)
                 {
                     break;
@@ -610,9 +613,14 @@ internal sealed class adventure
         }
     }
 
-    private int HandleVerb()
+    private int HandleVerb(Dictionary<string, Func<int>> verbRoutines)
     {
-        if (verb == "GO")
+        Func<int> verbRoutine;
+        if (verbRoutines.TryGetValue(verb, out verbRoutine))
+        {
+            return verbRoutine();
+        }
+        else if (verb == "GO")
         {
             return Go();
         }
