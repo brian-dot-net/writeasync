@@ -9,7 +9,7 @@ namespace Adventure
     using System.IO;
     using System.Text;
 
-    internal sealed class Program
+    internal static class Program
     {
         private static void Main(string[] args)
         {

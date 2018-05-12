@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Adventure;
 
 internal sealed class adventure
 {
@@ -1355,13 +1356,5 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
-    }
-
-    private enum VerbResult
-    {
-        Idle,
-        Proceed,
-        RestartGame,
-        EndGame
     }
 }
