@@ -667,10 +667,7 @@ internal sealed class adventure
         }
         else if (verb == "JUM")
         {
-            if (Jump())
-            {
-                return VerbResult.Proceed;
-            }
+            return Jump();
         }
         else if (verb == "DIG")
         {
@@ -686,10 +683,7 @@ internal sealed class adventure
         }
         else if ((verb == "LEA") || (verb == "EXI"))
         {
-            if (Leave())
-            {
-                return VerbResult.Proceed;
-            }
+            return Leave();
         }
         else if (verb == "FIG")
         {
@@ -1213,26 +1207,26 @@ internal sealed class adventure
         }
     }
 
-    private bool Jump()
+    private int Jump()
     {
         if ((currentRoom != 7) && (currentRoom != 8))
         {
             PRINT("WHEE! THAT WAS FUN!");
-            return false;
+            return VerbResult.Idle;
         }
         else if (currentRoom == 8)
         {
             PRINT("YOU GRAB A HIGHER BRANCH ON THE");
             PRINT("TREE AND PULL YOURSELF UP....");
             currentRoom = 19;
-            return true;
+            return VerbResult.Proceed;
         }
         else
         {
             PRINT("YOU GRAB THE LOWEST BRANCH OF THE");
             PRINT("TREE AND PULL YOURSELF UP....");
             currentRoom = 8;
-            return true;
+            return VerbResult.Proceed;
         }
     }
 
@@ -1306,22 +1300,22 @@ internal sealed class adventure
         }
     }
 
-    private bool Leave()
+    private int Leave()
     {
         if (currentRoom != 13)
         {
             PRINT("PLEASE GIVE A DIRECTION!");
-            return false;
+            return VerbResult.Idle;
         }
         else if ((noun != "BOA") && (noun != ""))
         {
             PRINT("HUH?");
-            return false;
+            return VerbResult.Idle;
         }
         else
         {
             currentRoom = objectRooms[11] - 128;
-            return true;
+            return VerbResult.Proceed;
         }
     }
 
