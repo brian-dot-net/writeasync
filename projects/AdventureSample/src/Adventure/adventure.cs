@@ -617,6 +617,9 @@ internal sealed class adventure
     {
         Dictionary<string, Func<int>> verbRoutines = new Dictionary<string, Func<int>>();
         verbRoutines.Add("GO", Go);
+        verbRoutines.Add("GET", Get);
+        verbRoutines.Add("TAK", Get);
+
         return verbRoutines;
     }
 
@@ -626,10 +629,6 @@ internal sealed class adventure
         if (verbRoutines.TryGetValue(verb, out verbRoutine))
         {
             return verbRoutine();
-        }
-        else if ((verb == "GET") || (verb == "TAK"))
-        {
-            return Get();
         }
         else if ((verb == "DRO") || (verb == "THR"))
         {
