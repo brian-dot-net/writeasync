@@ -662,15 +662,15 @@ internal sealed class adventure
         }
         else if (verb == "DIG")
         {
-            Dig();
+            return Dig();
         }
         else if (verb == "ROW")
         {
-            Row();
+            return Row();
         }
         else if (verb == "WAV")
         {
-            Wave();
+            return Wave();
         }
         else if ((verb == "LEA") || (verb == "EXI"))
         {
@@ -1233,7 +1233,7 @@ internal sealed class adventure
         }
     }
 
-    private void Dig()
+    private int Dig()
     {
         if ((noun != "HOL") && (noun != "GRO") && (noun != ""))
         {
@@ -1256,9 +1256,11 @@ internal sealed class adventure
             PRINT("THERE'S SOMETHING THERE!");
             objectRooms[10] = 6;
         }
+
+        return VerbResult.Idle;
     }
 
-    private void Row()
+    private int Row()
     {
         if ((noun != "BOA") && (noun != ""))
         {
@@ -1272,9 +1274,11 @@ internal sealed class adventure
         {
             PRINT("YOU DON'T HAVE AN OAR!");
         }
+
+        return VerbResult.Idle;
     }
 
-    private void Wave()
+    private int Wave()
     {
         if (noun != "FAN")
         {
@@ -1301,6 +1305,8 @@ internal sealed class adventure
                 objectRooms[11] = 140;
             }
         }
+
+        return VerbResult.Idle;
     }
 
     private int Leave()
