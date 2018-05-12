@@ -838,7 +838,7 @@ internal sealed class adventure
     {
         if (noun == "DIA")
         {
-            if ((objects.objectRooms[0] != currentRoom) && (objects.objectRooms[0] != -1))
+            if (!objects.IsHere(0, currentRoom))
             {
                 PRINT("THERE'S NO DIARY HERE!");
             }
@@ -851,7 +851,7 @@ internal sealed class adventure
         }
         else if (noun == "DIC")
         {
-            if ((objects.objectRooms[4] != currentRoom) && (objects.objectRooms[4] != -1))
+            if (!objects.IsHere(4, currentRoom))
             {
                 PRINT("YOU DON'T SEE A DICTIONARY!");
             }
@@ -863,7 +863,7 @@ internal sealed class adventure
         }
         else if (noun == "BOT")
         {
-            if ((objects.objectRooms[6] != currentRoom) && (objects.objectRooms[6] != -1))
+            if (!objects.IsHere(6, currentRoom))
             {
                 PRINT("THERE'S NO BOTTLE HERE!");
             }
@@ -884,7 +884,7 @@ internal sealed class adventure
     {
         if (noun == "BOX")
         {
-            if ((objects.objectRooms[1] != currentRoom) && (objects.objectRooms[1] != -1))
+            if (!objects.IsHere(1, currentRoom))
             {
                 PRINT("THERE'S NO BOX HERE!");
             }
@@ -963,7 +963,7 @@ internal sealed class adventure
 
     private bool PourFormula()
     {
-        if ((objects.objectRooms[6] != currentRoom) && (objects.objectRooms[6] != -1))
+        if (!objects.IsHere(6, currentRoom))
         {
             PRINT("YOU DON'T HAVE THE BOTTLE!");
             return false;
@@ -982,7 +982,7 @@ internal sealed class adventure
 
     private bool PourSalt()
     {
-        if ((objects.objectRooms[3] != currentRoom) && (objects.objectRooms[3] != -1))
+        if (!objects.IsHere(3, currentRoom))
         {
             PRINT("YOU DON'T HAVE THE SALT!");
             return false;
@@ -1037,7 +1037,7 @@ internal sealed class adventure
         }
         else if (noun == "LAD")
         {
-            if ((objects.objectRooms[7] != currentRoom) && (objects.objectRooms[7] != -1))
+            if (!objects.IsHere(7, currentRoom))
             {
                 PRINT("YOU DON'T HAVE THE LADDER!");
             }
@@ -1089,7 +1089,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T DIG THAT!");
         }
-        else if ((objects.objectRooms[8] != currentRoom) && (objects.objectRooms[8] != -1))
+        else if (!objects.IsHere(8, currentRoom))
         {
             PRINT("YOU DON'T HAVE A SHOVEL!");
         }
@@ -1134,7 +1134,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T WAVE THAT!");
         }
-        else if ((objects.objectRooms[12] != currentRoom) && (objects.objectRooms[12] != -1))
+        else if (!objects.IsHere(12, currentRoom))
         {
             PRINT("YOU DON'T HAVE THE FAN!");
         }
