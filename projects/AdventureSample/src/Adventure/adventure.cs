@@ -442,10 +442,17 @@ internal sealed class adventure
     {
         for (int i = 0; i < Objects.NumberOfObjects; ++i)
         {
-            objects.objectNames[i] = READ_s();
-            objects.objectTags[i] = READ_s();
-            objects.objectRooms[i] = READ_n();
+            ObjectRef obj = ReadObj();
+
+            objects.objectNames[i] = obj.Name;
+            objects.objectTags[i] = obj.Tag;
+            objects.objectRooms[i] = obj.Room;
         }
+    }
+
+    private ObjectRef ReadObj()
+    {
+        return new ObjectRef(READ_s(), READ_s(), READ_n());
     }
 
     private void InitDescriptions()
@@ -1221,6 +1228,22 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
+    }
+
+    private sealed class ObjectRef
+    {
+        public ObjectRef(string name, string tag, int room)
+        {
+            this.Name = name;
+            this.Tag = tag;
+            this.Room = room;
+        }
+
+        public string Name { get; private set; }
+
+        public string Tag { get; private set; }
+
+        public int Room { get; private set; }
     }
 
     private sealed class Objects
