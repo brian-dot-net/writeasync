@@ -355,18 +355,6 @@ internal sealed class adventure
 
     private void InitObjects()
     {
-        for (int i = 0; i < Objects.NumberOfObjects; ++i)
-        {
-            ObjectRef obj = ReadObj(i);
-
-            objects.objectNames[i] = obj.Name;
-            objects.objectTags[i] = obj.Tag;
-            objects.objectRooms[i] = obj.Room;
-        }
-    }
-
-    private ObjectRef ReadObj(int i)
-    {
         ObjectRef[] d = new ObjectRef[]
         {
             // OBJECT #0
@@ -421,8 +409,16 @@ internal sealed class adventure
              new ObjectRef("A PAIR OF RUBBER GLOVES", "GLO", 19)
         };
 
-        return d[i];
+        for (int i = 0; i < Objects.NumberOfObjects; ++i)
+        {
+            ObjectRef obj = d[i];
+
+            objects.objectNames[i] = obj.Name;
+            objects.objectTags[i] = obj.Tag;
+            objects.objectRooms[i] = obj.Room;
+        }
     }
+
 
     private void InitDescriptions()
     {
