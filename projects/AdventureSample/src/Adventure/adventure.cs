@@ -614,17 +614,11 @@ internal sealed class adventure
     {
         if (verb == "GO")
         {
-            if (Go())
-            {
-                return VerbResult.Proceed;
-            }
+            return Go();
         }
         else if ((verb == "GET") || (verb == "TAK"))
         {
-            if (Get())
-            {
-                return PlayAgain();
-            }
+            return Get();
         }
         else if ((verb == "DRO") || (verb == "THR"))
         {
@@ -636,10 +630,7 @@ internal sealed class adventure
         }
         else if ((verb == "LOO") || (verb == "L"))
         {
-            if (Look())
-            {
-                return VerbResult.Proceed;
-            }
+            return Look();
         }
         else if (verb == "EXA")
         {
@@ -770,7 +761,7 @@ internal sealed class adventure
         }
     }
 
-    private bool Go()
+    private int Go()
     {
         int dir;
         if (noun == "NOR")
@@ -800,24 +791,24 @@ internal sealed class adventure
         else if ((noun == "BOA") && (objectRooms[11] == (currentRoom + 128)))
         {
             currentRoom = 13;
-            return true;
+            return VerbResult.Proceed;
         }
         else
         {
             PRINT("YOU CAN'T GO THERE!");
-            return false;
+            return VerbResult.Idle;
         }
 
         return Move(dir);
     }
 
-    private bool Move(int dir)
+    private int Move(int dir)
     {
         int next = map[currentRoom, dir];
         if ((next > 0) && (next < 128))
         {
             currentRoom = next;
-            return true;
+            return VerbResult.Proceed;
         }
 
         if (next == 128)
@@ -829,10 +820,10 @@ internal sealed class adventure
             PRINT("YOU CAN'T GO THERE!");
         }
 
-        return false;
+        return VerbResult.Idle;
     }
 
-    private bool Get()
+    private int Get()
     {
         FindRoomForObject();
 
@@ -859,7 +850,7 @@ internal sealed class adventure
         else if ((currentRoom == 18) && (noun == "RUB"))
         {
             PRINT("CONGRATULATIONS! YOU'VE WON!");
-            return true;
+            return PlayAgain();
         }
         else
         {
@@ -868,7 +859,7 @@ internal sealed class adventure
             PRINT("TAKEN.");
         }
 
-        return false;
+        return VerbResult.Idle;
     }
 
     private void Drop()
@@ -906,15 +897,15 @@ internal sealed class adventure
         }
     }
 
-    private bool Look()
+    private int Look()
     {
         if (noun == "")
         {
-            return true;
+            return VerbResult.Proceed;
         }
 
         Examine();
-        return false;
+        return VerbResult.Idle;
     }
 
     private void Examine()
