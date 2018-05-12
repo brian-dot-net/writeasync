@@ -587,7 +587,7 @@ internal sealed class adventure
 
         CLS();
 
-        Dictionary<string, Func<VerbResult>> verbRoutines = InitVerbs();
+        VerbRoutines verbRoutines = new VerbRoutines();
         Func<VerbResult> unknown = UnknownVerb;
         InitHandlers(verbRoutines);
 
@@ -620,12 +620,7 @@ internal sealed class adventure
         }
     }
 
-    private Dictionary<string, Func<VerbResult>> InitVerbs()
-    {
-        return new Dictionary<string, Func<VerbResult>>();
-    }
-
-    private void InitHandlers(Dictionary<string, Func<VerbResult>> verbRoutines)
+    private void InitHandlers(VerbRoutines verbRoutines)
     {
         AddVerb(verbRoutines, "GO", Go);
         AddVerb(verbRoutines, "GET", Get);
@@ -652,15 +647,15 @@ internal sealed class adventure
         AddVerb(verbRoutines, "WEA", Wear);
     }
 
-    private void AddVerb(Dictionary<string, Func<VerbResult>> verbRoutines, string v, Func<VerbResult> handler)
+    private void AddVerb(VerbRoutines verbRoutines, string v, Func<VerbResult> handler)
     {
-        verbRoutines.Add(v, handler);
+        verbRoutines.D.Add(v, handler);
     }
 
-    private VerbResult HandleVerb(Dictionary<string, Func<VerbResult>> verbRoutines, Func<VerbResult> unknown)
+    private VerbResult HandleVerb(VerbRoutines verbRoutines, Func<VerbResult> unknown)
     {
         Func<VerbResult> verbRoutine;
-        if (!verbRoutines.TryGetValue(verb, out verbRoutine))
+        if (!verbRoutines.D.TryGetValue(verb, out verbRoutine))
         {
             verbRoutine = unknown;
         }
@@ -1356,5 +1351,17 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
+    }
+
+    private sealed class VerbRoutines
+    {
+        private readonly Dictionary<string, Func<VerbResult>> verbRoutines;
+
+        public VerbRoutines()
+        {
+            this.verbRoutines = new Dictionary<string, Func<VerbResult>>();
+        }
+
+        public Dictionary<string, Func<VerbResult>> D => verbRoutines;
     }
 }
