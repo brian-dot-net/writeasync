@@ -303,7 +303,7 @@ internal sealed class adventure
         Console.Clear();
     }
 
-    private void DIM1_sa(out string[] a, int d1)
+    private static void DIM1_sa(out string[] a, int d1)
     {
         a = (new string[(d1) + (1)]);
         Array.Fill(a, "");
@@ -502,9 +502,6 @@ internal sealed class adventure
 
         DIM1_sa(out roomDescriptions, NumberOfRooms);
         objects = new Objects();
-        objects.objectRooms = new int[Objects.NumberOfObjects + 1];
-        DIM1_sa(out objects.objectNames, Objects.NumberOfObjects);
-        DIM1_sa(out objects.objectTags, Objects.NumberOfObjects);
         map = new int[NumberOfRooms + 1, NumberOfDirections + 1];
         PRINT(("") + ("Please stand by .... "));
         PRINT("");
@@ -1233,6 +1230,13 @@ internal sealed class adventure
         public string[] objectNames;
         public string[] objectTags;
         public int[] objectRooms;
+
+        public Objects()
+        {
+            this.objectRooms = new int[NumberOfObjects + 1];
+            DIM1_sa(out this.objectNames, NumberOfObjects);
+            DIM1_sa(out this.objectTags, NumberOfObjects);
+        }
 
         public bool Carrying(int id) => this.objectRooms[id] == -1;
 
