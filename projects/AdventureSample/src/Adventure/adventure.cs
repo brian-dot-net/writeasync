@@ -571,7 +571,15 @@ internal sealed class adventure
 
             while (true)
             {
-                Command command = Parser();
+                string cmd = "";
+                do
+                {
+                    PRINT("");
+                    cmd = (INPUT_s("WHAT NOW"));
+                }
+                while (cmd == "");
+
+                Command command = Parser(cmd);
                 noun = command.Noun;
 
                 VerbResult ret = verbRoutines.Handle(command.Verb);
@@ -624,16 +632,8 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private Command Parser()
+    private Command Parser(string command)
     {
-        string command = "";
-        do
-        {
-            PRINT("");
-            command = (INPUT_s("WHAT NOW"));
-        }
-        while (command == "");
-
         int c = 0;
 
         string verb = "";
