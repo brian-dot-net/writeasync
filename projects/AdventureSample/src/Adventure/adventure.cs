@@ -580,7 +580,18 @@ internal sealed class adventure
                 while (cmd == "");
 
                 Command command = Parser(cmd);
+
                 noun = command.Noun;
+                if (noun == "SHA")
+                {
+                    noun = "SAL";
+                }
+
+                if (noun == "FOR")
+                {
+                    noun = "BOT";
+                }
+
 
                 VerbResult ret = verbRoutines.Handle(command.Verb);
                 if (ret == VerbResult.Idle)
@@ -680,16 +691,6 @@ internal sealed class adventure
         if (noun.Length > 3)
         {
             noun = noun.Substring(0, 3);
-        }
-
-        if (noun == "SHA")
-        {
-            noun = "SAL";
-        }
-
-        if (noun == "FOR")
-        {
-            noun = "BOT";
         }
 
         return new Command(verb, noun);
