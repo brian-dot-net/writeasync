@@ -632,6 +632,7 @@ internal sealed class adventure
         verbRoutines.Add("POU", Pour);
         verbRoutines.Add("CLI", Climb);
         verbRoutines.Add("JUM", Jump);
+        verbRoutines.Add("DIG", Dig);
 
         return verbRoutines;
     }
@@ -642,10 +643,6 @@ internal sealed class adventure
         if (verbRoutines.TryGetValue(verb, out verbRoutine))
         {
             return verbRoutine();
-        }
-        else if (verb == "DIG")
-        {
-            return Dig();
         }
         else if (verb == "ROW")
         {
