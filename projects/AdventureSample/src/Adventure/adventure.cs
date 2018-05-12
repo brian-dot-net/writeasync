@@ -736,7 +736,7 @@ internal sealed class adventure
         PRINT("YOU ARE CARRYING:");
         for (int i = 0; i < Objects.NumberOfObjects; ++i)
         {
-            if (objects.objectRooms[i] == -1)
+            if (objects.Carrying(i))
             {
                 PRINT(" " + objects.objectNames[i]);
                 atLeastOne = true;
@@ -1192,7 +1192,7 @@ internal sealed class adventure
         {
             PRINT("THERE'S NO GUARD HERE!");
         }
-        else if (objects.objectRooms[10] != -1)
+        else if (!objects.Carrying(10))
         {
             PRINT("YOU DON'T HAVE A WEAPON!");
         }
@@ -1234,9 +1234,11 @@ internal sealed class adventure
         public string[] objectTags;
         public int[] objectRooms;
 
+        public bool Carrying(int id) => this.objectRooms[id] == -1;
+
         public bool IsHere(int id, int currentRoom)
         {
-            return (objectRooms[id] == currentRoom) || (objectRooms[id] == -1);
+            return (this.objectRooms[id] == currentRoom) || this.Carrying(id);
         }
     }
 }
