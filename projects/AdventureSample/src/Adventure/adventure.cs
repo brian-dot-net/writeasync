@@ -597,9 +597,9 @@ internal sealed class adventure
 
             while (true)
             {
-                string verb = Parser();
+                Command command = Parser();
 
-                VerbResult ret = verbRoutines.Handle(verb);
+                VerbResult ret = verbRoutines.Handle(command.Verb);
                 if (ret == VerbResult.Idle)
                 {
                     // NO-OP
@@ -649,7 +649,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private string Parser()
+    private Command Parser()
     {
         string command = "";
         do
@@ -717,7 +717,7 @@ internal sealed class adventure
             noun = "BOT";
         }
 
-        return verb;
+        return new Command(verb);
     }
 
     private VerbResult Go()
@@ -1333,5 +1333,15 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
+    }
+
+    private sealed class Command
+    {
+        public Command(string verb)
+        {
+            this.Verb = verb;
+        }
+
+        public string Verb { get; private set; }
     }
 }
