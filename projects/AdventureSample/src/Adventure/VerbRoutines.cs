@@ -9,29 +9,29 @@ namespace Adventure
 
     internal sealed class VerbRoutines
     {
-        private readonly Dictionary<string, Func<VerbResult>> verbRoutines;
-        private readonly Func<VerbResult> unknown;
+        private readonly Dictionary<string, Func<string, VerbResult>> verbRoutines;
+        private readonly Func<string, VerbResult> unknown;
 
-        public VerbRoutines(Func<VerbResult> unknown)
+        public VerbRoutines(Func<string, VerbResult> unknown)
         {
-            this.verbRoutines = new Dictionary<string, Func<VerbResult>>();
+            this.verbRoutines = new Dictionary<string, Func<string, VerbResult>>();
             this.unknown = unknown;
         }
 
-        public void Add(string verb, Func<VerbResult> handler)
+        public void Add(string verb, Func<string, VerbResult> handler)
         {
             this.verbRoutines.Add(verb, handler);
         }
 
-        public VerbResult Handle(string verb)
+        public VerbResult Handle(string verb, string noun)
         {
-            Func<VerbResult> verbRoutine;
+            Func<string, VerbResult> verbRoutine;
             if (!this.verbRoutines.TryGetValue(verb, out verbRoutine))
             {
                 verbRoutine = this.unknown;
             }
 
-            return verbRoutine();
+            return verbRoutine(noun);
         }
     }
 }

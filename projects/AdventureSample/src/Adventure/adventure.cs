@@ -20,7 +20,6 @@ internal sealed class adventure
     private string[] directions;
     private int[] objectRooms;
     private int[,] map;
-    private string noun;
     private int numberOfRooms;
     private int numberOfObjects;
     private int numberOfDirections;
@@ -289,7 +288,6 @@ internal sealed class adventure
         DATA.Enqueue("GLO");
         DATA.Enqueue(19);
 
-        noun = ("");
         numberOfRooms = (0);
         numberOfObjects = (0);
         numberOfDirections = (0);
@@ -410,7 +408,7 @@ internal sealed class adventure
         PRINT((("") + ("YOU ARE ")) + (roomDescriptions[currentRoom]));
     }
 
-    private void FindRoomForObject()
+    private void FindRoomForObject(string noun)
     {
         if (numberOfObjects == 0)
         {
@@ -581,7 +579,7 @@ internal sealed class adventure
 
                 Command command = Command.Parse(cmd);
 
-                noun = command.Noun;
+                string noun = command.Noun;
                 if (noun == "SHA")
                 {
                     noun = "SAL";
@@ -592,8 +590,7 @@ internal sealed class adventure
                     noun = "BOT";
                 }
 
-
-                VerbResult ret = verbRoutines.Handle(command.Verb);
+                VerbResult ret = verbRoutines.Handle(command.Verb, noun);
                 if (ret == VerbResult.Idle)
                 {
                     // NO-OP
@@ -637,13 +634,13 @@ internal sealed class adventure
         verbRoutines.Add("WEA", Wear);
     }
 
-    private VerbResult UnknownVerb()
+    private VerbResult UnknownVerb(string noun)
     {
         PRINT("I DON'T KNOW HOW TO DO THAT");
         return VerbResult.Idle;
     }
 
-    private VerbResult Go()
+    private VerbResult Go(string noun)
     {
         int dir;
         if (noun == "NOR")
@@ -705,9 +702,9 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Get()
+    private VerbResult Get(string noun)
     {
-        FindRoomForObject();
+        FindRoomForObject(noun);
 
         if (FL_n == 0)
         {
@@ -744,9 +741,9 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Drop()
+    private VerbResult Drop(string noun)
     {
-        FindRoomForObject();
+        FindRoomForObject(noun);
 
         if ((FL_n == 0) || (RO_n != -1))
         {
@@ -762,7 +759,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Inventory()
+    private VerbResult Inventory(string noun)
     {
         bool atLeastOne = false;
         PRINT("YOU ARE CARRYING:");
@@ -783,18 +780,18 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Look()
+    private VerbResult Look(string noun)
     {
         if (noun == "")
         {
             return VerbResult.Proceed;
         }
 
-        Examine();
+        Examine(noun);
         return VerbResult.Idle;
     }
 
-    private VerbResult Examine()
+    private VerbResult Examine(string noun)
     {
         if (noun == "GRO")
         {
@@ -809,7 +806,7 @@ internal sealed class adventure
         }
         else
         {
-            FindRoomForObject();
+            FindRoomForObject(noun);
 
             if ((RO_n != currentRoom) && (RO_n != -1))
             {
@@ -836,7 +833,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Quit()
+    private VerbResult Quit(string noun)
     {
         PRINT_n("ARE YOU SURE YOU WANT TO QUIT (Y/N)");
         string quit = INPUT_s("");
@@ -866,7 +863,7 @@ internal sealed class adventure
         }
     }
 
-    private VerbResult Read()
+    private VerbResult Read(string noun)
     {
         if (noun == "DIA")
         {
@@ -912,7 +909,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Open()
+    private VerbResult Open(string noun)
     {
         if (noun == "BOX")
         {
@@ -963,7 +960,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Pour()
+    private VerbResult Pour(string noun)
     {
         bool poured;
         if (noun == "SAL")
@@ -1054,7 +1051,7 @@ internal sealed class adventure
         return true;
     }
 
-    private VerbResult Climb()
+    private VerbResult Climb(string noun)
     {
         if (noun == "TRE")
         {
@@ -1092,7 +1089,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Jump()
+    private VerbResult Jump(string noun)
     {
         if ((currentRoom != 7) && (currentRoom != 8))
         {
@@ -1115,7 +1112,7 @@ internal sealed class adventure
         }
     }
 
-    private VerbResult Dig()
+    private VerbResult Dig(string noun)
     {
         if ((noun != "HOL") && (noun != "GRO") && (noun != ""))
         {
@@ -1142,7 +1139,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Row()
+    private VerbResult Row(string noun)
     {
         if ((noun != "BOA") && (noun != ""))
         {
@@ -1160,7 +1157,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Wave()
+    private VerbResult Wave(string noun)
     {
         if (noun != "FAN")
         {
@@ -1191,7 +1188,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Leave()
+    private VerbResult Leave(string noun)
     {
         if (currentRoom != 13)
         {
@@ -1210,7 +1207,7 @@ internal sealed class adventure
         }
     }
 
-    private VerbResult Fight()
+    private VerbResult Fight(string noun)
     {
         if (noun == "")
         {
@@ -1239,7 +1236,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Wear()
+    private VerbResult Wear(string noun)
     {
         if (noun != "GLO")
         {
