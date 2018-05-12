@@ -623,6 +623,8 @@ internal sealed class adventure
         verbRoutines.Add("THR", Drop);
         verbRoutines.Add("INV", Inventory);
         verbRoutines.Add("I", Inventory);
+        verbRoutines.Add("LOO", Look);
+        verbRoutines.Add("L", Look);
 
         return verbRoutines;
     }
@@ -633,10 +635,6 @@ internal sealed class adventure
         if (verbRoutines.TryGetValue(verb, out verbRoutine))
         {
             return verbRoutine();
-        }
-        else if ((verb == "LOO") || (verb == "L"))
-        {
-            return Look();
         }
         else if (verb == "EXA")
         {
