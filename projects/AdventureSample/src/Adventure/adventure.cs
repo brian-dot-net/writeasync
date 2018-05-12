@@ -647,11 +647,7 @@ internal sealed class adventure
         }
         else if (verb == "QUI")
         {
-            int q = Quit();
-            if (q != VerbResult.Proceed)
-            {
-                return q;
-            }
+            return Quit();
         }
         else if (verb == "REA")
         {
@@ -663,10 +659,7 @@ internal sealed class adventure
         }
         else if (verb == "POU")
         {
-            if (Pour())
-            {
-                return VerbResult.Proceed;
-            }
+            return Pour();
         }
         else if (verb == "CLI")
         {
@@ -979,7 +972,7 @@ internal sealed class adventure
             return PlayAgain();
         }
 
-        return VerbResult.Proceed;
+        return VerbResult.Idle;
     }
 
     private int PlayAgain()
@@ -1093,7 +1086,7 @@ internal sealed class adventure
         }
     }
 
-    private bool Pour()
+    private int Pour()
     {
         bool poured;
         if (noun == "SAL")
@@ -1115,7 +1108,12 @@ internal sealed class adventure
             poured = PourMixture();
         }
 
-        return poured;
+        if (poured)
+        {
+            return VerbResult.Proceed;
+        }
+
+        return VerbResult.Idle;
     }
 
     private bool PourFormula()
