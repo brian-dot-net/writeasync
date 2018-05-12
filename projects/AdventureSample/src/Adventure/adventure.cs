@@ -43,7 +43,7 @@ internal sealed class adventure
 
     public void Run()
     {
-        while ((this.Main()) == (1))
+        while (this.Main() == VerbResult.RestartGame)
         {
         }
     }
@@ -616,7 +616,7 @@ internal sealed class adventure
         {
             if (Go())
             {
-                return 0;
+                return VerbResult.Proceed;
             }
         }
         else if ((verb == "GET") || (verb == "TAK"))
@@ -638,7 +638,7 @@ internal sealed class adventure
         {
             if (Look())
             {
-                return 0;
+                return VerbResult.Proceed;
             }
         }
         else if (verb == "EXA")
@@ -648,7 +648,7 @@ internal sealed class adventure
         else if (verb == "QUI")
         {
             int q = Quit();
-            if (q != 0)
+            if (q != VerbResult.Proceed)
             {
                 return q;
             }
@@ -665,7 +665,7 @@ internal sealed class adventure
         {
             if (Pour())
             {
-                return 0;
+                return VerbResult.Proceed;
             }
         }
         else if (verb == "CLI")
@@ -676,7 +676,7 @@ internal sealed class adventure
         {
             if (Jump())
             {
-                return 0;
+                return VerbResult.Proceed;
             }
         }
         else if (verb == "DIG")
@@ -695,7 +695,7 @@ internal sealed class adventure
         {
             if (Leave())
             {
-                return 0;
+                return VerbResult.Proceed;
             }
         }
         else if (verb == "FIG")
@@ -711,7 +711,7 @@ internal sealed class adventure
             PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         }
 
-        return -1;
+        return VerbResult.Idle;
     }
 
     private void Parser()
@@ -979,7 +979,7 @@ internal sealed class adventure
             return PlayAgain();
         }
 
-        return 0;
+        return VerbResult.Proceed;
     }
 
     private int PlayAgain()
@@ -990,12 +990,12 @@ internal sealed class adventure
             string quit = INPUT_s("");
             if (quit == "Y")
             {
-                return 1;
+                return VerbResult.RestartGame;
             }
 
             if (quit == "N")
             {
-                return 2;
+                return VerbResult.EndGame;
             }
         }
     }
@@ -1369,5 +1369,13 @@ internal sealed class adventure
             PRINT("YOU ARE NOW WEARING THE GLOVES.");
             wearingGloves = 1;
         }
+    }
+
+    private static class VerbResult
+    {
+        public const int Idle = -1;
+        public const int Proceed = 0;
+        public const int RestartGame = 1;
+        public const int EndGame = 2;
     }
 }
