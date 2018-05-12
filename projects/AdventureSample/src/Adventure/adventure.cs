@@ -202,91 +202,6 @@ internal sealed class adventure
         DATA.Enqueue(0);
         DATA.Enqueue(8);
 
-        // OBJECT #0
-        DATA.Enqueue("AN OLD DIARY");
-        DATA.Enqueue("DIA");
-        DATA.Enqueue(1);
-
-        // OBJECT #1
-        DATA.Enqueue("A SMALL BOX");
-        DATA.Enqueue("BOX");
-        DATA.Enqueue(1);
-
-        // OBJECT #2
-        DATA.Enqueue("CABINET");
-        DATA.Enqueue("CAB");
-        DATA.Enqueue(130);
-
-        // OBJECT #3
-        DATA.Enqueue("A SALT SHAKER");
-        DATA.Enqueue("SAL");
-        DATA.Enqueue(0);
-
-        // OBJECT #4
-        DATA.Enqueue("A DICTIONARY");
-        DATA.Enqueue("DIC");
-        DATA.Enqueue(3);
-
-        // OBJECT #5
-        DATA.Enqueue("WOODEN BARREL");
-        DATA.Enqueue("BAR");
-        DATA.Enqueue(133);
-
-        // OBJECT #6
-        DATA.Enqueue("A SMALL BOTTLE");
-        DATA.Enqueue("BOT");
-        DATA.Enqueue(0);
-
-        // OBJECT #7
-        DATA.Enqueue("A LADDER");
-        DATA.Enqueue("LAD");
-        DATA.Enqueue(4);
-
-        // OBJECT #8
-        DATA.Enqueue("A SHOVEL");
-        DATA.Enqueue("SHO");
-        DATA.Enqueue(5);
-
-        // OBJECT #9
-        DATA.Enqueue("A TREE");
-        DATA.Enqueue("TRE");
-        DATA.Enqueue(135);
-
-        // OBJECT #10
-        DATA.Enqueue("A GOLDEN SWORD");
-        DATA.Enqueue("SWO");
-        DATA.Enqueue(0);
-
-        // OBJECT #11
-        DATA.Enqueue("A WOODEN BOAT");
-        DATA.Enqueue("BOA");
-        DATA.Enqueue(140);
-
-        // OBJECT #12
-        DATA.Enqueue("A MAGIC FAN");
-        DATA.Enqueue("FAN");
-        DATA.Enqueue(8);
-
-        // OBJECT #13
-        DATA.Enqueue("A NASTY-LOOKING GUARD");
-        DATA.Enqueue("GUA");
-        DATA.Enqueue(144);
-
-        // OBJECT #14
-        DATA.Enqueue("A GLASS CASE");
-        DATA.Enqueue("CAS");
-        DATA.Enqueue(146);
-
-        // OBJECT #15
-        DATA.Enqueue("A GLOWING RUBY");
-        DATA.Enqueue("RUB");
-        DATA.Enqueue(0);
-
-        // OBJECT #16
-        DATA.Enqueue("A PAIR OF RUBBER GLOVES");
-        DATA.Enqueue("GLO");
-        DATA.Enqueue(19);
-
         currentRoom = (0);
         inventoryItems = (0);
         mixtureCount = (0);
@@ -442,7 +357,7 @@ internal sealed class adventure
     {
         for (int i = 0; i < Objects.NumberOfObjects; ++i)
         {
-            ObjectRef obj = ReadObj();
+            ObjectRef obj = ReadObj(i);
 
             objects.objectNames[i] = obj.Name;
             objects.objectTags[i] = obj.Tag;
@@ -450,9 +365,97 @@ internal sealed class adventure
         }
     }
 
-    private ObjectRef ReadObj()
+    private ObjectRef ReadObj(int i)
     {
-        return new ObjectRef(READ_s(), READ_s(), READ_n());
+        object[] d = new object[]
+        {
+            // OBJECT #0
+            "AN OLD DIARY",
+            "DIA",
+            1,
+
+            // OBJECT #1
+            "A SMALL BOX",
+            "BOX",
+            1,
+
+            // OBJECT #2
+            "CABINET",
+            "CAB",
+            130,
+
+            // OBJECT #3
+            "A SALT SHAKER",
+            "SAL",
+            0,
+
+            // OBJECT #4
+            "A DICTIONARY",
+            "DIC",
+            3,
+
+            // OBJECT #5
+            "WOODEN BARREL",
+            "BAR",
+            133,
+
+            // OBJECT #6
+            "A SMALL BOTTLE",
+            "BOT",
+            0,
+
+            // OBJECT #7
+            "A LADDER",
+            "LAD",
+            4,
+
+            // OBJECT #8
+            "A SHOVEL",
+            "SHO",
+            5,
+
+            // OBJECT #9
+            "A TREE",
+            "TRE",
+            135,
+
+            // OBJECT #10
+            "A GOLDEN SWORD",
+            "SWO",
+            0,
+
+            // OBJECT #11
+            "A WOODEN BOAT",
+            "BOA",
+            140,
+
+            // OBJECT #12
+            "A MAGIC FAN",
+            "FAN",
+            8,
+
+            // OBJECT #13
+            "A NASTY-LOOKING GUARD",
+            "GUA",
+            144,
+
+            // OBJECT #14
+            "A GLASS CASE",
+            "CAS",
+            146,
+
+            // OBJECT #15
+            "A GLOWING RUBY",
+            "RUB",
+            0,
+
+            // OBJECT #16
+            "A PAIR OF RUBBER GLOVES",
+            "GLO",
+            19
+        };
+
+        return new ObjectRef((string)d[3 * i], (string)d[1 + (3 * i)], (int)d[2 + (3 *i)]);
     }
 
     private void InitDescriptions()
