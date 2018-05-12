@@ -597,11 +597,12 @@ internal sealed class adventure
             {
                 Parser();
 
+                int ret = -1;
                 if (verb == "GO")
                 {
                     if (Go())
                     {
-                        break;
+                        ret = 0;
                     }
                 }
                 else if ((verb == "GET") || (verb == "TAK"))
@@ -623,7 +624,7 @@ internal sealed class adventure
                 {
                     if (Look())
                     {
-                        break;
+                        ret = 0;
                     }
                 }
                 else if (verb == "EXA")
@@ -650,7 +651,7 @@ internal sealed class adventure
                 {
                     if (Pour())
                     {
-                        break;
+                        ret = 0;
                     }
                 }
                 else if (verb == "CLI")
@@ -661,7 +662,7 @@ internal sealed class adventure
                 {
                     if (Jump())
                     {
-                        break;
+                        ret = 0;
                     }
                 }
                 else if (verb == "DIG")
@@ -680,7 +681,7 @@ internal sealed class adventure
                 {
                     if (Leave())
                     {
-                        break;
+                        ret = 0;
                     }
                 }
                 else if (verb == "FIG")
@@ -694,6 +695,11 @@ internal sealed class adventure
                 else
                 {
                     PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
+                }
+
+                if (ret == 0)
+                {
+                    break;
                 }
             }
         }
