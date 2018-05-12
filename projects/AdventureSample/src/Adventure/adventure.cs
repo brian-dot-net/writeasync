@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Adventure;
 
@@ -703,13 +704,10 @@ internal sealed class adventure
     {
         bool atLeastOne = false;
         PRINT("YOU ARE CARRYING:");
-        for (int i = 0; i < Objects.NumberOfObjects; ++i)
+        foreach (string name in objects.Carrying())
         {
-            if (objects.Carrying(i))
-            {
-                PRINT(" " + objects.objectNames[i]);
-                atLeastOne = true;
-            }
+            PRINT(" " + name);
+            atLeastOne = true;
         }
 
         if (!atLeastOne)
@@ -1227,6 +1225,17 @@ internal sealed class adventure
         }
 
         public bool Carrying(int id) => this.objectRooms[id] == -1;
+
+        public IEnumerable<string> Carrying()
+        {
+            for (int i = 0; i < NumberOfObjects; ++i)
+            {
+                if (this.Carrying(i))
+                {
+                    yield return this.objectNames[i];
+                }
+            }
+        }
 
         public bool IsHere(int id, int currentRoom)
         {
