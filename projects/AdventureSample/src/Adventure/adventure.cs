@@ -628,6 +628,7 @@ internal sealed class adventure
         verbRoutines.Add("EXA", Examine);
         verbRoutines.Add("QUI", Quit);
         verbRoutines.Add("REA", Read);
+        verbRoutines.Add("OPE", Open);
 
         return verbRoutines;
     }
@@ -638,10 +639,6 @@ internal sealed class adventure
         if (verbRoutines.TryGetValue(verb, out verbRoutine))
         {
             return verbRoutine();
-        }
-        else if (verb == "OPE")
-        {
-            return Open();
         }
         else if (verb == "POU")
         {
