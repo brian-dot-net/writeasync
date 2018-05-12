@@ -587,8 +587,7 @@ internal sealed class adventure
 
         CLS();
 
-        VerbRoutines verbRoutines = new VerbRoutines();
-        Func<VerbResult> unknown = UnknownVerb;
+        VerbRoutines verbRoutines = new VerbRoutines(UnknownVerb);
         InitHandlers(verbRoutines);
 
         while (true)
@@ -603,7 +602,7 @@ internal sealed class adventure
             {
                 Parser();
 
-                VerbResult ret = verbRoutines.Handle(verb, unknown);
+                VerbResult ret = verbRoutines.Handle(verb);
                 if (ret == VerbResult.Idle)
                 {
                     // NO-OP
@@ -1345,20 +1344,22 @@ internal sealed class adventure
     private sealed class VerbRoutines
     {
         private readonly Dictionary<string, Func<VerbResult>> verbRoutines;
+        private readonly Func<VerbResult> unknown;
 
-        public VerbRoutines()
+        public VerbRoutines(Func<VerbResult> unknown)
         {
             this.verbRoutines = new Dictionary<string, Func<VerbResult>>();
+            this.unknown = unknown;
         }
 
         public Dictionary<string, Func<VerbResult>> D => verbRoutines;
 
-        public VerbResult Handle(string verb, Func<VerbResult> unknown)
+        public VerbResult Handle(string verb)
         {
             Func<VerbResult> verbRoutine;
             if (!this.verbRoutines.TryGetValue(verb, out verbRoutine))
             {
-                verbRoutine = unknown;
+                verbRoutine = this.unknown;
             }
 
             return verbRoutine();
