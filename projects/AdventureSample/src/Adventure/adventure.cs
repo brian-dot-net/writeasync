@@ -367,95 +367,112 @@ internal sealed class adventure
 
     private ObjectRef ReadObj(int i)
     {
-        object[] d = new object[]
+        ObjectRef[] d = new ObjectRef[]
         {
             // OBJECT #0
-            "AN OLD DIARY",
-            "DIA",
-            1,
+            new ObjectRef(
+                "AN OLD DIARY",
+                "DIA",
+                1),
 
             // OBJECT #1
-            "A SMALL BOX",
-            "BOX",
-            1,
+            new ObjectRef(
+                "A SMALL BOX",
+                "BOX",
+                1),
 
             // OBJECT #2
-            "CABINET",
-            "CAB",
-            130,
+            new ObjectRef(
+                "CABINET",
+                "CAB",
+                130),
 
             // OBJECT #3
-            "A SALT SHAKER",
-            "SAL",
-            0,
+            new ObjectRef(
+                "A SALT SHAKER",
+                "SAL",
+                0),
 
             // OBJECT #4
-            "A DICTIONARY",
-            "DIC",
-            3,
+            new ObjectRef(
+                "A DICTIONARY",
+                "DIC",
+                3),
 
             // OBJECT #5
-            "WOODEN BARREL",
-            "BAR",
-            133,
+            new ObjectRef(
+                "WOODEN BARREL",
+                "BAR",
+                133),
 
             // OBJECT #6
-            "A SMALL BOTTLE",
-            "BOT",
-            0,
+            new ObjectRef(
+                "A SMALL BOTTLE",
+                "BOT",
+                0),
 
             // OBJECT #7
-            "A LADDER",
-            "LAD",
-            4,
+            new ObjectRef(
+                "A LADDER",
+                "LAD",
+                4),
 
             // OBJECT #8
-            "A SHOVEL",
-            "SHO",
-            5,
+            new ObjectRef(
+                "A SHOVEL",
+                "SHO",
+                5),
 
             // OBJECT #9
-            "A TREE",
-            "TRE",
-            135,
+            new ObjectRef(
+                "A TREE",
+                "TRE",
+                135),
 
             // OBJECT #10
-            "A GOLDEN SWORD",
-            "SWO",
-            0,
+            new ObjectRef(
+                "A GOLDEN SWORD",
+                "SWO",
+                0),
 
             // OBJECT #11
-            "A WOODEN BOAT",
-            "BOA",
-            140,
+            new ObjectRef(
+                "A WOODEN BOAT",
+                "BOA",
+                140),
 
             // OBJECT #12
-            "A MAGIC FAN",
-            "FAN",
-            8,
+            new ObjectRef(
+                "A MAGIC FAN",
+                "FAN",
+                8),
 
             // OBJECT #13
-            "A NASTY-LOOKING GUARD",
-            "GUA",
-            144,
+            new ObjectRef(
+                "A NASTY-LOOKING GUARD",
+                "GUA",
+                144),
 
             // OBJECT #14
-            "A GLASS CASE",
-            "CAS",
-            146,
+            new ObjectRef(
+                "A GLASS CASE",
+                "CAS",
+                146),
 
             // OBJECT #15
-            "A GLOWING RUBY",
-            "RUB",
-            0,
+            new ObjectRef(
+                "A GLOWING RUBY",
+                "RUB",
+                0),
 
             // OBJECT #16
-            "A PAIR OF RUBBER GLOVES",
-            "GLO",
-            19
+            new ObjectRef(
+                "A PAIR OF RUBBER GLOVES",
+                "GLO",
+                19)
         };
 
-        return new ObjectRef((string)d[3 * i], (string)d[1 + (3 * i)], (int)d[2 + (3 *i)]);
+        return d[i];
     }
 
     private void InitDescriptions()
