@@ -586,8 +586,7 @@ internal sealed class adventure
 
         CLS();
 
-        Dictionary<string, Func<int>> verbRoutines = new Dictionary<string, Func<int>>();
-        verbRoutines.Add("GO", Go);
+        Dictionary<string, Func<int>> verbRoutines = InitVerbs();
 
         while (true)
         {
@@ -612,6 +611,13 @@ internal sealed class adventure
                 }
             }
         }
+    }
+
+    private Dictionary<string, Func<int>> InitVerbs()
+    {
+        Dictionary<string, Func<int>> verbRoutines = new Dictionary<string, Func<int>>();
+        verbRoutines.Add("GO", Go);
+        return verbRoutines;
     }
 
     private int HandleVerb(Dictionary<string, Func<int>> verbRoutines)
