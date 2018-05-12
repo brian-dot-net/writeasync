@@ -621,34 +621,29 @@ internal sealed class adventure
 
     private void InitHandlers(VerbRoutines verbRoutines)
     {
-        AddVerb(verbRoutines, "GO", Go);
-        AddVerb(verbRoutines, "GET", Get);
-        AddVerb(verbRoutines, "TAK", Get);
-        AddVerb(verbRoutines, "DRO", Drop);
-        AddVerb(verbRoutines, "THR", Drop);
-        AddVerb(verbRoutines, "INV", Inventory);
-        AddVerb(verbRoutines, "I", Inventory);
-        AddVerb(verbRoutines, "LOO", Look);
-        AddVerb(verbRoutines, "L", Look);
-        AddVerb(verbRoutines, "EXA", Examine);
-        AddVerb(verbRoutines, "QUI", Quit);
-        AddVerb(verbRoutines, "REA", Read);
-        AddVerb(verbRoutines, "OPE", Open);
-        AddVerb(verbRoutines, "POU", Pour);
-        AddVerb(verbRoutines, "CLI", Climb);
-        AddVerb(verbRoutines, "JUM", Jump);
-        AddVerb(verbRoutines, "DIG", Dig);
-        AddVerb(verbRoutines, "ROW", Row);
-        AddVerb(verbRoutines, "WAV", Wave);
-        AddVerb(verbRoutines, "LEA", Leave);
-        AddVerb(verbRoutines, "EXI", Leave);
-        AddVerb(verbRoutines, "FIG", Fight);
-        AddVerb(verbRoutines, "WEA", Wear);
-    }
-
-    private void AddVerb(VerbRoutines verbRoutines, string v, Func<VerbResult> handler)
-    {
-        verbRoutines.D.Add(v, handler);
+        verbRoutines.Add("GO", Go);
+        verbRoutines.Add("GET", Get);
+        verbRoutines.Add("TAK", Get);
+        verbRoutines.Add("DRO", Drop);
+        verbRoutines.Add("THR", Drop);
+        verbRoutines.Add("INV", Inventory);
+        verbRoutines.Add("I", Inventory);
+        verbRoutines.Add("LOO", Look);
+        verbRoutines.Add("L", Look);
+        verbRoutines.Add("EXA", Examine);
+        verbRoutines.Add("QUI", Quit);
+        verbRoutines.Add("REA", Read);
+        verbRoutines.Add("OPE", Open);
+        verbRoutines.Add("POU", Pour);
+        verbRoutines.Add("CLI", Climb);
+        verbRoutines.Add("JUM", Jump);
+        verbRoutines.Add("DIG", Dig);
+        verbRoutines.Add("ROW", Row);
+        verbRoutines.Add("WAV", Wave);
+        verbRoutines.Add("LEA", Leave);
+        verbRoutines.Add("EXI", Leave);
+        verbRoutines.Add("FIG", Fight);
+        verbRoutines.Add("WEA", Wear);
     }
 
     private VerbResult UnknownVerb()
@@ -1353,6 +1348,11 @@ internal sealed class adventure
         }
 
         public Dictionary<string, Func<VerbResult>> D => verbRoutines;
+
+        public void Add(string verb, Func<VerbResult> handler)
+        {
+            this.verbRoutines.Add(verb, handler);
+        }
 
         public VerbResult Handle(string verb)
         {
