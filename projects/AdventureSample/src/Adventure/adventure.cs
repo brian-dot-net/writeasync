@@ -370,106 +370,55 @@ internal sealed class adventure
         ObjectRef[] d = new ObjectRef[]
         {
             // OBJECT #0
-            new ObjectRef(
-                "AN OLD DIARY",
-                "DIA",
-                1),
+             new ObjectRef( "AN OLD DIARY", "DIA", 1),
 
-            // OBJECT #1
-            new ObjectRef(
-                "A SMALL BOX",
-                "BOX",
-                1),
+             // OBJECT #1
+             new ObjectRef( "A SMALL BOX", "BOX", 1),
 
-            // OBJECT #2
-            new ObjectRef(
-                "CABINET",
-                "CAB",
-                130),
+             // OBJECT #2
+             new ObjectRef( "CABINET", "CAB", 130),
 
-            // OBJECT #3
-            new ObjectRef(
-                "A SALT SHAKER",
-                "SAL",
-                0),
+             // OBJECT #3
+             new ObjectRef("A SALT SHAKER", "SAL", 0),
 
-            // OBJECT #4
-            new ObjectRef(
-                "A DICTIONARY",
-                "DIC",
-                3),
+             // OBJECT #4
+             new ObjectRef("A DICTIONARY", "DIC", 3),
 
-            // OBJECT #5
-            new ObjectRef(
-                "WOODEN BARREL",
-                "BAR",
-                133),
+             // OBJECT #5
+             new ObjectRef("WOODEN BARREL", "BAR", 133),
 
-            // OBJECT #6
-            new ObjectRef(
-                "A SMALL BOTTLE",
-                "BOT",
-                0),
+             // OBJECT #6
+             new ObjectRef("A SMALL BOTTLE", "BOT", 0),
 
-            // OBJECT #7
-            new ObjectRef(
-                "A LADDER",
-                "LAD",
-                4),
+             // OBJECT #7
+             new ObjectRef("A LADDER", "LAD", 4),
 
-            // OBJECT #8
-            new ObjectRef(
-                "A SHOVEL",
-                "SHO",
-                5),
+             // OBJECT #8
+             new ObjectRef("A SHOVEL", "SHO", 5),
 
-            // OBJECT #9
-            new ObjectRef(
-                "A TREE",
-                "TRE",
-                135),
+             // OBJECT #9
+             new ObjectRef("A TREE", "TRE", 135),
 
-            // OBJECT #10
-            new ObjectRef(
-                "A GOLDEN SWORD",
-                "SWO",
-                0),
+             // OBJECT #10
+             new ObjectRef("A GOLDEN SWORD", "SWO", 0),
 
-            // OBJECT #11
-            new ObjectRef(
-                "A WOODEN BOAT",
-                "BOA",
-                140),
+             // OBJECT #11
+             new ObjectRef("A WOODEN BOAT", "BOA", 140),
 
-            // OBJECT #12
-            new ObjectRef(
-                "A MAGIC FAN",
-                "FAN",
-                8),
+             // OBJECT #12
+             new ObjectRef("A MAGIC FAN", "FAN", 8),
 
-            // OBJECT #13
-            new ObjectRef(
-                "A NASTY-LOOKING GUARD",
-                "GUA",
-                144),
+             // OBJECT #13
+             new ObjectRef("A NASTY-LOOKING GUARD", "GUA", 144),
 
-            // OBJECT #14
-            new ObjectRef(
-                "A GLASS CASE",
-                "CAS",
-                146),
+             // OBJECT #14
+             new ObjectRef("A GLASS CASE", "CAS", 146),
 
-            // OBJECT #15
-            new ObjectRef(
-                "A GLOWING RUBY",
-                "RUB",
-                0),
+             // OBJECT #15
+             new ObjectRef("A GLOWING RUBY", "RUB", 0),
 
-            // OBJECT #16
-            new ObjectRef(
-                "A PAIR OF RUBBER GLOVES",
-                "GLO",
-                19)
+             // OBJECT #16
+             new ObjectRef("A PAIR OF RUBBER GLOVES", "GLO", 19)
         };
 
         return d[i];
