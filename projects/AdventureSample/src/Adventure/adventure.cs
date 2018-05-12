@@ -579,7 +579,7 @@ internal sealed class adventure
                 }
                 while (cmd == "");
 
-                Command command = Parser(cmd);
+                Command command = Command.Parse(cmd);
 
                 noun = command.Noun;
                 if (noun == "SHA")
@@ -641,59 +641,6 @@ internal sealed class adventure
     {
         PRINT("I DON'T KNOW HOW TO DO THAT");
         return VerbResult.Idle;
-    }
-
-    private Command Parser(string command)
-    {
-        int c = 0;
-
-        string verb = "";
-        while (true)
-        {
-            c = c + 1;
-            if (c > command.Length)
-            {
-                break;
-            }
-
-            char w = command[c - 1];
-            if (w == ' ')
-            {
-                break;
-            }
-
-            verb += w;
-        }
-
-        if (verb.Length > 3)
-        {
-            verb = verb.Substring(0, 3);
-        }
-
-        string noun = "";
-        while (true)
-        {
-            c = c + 1;
-            if (c > command.Length)
-            {
-                break;
-            }
-
-            char w = command[c - 1];
-            if (w == ' ')
-            {
-                break;
-            }
-
-            noun += w;
-        }
-
-        if (noun.Length > 3)
-        {
-            noun = noun.Substring(0, 3);
-        }
-
-        return new Command(verb, noun);
     }
 
     private VerbResult Go()
@@ -1313,7 +1260,7 @@ internal sealed class adventure
 
     private sealed class Command
     {
-        public Command(string verb, string noun)
+        private Command(string verb, string noun)
         {
             this.Verb = verb;
             this.Noun = noun;
@@ -1322,5 +1269,58 @@ internal sealed class adventure
         public string Verb { get; private set; }
 
         public string Noun { get; private set; }
+
+        public static Command Parse(string command)
+        {
+            int c = 0;
+
+            string verb = "";
+            while (true)
+            {
+                c = c + 1;
+                if (c > command.Length)
+                {
+                    break;
+                }
+
+                char w = command[c - 1];
+                if (w == ' ')
+                {
+                    break;
+                }
+
+                verb += w;
+            }
+
+            if (verb.Length > 3)
+            {
+                verb = verb.Substring(0, 3);
+            }
+
+            string noun = "";
+            while (true)
+            {
+                c = c + 1;
+                if (c > command.Length)
+                {
+                    break;
+                }
+
+                char w = command[c - 1];
+                if (w == ' ')
+                {
+                    break;
+                }
+
+                noun += w;
+            }
+
+            if (noun.Length > 3)
+            {
+                noun = noun.Substring(0, 3);
+            }
+
+            return new Command(verb, noun);
+        }
     }
 }
