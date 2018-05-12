@@ -355,56 +355,23 @@ internal sealed class adventure
     {
         ObjectRef[] d = new ObjectRef[]
         {
-            // OBJECT #0
-             new ObjectRef( "AN OLD DIARY", "DIA", 1),
-
-             // OBJECT #1
-             new ObjectRef( "A SMALL BOX", "BOX", 1),
-
-             // OBJECT #2
-             new ObjectRef( "CABINET", "CAB", 130),
-
-             // OBJECT #3
-             new ObjectRef("A SALT SHAKER", "SAL", 0),
-
-             // OBJECT #4
-             new ObjectRef("A DICTIONARY", "DIC", 3),
-
-             // OBJECT #5
-             new ObjectRef("WOODEN BARREL", "BAR", 133),
-
-             // OBJECT #6
-             new ObjectRef("A SMALL BOTTLE", "BOT", 0),
-
-             // OBJECT #7
-             new ObjectRef("A LADDER", "LAD", 4),
-
-             // OBJECT #8
-             new ObjectRef("A SHOVEL", "SHO", 5),
-
-             // OBJECT #9
-             new ObjectRef("A TREE", "TRE", 135),
-
-             // OBJECT #10
-             new ObjectRef("A GOLDEN SWORD", "SWO", 0),
-
-             // OBJECT #11
-             new ObjectRef("A WOODEN BOAT", "BOA", 140),
-
-             // OBJECT #12
-             new ObjectRef("A MAGIC FAN", "FAN", 8),
-
-             // OBJECT #13
-             new ObjectRef("A NASTY-LOOKING GUARD", "GUA", 144),
-
-             // OBJECT #14
-             new ObjectRef("A GLASS CASE", "CAS", 146),
-
-             // OBJECT #15
-             new ObjectRef("A GLOWING RUBY", "RUB", 0),
-
-             // OBJECT #16
-             new ObjectRef("A PAIR OF RUBBER GLOVES", "GLO", 19)
+             new ObjectRef(0, "AN OLD DIARY", "DIA", 1),
+             new ObjectRef(1, "A SMALL BOX", "BOX", 1),
+             new ObjectRef(2, "CABINET", "CAB", 130),
+             new ObjectRef(3, "A SALT SHAKER", "SAL", 0),
+             new ObjectRef(4, "A DICTIONARY", "DIC", 3),
+             new ObjectRef(5, "WOODEN BARREL", "BAR", 133),
+             new ObjectRef(6, "A SMALL BOTTLE", "BOT", 0),
+             new ObjectRef(7, "A LADDER", "LAD", 4),
+             new ObjectRef(8, "A SHOVEL", "SHO", 5),
+             new ObjectRef(9, "A TREE", "TRE", 135),
+             new ObjectRef(10, "A GOLDEN SWORD", "SWO", 0),
+             new ObjectRef(11, "A WOODEN BOAT", "BOA", 140),
+             new ObjectRef(12, "A MAGIC FAN", "FAN", 8),
+             new ObjectRef(13, "A NASTY-LOOKING GUARD", "GUA", 144),
+             new ObjectRef(14, "A GLASS CASE", "CAS", 146),
+             new ObjectRef(15, "A GLOWING RUBY", "RUB", 0),
+             new ObjectRef(16, "A PAIR OF RUBBER GLOVES", "GLO", 19)
         };
 
         for (int i = 0; i < Objects.NumberOfObjects; ++i)
@@ -1192,12 +1159,15 @@ internal sealed class adventure
 
     private sealed class ObjectRef
     {
-        public ObjectRef(string name, string tag, int room)
+        public ObjectRef(int id, string name, string tag, int room)
         {
+            this.Id = id;
             this.Name = name;
             this.Tag = tag;
             this.Room = room;
         }
+
+        public int Id { get; private set; }
 
         public string Name { get; private set; }
 
