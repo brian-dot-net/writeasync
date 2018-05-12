@@ -380,7 +380,7 @@ internal sealed class adventure
 
             objects.objectNames[i] = obj.Name;
             objects.objectTags[i] = obj.Tag;
-            objects.objectRooms[i] = obj.Room;
+            objects.objectRooms[i] = obj.RawRoom;
         }
     }
 
@@ -1164,7 +1164,7 @@ internal sealed class adventure
             this.Id = id;
             this.Name = name;
             this.Tag = tag;
-            this.Room = room;
+            this.RawRoom = room;
         }
 
         public int Id { get; private set; }
@@ -1173,7 +1173,9 @@ internal sealed class adventure
 
         public string Tag { get; private set; }
 
-        public int Room { get; private set; }
+        public int RawRoom { get; private set; }
+
+        public int Room => this.RawRoom & 127;
     }
 
     private sealed class Objects
