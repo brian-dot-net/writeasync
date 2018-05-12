@@ -597,106 +597,7 @@ internal sealed class adventure
             {
                 Parser();
 
-                int ret = -1;
-                if (verb == "GO")
-                {
-                    if (Go())
-                    {
-                        ret = 0;
-                    }
-                }
-                else if ((verb == "GET") || (verb == "TAK"))
-                {
-                    if (Get())
-                    {
-                        ret = PlayAgain();
-                    }
-                }
-                else if ((verb == "DRO") || (verb == "THR"))
-                {
-                    Drop();
-                }
-                else if ((verb == "INV") || (verb == "I"))
-                {
-                    Inventory();
-                }
-                else if ((verb == "LOO") || (verb == "L"))
-                {
-                    if (Look())
-                    {
-                        ret = 0;
-                    }
-                }
-                else if (verb == "EXA")
-                {
-                    Examine();
-                }
-                else if (verb == "QUI")
-                {
-                    int q = Quit();
-                    if (q != 0)
-                    {
-                        ret = q;
-                    }
-                }
-                else if (verb == "REA")
-                {
-                    Read();
-                }
-                else if (verb == "OPE")
-                {
-                    Open();
-                }
-                else if (verb == "POU")
-                {
-                    if (Pour())
-                    {
-                        ret = 0;
-                    }
-                }
-                else if (verb == "CLI")
-                {
-                    Climb();
-                }
-                else if (verb == "JUM")
-                {
-                    if (Jump())
-                    {
-                        ret = 0;
-                    }
-                }
-                else if (verb == "DIG")
-                {
-                    Dig();
-                }
-                else if (verb == "ROW")
-                {
-                    Row();
-                }
-                else if (verb == "WAV")
-                {
-                    Wave();
-                }
-                else if ((verb == "LEA") || (verb == "EXI"))
-                {
-                    if (Leave())
-                    {
-                        ret = 0;
-                    }
-                }
-                else if (verb == "FIG")
-                {
-                    Fight();
-                }
-                else if (verb == "WEA")
-                {
-                    Wear();
-                }
-                else
-                {
-                    PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
-                }
-
+                int ret = HandleVerb();
                 if (ret == 0)
                 {
                     break;
@@ -707,6 +608,111 @@ internal sealed class adventure
                 }
             }
         }
+    }
+
+    private int HandleVerb()
+    {
+        int ret = -1;
+        if (verb == "GO")
+        {
+            if (Go())
+            {
+                ret = 0;
+            }
+        }
+        else if ((verb == "GET") || (verb == "TAK"))
+        {
+            if (Get())
+            {
+                ret = PlayAgain();
+            }
+        }
+        else if ((verb == "DRO") || (verb == "THR"))
+        {
+            Drop();
+        }
+        else if ((verb == "INV") || (verb == "I"))
+        {
+            Inventory();
+        }
+        else if ((verb == "LOO") || (verb == "L"))
+        {
+            if (Look())
+            {
+                ret = 0;
+            }
+        }
+        else if (verb == "EXA")
+        {
+            Examine();
+        }
+        else if (verb == "QUI")
+        {
+            int q = Quit();
+            if (q != 0)
+            {
+                ret = q;
+            }
+        }
+        else if (verb == "REA")
+        {
+            Read();
+        }
+        else if (verb == "OPE")
+        {
+            Open();
+        }
+        else if (verb == "POU")
+        {
+            if (Pour())
+            {
+                ret = 0;
+            }
+        }
+        else if (verb == "CLI")
+        {
+            Climb();
+        }
+        else if (verb == "JUM")
+        {
+            if (Jump())
+            {
+                ret = 0;
+            }
+        }
+        else if (verb == "DIG")
+        {
+            Dig();
+        }
+        else if (verb == "ROW")
+        {
+            Row();
+        }
+        else if (verb == "WAV")
+        {
+            Wave();
+        }
+        else if ((verb == "LEA") || (verb == "EXI"))
+        {
+            if (Leave())
+            {
+                ret = 0;
+            }
+        }
+        else if (verb == "FIG")
+        {
+            Fight();
+        }
+        else if (verb == "WEA")
+        {
+            Wear();
+        }
+        else
+        {
+            PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
+        }
+
+        return ret;
     }
 
     private void Parser()
