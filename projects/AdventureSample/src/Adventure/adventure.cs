@@ -686,9 +686,14 @@ internal sealed class adventure
         }
         else
         {
-            PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
-            return VerbResult.Idle;
+            return UnknownVerb();
         }
+    }
+
+    private int UnknownVerb()
+    {
+        PRINT("I DON'T KNOW HOW TO DO THAT");
+        return VerbResult.Idle;
     }
 
     private void Parser()
