@@ -622,11 +622,11 @@ internal sealed class adventure
         }
         else if ((verb == "DRO") || (verb == "THR"))
         {
-            Drop();
+            return Drop();
         }
         else if ((verb == "INV") || (verb == "I"))
         {
-            Inventory();
+            return Inventory();
         }
         else if ((verb == "LOO") || (verb == "L"))
         {
@@ -634,7 +634,7 @@ internal sealed class adventure
         }
         else if (verb == "EXA")
         {
-            Examine();
+            return Examine();
         }
         else if (verb == "QUI")
         {
@@ -862,7 +862,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private void Drop()
+    private int Drop()
     {
         FindRoomForObject();
 
@@ -876,9 +876,11 @@ internal sealed class adventure
             objectRooms[I_n] = currentRoom;
             PRINT("DROPPED.");
         }
+
+        return VerbResult.Idle;
     }
 
-    private void Inventory()
+    private int Inventory()
     {
         bool atLeastOne = false;
         PRINT("YOU ARE CARRYING:");
@@ -895,6 +897,8 @@ internal sealed class adventure
         {
             PRINT(" NOTHING");
         }
+
+        return VerbResult.Idle;
     }
 
     private int Look()
@@ -908,7 +912,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private void Examine()
+    private int Examine()
     {
         if (noun == "GRO")
         {
@@ -946,6 +950,8 @@ internal sealed class adventure
                 PRINT("YOU SEE NOTHING UNUSUAL.");
             }
         }
+
+        return VerbResult.Idle;
     }
 
     private int Quit()
