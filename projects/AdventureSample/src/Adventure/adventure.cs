@@ -1213,7 +1213,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T WEAR THAT!");
         }
-        else if ((objects.objectRooms[16] != currentRoom) && (objects.objectRooms[16] != -1))
+        else if (!objects.IsHere(16, currentRoom))
         {
             PRINT("YOU DON'T HAVE THE GLOVES.");
         }
@@ -1233,5 +1233,10 @@ internal sealed class adventure
         public string[] objectNames;
         public string[] objectTags;
         public int[] objectRooms;
+
+        public bool IsHere(int id, int currentRoom)
+        {
+            return (objectRooms[id] == currentRoom) || (objectRooms[id] == -1);
+        }
     }
 }
