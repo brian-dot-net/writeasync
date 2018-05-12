@@ -292,13 +292,10 @@ internal sealed class adventure
     {
         PRINT("YOU CAN SEE: ");
         bool atLeastOne = false;
-        for (int i = 0; i < Objects.NumberOfObjects; ++i)
+        foreach (string name in objects.Here(currentRoom))
         {
-            if (currentRoom == (objects.objectRooms[i] & 127))
-            {
-                PRINT(" " + objects.objectNames[i]);
-                atLeastOne = true;
-            }
+            PRINT(" " + name);
+            atLeastOne = true;
         }
 
         if (!atLeastOne)
@@ -1231,6 +1228,17 @@ internal sealed class adventure
             for (int i = 0; i < NumberOfObjects; ++i)
             {
                 if (this.Carrying(i))
+                {
+                    yield return this.objectNames[i];
+                }
+            }
+        }
+
+        public IEnumerable<string> Here(int currentRoom)
+        {
+            for (int i = 0; i < NumberOfObjects; ++i)
+            {
+                if (currentRoom == (this.objectRooms[i] & 127))
                 {
                     yield return this.objectNames[i];
                 }
