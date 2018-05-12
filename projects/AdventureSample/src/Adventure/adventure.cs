@@ -609,7 +609,7 @@ internal sealed class adventure
                 {
                     if (Get())
                     {
-                        return PlayAgain();
+                        ret = PlayAgain();
                     }
                 }
                 else if ((verb == "DRO") || (verb == "THR"))
@@ -636,7 +636,7 @@ internal sealed class adventure
                     int q = Quit();
                     if (q != 0)
                     {
-                        return q;
+                        ret = q;
                     }
                 }
                 else if (verb == "REA")
@@ -700,6 +700,10 @@ internal sealed class adventure
                 if (ret == 0)
                 {
                     break;
+                }
+                else if (ret > 0)
+                {
+                    return ret;
                 }
             }
         }
