@@ -612,19 +612,18 @@ internal sealed class adventure
 
     private int HandleVerb()
     {
-        int ret = -1;
         if (verb == "GO")
         {
             if (Go())
             {
-                ret = 0;
+                return 0;
             }
         }
         else if ((verb == "GET") || (verb == "TAK"))
         {
             if (Get())
             {
-                ret = PlayAgain();
+                return PlayAgain();
             }
         }
         else if ((verb == "DRO") || (verb == "THR"))
@@ -639,7 +638,7 @@ internal sealed class adventure
         {
             if (Look())
             {
-                ret = 0;
+                return 0;
             }
         }
         else if (verb == "EXA")
@@ -651,7 +650,7 @@ internal sealed class adventure
             int q = Quit();
             if (q != 0)
             {
-                ret = q;
+                return q;
             }
         }
         else if (verb == "REA")
@@ -666,7 +665,7 @@ internal sealed class adventure
         {
             if (Pour())
             {
-                ret = 0;
+                return 0;
             }
         }
         else if (verb == "CLI")
@@ -677,7 +676,7 @@ internal sealed class adventure
         {
             if (Jump())
             {
-                ret = 0;
+                return 0;
             }
         }
         else if (verb == "DIG")
@@ -696,7 +695,7 @@ internal sealed class adventure
         {
             if (Leave())
             {
-                ret = 0;
+                return 0;
             }
         }
         else if (verb == "FIG")
@@ -712,7 +711,7 @@ internal sealed class adventure
             PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
         }
 
-        return ret;
+        return -1;
     }
 
     private void Parser()
