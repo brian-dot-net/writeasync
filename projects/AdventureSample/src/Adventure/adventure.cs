@@ -334,32 +334,6 @@ internal sealed class adventure
         return v.Trim();
     }
 
-    private string MID_s(string x, int n, int m)
-    {
-        if ((n) > (x.Length))
-        {
-            return "";
-        }
-
-        int l = ((x.Length) - (n)) + (1);
-        if ((m) > (l))
-        {
-            m = (l);
-        }
-
-        return x.Substring((n) - (1), m);
-    }
-
-    private string LEFT_s(string x, int n)
-    {
-        if ((n) > (x.Length))
-        {
-            return x;
-        }
-
-        return x.Substring(0, n);
-    }
-
     private void PRINT_n(string expression)
     {
         this.output.Write(expression);
@@ -661,9 +635,8 @@ internal sealed class adventure
         while (command == "");
 
         int c = 0;
+
         string verb = "";
-        string noun = "";
-
         while (true)
         {
             c = c + 1;
@@ -672,40 +645,41 @@ internal sealed class adventure
                 break;
             }
 
-            string wordPart = MID_s(command, c, 1);
-            if (wordPart == " ")
+            char w = command[c - 1];
+            if (w == ' ')
             {
                 break;
             }
 
-            verb += wordPart;
-        }
-
-        while (true)
-        {
-            c = c + 1;
-            if (c > command.Length)
-            {
-                break;
-            }
-
-            string wordPart = MID_s(command, c, 1);
-            if (wordPart == " ")
-            {
-                break;
-            }
-
-            noun += wordPart;
+            verb += w;
         }
 
         if (verb.Length > 3)
         {
-            verb = LEFT_s(verb, 3);
+            verb = verb.Substring(0, 3);
+        }
+
+        string noun = "";
+        while (true)
+        {
+            c = c + 1;
+            if (c > command.Length)
+            {
+                break;
+            }
+
+            char w = command[c - 1];
+            if (w == ' ')
+            {
+                break;
+            }
+
+            noun += w;
         }
 
         if (noun.Length > 3)
         {
-            noun = LEFT_s(noun, 3);
+            noun = noun.Substring(0, 3);
         }
 
         if (noun == "SHA")
