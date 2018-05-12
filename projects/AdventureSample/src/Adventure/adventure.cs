@@ -12,7 +12,6 @@ using Adventure;
 internal sealed class adventure
 {
     private const int NumberOfRooms = 19;
-    private const int NumberOfObjects = 17;
     private const int NumberOfDirections = 6;
     private const int MaxInventoryItems = 5;
 
@@ -20,10 +19,7 @@ internal sealed class adventure
     private readonly TextWriter output;
     private Queue DATA;
     private string[] roomDescriptions;
-    private string[] objectNames;
-    private string[] objectTags;
     private string[] directions;
-    private int[] objectRooms;
     private int[,] map;
     private int currentRoom;
     private int inventoryItems;
@@ -34,6 +30,8 @@ internal sealed class adventure
     private int I_n;
     private int FL_n;
     private int RO_n;
+
+    private Objects objects;
 
     public adventure(TextReader input, TextWriter output)
     {
@@ -296,10 +294,7 @@ internal sealed class adventure
         FL_n = (0);
         RO_n = (0);
         roomDescriptions = new string[11];
-        objectNames = new string[11];
-        objectTags = new string[11];
         directions = new string[11];
-        objectRooms = new int[11];
     }
 
     private void CLS()
@@ -381,11 +376,11 @@ internal sealed class adventure
     {
         PRINT("YOU CAN SEE: ");
         bool atLeastOne = false;
-        for (int i = 0; i < NumberOfObjects; ++i)
+        for (int i = 0; i < Objects.NumberOfObjects; ++i)
         {
-            if (currentRoom == (objectRooms[i] & 127))
+            if (currentRoom == (objects.objectRooms[i] & 127))
             {
-                PRINT(" " + objectNames[i]);
+                PRINT(" " + objects.objectNames[i]);
                 atLeastOne = true;
             }
         }
@@ -405,19 +400,19 @@ internal sealed class adventure
     private void FindRoomForObject(string noun)
     {
         FL_n = 0;
-        for (I_n = 0; I_n < NumberOfObjects; ++I_n)
+        for (I_n = 0; I_n < Objects.NumberOfObjects; ++I_n)
         {
-            if (objectTags[I_n] == noun)
+            if (objects.objectTags[I_n] == noun)
             {
                 FL_n = 1;
-                RO_n = objectRooms[I_n];
+                RO_n = objects.objectRooms[I_n];
                 break;
             }
         }
 
         if (FL_n != 0)
         {
-            RO_n = objectRooms[I_n];
+            RO_n = objects.objectRooms[I_n];
             if (RO_n > 127)
             {
                 RO_n -= 128;
@@ -445,11 +440,11 @@ internal sealed class adventure
 
     private void InitObjects()
     {
-        for (int i = 0; i < NumberOfObjects; ++i)
+        for (int i = 0; i < Objects.NumberOfObjects; ++i)
         {
-            objectNames[i] = READ_s();
-            objectTags[i] = READ_s();
-            objectRooms[i] = READ_n();
+            objects.objectNames[i] = READ_s();
+            objects.objectTags[i] = READ_s();
+            objects.objectRooms[i] = READ_n();
         }
     }
 
@@ -506,9 +501,10 @@ internal sealed class adventure
         CLS();
 
         DIM1_sa(out roomDescriptions, NumberOfRooms);
-        objectRooms = new int[NumberOfObjects + 1];
-        DIM1_sa(out objectNames, NumberOfObjects);
-        DIM1_sa(out objectTags, NumberOfObjects);
+        objects = new Objects();
+        objects.objectRooms = new int[Objects.NumberOfObjects + 1];
+        DIM1_sa(out objects.objectNames, Objects.NumberOfObjects);
+        DIM1_sa(out objects.objectTags, Objects.NumberOfObjects);
         map = new int[NumberOfRooms + 1, NumberOfDirections + 1];
         PRINT(("") + ("Please stand by .... "));
         PRINT("");
@@ -642,7 +638,7 @@ internal sealed class adventure
         {
             dir = 5;
         }
-        else if ((noun == "BOA") && (objectRooms[11] == (currentRoom + 128)))
+        else if ((noun == "BOA") && (objects.objectRooms[11] == (currentRoom + 128)))
         {
             currentRoom = 13;
             return VerbResult.Proceed;
@@ -689,7 +685,7 @@ internal sealed class adventure
         {
             PRINT("YOU ALREADY HAVE IT!");
         }
-        else if (objectRooms[I_n] > 127)
+        else if (objects.objectRooms[I_n] > 127)
         {
             PRINT("YOU CAN'T GET THAT!");
         }
@@ -709,7 +705,7 @@ internal sealed class adventure
         else
         {
             ++inventoryItems;
-            objectRooms[I_n] = -1;
+            objects.objectRooms[I_n] = -1;
             PRINT("TAKEN.");
         }
 
@@ -727,7 +723,7 @@ internal sealed class adventure
         else
         {
             --inventoryItems;
-            objectRooms[I_n] = currentRoom;
+            objects.objectRooms[I_n] = currentRoom;
             PRINT("DROPPED.");
         }
 
@@ -738,11 +734,11 @@ internal sealed class adventure
     {
         bool atLeastOne = false;
         PRINT("YOU ARE CARRYING:");
-        for (int i = 0; i < NumberOfObjects; ++i)
+        for (int i = 0; i < Objects.NumberOfObjects; ++i)
         {
-            if (objectRooms[i] == -1)
+            if (objects.objectRooms[i] == -1)
             {
-                PRINT(" " + objectNames[i]);
+                PRINT(" " + objects.objectNames[i]);
                 atLeastOne = true;
             }
         }
@@ -842,7 +838,7 @@ internal sealed class adventure
     {
         if (noun == "DIA")
         {
-            if ((objectRooms[0] != currentRoom) && (objectRooms[0] != -1))
+            if ((objects.objectRooms[0] != currentRoom) && (objects.objectRooms[0] != -1))
             {
                 PRINT("THERE'S NO DIARY HERE!");
             }
@@ -855,7 +851,7 @@ internal sealed class adventure
         }
         else if (noun == "DIC")
         {
-            if ((objectRooms[4] != currentRoom) && (objectRooms[4] != -1))
+            if ((objects.objectRooms[4] != currentRoom) && (objects.objectRooms[4] != -1))
             {
                 PRINT("YOU DON'T SEE A DICTIONARY!");
             }
@@ -867,7 +863,7 @@ internal sealed class adventure
         }
         else if (noun == "BOT")
         {
-            if ((objectRooms[6] != currentRoom) && (objectRooms[6] != -1))
+            if ((objects.objectRooms[6] != currentRoom) && (objects.objectRooms[6] != -1))
             {
                 PRINT("THERE'S NO BOTTLE HERE!");
             }
@@ -888,13 +884,13 @@ internal sealed class adventure
     {
         if (noun == "BOX")
         {
-            if ((objectRooms[1] != currentRoom) && (objectRooms[1] != -1))
+            if ((objects.objectRooms[1] != currentRoom) && (objects.objectRooms[1] != -1))
             {
                 PRINT("THERE'S NO BOX HERE!");
             }
             else
             {
-                objectRooms[6] = currentRoom;
+                objects.objectRooms[6] = currentRoom;
                 PRINT("SOMETHING FELL OUT!");
             }
         }
@@ -907,7 +903,7 @@ internal sealed class adventure
             else
             {
                 PRINT("THERE'S SOMETHING INSIDE!");
-                objectRooms[3] = 2;
+                objects.objectRooms[3] = 2;
             }
         }
         else if (noun == "CAS")
@@ -924,7 +920,7 @@ internal sealed class adventure
             {
                 PRINT("THE GLOVES INSULATE AGAINST THE");
                 PRINT("ELECTRICITY! THE CASE OPENS!");
-                objectRooms[15] = 18;
+                objects.objectRooms[15] = 18;
             }
         }
         else
@@ -967,7 +963,7 @@ internal sealed class adventure
 
     private bool PourFormula()
     {
-        if ((objectRooms[6] != currentRoom) && (objectRooms[6] != -1))
+        if ((objects.objectRooms[6] != currentRoom) && (objects.objectRooms[6] != -1))
         {
             PRINT("YOU DON'T HAVE THE BOTTLE!");
             return false;
@@ -986,7 +982,7 @@ internal sealed class adventure
 
     private bool PourSalt()
     {
-        if ((objectRooms[3] != currentRoom) && (objectRooms[3] != -1))
+        if ((objects.objectRooms[3] != currentRoom) && (objects.objectRooms[3] != -1))
         {
             PRINT("YOU DON'T HAVE THE SALT!");
             return false;
@@ -1041,7 +1037,7 @@ internal sealed class adventure
         }
         else if (noun == "LAD")
         {
-            if ((objectRooms[7] != currentRoom) && (objectRooms[7] != -1))
+            if ((objects.objectRooms[7] != currentRoom) && (objects.objectRooms[7] != -1))
             {
                 PRINT("YOU DON'T HAVE THE LADDER!");
             }
@@ -1053,7 +1049,7 @@ internal sealed class adventure
             {
                 PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
                 PRINT("IT DISAPPEARS INTO THE GROUND!");
-                objectRooms[7] = 0;
+                objects.objectRooms[7] = 0;
             }
         }
         else
@@ -1093,7 +1089,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T DIG THAT!");
         }
-        else if ((objectRooms[8] != currentRoom) && (objectRooms[8] != -1))
+        else if ((objects.objectRooms[8] != currentRoom) && (objects.objectRooms[8] != -1))
         {
             PRINT("YOU DON'T HAVE A SHOVEL!");
         }
@@ -1101,14 +1097,14 @@ internal sealed class adventure
         {
             PRINT("YOU DON'T FIND ANYTHING.");
         }
-        else if (objectRooms[10] != 0)
+        else if (objects.objectRooms[10] != 0)
         {
             PRINT("THERE'S NOTHING ELSE THERE!");
         }
         else
         {
             PRINT("THERE'S SOMETHING THERE!");
-            objectRooms[10] = 6;
+            objects.objectRooms[10] = 6;
         }
 
         return VerbResult.Idle;
@@ -1138,7 +1134,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T WAVE THAT!");
         }
-        else if ((objectRooms[12] != currentRoom) && (objectRooms[12] != -1))
+        else if ((objects.objectRooms[12] != currentRoom) && (objects.objectRooms[12] != -1))
         {
             PRINT("YOU DON'T HAVE THE FAN!");
         }
@@ -1150,13 +1146,13 @@ internal sealed class adventure
         {
             PRINT("A POWERFUL BREEZE PROPELS THE BOAT");
             PRINT("TO THE OPPOSITE SHORE!");
-            if (objectRooms[11] == 140)
+            if (objects.objectRooms[11] == 140)
             {
-                objectRooms[11] = 142;
+                objects.objectRooms[11] = 142;
             }
             else
             {
-                objectRooms[11] = 140;
+                objects.objectRooms[11] = 140;
             }
         }
 
@@ -1177,7 +1173,7 @@ internal sealed class adventure
         }
         else
         {
-            currentRoom = objectRooms[11] - 128;
+            currentRoom = objects.objectRooms[11] - 128;
             return VerbResult.Proceed;
         }
     }
@@ -1196,7 +1192,7 @@ internal sealed class adventure
         {
             PRINT("THERE'S NO GUARD HERE!");
         }
-        else if (objectRooms[10] != -1)
+        else if (objects.objectRooms[10] != -1)
         {
             PRINT("YOU DON'T HAVE A WEAPON!");
         }
@@ -1205,7 +1201,7 @@ internal sealed class adventure
             PRINT("THE GUARD, NOTICING YOUR SWORD,");
             PRINT("WISELY RETREATS INTO THE CASTLE.");
             map[16, 0] = 17;
-            objectRooms[13] = 0;
+            objects.objectRooms[13] = 0;
         }
 
         return VerbResult.Idle;
@@ -1217,7 +1213,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T WEAR THAT!");
         }
-        else if ((objectRooms[16] != currentRoom) && (objectRooms[16] != -1))
+        else if ((objects.objectRooms[16] != currentRoom) && (objects.objectRooms[16] != -1))
         {
             PRINT("YOU DON'T HAVE THE GLOVES.");
         }
@@ -1228,5 +1224,14 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
+    }
+
+    private sealed class Objects
+    {
+        public const int NumberOfObjects = 17;
+
+        public string[] objectNames;
+        public string[] objectTags;
+        public int[] objectRooms;
     }
 }
