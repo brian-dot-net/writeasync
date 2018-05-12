@@ -587,6 +587,7 @@ internal sealed class adventure
         CLS();
 
         Dictionary<string, Func<int>> verbRoutines = InitVerbs();
+        Func<int> unknown = UnknownVerb;
         InitHandlers(verbRoutines);
 
         while (true)
@@ -601,7 +602,7 @@ internal sealed class adventure
             {
                 Parser();
 
-                int ret = HandleVerb(verbRoutines);
+                int ret = HandleVerb(verbRoutines, unknown);
                 if (ret == 0)
                 {
                     break;
@@ -651,17 +652,15 @@ internal sealed class adventure
         verbRoutines.Add(v, handler);
     }
 
-    private int HandleVerb(Dictionary<string, Func<int>> verbRoutines)
+    private int HandleVerb(Dictionary<string, Func<int>> verbRoutines, Func<int> unknown)
     {
         Func<int> verbRoutine;
-        if (verbRoutines.TryGetValue(verb, out verbRoutine))
+        if (!verbRoutines.TryGetValue(verb, out verbRoutine))
         {
-            return verbRoutine();
+            verbRoutine = unknown;
         }
-        else
-        {
-            return UnknownVerb();
-        }
+
+        return verbRoutine();
     }
 
     private int UnknownVerb()
