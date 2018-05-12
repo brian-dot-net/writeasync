@@ -20,7 +20,6 @@ internal sealed class adventure
     private string[] directions;
     private int[] objectRooms;
     private int[,] map;
-    private string verb;
     private string noun;
     private int numberOfRooms;
     private int numberOfObjects;
@@ -290,7 +289,6 @@ internal sealed class adventure
         DATA.Enqueue("GLO");
         DATA.Enqueue(19);
 
-        verb = ("");
         noun = ("");
         numberOfRooms = (0);
         numberOfObjects = (0);
@@ -599,7 +597,7 @@ internal sealed class adventure
 
             while (true)
             {
-                Parser();
+                string verb = Parser();
 
                 VerbResult ret = verbRoutines.Handle(verb);
                 if (ret == VerbResult.Idle)
@@ -651,7 +649,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private void Parser()
+    private string Parser()
     {
         string command = "";
         do
@@ -662,7 +660,7 @@ internal sealed class adventure
         while (command == "");
 
         int c = 0;
-        verb = "";
+        string verb = "";
         noun = "";
 
         while (true)
@@ -718,6 +716,8 @@ internal sealed class adventure
         {
             noun = "BOT";
         }
+
+        return verb;
     }
 
     private VerbResult Go()
