@@ -637,6 +637,7 @@ internal sealed class adventure
         verbRoutines.Add("WAV", Wave);
         verbRoutines.Add("LEA", Leave);
         verbRoutines.Add("EXI", Leave);
+        verbRoutines.Add("FIG", Fight);
 
         return verbRoutines;
     }
@@ -647,10 +648,6 @@ internal sealed class adventure
         if (verbRoutines.TryGetValue(verb, out verbRoutine))
         {
             return verbRoutine();
-        }
-        else if (verb == "FIG")
-        {
-            return Fight();
         }
         else if (verb == "WEA")
         {
