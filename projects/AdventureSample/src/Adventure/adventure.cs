@@ -6,7 +6,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using Adventure;
 
@@ -1334,35 +1333,5 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
-    }
-
-    private sealed class VerbRoutines
-    {
-        private readonly Dictionary<string, Func<VerbResult>> verbRoutines;
-        private readonly Func<VerbResult> unknown;
-
-        public VerbRoutines(Func<VerbResult> unknown)
-        {
-            this.verbRoutines = new Dictionary<string, Func<VerbResult>>();
-            this.unknown = unknown;
-        }
-
-        public Dictionary<string, Func<VerbResult>> D => verbRoutines;
-
-        public void Add(string verb, Func<VerbResult> handler)
-        {
-            this.verbRoutines.Add(verb, handler);
-        }
-
-        public VerbResult Handle(string verb)
-        {
-            Func<VerbResult> verbRoutine;
-            if (!this.verbRoutines.TryGetValue(verb, out verbRoutine))
-            {
-                verbRoutine = this.unknown;
-            }
-
-            return verbRoutine();
-        }
     }
 }
