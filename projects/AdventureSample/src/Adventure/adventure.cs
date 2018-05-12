@@ -619,6 +619,8 @@ internal sealed class adventure
         verbRoutines.Add("GO", Go);
         verbRoutines.Add("GET", Get);
         verbRoutines.Add("TAK", Get);
+        verbRoutines.Add("DRO", Drop);
+        verbRoutines.Add("THR", Drop);
 
         return verbRoutines;
     }
@@ -629,10 +631,6 @@ internal sealed class adventure
         if (verbRoutines.TryGetValue(verb, out verbRoutine))
         {
             return verbRoutine();
-        }
-        else if ((verb == "DRO") || (verb == "THR"))
-        {
-            return Drop();
         }
         else if ((verb == "INV") || (verb == "I"))
         {
