@@ -678,18 +678,17 @@ internal sealed class adventure
         }
         else if (verb == "FIG")
         {
-            Fight();
+            return Fight();
         }
         else if (verb == "WEA")
         {
-            Wear();
+            return Wear();
         }
         else
         {
             PRINT(("") + ("I DON'T KNOW HOW TO DO THAT"));
+            return VerbResult.Idle;
         }
-
-        return VerbResult.Idle;
     }
 
     private void Parser()
@@ -1328,7 +1327,7 @@ internal sealed class adventure
         }
     }
 
-    private void Fight()
+    private int Fight()
     {
         if (noun == "")
         {
@@ -1353,9 +1352,11 @@ internal sealed class adventure
             map[16, 0] = 17;
             objectRooms[13] = 0;
         }
+
+        return VerbResult.Idle;
     }
 
-    private void Wear()
+    private int Wear()
     {
         if (noun != "GLO")
         {
@@ -1370,6 +1371,8 @@ internal sealed class adventure
             PRINT("YOU ARE NOW WEARING THE GLOVES.");
             wearingGloves = 1;
         }
+
+        return VerbResult.Idle;
     }
 
     private static class VerbResult
