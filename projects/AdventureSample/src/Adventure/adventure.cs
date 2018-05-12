@@ -27,10 +27,10 @@ internal sealed class adventure
     private int[,] map;
     private int currentRoom;
     private int inventoryItems;
-    private float saltPoured;
-    private float formulaPoured;
+    private bool saltPoured;
+    private bool formulaPoured;
     private float mixtureCount;
-    private float wearingGloves;
+    private bool wearingGloves;
     private int I_n;
     private int FL_n;
     private int RO_n;
@@ -291,10 +291,7 @@ internal sealed class adventure
 
         currentRoom = (0);
         inventoryItems = (0);
-        saltPoured = (0);
-        formulaPoured = (0);
         mixtureCount = (0);
-        wearingGloves = (0);
         I_n = (0);
         FL_n = (0);
         RO_n = (0);
@@ -523,12 +520,12 @@ internal sealed class adventure
 
         InitDescriptions();
 
-        currentRoom = (1);
-        inventoryItems = (0);
-        saltPoured = (0);
-        formulaPoured = (0);
-        mixtureCount = (1);
-        wearingGloves = (0);
+        currentRoom = 1;
+        inventoryItems = 0;
+        saltPoured = false;
+        formulaPoured = false;
+        mixtureCount = 1;
+        wearingGloves = false;
 
         PrintIntro();
 
@@ -919,7 +916,7 @@ internal sealed class adventure
             {
                 PRINT("THERE'S NO CASE HERE!");
             }
-            else if (wearingGloves != 1)
+            else if (!wearingGloves)
             {
                 PRINT("THE CASE IS ELECTRIFIED!");
             }
@@ -975,14 +972,14 @@ internal sealed class adventure
             PRINT("YOU DON'T HAVE THE BOTTLE!");
             return false;
         }
-        else if (formulaPoured == 1)
+        else if (formulaPoured)
         {
             PRINT("THE BOTTLE IS EMPTY!");
             return false;
         }
         else
         {
-            formulaPoured = 1;
+            formulaPoured = true;
             return true;
         }
     }
@@ -994,14 +991,14 @@ internal sealed class adventure
             PRINT("YOU DON'T HAVE THE SALT!");
             return false;
         }
-        else if (saltPoured == 1)
+        else if (saltPoured)
         {
             PRINT("THE SHAKER IS EMPTY!");
             return false;
         }
         else
         {
-            saltPoured = 1;
+            saltPoured = true;
             return true;
         }
     }
@@ -1227,7 +1224,7 @@ internal sealed class adventure
         else
         {
             PRINT("YOU ARE NOW WEARING THE GLOVES.");
-            wearingGloves = 1;
+            wearingGloves = true;
         }
 
         return VerbResult.Idle;
