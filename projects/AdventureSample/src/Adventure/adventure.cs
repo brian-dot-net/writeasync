@@ -319,16 +319,12 @@ internal sealed class adventure
             {
                 FL_n = 1;
                 RO_n = objects.objectRooms[I_n];
-                break;
-            }
-        }
+                if (RO_n > 127)
+                {
+                    RO_n -= 128;
+                }
 
-        if (FL_n != 0)
-        {
-            RO_n = objects.objectRooms[I_n];
-            if (RO_n > 127)
-            {
-                RO_n -= 128;
+                break;
             }
         }
     }
