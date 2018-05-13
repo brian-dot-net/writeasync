@@ -213,12 +213,6 @@ internal sealed class adventure
         Console.Clear();
     }
 
-    private static void DIM1_sa(out string[] a, int d1)
-    {
-        a = (new string[(d1) + (1)]);
-        Array.Fill(a, "");
-    }
-
     private void PRINT(string expression)
     {
         this.output.WriteLine(expression);
@@ -387,7 +381,6 @@ internal sealed class adventure
         ; // 
         CLS();
 
-        DIM1_sa(out roomDescriptions, NumberOfRooms);
         objects = new Objects();
         map = new int[NumberOfRooms + 1, NumberOfDirections + 1];
         PRINT(("") + ("Please stand by .... "));
@@ -396,6 +389,7 @@ internal sealed class adventure
 
         InitMap();
 
+        roomDescriptions = new string[NumberOfRooms + 1];
         InitDescriptions();
 
         currentRoom = 1;
@@ -1149,8 +1143,8 @@ internal sealed class adventure
         public Objects()
         {
             this.objectRooms = new int[NumberOfObjects + 1];
-            DIM1_sa(out this.objectNames, NumberOfObjects);
-            DIM1_sa(out this.objectTags, NumberOfObjects);
+            this.objectNames = new string[NumberOfObjects + 1];
+            this.objectTags = new string[NumberOfObjects + 1];
 
             this.InitObjects();
         }
