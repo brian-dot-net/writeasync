@@ -20,7 +20,7 @@ namespace Adventure
 
         public string Tag { get; private set; }
 
-        public int RawRoom { get; private set; }
+        public int RawRoom { get; set; }
 
         public int Room
         {

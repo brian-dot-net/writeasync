@@ -10,20 +10,14 @@ namespace Adventure
     {
         private const int NumberOfObjects = 17;
 
-        private readonly string[] objectNames;
-        private readonly string[] objectTags;
-        private readonly int[] objectRooms;
+        private readonly ObjectRef[] objects;
 
         public Objects()
         {
-            this.objectRooms = new int[NumberOfObjects + 1];
-            this.objectNames = new string[NumberOfObjects + 1];
-            this.objectTags = new string[NumberOfObjects + 1];
-
-            this.InitObjects();
+            this.objects = InitObjects();
         }
 
-        public bool Carrying(int id) => this.objectRooms[id] == -1;
+        public bool Carrying(int id) => this.Ref(id).RawRoom == -1;
 
         public IEnumerable<string> Carrying()
         {
@@ -67,19 +61,19 @@ namespace Adventure
             return null;
         }
 
-        public ObjectRef Ref(int id) => new ObjectRef(id, this.objectNames[id], this.objectTags[id], this.objectRooms[id]);
+        public ObjectRef Ref(int id) => this.objects[id];
 
-        public void Show(int id, int room) => this.objectRooms[id] = room;
+        public void Show(int id, int room) => this.Ref(id).RawRoom = room;
 
         public void Hide(int id) => this.Show(id, 0);
 
         public void Take(int id) => this.Drop(id, -1);
 
-        public void Drop(int id, int room) => this.objectRooms[id] = room;
+        public void Drop(int id, int room) => this.Ref(id).RawRoom = room;
 
-        private void InitObjects()
+        private static ObjectRef[] InitObjects()
         {
-            ObjectRef[] d = new ObjectRef[]
+            return new ObjectRef[]
             {
                 new ObjectRef(0, "AN OLD DIARY", "DIA", 1),
                 new ObjectRef(1, "A SMALL BOX", "BOX", 1),
@@ -99,15 +93,6 @@ namespace Adventure
                 new ObjectRef(15, "A GLOWING RUBY", "RUB", 0),
                 new ObjectRef(16, "A PAIR OF RUBBER GLOVES", "GLO", 19)
             };
-
-            for (int i = 0; i < NumberOfObjects; ++i)
-            {
-                ObjectRef obj = d[i];
-
-                this.objectNames[i] = obj.Name;
-                this.objectTags[i] = obj.Tag;
-                this.objectRooms[i] = obj.RawRoom;
-            }
         }
     }
 }
