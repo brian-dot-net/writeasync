@@ -698,7 +698,7 @@ internal sealed class adventure
     {
         if (noun == "DIA")
         {
-            if (!objects.IsHere(0, currentRoom))
+            if (!objects.IsHere(ObjectId.Diary, currentRoom))
             {
                 PRINT("THERE'S NO DIARY HERE!");
             }
@@ -711,7 +711,7 @@ internal sealed class adventure
         }
         else if (noun == "DIC")
         {
-            if (!objects.IsHere(4, currentRoom))
+            if (!objects.IsHere(ObjectId.Dictionary, currentRoom))
             {
                 PRINT("YOU DON'T SEE A DICTIONARY!");
             }
@@ -744,7 +744,7 @@ internal sealed class adventure
     {
         if (noun == "BOX")
         {
-            if (!objects.IsHere(1, currentRoom))
+            if (!objects.IsHere(ObjectId.Box, currentRoom))
             {
                 PRINT("THERE'S NO BOX HERE!");
             }
@@ -763,7 +763,7 @@ internal sealed class adventure
             else
             {
                 PRINT("THERE'S SOMETHING INSIDE!");
-                objects.Drop(3, 2);
+                objects.Drop(ObjectId.Salt, 2);
             }
         }
         else if (noun == "CAS")
@@ -780,7 +780,7 @@ internal sealed class adventure
             {
                 PRINT("THE GLOVES INSULATE AGAINST THE");
                 PRINT("ELECTRICITY! THE CASE OPENS!");
-                objects.Drop(15, 18);
+                objects.Drop(ObjectId.Ruby, 18);
             }
         }
         else
@@ -842,7 +842,7 @@ internal sealed class adventure
 
     private bool PourSalt()
     {
-        if (!objects.IsHere(3, currentRoom))
+        if (!objects.IsHere(ObjectId.Salt, currentRoom))
         {
             PRINT("YOU DON'T HAVE THE SALT!");
             return false;
@@ -897,7 +897,7 @@ internal sealed class adventure
         }
         else if (noun == "LAD")
         {
-            if (!objects.IsHere(7, currentRoom))
+            if (!objects.IsHere(ObjectId.Ladder, currentRoom))
             {
                 PRINT("YOU DON'T HAVE THE LADDER!");
             }
@@ -909,7 +909,7 @@ internal sealed class adventure
             {
                 PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
                 PRINT("IT DISAPPEARS INTO THE GROUND!");
-                objects.Hide(7);
+                objects.Hide(ObjectId.Ladder);
             }
         }
         else
@@ -949,7 +949,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T DIG THAT!");
         }
-        else if (!objects.IsHere(8, currentRoom))
+        else if (!objects.IsHere(ObjectId.Shovel, currentRoom))
         {
             PRINT("YOU DON'T HAVE A SHOVEL!");
         }
@@ -957,14 +957,14 @@ internal sealed class adventure
         {
             PRINT("YOU DON'T FIND ANYTHING.");
         }
-        else if (objects.Ref(10).RawRoom != 0)
+        else if (objects.Ref(ObjectId.Sword).RawRoom != 0)
         {
             PRINT("THERE'S NOTHING ELSE THERE!");
         }
         else
         {
             PRINT("THERE'S SOMETHING THERE!");
-            objects.Drop(10, 6);
+            objects.Drop(ObjectId.Sword, 6);
         }
 
         return VerbResult.Idle;
@@ -994,7 +994,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T WAVE THAT!");
         }
-        else if (!objects.IsHere(12, currentRoom))
+        else if (!objects.IsHere(ObjectId.Fan, currentRoom))
         {
             PRINT("YOU DON'T HAVE THE FAN!");
         }
@@ -1006,13 +1006,13 @@ internal sealed class adventure
         {
             PRINT("A POWERFUL BREEZE PROPELS THE BOAT");
             PRINT("TO THE OPPOSITE SHORE!");
-            if (objects.Ref(11).RawRoom == 140)
+            if (objects.Ref(ObjectId.Boat).RawRoom == 140)
             {
-                objects.Drop(11, 142);
+                objects.Drop(ObjectId.Boat, 142);
             }
             else
             {
-                objects.Drop(11, 140);
+                objects.Drop(ObjectId.Boat, 140);
             }
         }
 
@@ -1033,7 +1033,7 @@ internal sealed class adventure
         }
         else
         {
-            currentRoom = objects.Ref(11).Room;
+            currentRoom = objects.Ref(ObjectId.Boat).Room;
             return VerbResult.Proceed;
         }
     }
@@ -1052,7 +1052,7 @@ internal sealed class adventure
         {
             PRINT("THERE'S NO GUARD HERE!");
         }
-        else if (!objects.Carrying(10))
+        else if (!objects.Carrying(ObjectId.Sword))
         {
             PRINT("YOU DON'T HAVE A WEAPON!");
         }
@@ -1061,7 +1061,7 @@ internal sealed class adventure
             PRINT("THE GUARD, NOTICING YOUR SWORD,");
             PRINT("WISELY RETREATS INTO THE CASTLE.");
             map[16, 0] = 17;
-            objects.Hide(13);
+            objects.Hide(ObjectId.Guard);
         }
 
         return VerbResult.Idle;
@@ -1073,7 +1073,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T WEAR THAT!");
         }
-        else if (!objects.IsHere(16, currentRoom))
+        else if (!objects.IsHere(ObjectId.Gloves, currentRoom))
         {
             PRINT("YOU DON'T HAVE THE GLOVES.");
         }
