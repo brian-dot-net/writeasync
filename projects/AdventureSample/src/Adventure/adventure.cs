@@ -501,7 +501,7 @@ internal sealed class adventure
         {
             dir = 5;
         }
-        else if ((noun == "BOA") && (objects.Ref(11).RawRoom == (currentRoom + 128)))
+        else if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).RawRoom == (currentRoom + 128)))
         {
             currentRoom = 13;
             return VerbResult.Proceed;

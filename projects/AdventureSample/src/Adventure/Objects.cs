@@ -15,7 +15,7 @@ namespace Adventure
             this.objects = InitObjects();
         }
 
-        public bool Carrying(int id) => this.Ref(id).Carrying;
+        public bool Carrying(ObjectId id) => this.Ref(id).Carrying;
 
         public IEnumerable<string> Carrying()
         {
@@ -39,7 +39,7 @@ namespace Adventure
             }
         }
 
-        public bool IsHere(int id, int currentRoom)
+        public bool IsHere(ObjectId id, int currentRoom)
         {
             return (this.Ref(id).RawRoom == currentRoom) || this.Carrying(id);
         }
@@ -57,13 +57,13 @@ namespace Adventure
             return null;
         }
 
-        public ObjectRef Ref(int id) => this.objects[id];
+        public ObjectRef Ref(ObjectId id) => this.objects[(int)id];
 
-        public void Hide(int id) => this.Drop(id, 0);
+        public void Hide(ObjectId id) => this.Drop(id, 0);
 
-        public void Take(int id) => this.Drop(id, -1);
+        public void Take(ObjectId id) => this.Drop(id, -1);
 
-        public void Drop(int id, int room) => this.Ref(id).RawRoom = room;
+        public void Drop(ObjectId id, int room) => this.Ref(id).RawRoom = room;
 
         private static ObjectRef[] InitObjects()
         {

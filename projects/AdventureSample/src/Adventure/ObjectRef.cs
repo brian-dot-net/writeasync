@@ -6,7 +6,7 @@ namespace Adventure
 {
     internal sealed class ObjectRef
     {
-        public ObjectRef(int id, string name, string tag, int room)
+        public ObjectRef(ObjectId id, string name, string tag, int room)
         {
             this.Id = id;
             this.Name = name;
@@ -14,7 +14,7 @@ namespace Adventure
             this.RawRoom = room;
         }
 
-        public int Id { get; private set; }
+        public ObjectId Id { get; private set; }
 
         public string Name { get; private set; }
 
