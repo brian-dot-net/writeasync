@@ -28,7 +28,6 @@ internal sealed class adventure
     private bool formulaPoured;
     private float mixtureCount;
     private bool wearingGloves;
-    private int RO_n;
 
     private Objects objects;
 
@@ -204,7 +203,6 @@ internal sealed class adventure
         currentRoom = (0);
         inventoryItems = (0);
         mixtureCount = (0);
-        RO_n = (0);
         roomDescriptions = new string[11];
         directions = new string[11];
     }
@@ -312,9 +310,7 @@ internal sealed class adventure
         {
             if (objects.objectTags[i] == noun)
             {
-                ObjectRef obj = new ObjectRef(i, objects.objectNames[i], objects.objectTags[i], objects.objectRooms[i]);
-                RO_n = obj.Room;
-                return obj;
+                return new ObjectRef(i, objects.objectNames[i], objects.objectTags[i], objects.objectRooms[i]);
             }
         }
 
@@ -603,7 +599,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T GET THAT!");
         }
-        else if (RO_n == -1)
+        else if (obj.Room == -1)
         {
             PRINT("YOU ALREADY HAVE IT!");
         }
@@ -611,7 +607,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T GET THAT!");
         }
-        else if (RO_n != currentRoom)
+        else if (obj.Room != currentRoom)
         {
             PRINT("THAT'S NOT HERE!");
         }
@@ -638,7 +634,7 @@ internal sealed class adventure
     {
         ObjectRef obj = FindRoomForObject(noun);
 
-        if ((obj == null) || (RO_n != -1))
+        if ((obj == null) || (obj.Room != -1))
         {
             PRINT("YOU DON'T HAVE THAT!");
         }
@@ -696,9 +692,9 @@ internal sealed class adventure
         }
         else
         {
-            FindRoomForObject(noun);
+            ObjectRef obj = FindRoomForObject(noun);
 
-            if ((RO_n != currentRoom) && (RO_n != -1))
+            if ((obj.Room != currentRoom) && (obj.Room != -1))
             {
                 PRINT("IT'S NOT HERE!");
             }
