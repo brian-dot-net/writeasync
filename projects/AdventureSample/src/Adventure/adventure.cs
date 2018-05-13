@@ -310,7 +310,7 @@ internal sealed class adventure
         PRINT((("") + ("YOU ARE ")) + (roomDescriptions[currentRoom]));
     }
 
-    private void FindRoomForObject(string noun)
+    private ObjectRef FindRoomForObject(string noun)
     {
         FL_n = 0;
         for (I_n = 0; I_n < Objects.NumberOfObjects; ++I_n)
@@ -318,15 +318,13 @@ internal sealed class adventure
             if (objects.objectTags[I_n] == noun)
             {
                 FL_n = 1;
-                RO_n = objects.objectRooms[I_n];
-                if (RO_n > 127)
-                {
-                    RO_n -= 128;
-                }
-
-                break;
+                ObjectRef obj = new ObjectRef(I_n, objects.objectNames[I_n], objects.objectTags[I_n], objects.objectRooms[I_n]);
+                RO_n = obj.Room;
+                return obj;
             }
         }
+
+        return null;
     }
 
     private void InitMap()
@@ -1171,7 +1169,19 @@ internal sealed class adventure
 
         public int RawRoom { get; private set; }
 
-        public int Room => this.RawRoom & 127;
+        public int Room
+        {
+            get
+            {
+                int r = this.RawRoom;
+                if (r > 127)
+                {
+                    r -= 128;
+                }
+
+                return r;
+            }
+        }
     }
 
     private sealed class Objects
