@@ -957,7 +957,7 @@ internal sealed class adventure
         {
             PRINT("YOU DON'T FIND ANYTHING.");
         }
-        else if (objects.objectRooms[10] != 0)
+        else if (objects.Get(10).RawRoom != 0)
         {
             PRINT("THERE'S NOTHING ELSE THERE!");
         }
@@ -1006,7 +1006,7 @@ internal sealed class adventure
         {
             PRINT("A POWERFUL BREEZE PROPELS THE BOAT");
             PRINT("TO THE OPPOSITE SHORE!");
-            if (objects.objectRooms[11] == 140)
+            if (objects.Get(11).RawRoom == 140)
             {
                 objects.objectRooms[11] = 142;
             }
@@ -1033,7 +1033,7 @@ internal sealed class adventure
         }
         else
         {
-            currentRoom = objects.objectRooms[11] - 128;
+            currentRoom = objects.Get(11).Room;
             return VerbResult.Proceed;
         }
     }
