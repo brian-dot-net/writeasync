@@ -586,7 +586,7 @@ internal sealed class adventure
         else
         {
             --inventoryItems;
-            objects.objectRooms[obj.Id] = currentRoom;
+            objects.Drop(obj.Id, currentRoom);
             PRINT("DROPPED.");
         }
 
@@ -1185,7 +1185,9 @@ internal sealed class adventure
 
         public void Hide(int id) => this.Show(id, 0);
 
-        public void Take(int id) => this.objectRooms[id] = -1;
+        public void Take(int id) => this.Drop(id, -1);
+
+        public void Drop(int id, int room) => this.objectRooms[id] = room;
 
         private void InitObjects()
         {
