@@ -26,7 +26,7 @@ internal sealed class adventure
     private int inventoryItems;
     private bool saltPoured;
     private bool formulaPoured;
-    private float mixtureCount;
+    private int mixtureCount;
     private bool wearingGloves;
 
     private Objects objects;
@@ -202,7 +202,7 @@ internal sealed class adventure
 
         currentRoom = (0);
         inventoryItems = (0);
-        mixtureCount = (0);
+        mixtureCount = 0;
         roomDescriptions = new string[11];
         directions = new string[11];
     }
