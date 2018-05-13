@@ -164,6 +164,8 @@ internal sealed class adventure
 
     private void InitMap()
     {
+        map = new int[NumberOfRooms + 1, NumberOfDirections + 1];
+
         directions[0] = "NORTH";
         directions[1] = "SOUTH";
         directions[2] = "EAST";
@@ -336,6 +338,8 @@ internal sealed class adventure
 
     private void InitDescriptions()
     {
+        roomDescriptions = new string[NumberOfRooms + 1];
+
         roomDescriptions[1] = "IN YOUR LIVING ROOM.";
         roomDescriptions[2] = "IN THE KITCHEN.";
         roomDescriptions[3] = "IN THE LIBRARY.";
@@ -386,15 +390,14 @@ internal sealed class adventure
         ; // 
         CLS();
 
+        PRINT("Please stand by .... ");
+        PRINT("");
+        PRINT("");
+
         objects = new Objects();
-        map = new int[NumberOfRooms + 1, NumberOfDirections + 1];
-        PRINT(("") + ("Please stand by .... "));
-        PRINT("");
-        PRINT("");
 
         InitMap();
 
-        roomDescriptions = new string[NumberOfRooms + 1];
         InitDescriptions();
 
         currentRoom = 1;
