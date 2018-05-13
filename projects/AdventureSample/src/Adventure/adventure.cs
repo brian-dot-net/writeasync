@@ -1121,11 +1121,12 @@ internal sealed class adventure
 
     private sealed class Objects
     {
-        public const int NumberOfObjects = 17;
+        private const int NumberOfObjects = 17;
 
-        public string[] objectNames;
-        public string[] objectTags;
-        public int[] objectRooms;
+        private readonly string[] objectNames;
+        private readonly string[] objectTags;
+
+        public readonly int[] objectRooms;
 
         public Objects()
         {
