@@ -723,7 +723,7 @@ internal sealed class adventure
         }
         else if (noun == "BOT")
         {
-            if (!objects.IsHere(6, currentRoom))
+            if (!objects.IsHere(ObjectId.Bottle, currentRoom))
             {
                 PRINT("THERE'S NO BOTTLE HERE!");
             }
@@ -750,7 +750,7 @@ internal sealed class adventure
             }
             else
             {
-                objects.Drop(6, currentRoom);
+                objects.Drop(ObjectId.Bottle, currentRoom);
                 PRINT("SOMETHING FELL OUT!");
             }
         }
@@ -823,7 +823,7 @@ internal sealed class adventure
 
     private bool PourFormula()
     {
-        if (!objects.IsHere(6, currentRoom))
+        if (!objects.IsHere(ObjectId.Bottle, currentRoom))
         {
             PRINT("YOU DON'T HAVE THE BOTTLE!");
             return false;

@@ -75,7 +75,7 @@ namespace Adventure
                 new ObjectRef(3, "A SALT SHAKER", "SAL", 0),
                 new ObjectRef(4, "A DICTIONARY", "DIC", 3),
                 new ObjectRef(5, "WOODEN BARREL", "BAR", 133),
-                new ObjectRef(6, "A SMALL BOTTLE", "BOT", 0),
+                new ObjectRef(ObjectId.Bottle, "A SMALL BOTTLE", "BOT", 0),
                 new ObjectRef(7, "A LADDER", "LAD", 4),
                 new ObjectRef(8, "A SHOVEL", "SHO", 5),
                 new ObjectRef(9, "A TREE", "TRE", 135),
