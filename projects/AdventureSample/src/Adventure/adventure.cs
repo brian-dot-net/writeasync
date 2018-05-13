@@ -265,12 +265,9 @@ internal sealed class adventure
     private void PrintDirections()
     {
         PRINT_n("YOU CAN GO: ");
-        for (int i = 0; i <= 5; ++i)
+        foreach (string dir in Directions())
         {
-            if (map[currentRoom, i] > 0)
-            {
-                PRINT_n(directions[i] + " ");
-            }
+            PRINT_n(dir + " ");
         }
 
         PRINT("");
@@ -295,7 +292,23 @@ internal sealed class adventure
     private void PrintDescription()
     {
         PRINT("");
-        PRINT((("") + ("YOU ARE ")) + (roomDescriptions[currentRoom]));
+        PRINT("YOU ARE " + Describe());
+    }
+
+    private IEnumerable<string> Directions()
+    {
+        for (int i = 0; i <= 5; ++i)
+        {
+            if (map[currentRoom, i] > 0)
+            {
+                yield return directions[i];
+            }
+        }
+    }
+
+    private string Describe()
+    {
+        return roomDescriptions[currentRoom];
     }
 
     private void InitMap()
