@@ -1114,11 +1114,4 @@ internal sealed class adventure
 
         return VerbResult.Idle;
     }
-
-    private enum MoveResult
-    {
-        Invalid,
-        OK,
-        Blocked
-    }
 }
