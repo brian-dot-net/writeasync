@@ -5,7 +5,6 @@
 //------------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Adventure;
@@ -18,7 +17,6 @@ internal sealed class adventure
 
     private readonly TextReader input;
     private readonly TextWriter output;
-    private Queue DATA;
     private string[] roomDescriptions;
     private string[] directions;
     private int[,] map;
@@ -46,7 +44,134 @@ internal sealed class adventure
 
     private void Init()
     {
-        DATA = (new Queue());
+        currentRoom = (0);
+        inventoryItems = (0);
+        mixtureCount = 0;
+        roomDescriptions = new string[11];
+        directions = new string[11];
+    }
+
+    private void CLS()
+    {
+        this.output.Write('\f');
+        Console.Clear();
+    }
+
+    private void PRINT(string expression)
+    {
+        this.output.WriteLine(expression);
+    }
+
+    private string INPUT_s(string prompt)
+    {
+        this.output.Write((prompt) + ("? "));
+        string v = this.input.ReadLine();
+        return v.Trim();
+    }
+
+    private void PRINT_n(string expression)
+    {
+        this.output.Write(expression);
+    }
+
+    private float INPUT_n(string prompt)
+    {
+        while (true)
+        {
+            this.output.Write((prompt) + ("? "));
+            string v = this.input.ReadLine();
+            v = (v.Trim());
+            if ((v.Length) == (0))
+            {
+                return 0;
+            }
+
+            float r;
+            if (float.TryParse(v, out r))
+            {
+                return r;
+            }
+
+            this.output.WriteLine("?Redo from start");
+        }
+    }
+
+    private void PrintDirections()
+    {
+        PRINT_n("YOU CAN GO: ");
+        foreach (string dir in Directions())
+        {
+            PRINT_n(dir + " ");
+        }
+
+        PRINT("");
+    }
+
+    private void PrintObjects()
+    {
+        PRINT("YOU CAN SEE: ");
+        bool atLeastOne = false;
+        foreach (string name in objects.Here(currentRoom))
+        {
+            PRINT(" " + name);
+            atLeastOne = true;
+        }
+
+        if (!atLeastOne)
+        {
+            PRINT(" NOTHING OF INTEREST");
+        }
+    }
+
+    private void PrintDescription()
+    {
+        PRINT("");
+        PRINT("YOU ARE " + Describe());
+    }
+
+    private IEnumerable<string> Directions()
+    {
+        for (int i = 0; i <= 5; ++i)
+        {
+            if (map[currentRoom, i] > 0)
+            {
+                yield return directions[i];
+            }
+        }
+    }
+
+    private string Describe()
+    {
+        return roomDescriptions[currentRoom];
+    }
+
+    private MoveResult Move(int dir)
+    {
+        int next = map[currentRoom, dir];
+        if (next == 128)
+        {
+            return MoveResult.Blocked;
+        }
+
+        if ((next <= 0) || (next > 128))
+        {
+            return MoveResult.Invalid;
+        }
+
+        currentRoom = next;
+        return MoveResult.OK;
+    }
+
+    private void InitMap()
+    {
+        directions[0] = "NORTH";
+        directions[1] = "SOUTH";
+        directions[2] = "EAST";
+        directions[3] = "WEST";
+        directions[4] = "UP";
+        directions[5] = "DOWN";
+
+        Queue<int> DATA = new Queue<int>();
 
         // LIVING ROOM
         DATA.Enqueue(4);
@@ -200,148 +325,11 @@ internal sealed class adventure
         DATA.Enqueue(0);
         DATA.Enqueue(8);
 
-        currentRoom = (0);
-        inventoryItems = (0);
-        mixtureCount = 0;
-        roomDescriptions = new string[11];
-        directions = new string[11];
-    }
-
-    private void CLS()
-    {
-        this.output.Write('\f');
-        Console.Clear();
-    }
-
-    private void PRINT(string expression)
-    {
-        this.output.WriteLine(expression);
-    }
-
-    private string INPUT_s(string prompt)
-    {
-        this.output.Write((prompt) + ("? "));
-        string v = this.input.ReadLine();
-        return v.Trim();
-    }
-
-    private void PRINT_n(string expression)
-    {
-        this.output.Write(expression);
-    }
-
-    private int READ_n()
-    {
-        return (int)DATA.Dequeue();
-    }
-
-    private string READ_s()
-    {
-        return (string)(DATA.Dequeue());
-    }
-
-    private float INPUT_n(string prompt)
-    {
-        while (true)
-        {
-            this.output.Write((prompt) + ("? "));
-            string v = this.input.ReadLine();
-            v = (v.Trim());
-            if ((v.Length) == (0))
-            {
-                return 0;
-            }
-
-            float r;
-            if (float.TryParse(v, out r))
-            {
-                return r;
-            }
-
-            this.output.WriteLine("?Redo from start");
-        }
-    }
-
-    private void PrintDirections()
-    {
-        PRINT_n("YOU CAN GO: ");
-        foreach (string dir in Directions())
-        {
-            PRINT_n(dir + " ");
-        }
-
-        PRINT("");
-    }
-
-    private void PrintObjects()
-    {
-        PRINT("YOU CAN SEE: ");
-        bool atLeastOne = false;
-        foreach (string name in objects.Here(currentRoom))
-        {
-            PRINT(" " + name);
-            atLeastOne = true;
-        }
-
-        if (!atLeastOne)
-        {
-            PRINT(" NOTHING OF INTEREST");
-        }
-    }
-
-    private void PrintDescription()
-    {
-        PRINT("");
-        PRINT("YOU ARE " + Describe());
-    }
-
-    private IEnumerable<string> Directions()
-    {
-        for (int i = 0; i <= 5; ++i)
-        {
-            if (map[currentRoom, i] > 0)
-            {
-                yield return directions[i];
-            }
-        }
-    }
-
-    private string Describe()
-    {
-        return roomDescriptions[currentRoom];
-    }
-
-    private MoveResult Move(int dir)
-    {
-        int next = map[currentRoom, dir];
-        if (next == 128)
-        {
-            return MoveResult.Blocked;
-        }
-
-        if ((next <= 0) || (next > 128))
-        {
-            return MoveResult.Invalid;
-        }
-
-        currentRoom = next;
-        return MoveResult.OK;
-    }
-
-    private void InitMap()
-    {
-        directions[0] = "NORTH";
-        directions[1] = "SOUTH";
-        directions[2] = "EAST";
-        directions[3] = "WEST";
-        directions[4] = "UP";
-        directions[5] = "DOWN";
-
         for (int i = 1; i <= NumberOfRooms; ++i)
         {
             for (int j = 0; j < NumberOfDirections; ++j)
             {
-                map[i, j] = READ_n();
+                map[i, j] = DATA.Dequeue();
             }
         }
     }
