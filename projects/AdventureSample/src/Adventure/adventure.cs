@@ -1086,47 +1086,13 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private sealed class ObjectRef
-    {
-        public ObjectRef(int id, string name, string tag, int room)
-        {
-            this.Id = id;
-            this.Name = name;
-            this.Tag = tag;
-            this.RawRoom = room;
-        }
-
-        public int Id { get; private set; }
-
-        public string Name { get; private set; }
-
-        public string Tag { get; private set; }
-
-        public int RawRoom { get; private set; }
-
-        public int Room
-        {
-            get
-            {
-                int r = this.RawRoom;
-                if (r > 127)
-                {
-                    r -= 128;
-                }
-
-                return r;
-            }
-        }
-    }
-
     private sealed class Objects
     {
         private const int NumberOfObjects = 17;
 
         private readonly string[] objectNames;
         private readonly string[] objectTags;
-
-        public readonly int[] objectRooms;
+        private readonly int[] objectRooms;
 
         public Objects()
         {
