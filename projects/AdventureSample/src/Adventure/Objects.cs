@@ -58,14 +58,14 @@ namespace Adventure
             {
                 if (this.objectTags[i] == noun)
                 {
-                    return this.Get(i);
+                    return this.Ref(i);
                 }
             }
 
             return null;
         }
 
-        public ObjectRef Get(int id) => new ObjectRef(id, this.objectNames[id], this.objectTags[id], this.objectRooms[id]);
+        public ObjectRef Ref(int id) => new ObjectRef(id, this.objectNames[id], this.objectTags[id], this.objectRooms[id]);
 
         public void Show(int id, int room) => this.objectRooms[id] = room;
 

@@ -501,7 +501,7 @@ internal sealed class adventure
         {
             dir = 5;
         }
-        else if ((noun == "BOA") && (objects.Get(11).RawRoom == (currentRoom + 128)))
+        else if ((noun == "BOA") && (objects.Ref(11).RawRoom == (currentRoom + 128)))
         {
             currentRoom = 13;
             return VerbResult.Proceed;
@@ -957,7 +957,7 @@ internal sealed class adventure
         {
             PRINT("YOU DON'T FIND ANYTHING.");
         }
-        else if (objects.Get(10).RawRoom != 0)
+        else if (objects.Ref(10).RawRoom != 0)
         {
             PRINT("THERE'S NOTHING ELSE THERE!");
         }
@@ -1006,7 +1006,7 @@ internal sealed class adventure
         {
             PRINT("A POWERFUL BREEZE PROPELS THE BOAT");
             PRINT("TO THE OPPOSITE SHORE!");
-            if (objects.Get(11).RawRoom == 140)
+            if (objects.Ref(11).RawRoom == 140)
             {
                 objects.Show(11, 142);
             }
@@ -1033,7 +1033,7 @@ internal sealed class adventure
         }
         else
         {
-            currentRoom = objects.Get(11).Room;
+            currentRoom = objects.Ref(11).Room;
             return VerbResult.Proceed;
         }
     }
