@@ -334,6 +334,8 @@ internal sealed class adventure
                 map[i, j] = DATA.Dequeue();
             }
         }
+
+        InitDescriptions();
     }
 
     private void InitDescriptions()
@@ -397,8 +399,6 @@ internal sealed class adventure
         objects = new Objects();
 
         InitMap();
-
-        InitDescriptions();
 
         currentRoom = 1;
         inventoryItems = 0;
