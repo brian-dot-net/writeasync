@@ -35,5 +35,7 @@ namespace Adventure
                 return r;
             }
         }
+
+        public bool Carrying => this.RawRoom == -1;
     }
 }

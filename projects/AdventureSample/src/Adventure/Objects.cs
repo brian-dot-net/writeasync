@@ -8,8 +8,6 @@ namespace Adventure
 
     internal sealed class Objects
     {
-        private const int NumberOfObjects = 17;
-
         private readonly ObjectRef[] objects;
 
         public Objects()
@@ -17,24 +15,23 @@ namespace Adventure
             this.objects = InitObjects();
         }
 
-        public bool Carrying(int id) => this.Ref(id).RawRoom == -1;
+        public bool Carrying(int id) => this.Ref(id).Carrying;
 
         public IEnumerable<string> Carrying()
         {
-            for (int i = 0; i < NumberOfObjects; ++i)
+            foreach (ObjectRef obj in this.objects)
             {
-                if (this.Carrying(i))
+                if (obj.Carrying)
                 {
-                    yield return this.Ref(i).Name;
+                    yield return obj.Name;
                 }
             }
         }
 
         public IEnumerable<string> Here(int currentRoom)
         {
-            for (int i = 0; i < NumberOfObjects; ++i)
+            foreach (ObjectRef obj in this.objects)
             {
-                ObjectRef obj = this.Ref(i);
                 if (currentRoom == obj.Room)
                 {
                     yield return obj.Name;
@@ -49,9 +46,8 @@ namespace Adventure
 
         public ObjectRef Find(string noun)
         {
-            for (int i = 0; i < Objects.NumberOfObjects; ++i)
+            foreach (ObjectRef obj in this.objects)
             {
-                ObjectRef obj = this.Ref(i);
                 if (obj.Tag == noun)
                 {
                     return obj;
