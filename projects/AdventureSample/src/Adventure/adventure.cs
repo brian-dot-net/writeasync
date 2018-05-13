@@ -311,6 +311,23 @@ internal sealed class adventure
         return roomDescriptions[currentRoom];
     }
 
+    private MoveResult Move(int dir)
+    {
+        int next = map[currentRoom, dir];
+        if (next == 128)
+        {
+            return MoveResult.Blocked;
+        }
+
+        if ((next <= 0) || (next > 128))
+        {
+            return MoveResult.Invalid;
+        }
+
+        currentRoom = next;
+        return MoveResult.OK;
+    }
+
     private void InitMap()
     {
         directions[0] = "NORTH";
@@ -525,19 +542,18 @@ internal sealed class adventure
             return VerbResult.Idle;
         }
 
-        return Move(dir);
+        return Go(dir);
     }
 
-    private VerbResult Move(int dir)
+    private VerbResult Go(int dir)
     {
-        int next = map[currentRoom, dir];
-        if ((next > 0) && (next < 128))
+        MoveResult result = Move(dir);
+        if (result == MoveResult.OK)
         {
-            currentRoom = next;
             return VerbResult.Proceed;
         }
 
-        if (next == 128)
+        if (result == MoveResult.Blocked)
         {
             PRINT("THE GUARD WON'T LET YOU!");
         }
@@ -1097,5 +1113,12 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
+    }
+
+    private enum MoveResult
+    {
+        Invalid,
+        OK,
+        Blocked
     }
 }
