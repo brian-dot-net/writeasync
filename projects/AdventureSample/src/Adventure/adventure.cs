@@ -335,40 +335,6 @@ internal sealed class adventure
         }
     }
 
-    private void InitObjects()
-    {
-        ObjectRef[] d = new ObjectRef[]
-        {
-             new ObjectRef(0, "AN OLD DIARY", "DIA", 1),
-             new ObjectRef(1, "A SMALL BOX", "BOX", 1),
-             new ObjectRef(2, "CABINET", "CAB", 130),
-             new ObjectRef(3, "A SALT SHAKER", "SAL", 0),
-             new ObjectRef(4, "A DICTIONARY", "DIC", 3),
-             new ObjectRef(5, "WOODEN BARREL", "BAR", 133),
-             new ObjectRef(6, "A SMALL BOTTLE", "BOT", 0),
-             new ObjectRef(7, "A LADDER", "LAD", 4),
-             new ObjectRef(8, "A SHOVEL", "SHO", 5),
-             new ObjectRef(9, "A TREE", "TRE", 135),
-             new ObjectRef(10, "A GOLDEN SWORD", "SWO", 0),
-             new ObjectRef(11, "A WOODEN BOAT", "BOA", 140),
-             new ObjectRef(12, "A MAGIC FAN", "FAN", 8),
-             new ObjectRef(13, "A NASTY-LOOKING GUARD", "GUA", 144),
-             new ObjectRef(14, "A GLASS CASE", "CAS", 146),
-             new ObjectRef(15, "A GLOWING RUBY", "RUB", 0),
-             new ObjectRef(16, "A PAIR OF RUBBER GLOVES", "GLO", 19)
-        };
-
-        for (int i = 0; i < Objects.NumberOfObjects; ++i)
-        {
-            ObjectRef obj = d[i];
-
-            objects.objectNames[i] = obj.Name;
-            objects.objectTags[i] = obj.Tag;
-            objects.objectRooms[i] = obj.RawRoom;
-        }
-    }
-
-
     private void InitDescriptions()
     {
         roomDescriptions[1] = "IN YOUR LIVING ROOM.";
@@ -429,8 +395,6 @@ internal sealed class adventure
         PRINT("");
 
         InitMap();
-
-        InitObjects();
 
         InitDescriptions();
 
@@ -1187,6 +1151,8 @@ internal sealed class adventure
             this.objectRooms = new int[NumberOfObjects + 1];
             DIM1_sa(out this.objectNames, NumberOfObjects);
             DIM1_sa(out this.objectTags, NumberOfObjects);
+
+            this.InitObjects();
         }
 
         public bool Carrying(int id) => this.objectRooms[id] == -1;
@@ -1216,6 +1182,39 @@ internal sealed class adventure
         public bool IsHere(int id, int currentRoom)
         {
             return (this.objectRooms[id] == currentRoom) || this.Carrying(id);
+        }
+
+        private void InitObjects()
+        {
+            ObjectRef[] d = new ObjectRef[]
+            {
+                new ObjectRef(0, "AN OLD DIARY", "DIA", 1),
+                new ObjectRef(1, "A SMALL BOX", "BOX", 1),
+                new ObjectRef(2, "CABINET", "CAB", 130),
+                new ObjectRef(3, "A SALT SHAKER", "SAL", 0),
+                new ObjectRef(4, "A DICTIONARY", "DIC", 3),
+                new ObjectRef(5, "WOODEN BARREL", "BAR", 133),
+                new ObjectRef(6, "A SMALL BOTTLE", "BOT", 0),
+                new ObjectRef(7, "A LADDER", "LAD", 4),
+                new ObjectRef(8, "A SHOVEL", "SHO", 5),
+                new ObjectRef(9, "A TREE", "TRE", 135),
+                new ObjectRef(10, "A GOLDEN SWORD", "SWO", 0),
+                new ObjectRef(11, "A WOODEN BOAT", "BOA", 140),
+                new ObjectRef(12, "A MAGIC FAN", "FAN", 8),
+                new ObjectRef(13, "A NASTY-LOOKING GUARD", "GUA", 144),
+                new ObjectRef(14, "A GLASS CASE", "CAS", 146),
+                new ObjectRef(15, "A GLOWING RUBY", "RUB", 0),
+                new ObjectRef(16, "A PAIR OF RUBBER GLOVES", "GLO", 19)
+            };
+
+            for (int i = 0; i < Objects.NumberOfObjects; ++i)
+            {
+                ObjectRef obj = d[i];
+
+                this.objectNames[i] = obj.Name;
+                this.objectTags[i] = obj.Tag;
+                this.objectRooms[i] = obj.RawRoom;
+            }
         }
     }
 }
