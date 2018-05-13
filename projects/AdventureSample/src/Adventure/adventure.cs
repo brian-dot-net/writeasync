@@ -29,7 +29,6 @@ internal sealed class adventure
     private float mixtureCount;
     private bool wearingGloves;
     private int I_n;
-    private int FL_n;
     private int RO_n;
 
     private Objects objects;
@@ -207,7 +206,6 @@ internal sealed class adventure
         inventoryItems = (0);
         mixtureCount = (0);
         I_n = (0);
-        FL_n = (0);
         RO_n = (0);
         roomDescriptions = new string[11];
         directions = new string[11];
@@ -312,12 +310,10 @@ internal sealed class adventure
 
     private ObjectRef FindRoomForObject(string noun)
     {
-        FL_n = 0;
         for (I_n = 0; I_n < Objects.NumberOfObjects; ++I_n)
         {
             if (objects.objectTags[I_n] == noun)
             {
-                FL_n = 1;
                 ObjectRef obj = new ObjectRef(I_n, objects.objectNames[I_n], objects.objectTags[I_n], objects.objectRooms[I_n]);
                 RO_n = obj.Room;
                 return obj;
@@ -603,9 +599,9 @@ internal sealed class adventure
 
     private VerbResult Get(string noun)
     {
-        FindRoomForObject(noun);
+        ObjectRef obj = FindRoomForObject(noun);
 
-        if (FL_n == 0)
+        if (obj == null)
         {
             PRINT("YOU CAN'T GET THAT!");
         }
@@ -642,9 +638,9 @@ internal sealed class adventure
 
     private VerbResult Drop(string noun)
     {
-        FindRoomForObject(noun);
+        ObjectRef obj = FindRoomForObject(noun);
 
-        if ((FL_n == 0) || (RO_n != -1))
+        if ((obj == null) || (RO_n != -1))
         {
             PRINT("YOU DON'T HAVE THAT!");
         }
