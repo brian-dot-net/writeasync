@@ -909,7 +909,7 @@ internal sealed class adventure
             {
                 PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
                 PRINT("IT DISAPPEARS INTO THE GROUND!");
-                objects.Show(7, 0);
+                objects.Hide(7);
             }
         }
         else
@@ -1061,7 +1061,7 @@ internal sealed class adventure
             PRINT("THE GUARD, NOTICING YOUR SWORD,");
             PRINT("WISELY RETREATS INTO THE CASTLE.");
             map[16, 0] = 17;
-            objects.Show(13, 0);
+            objects.Hide(13);
         }
 
         return VerbResult.Idle;
@@ -1182,6 +1182,8 @@ internal sealed class adventure
         public ObjectRef Get(int id) => new ObjectRef(id, this.objectNames[id], this.objectTags[id], this.objectRooms[id]);
 
         public void Show(int id, int room) => this.objectRooms[id] = room;
+
+        public void Hide(int id) => this.Show(id, 0);
 
         private void InitObjects()
         {
