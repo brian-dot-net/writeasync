@@ -63,9 +63,7 @@ namespace Adventure
 
         public ObjectRef Ref(int id) => this.objects[id];
 
-        public void Show(int id, int room) => this.Ref(id).RawRoom = room;
-
-        public void Hide(int id) => this.Show(id, 0);
+        public void Hide(int id) => this.Drop(id, 0);
 
         public void Take(int id) => this.Drop(id, -1);
 

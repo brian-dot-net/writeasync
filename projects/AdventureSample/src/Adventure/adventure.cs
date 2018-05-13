@@ -750,7 +750,7 @@ internal sealed class adventure
             }
             else
             {
-                objects.Show(6, currentRoom);
+                objects.Drop(6, currentRoom);
                 PRINT("SOMETHING FELL OUT!");
             }
         }
@@ -763,7 +763,7 @@ internal sealed class adventure
             else
             {
                 PRINT("THERE'S SOMETHING INSIDE!");
-                objects.Show(3, 2);
+                objects.Drop(3, 2);
             }
         }
         else if (noun == "CAS")
@@ -780,7 +780,7 @@ internal sealed class adventure
             {
                 PRINT("THE GLOVES INSULATE AGAINST THE");
                 PRINT("ELECTRICITY! THE CASE OPENS!");
-                objects.Show(15, 18);
+                objects.Drop(15, 18);
             }
         }
         else
@@ -964,7 +964,7 @@ internal sealed class adventure
         else
         {
             PRINT("THERE'S SOMETHING THERE!");
-            objects.Show(10, 6);
+            objects.Drop(10, 6);
         }
 
         return VerbResult.Idle;
@@ -1008,11 +1008,11 @@ internal sealed class adventure
             PRINT("TO THE OPPOSITE SHORE!");
             if (objects.Ref(11).RawRoom == 140)
             {
-                objects.Show(11, 142);
+                objects.Drop(11, 142);
             }
             else
             {
-                objects.Show(11, 140);
+                objects.Drop(11, 140);
             }
         }
 
