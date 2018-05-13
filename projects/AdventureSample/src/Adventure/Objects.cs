@@ -40,9 +40,10 @@ namespace Adventure
         {
             for (int i = 0; i < NumberOfObjects; ++i)
             {
-                if (currentRoom == this.Ref(i).Room)
+                ObjectRef obj = this.Ref(i);
+                if (currentRoom == obj.Room)
                 {
-                    yield return this.Ref(i).Name;
+                    yield return obj.Name;
                 }
             }
         }
@@ -56,9 +57,10 @@ namespace Adventure
         {
             for (int i = 0; i < Objects.NumberOfObjects; ++i)
             {
-                if (this.Ref(i).Tag == noun)
+                ObjectRef obj = this.Ref(i);
+                if (obj.Tag == noun)
                 {
-                    return this.Ref(i);
+                    return obj;
                 }
             }
 
