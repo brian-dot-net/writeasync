@@ -298,19 +298,6 @@ internal sealed class adventure
         PRINT((("") + ("YOU ARE ")) + (roomDescriptions[currentRoom]));
     }
 
-    private ObjectRef FindRoomForObject(string noun)
-    {
-        for (int i = 0; i < Objects.NumberOfObjects; ++i)
-        {
-            if (objects.objectTags[i] == noun)
-            {
-                return new ObjectRef(i, objects.objectNames[i], objects.objectTags[i], objects.objectRooms[i]);
-            }
-        }
-
-        return null;
-    }
-
     private void InitMap()
     {
         directions[0] = "NORTH";
@@ -551,7 +538,7 @@ internal sealed class adventure
 
     private VerbResult Get(string noun)
     {
-        ObjectRef obj = FindRoomForObject(noun);
+        ObjectRef obj = objects.Find(noun);
 
         if (obj == null)
         {
@@ -590,7 +577,7 @@ internal sealed class adventure
 
     private VerbResult Drop(string noun)
     {
-        ObjectRef obj = FindRoomForObject(noun);
+        ObjectRef obj = objects.Find(noun);
 
         if ((obj == null) || (obj.Room != -1))
         {
@@ -650,7 +637,7 @@ internal sealed class adventure
         }
         else
         {
-            ObjectRef obj = FindRoomForObject(noun);
+            ObjectRef obj = objects.Find(noun);
 
             if ((obj.Room != currentRoom) && (obj.Room != -1))
             {
@@ -1176,6 +1163,19 @@ internal sealed class adventure
         public bool IsHere(int id, int currentRoom)
         {
             return (this.objectRooms[id] == currentRoom) || this.Carrying(id);
+        }
+
+        public ObjectRef Find(string noun)
+        {
+            for (int i = 0; i < Objects.NumberOfObjects; ++i)
+            {
+                if (this.objectTags[i] == noun)
+                {
+                    return new ObjectRef(i, this.objectNames[i], this.objectTags[i], this.objectRooms[i]);
+                }
+            }
+
+            return null;
         }
 
         private void InitObjects()
