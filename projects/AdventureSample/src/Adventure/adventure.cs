@@ -750,7 +750,7 @@ internal sealed class adventure
             }
             else
             {
-                objects.objectRooms[6] = currentRoom;
+                objects.Show(6, currentRoom);
                 PRINT("SOMETHING FELL OUT!");
             }
         }
@@ -1180,6 +1180,8 @@ internal sealed class adventure
         }
 
         public ObjectRef Get(int id) => new ObjectRef(id, this.objectNames[id], this.objectTags[id], this.objectRooms[id]);
+
+        public void Show(int id, int room) => this.objectRooms[id] = room;
 
         private void InitObjects()
         {
