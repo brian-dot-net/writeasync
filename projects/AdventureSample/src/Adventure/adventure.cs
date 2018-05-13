@@ -763,7 +763,7 @@ internal sealed class adventure
             else
             {
                 PRINT("THERE'S SOMETHING INSIDE!");
-                objects.objectRooms[3] = 2;
+                objects.Show(3, 2);
             }
         }
         else if (noun == "CAS")
@@ -780,7 +780,7 @@ internal sealed class adventure
             {
                 PRINT("THE GLOVES INSULATE AGAINST THE");
                 PRINT("ELECTRICITY! THE CASE OPENS!");
-                objects.objectRooms[15] = 18;
+                objects.Show(15, 18);
             }
         }
         else
@@ -909,7 +909,7 @@ internal sealed class adventure
             {
                 PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
                 PRINT("IT DISAPPEARS INTO THE GROUND!");
-                objects.objectRooms[7] = 0;
+                objects.Show(7, 0);
             }
         }
         else
@@ -964,7 +964,7 @@ internal sealed class adventure
         else
         {
             PRINT("THERE'S SOMETHING THERE!");
-            objects.objectRooms[10] = 6;
+            objects.Show(10, 6);
         }
 
         return VerbResult.Idle;
@@ -1008,11 +1008,11 @@ internal sealed class adventure
             PRINT("TO THE OPPOSITE SHORE!");
             if (objects.Get(11).RawRoom == 140)
             {
-                objects.objectRooms[11] = 142;
+                objects.Show(11, 142);
             }
             else
             {
-                objects.objectRooms[11] = 140;
+                objects.Show(11, 140);
             }
         }
 
@@ -1061,7 +1061,7 @@ internal sealed class adventure
             PRINT("THE GUARD, NOTICING YOUR SWORD,");
             PRINT("WISELY RETREATS INTO THE CASTLE.");
             map[16, 0] = 17;
-            objects.objectRooms[13] = 0;
+            objects.Show(13, 0);
         }
 
         return VerbResult.Idle;
