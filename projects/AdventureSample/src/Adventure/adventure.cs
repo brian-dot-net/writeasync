@@ -568,7 +568,7 @@ internal sealed class adventure
         else
         {
             ++inventoryItems;
-            objects.objectRooms[obj.Id] = -1;
+            objects.Take(obj.Id);
             PRINT("TAKEN.");
         }
 
@@ -1184,6 +1184,8 @@ internal sealed class adventure
         public void Show(int id, int room) => this.objectRooms[id] = room;
 
         public void Hide(int id) => this.Show(id, 0);
+
+        public void Take(int id) => this.objectRooms[id] = -1;
 
         private void InitObjects()
         {
