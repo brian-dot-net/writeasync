@@ -501,7 +501,7 @@ internal sealed class adventure
         {
             dir = 5;
         }
-        else if ((noun == "BOA") && (objects.objectRooms[11] == (currentRoom + 128)))
+        else if ((noun == "BOA") && (objects.Get(11).RawRoom == (currentRoom + 128)))
         {
             currentRoom = 13;
             return VerbResult.Proceed;
@@ -1172,12 +1172,14 @@ internal sealed class adventure
             {
                 if (this.objectTags[i] == noun)
                 {
-                    return new ObjectRef(i, this.objectNames[i], this.objectTags[i], this.objectRooms[i]);
+                    return this.Get(i);
                 }
             }
 
             return null;
         }
+
+        public ObjectRef Get(int id) => new ObjectRef(id, this.objectNames[id], this.objectTags[id], this.objectRooms[id]);
 
         private void InitObjects()
         {
