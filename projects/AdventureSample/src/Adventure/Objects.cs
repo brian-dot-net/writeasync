@@ -31,7 +31,7 @@ namespace Adventure
             {
                 if (this.Carrying(i))
                 {
-                    yield return this.objectNames[i];
+                    yield return this.Ref(i).Name;
                 }
             }
         }
@@ -40,23 +40,23 @@ namespace Adventure
         {
             for (int i = 0; i < NumberOfObjects; ++i)
             {
-                if (currentRoom == (this.objectRooms[i] & 127))
+                if (currentRoom == this.Ref(i).Room)
                 {
-                    yield return this.objectNames[i];
+                    yield return this.Ref(i).Name;
                 }
             }
         }
 
         public bool IsHere(int id, int currentRoom)
         {
-            return (this.objectRooms[id] == currentRoom) || this.Carrying(id);
+            return (this.Ref(id).RawRoom == currentRoom) || this.Carrying(id);
         }
 
         public ObjectRef Find(string noun)
         {
             for (int i = 0; i < Objects.NumberOfObjects; ++i)
             {
-                if (this.objectTags[i] == noun)
+                if (this.Ref(i).Tag == noun)
                 {
                     return this.Ref(i);
                 }
