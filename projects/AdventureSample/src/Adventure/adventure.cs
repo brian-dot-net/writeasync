@@ -28,7 +28,6 @@ internal sealed class adventure
     private bool formulaPoured;
     private float mixtureCount;
     private bool wearingGloves;
-    private int I_n;
     private int RO_n;
 
     private Objects objects;
@@ -205,7 +204,6 @@ internal sealed class adventure
         currentRoom = (0);
         inventoryItems = (0);
         mixtureCount = (0);
-        I_n = (0);
         RO_n = (0);
         roomDescriptions = new string[11];
         directions = new string[11];
@@ -310,11 +308,11 @@ internal sealed class adventure
 
     private ObjectRef FindRoomForObject(string noun)
     {
-        for (I_n = 0; I_n < Objects.NumberOfObjects; ++I_n)
+        for (int i = 0; i < Objects.NumberOfObjects; ++i)
         {
-            if (objects.objectTags[I_n] == noun)
+            if (objects.objectTags[i] == noun)
             {
-                ObjectRef obj = new ObjectRef(I_n, objects.objectNames[I_n], objects.objectTags[I_n], objects.objectRooms[I_n]);
+                ObjectRef obj = new ObjectRef(i, objects.objectNames[i], objects.objectTags[i], objects.objectRooms[i]);
                 RO_n = obj.Room;
                 return obj;
             }
@@ -609,7 +607,7 @@ internal sealed class adventure
         {
             PRINT("YOU ALREADY HAVE IT!");
         }
-        else if (objects.objectRooms[I_n] > 127)
+        else if (obj.RawRoom > 127)
         {
             PRINT("YOU CAN'T GET THAT!");
         }
@@ -629,7 +627,7 @@ internal sealed class adventure
         else
         {
             ++inventoryItems;
-            objects.objectRooms[I_n] = -1;
+            objects.objectRooms[obj.Id] = -1;
             PRINT("TAKEN.");
         }
 
@@ -647,7 +645,7 @@ internal sealed class adventure
         else
         {
             --inventoryItems;
-            objects.objectRooms[I_n] = currentRoom;
+            objects.objectRooms[obj.Id] = currentRoom;
             PRINT("DROPPED.");
         }
 
