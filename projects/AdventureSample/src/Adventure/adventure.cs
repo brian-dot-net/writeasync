@@ -145,6 +145,11 @@ internal sealed class adventure
         return roomDescriptions[currentRoom];
     }
 
+    private void SetMap(int room, int dir, int next)
+    {
+        map[room, dir] = next;
+    }
+
     private MoveResult Move(int dir)
     {
         int next = map[currentRoom, dir];
@@ -331,7 +336,7 @@ internal sealed class adventure
         {
             for (int j = 0; j < NumberOfDirections; ++j)
             {
-                map[i, j] = DATA.Dequeue();
+                SetMap(i, j, DATA.Dequeue());
             }
         }
 
@@ -1080,7 +1085,7 @@ internal sealed class adventure
         {
             PRINT("THE GUARD, NOTICING YOUR SWORD,");
             PRINT("WISELY RETREATS INTO THE CASTLE.");
-            map[16, 0] = 17;
+            SetMap(16, 0, 17);
             objects.Hide(ObjectId.Guard);
         }
 
