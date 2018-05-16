@@ -329,7 +329,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T CARRY ANY MORE.");
         }
-        else if ((map.CurrentRoom == RoomId.LargeHall) && (noun == "RUB"))
+        else if ((map.CurrentRoom == RoomId.LargeHall) && (obj.Id == ObjectId.Ruby))
         {
             PRINT("CONGRATULATIONS! YOU'VE WON!");
             return PlayAgain();
@@ -412,15 +412,15 @@ internal sealed class adventure
             {
                 PRINT("IT'S NOT HERE!");
             }
-            else if (noun == "BOT")
+            else if (obj.Id == ObjectId.Bottle)
             {
                 PRINT("THERE'S SOMETHING WRITTEN ON IT!");
             }
-            else if (noun == "CAS")
+            else if (obj.Id == ObjectId.Case)
             {
                 PRINT("THERE'S A JEWEL INSIDE!");
             }
-            else if (noun == "BAR")
+            else if (obj.Id == ObjectId.Barrel)
             {
                 PRINT("IT'S FILLED WITH RAINWATER.");
             }
