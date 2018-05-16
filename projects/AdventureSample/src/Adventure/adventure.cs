@@ -777,11 +777,11 @@ internal sealed class adventure
             PRINT("TO THE OPPOSITE SHORE!");
             if (objects.Ref(ObjectId.Boat).Room == RoomId.SouthBankOfRiver)
             {
-                objects.Drop(ObjectId.Boat, RoomId.NorthBankOfRiver + 128);
+                objects.Drop(ObjectId.Boat, RoomId.NorthBankOfRiver);
             }
             else
             {
-                objects.Drop(ObjectId.Boat, RoomId.SouthBankOfRiver + 128);
+                objects.Drop(ObjectId.Boat, RoomId.SouthBankOfRiver);
             }
         }
 

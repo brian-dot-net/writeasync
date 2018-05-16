@@ -63,7 +63,7 @@ namespace Adventure
 
         public void Take(ObjectId id) => this.Drop(id, RoomId.Inventory);
 
-        public void Drop(ObjectId id, RoomId room) => this.Ref(id).RawRoom = (int)room;
+        public void Drop(ObjectId id, RoomId room) => this.Ref(id).Room = room;
 
         private static ObjectRef[] InitObjects()
         {

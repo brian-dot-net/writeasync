@@ -11,7 +11,8 @@ namespace Adventure
             this.Id = id;
             this.Name = name;
             this.Tag = tag;
-            this.RawRoom = (int)(room + (canGet ? 0 : 128));
+            this.Room = room;
+            this.CanGet = canGet;
         }
 
         public ObjectId Id { get; private set; }
@@ -20,23 +21,9 @@ namespace Adventure
 
         public string Tag { get; private set; }
 
-        public int RawRoom { get; set; }
+        public bool CanGet { get; private set; }
 
-        public bool CanGet => this.RawRoom < 128;
-
-        public RoomId Room
-        {
-            get
-            {
-                int r = this.RawRoom;
-                if (!this.CanGet)
-                {
-                    r -= 128;
-                }
-
-                return (RoomId)r;
-            }
-        }
+        public RoomId Room { get; set; }
 
         public bool Carrying => this.Room == RoomId.Inventory;
     }
