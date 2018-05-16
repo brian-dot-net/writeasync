@@ -271,7 +271,7 @@ internal sealed class adventure
         {
             dir = 5;
         }
-        else if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).RawRoom == (int)(map.CurrentRoom + 128)))
+        else if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).Room == map.CurrentRoom))
         {
             map.CurrentRoom = RoomId.Boat;
             return VerbResult.Proceed;
@@ -317,7 +317,7 @@ internal sealed class adventure
         {
             PRINT("YOU ALREADY HAVE IT!");
         }
-        else if (obj.RawRoom > 127)
+        else if (!obj.CanGet)
         {
             PRINT("YOU CAN'T GET THAT!");
         }

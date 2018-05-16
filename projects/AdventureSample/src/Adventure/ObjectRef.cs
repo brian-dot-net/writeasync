@@ -22,12 +22,14 @@ namespace Adventure
 
         public int RawRoom { get; set; }
 
+        public bool CanGet => this.RawRoom < 128;
+
         public RoomId Room
         {
             get
             {
                 int r = this.RawRoom;
-                if (r > 127)
+                if (!this.CanGet)
                 {
                     r -= 128;
                 }
