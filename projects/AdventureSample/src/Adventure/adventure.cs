@@ -11,16 +11,11 @@ using Adventure;
 
 internal sealed class adventure
 {
-    private const int NumberOfRooms = 19;
-    private const int NumberOfDirections = 6;
     private const int MaxInventoryItems = 5;
 
     private readonly TextReader input;
     private readonly TextWriter output;
-    private string[] roomDescriptions;
-    private string[] directions;
-    private int[,] map;
-    private int currentRoom;
+
     private int inventoryItems;
     private bool saltPoured;
     private bool formulaPoured;
@@ -28,6 +23,7 @@ internal sealed class adventure
     private bool wearingGloves;
 
     private Objects objects;
+    private Map map;
 
     public adventure(TextReader input, TextWriter output)
     {
@@ -44,11 +40,8 @@ internal sealed class adventure
 
     private void Init()
     {
-        currentRoom = (0);
-        inventoryItems = (0);
+        inventoryItems = 0;
         mixtureCount = 0;
-        roomDescriptions = new string[11];
-        directions = new string[11];
     }
 
     private void CLS()
@@ -99,7 +92,7 @@ internal sealed class adventure
     private void PrintDirections()
     {
         PRINT_n("YOU CAN GO: ");
-        foreach (string dir in Directions())
+        foreach (string dir in map.Directions())
         {
             PRINT_n(dir + " ");
         }
@@ -111,7 +104,7 @@ internal sealed class adventure
     {
         PRINT("YOU CAN SEE: ");
         bool atLeastOne = false;
-        foreach (string name in objects.Here(currentRoom))
+        foreach (string name in objects.Here(map.currentRoom))
         {
             PRINT(" " + name);
             atLeastOne = true;
@@ -126,246 +119,7 @@ internal sealed class adventure
     private void PrintDescription()
     {
         PRINT("");
-        PRINT("YOU ARE " + Describe());
-    }
-
-    private IEnumerable<string> Directions()
-    {
-        for (int i = 0; i <= 5; ++i)
-        {
-            if (map[currentRoom, i] > 0)
-            {
-                yield return directions[i];
-            }
-        }
-    }
-
-    private string Describe()
-    {
-        return roomDescriptions[currentRoom];
-    }
-
-    private void SetMap(int room, int dir, int next)
-    {
-        map[room, dir] = next;
-    }
-
-    private MoveResult Move(int dir)
-    {
-        int next = map[currentRoom, dir];
-        if (next == 128)
-        {
-            return MoveResult.Blocked;
-        }
-
-        if ((next <= 0) || (next > 128))
-        {
-            return MoveResult.Invalid;
-        }
-
-        currentRoom = next;
-        return MoveResult.OK;
-    }
-
-    private void InitMap()
-    {
-        map = new int[NumberOfRooms + 1, NumberOfDirections + 1];
-
-        directions[0] = "NORTH";
-        directions[1] = "SOUTH";
-        directions[2] = "EAST";
-        directions[3] = "WEST";
-        directions[4] = "UP";
-        directions[5] = "DOWN";
-
-        Queue<int> DATA = new Queue<int>();
-
-        // LIVING ROOM
-        DATA.Enqueue(4);
-        DATA.Enqueue(3);
-        DATA.Enqueue(2);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // KITCHEN
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(1);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // LIBRARY
-        DATA.Enqueue(1);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // FRONT YARD
-        DATA.Enqueue(0);
-        DATA.Enqueue(1);
-        DATA.Enqueue(0);
-        DATA.Enqueue(5);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // GARAGE
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(4);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // OPEN FIELD
-        DATA.Enqueue(9);
-        DATA.Enqueue(7);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // EDGE OF FOREST
-        DATA.Enqueue(6);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // BRANCH OF TREE
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(7);
-
-        // LONG, WINDING ROAD (1)
-        DATA.Enqueue(0);
-        DATA.Enqueue(6);
-        DATA.Enqueue(10);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // LONG, WINDING ROAD (2)
-        DATA.Enqueue(11);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(9);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // LONG, WINDING ROAD (3)
-        DATA.Enqueue(0);
-        DATA.Enqueue(10);
-        DATA.Enqueue(0);
-        DATA.Enqueue(12);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // SOUTH BANK OF RIVER
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(11);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // BOAT
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // NORTH BANK OF RIVER
-        DATA.Enqueue(15);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // WELL-TRAVELED ROAD
-        DATA.Enqueue(16);
-        DATA.Enqueue(14);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // SOUTH OF CASTLE
-        DATA.Enqueue(128);
-        DATA.Enqueue(15);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-
-        // NARROW HALL
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(18);
-        DATA.Enqueue(0);
-
-        // LARGE HALL
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(17);
-
-        // TOP OF TREE
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(0);
-        DATA.Enqueue(8);
-
-        for (int i = 1; i <= NumberOfRooms; ++i)
-        {
-            for (int j = 0; j < NumberOfDirections; ++j)
-            {
-                SetMap(i, j, DATA.Dequeue());
-            }
-        }
-
-        InitDescriptions();
-    }
-
-    private void InitDescriptions()
-    {
-        roomDescriptions = new string[NumberOfRooms + 1];
-
-        roomDescriptions[1] = "IN YOUR LIVING ROOM.";
-        roomDescriptions[2] = "IN THE KITCHEN.";
-        roomDescriptions[3] = "IN THE LIBRARY.";
-        roomDescriptions[4] = "IN THE FRONT YARD.";
-        roomDescriptions[5] = "IN THE GARAGE.";
-        roomDescriptions[6] = "IN AN OPEN FIELD.";
-        roomDescriptions[7] = "AT THE EDGE OF A FOREST.";
-        roomDescriptions[8] = "ON A BRANCH OF A TREE.";
-        roomDescriptions[9] = "ON A LONG, WINDING ROAD.";
-        roomDescriptions[10] = "ON A LONG, WINDING ROAD.";
-        roomDescriptions[11] = "ON A LONG, WINDING ROAD.";
-        roomDescriptions[12] = "ON THE SOUTH BANK OF A RIVER.";
-        roomDescriptions[13] = "INSIDE THE WOODEN BOAT.";
-        roomDescriptions[14] = "ON THE NORTH BANK OF A RIVER.";
-        roomDescriptions[15] = "ON A WELL-TRAVELED ROAD.";
-        roomDescriptions[16] = "IN FRONT OF A LARGE CASTLE.";
-        roomDescriptions[17] = "IN A NARROW HALL.";
-        roomDescriptions[18] = "IN A LARGE HALL.";
-        roomDescriptions[19] = "ON THE TOP OF A TREE.";
+        PRINT("YOU ARE " + map.Describe());
     }
 
     private void PrintIntro()
@@ -402,10 +156,8 @@ internal sealed class adventure
         PRINT("");
 
         objects = new Objects();
+        map = new Map();
 
-        InitMap();
-
-        currentRoom = 1;
         inventoryItems = 0;
         saltPoured = false;
         formulaPoured = false;
@@ -527,9 +279,9 @@ internal sealed class adventure
         {
             dir = 5;
         }
-        else if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).RawRoom == (currentRoom + 128)))
+        else if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).RawRoom == (map.currentRoom + 128)))
         {
-            currentRoom = 13;
+            map.currentRoom = 13;
             return VerbResult.Proceed;
         }
         else
@@ -543,7 +295,7 @@ internal sealed class adventure
 
     private VerbResult Go(int dir)
     {
-        MoveResult result = Move(dir);
+        MoveResult result = map.Move(dir);
         if (result == MoveResult.OK)
         {
             return VerbResult.Proceed;
@@ -577,7 +329,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T GET THAT!");
         }
-        else if (obj.Room != currentRoom)
+        else if (obj.Room != map.currentRoom)
         {
             PRINT("THAT'S NOT HERE!");
         }
@@ -585,7 +337,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T CARRY ANY MORE.");
         }
-        else if ((currentRoom == 18) && (noun == "RUB"))
+        else if ((map.currentRoom == 18) && (noun == "RUB"))
         {
             PRINT("CONGRATULATIONS! YOU'VE WON!");
             return PlayAgain();
@@ -611,7 +363,7 @@ internal sealed class adventure
         else
         {
             --inventoryItems;
-            objects.Drop(obj.Id, currentRoom);
+            objects.Drop(obj.Id, map.currentRoom);
             PRINT("DROPPED.");
         }
 
@@ -651,7 +403,7 @@ internal sealed class adventure
     {
         if (noun == "GRO")
         {
-            if (currentRoom != 6)
+            if (map.currentRoom != 6)
             {
                 PRINT("IT LOOKS LIKE GROUND!");
             }
@@ -664,7 +416,7 @@ internal sealed class adventure
         {
             ObjectRef obj = objects.Find(noun);
 
-            if ((obj.Room != currentRoom) && (obj.Room != -1))
+            if ((obj.Room != map.currentRoom) && (obj.Room != -1))
             {
                 PRINT("IT'S NOT HERE!");
             }
@@ -723,7 +475,7 @@ internal sealed class adventure
     {
         if (noun == "DIA")
         {
-            if (!objects.IsHere(ObjectId.Diary, currentRoom))
+            if (!objects.IsHere(ObjectId.Diary, map.currentRoom))
             {
                 PRINT("THERE'S NO DIARY HERE!");
             }
@@ -736,7 +488,7 @@ internal sealed class adventure
         }
         else if (noun == "DIC")
         {
-            if (!objects.IsHere(ObjectId.Dictionary, currentRoom))
+            if (!objects.IsHere(ObjectId.Dictionary, map.currentRoom))
             {
                 PRINT("YOU DON'T SEE A DICTIONARY!");
             }
@@ -748,7 +500,7 @@ internal sealed class adventure
         }
         else if (noun == "BOT")
         {
-            if (!objects.IsHere(ObjectId.Bottle, currentRoom))
+            if (!objects.IsHere(ObjectId.Bottle, map.currentRoom))
             {
                 PRINT("THERE'S NO BOTTLE HERE!");
             }
@@ -769,19 +521,19 @@ internal sealed class adventure
     {
         if (noun == "BOX")
         {
-            if (!objects.IsHere(ObjectId.Box, currentRoom))
+            if (!objects.IsHere(ObjectId.Box, map.currentRoom))
             {
                 PRINT("THERE'S NO BOX HERE!");
             }
             else
             {
-                objects.Drop(ObjectId.Bottle, currentRoom);
+                objects.Drop(ObjectId.Bottle, map.currentRoom);
                 PRINT("SOMETHING FELL OUT!");
             }
         }
         else if (noun == "CAB")
         {
-            if (currentRoom != 2)
+            if (map.currentRoom != 2)
             {
                 PRINT("THERE'S NO CABINET HERE!");
             }
@@ -793,7 +545,7 @@ internal sealed class adventure
         }
         else if (noun == "CAS")
         {
-            if (currentRoom != 18)
+            if (map.currentRoom != 18)
             {
                 PRINT("THERE'S NO CASE HERE!");
             }
@@ -848,7 +600,7 @@ internal sealed class adventure
 
     private bool PourFormula()
     {
-        if (!objects.IsHere(ObjectId.Bottle, currentRoom))
+        if (!objects.IsHere(ObjectId.Bottle, map.currentRoom))
         {
             PRINT("YOU DON'T HAVE THE BOTTLE!");
             return false;
@@ -867,7 +619,7 @@ internal sealed class adventure
 
     private bool PourSalt()
     {
-        if (!objects.IsHere(ObjectId.Salt, currentRoom))
+        if (!objects.IsHere(ObjectId.Salt, map.currentRoom))
         {
             PRINT("YOU DON'T HAVE THE SALT!");
             return false;
@@ -886,7 +638,7 @@ internal sealed class adventure
 
     private bool PourMixture()
     {
-        if (currentRoom == 5)
+        if (map.currentRoom == 5)
         {
             ++mixtureCount;
         }
@@ -903,7 +655,7 @@ internal sealed class adventure
         PRINT("SUDDENLY YOU ARE ... ");
         PRINT(" ... SOMEWHERE ELSE!");
 
-        currentRoom = 6;
+        map.currentRoom = 6;
         return true;
     }
 
@@ -911,7 +663,7 @@ internal sealed class adventure
     {
         if (noun == "TRE")
         {
-            if (currentRoom != 7)
+            if (map.currentRoom != 7)
             {
                 PRINT("THERE'S NO TREE HERE!");
             }
@@ -922,11 +674,11 @@ internal sealed class adventure
         }
         else if (noun == "LAD")
         {
-            if (!objects.IsHere(ObjectId.Ladder, currentRoom))
+            if (!objects.IsHere(ObjectId.Ladder, map.currentRoom))
             {
                 PRINT("YOU DON'T HAVE THE LADDER!");
             }
-            else if (currentRoom != 7)
+            else if (map.currentRoom != 7)
             {
                 PRINT("WHATEVER FOR?");
             }
@@ -947,23 +699,23 @@ internal sealed class adventure
 
     private VerbResult Jump(string noun)
     {
-        if ((currentRoom != 7) && (currentRoom != 8))
+        if ((map.currentRoom != 7) && (map.currentRoom != 8))
         {
             PRINT("WHEE! THAT WAS FUN!");
             return VerbResult.Idle;
         }
-        else if (currentRoom == 8)
+        else if (map.currentRoom == 8)
         {
             PRINT("YOU GRAB A HIGHER BRANCH ON THE");
             PRINT("TREE AND PULL YOURSELF UP....");
-            currentRoom = 19;
+            map.currentRoom = 19;
             return VerbResult.Proceed;
         }
         else
         {
             PRINT("YOU GRAB THE LOWEST BRANCH OF THE");
             PRINT("TREE AND PULL YOURSELF UP....");
-            currentRoom = 8;
+            map.currentRoom = 8;
             return VerbResult.Proceed;
         }
     }
@@ -974,11 +726,11 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T DIG THAT!");
         }
-        else if (!objects.IsHere(ObjectId.Shovel, currentRoom))
+        else if (!objects.IsHere(ObjectId.Shovel, map.currentRoom))
         {
             PRINT("YOU DON'T HAVE A SHOVEL!");
         }
-        else if (currentRoom != 6)
+        else if (map.currentRoom != 6)
         {
             PRINT("YOU DON'T FIND ANYTHING.");
         }
@@ -1001,7 +753,7 @@ internal sealed class adventure
         {
             PRINT("HOW CAN YOU ROW THAT?");
         }
-        else if (currentRoom != 13)
+        else if (map.currentRoom != 13)
         {
             PRINT("YOU'RE NOT IN THE BOAT!");
         }
@@ -1019,11 +771,11 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T WAVE THAT!");
         }
-        else if (!objects.IsHere(ObjectId.Fan, currentRoom))
+        else if (!objects.IsHere(ObjectId.Fan, map.currentRoom))
         {
             PRINT("YOU DON'T HAVE THE FAN!");
         }
-        else if (currentRoom != 13)
+        else if (map.currentRoom != 13)
         {
             PRINT("YOU FEEL A REFRESHING BREEZE!");
         }
@@ -1046,7 +798,7 @@ internal sealed class adventure
 
     private VerbResult Leave(string noun)
     {
-        if (currentRoom != 13)
+        if (map.currentRoom != 13)
         {
             PRINT("PLEASE GIVE A DIRECTION!");
             return VerbResult.Idle;
@@ -1058,7 +810,7 @@ internal sealed class adventure
         }
         else
         {
-            currentRoom = objects.Ref(ObjectId.Boat).Room;
+            map.currentRoom = objects.Ref(ObjectId.Boat).Room;
             return VerbResult.Proceed;
         }
     }
@@ -1073,7 +825,7 @@ internal sealed class adventure
         {
             PRINT(("") + ("YOU CAN'T FIGHT HIM!"));
         }
-        else if (currentRoom != 16)
+        else if (map.currentRoom != 16)
         {
             PRINT("THERE'S NO GUARD HERE!");
         }
@@ -1085,7 +837,7 @@ internal sealed class adventure
         {
             PRINT("THE GUARD, NOTICING YOUR SWORD,");
             PRINT("WISELY RETREATS INTO THE CASTLE.");
-            SetMap(16, 0, 17);
+            map.SetMap(16, 0, 17);
             objects.Hide(ObjectId.Guard);
         }
 
@@ -1098,7 +850,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T WEAR THAT!");
         }
-        else if (!objects.IsHere(ObjectId.Gloves, currentRoom))
+        else if (!objects.IsHere(ObjectId.Gloves, map.currentRoom))
         {
             PRINT("YOU DON'T HAVE THE GLOVES.");
         }
@@ -1109,5 +861,263 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
+    }
+
+    private sealed class Map
+    {
+        private const int NumberOfRooms = 19;
+        private const int NumberOfDirections = 6;
+
+        private string[] roomDescriptions;
+        private string[] directions;
+        private int[,] map;
+
+        public int currentRoom;
+
+        public Map()
+        {
+            this.directions = new string[11];
+            this.InitMap();
+            this.currentRoom = 1;
+        }
+
+        public IEnumerable<string> Directions()
+        {
+            for (int i = 0; i <= 5; ++i)
+            {
+                if (this.map[this.currentRoom, i] > 0)
+                {
+                    yield return this.directions[i];
+                }
+            }
+        }
+
+        public string Describe()
+        {
+            return this.roomDescriptions[this.currentRoom];
+        }
+
+        public void SetMap(int room, int dir, int next)
+        {
+            this.map[room, dir] = next;
+        }
+
+        public MoveResult Move(int dir)
+        {
+            int next = this.map[this.currentRoom, dir];
+            if (next == 128)
+            {
+                return MoveResult.Blocked;
+            }
+
+            if ((next <= 0) || (next > 128))
+            {
+                return MoveResult.Invalid;
+            }
+
+            this.currentRoom = next;
+            return MoveResult.OK;
+        }
+
+        private void InitMap()
+        {
+            this.map = new int[NumberOfRooms + 1, NumberOfDirections + 1];
+
+            this.directions[0] = "NORTH";
+            this.directions[1] = "SOUTH";
+            this.directions[2] = "EAST";
+            this.directions[3] = "WEST";
+            this.directions[4] = "UP";
+            this.directions[5] = "DOWN";
+
+            Queue<int> DATA = new Queue<int>();
+
+            // LIVING ROOM
+            DATA.Enqueue(4);
+            DATA.Enqueue(3);
+            DATA.Enqueue(2);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // KITCHEN
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(1);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // LIBRARY
+            DATA.Enqueue(1);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // FRONT YARD
+            DATA.Enqueue(0);
+            DATA.Enqueue(1);
+            DATA.Enqueue(0);
+            DATA.Enqueue(5);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // GARAGE
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(4);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // OPEN FIELD
+            DATA.Enqueue(9);
+            DATA.Enqueue(7);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // EDGE OF FOREST
+            DATA.Enqueue(6);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // BRANCH OF TREE
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(7);
+
+            // LONG, WINDING ROAD (1)
+            DATA.Enqueue(0);
+            DATA.Enqueue(6);
+            DATA.Enqueue(10);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // LONG, WINDING ROAD (2)
+            DATA.Enqueue(11);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(9);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // LONG, WINDING ROAD (3)
+            DATA.Enqueue(0);
+            DATA.Enqueue(10);
+            DATA.Enqueue(0);
+            DATA.Enqueue(12);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // SOUTH BANK OF RIVER
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(11);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // BOAT
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // NORTH BANK OF RIVER
+            DATA.Enqueue(15);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // WELL-TRAVELED ROAD
+            DATA.Enqueue(16);
+            DATA.Enqueue(14);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // SOUTH OF CASTLE
+            DATA.Enqueue(128);
+            DATA.Enqueue(15);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+
+            // NARROW HALL
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(18);
+            DATA.Enqueue(0);
+
+            // LARGE HALL
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(17);
+
+            // TOP OF TREE
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(0);
+            DATA.Enqueue(8);
+
+            for (int i = 1; i <= NumberOfRooms; ++i)
+            {
+                for (int j = 0; j < NumberOfDirections; ++j)
+                {
+                    this.SetMap(i, j, DATA.Dequeue());
+                }
+            }
+
+            this.InitDescriptions();
+        }
+
+        private void InitDescriptions()
+        {
+            this.roomDescriptions = new string[NumberOfRooms + 1];
+
+            this.roomDescriptions[1] = "IN YOUR LIVING ROOM.";
+            this.roomDescriptions[2] = "IN THE KITCHEN.";
+            this.roomDescriptions[3] = "IN THE LIBRARY.";
+            this.roomDescriptions[4] = "IN THE FRONT YARD.";
+            this.roomDescriptions[5] = "IN THE GARAGE.";
+            this.roomDescriptions[6] = "IN AN OPEN FIELD.";
+            this.roomDescriptions[7] = "AT THE EDGE OF A FOREST.";
+            this.roomDescriptions[8] = "ON A BRANCH OF A TREE.";
+            this.roomDescriptions[9] = "ON A LONG, WINDING ROAD.";
+            this.roomDescriptions[10] = "ON A LONG, WINDING ROAD.";
+            this.roomDescriptions[11] = "ON A LONG, WINDING ROAD.";
+            this.roomDescriptions[12] = "ON THE SOUTH BANK OF A RIVER.";
+            this.roomDescriptions[13] = "INSIDE THE WOODEN BOAT.";
+            this.roomDescriptions[14] = "ON THE NORTH BANK OF A RIVER.";
+            this.roomDescriptions[15] = "ON A WELL-TRAVELED ROAD.";
+            this.roomDescriptions[16] = "IN FRONT OF A LARGE CASTLE.";
+            this.roomDescriptions[17] = "IN A NARROW HALL.";
+            this.roomDescriptions[18] = "IN A LARGE HALL.";
+            this.roomDescriptions[19] = "ON THE TOP OF A TREE.";
+        }
     }
 }
