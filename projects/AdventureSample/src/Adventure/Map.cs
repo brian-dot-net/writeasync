@@ -76,156 +76,156 @@ namespace Adventure
             Queue<int> data = new Queue<int>();
 
             // LIVING ROOM
-            data.Enqueue(4);
-            data.Enqueue(3);
-            data.Enqueue(2);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.FrontYard);
+            data.Enqueue(RoomId.Library);
+            data.Enqueue(RoomId.Kitchen);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // KITCHEN
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(1);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.LivingRoom);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // LIBRARY
-            data.Enqueue(1);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.LivingRoom);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // FRONT YARD
-            data.Enqueue(0);
-            data.Enqueue(1);
-            data.Enqueue(0);
-            data.Enqueue(5);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.LivingRoom);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.Garage);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // GARAGE
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(4);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.FrontYard);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // OPEN FIELD
-            data.Enqueue(9);
-            data.Enqueue(7);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.LongWindingRoad1);
+            data.Enqueue(RoomId.EdgeOfForest);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // EDGE OF FOREST
-            data.Enqueue(6);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.OpenField);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // BRANCH OF TREE
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
             data.Enqueue(7);
 
             // LONG, WINDING ROAD (1)
-            data.Enqueue(0);
-            data.Enqueue(6);
-            data.Enqueue(10);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.OpenField);
+            data.Enqueue(RoomId.LongWindingRoad2);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // LONG, WINDING ROAD (2)
-            data.Enqueue(11);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(9);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.LongWindingRoad3);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.LongWindingRoad1);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // LONG, WINDING ROAD (3)
-            data.Enqueue(0);
-            data.Enqueue(10);
-            data.Enqueue(0);
-            data.Enqueue(12);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.LongWindingRoad2);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.SouthBankOfRiver);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // SOUTH BANK OF RIVER
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(11);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.LongWindingRoad3);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // BOAT
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // NORTH BANK OF RIVER
-            data.Enqueue(15);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.WellTraveledRoad);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // WELL-TRAVELED ROAD
-            data.Enqueue(16);
-            data.Enqueue(14);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.SouthOfCastle);
+            data.Enqueue(RoomId.NorthBankOfRiver);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // SOUTH OF CASTLE
-            data.Enqueue(128);
-            data.Enqueue(15);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.Blocked);
+            data.Enqueue(RoomId.WellTraveledRoad);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
 
             // NARROW HALL
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(18);
-            data.Enqueue(0);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.LargeHall);
+            data.Enqueue(RoomId.None);
 
             // LARGE HALL
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(17);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.NarrowHall);
 
             // TOP OF TREE
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(0);
-            data.Enqueue(8);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.None);
+            data.Enqueue(RoomId.BranchOfTree);
 
             for (int i = 1; i <= NumberOfRooms; ++i)
             {

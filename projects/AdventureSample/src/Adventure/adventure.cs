@@ -5,7 +5,6 @@
 //------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Adventure;
 
@@ -274,7 +273,7 @@ internal sealed class adventure
         }
         else if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).RawRoom == (map.CurrentRoom + 128)))
         {
-            map.CurrentRoom = 13;
+            map.CurrentRoom = RoomId.Boat;
             return VerbResult.Proceed;
         }
         else
@@ -314,7 +313,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T GET THAT!");
         }
-        else if (obj.Room == -1)
+        else if (obj.Room == RoomId.Inventory)
         {
             PRINT("YOU ALREADY HAVE IT!");
         }
@@ -330,7 +329,7 @@ internal sealed class adventure
         {
             PRINT("YOU CAN'T CARRY ANY MORE.");
         }
-        else if ((map.CurrentRoom == 18) && (noun == "RUB"))
+        else if ((map.CurrentRoom == RoomId.LargeHall) && (noun == "RUB"))
         {
             PRINT("CONGRATULATIONS! YOU'VE WON!");
             return PlayAgain();
@@ -349,7 +348,7 @@ internal sealed class adventure
     {
         ObjectRef obj = objects.Find(noun);
 
-        if ((obj == null) || (obj.Room != -1))
+        if ((obj == null) || (obj.Room != RoomId.Inventory))
         {
             PRINT("YOU DON'T HAVE THAT!");
         }
@@ -396,7 +395,7 @@ internal sealed class adventure
     {
         if (noun == "GRO")
         {
-            if (map.CurrentRoom != 6)
+            if (map.CurrentRoom != RoomId.OpenField)
             {
                 PRINT("IT LOOKS LIKE GROUND!");
             }
@@ -409,7 +408,7 @@ internal sealed class adventure
         {
             ObjectRef obj = objects.Find(noun);
 
-            if ((obj.Room != map.CurrentRoom) && (obj.Room != -1))
+            if ((obj.Room != map.CurrentRoom) && (obj.Room != RoomId.Inventory))
             {
                 PRINT("IT'S NOT HERE!");
             }
@@ -526,7 +525,7 @@ internal sealed class adventure
         }
         else if (noun == "CAB")
         {
-            if (map.CurrentRoom != 2)
+            if (map.CurrentRoom != RoomId.Kitchen)
             {
                 PRINT("THERE'S NO CABINET HERE!");
             }
@@ -538,7 +537,7 @@ internal sealed class adventure
         }
         else if (noun == "CAS")
         {
-            if (map.CurrentRoom != 18)
+            if (map.CurrentRoom != RoomId.LargeHall)
             {
                 PRINT("THERE'S NO CASE HERE!");
             }
@@ -631,7 +630,7 @@ internal sealed class adventure
 
     private bool PourMixture()
     {
-        if (map.CurrentRoom == 5)
+        if (map.CurrentRoom == RoomId.Garage)
         {
             ++mixtureCount;
         }
@@ -648,7 +647,7 @@ internal sealed class adventure
         PRINT("SUDDENLY YOU ARE ... ");
         PRINT(" ... SOMEWHERE ELSE!");
 
-        map.CurrentRoom = 6;
+        map.CurrentRoom = RoomId.OpenField;
         return true;
     }
 
@@ -656,7 +655,7 @@ internal sealed class adventure
     {
         if (noun == "TRE")
         {
-            if (map.CurrentRoom != 7)
+            if (map.CurrentRoom != RoomId.EdgeOfForest)
             {
                 PRINT("THERE'S NO TREE HERE!");
             }
@@ -671,7 +670,7 @@ internal sealed class adventure
             {
                 PRINT("YOU DON'T HAVE THE LADDER!");
             }
-            else if (map.CurrentRoom != 7)
+            else if (map.CurrentRoom != RoomId.EdgeOfForest)
             {
                 PRINT("WHATEVER FOR?");
             }
@@ -692,23 +691,23 @@ internal sealed class adventure
 
     private VerbResult Jump(string noun)
     {
-        if ((map.CurrentRoom != 7) && (map.CurrentRoom != 8))
+        if ((map.CurrentRoom != RoomId.EdgeOfForest) && (map.CurrentRoom != RoomId.BranchOfTree))
         {
             PRINT("WHEE! THAT WAS FUN!");
             return VerbResult.Idle;
         }
-        else if (map.CurrentRoom == 8)
+        else if (map.CurrentRoom == RoomId.BranchOfTree)
         {
             PRINT("YOU GRAB A HIGHER BRANCH ON THE");
             PRINT("TREE AND PULL YOURSELF UP....");
-            map.CurrentRoom = 19;
+            map.CurrentRoom = RoomId.TopOfTree;
             return VerbResult.Proceed;
         }
         else
         {
             PRINT("YOU GRAB THE LOWEST BRANCH OF THE");
             PRINT("TREE AND PULL YOURSELF UP....");
-            map.CurrentRoom = 8;
+            map.CurrentRoom = RoomId.BranchOfTree;
             return VerbResult.Proceed;
         }
     }
@@ -723,11 +722,11 @@ internal sealed class adventure
         {
             PRINT("YOU DON'T HAVE A SHOVEL!");
         }
-        else if (map.CurrentRoom != 6)
+        else if (map.CurrentRoom != RoomId.OpenField)
         {
             PRINT("YOU DON'T FIND ANYTHING.");
         }
-        else if (objects.Ref(ObjectId.Sword).RawRoom != 0)
+        else if (objects.Ref(ObjectId.Sword).RawRoom != RoomId.None)
         {
             PRINT("THERE'S NOTHING ELSE THERE!");
         }
@@ -746,7 +745,7 @@ internal sealed class adventure
         {
             PRINT("HOW CAN YOU ROW THAT?");
         }
-        else if (map.CurrentRoom != 13)
+        else if (map.CurrentRoom != RoomId.Boat)
         {
             PRINT("YOU'RE NOT IN THE BOAT!");
         }
@@ -768,7 +767,7 @@ internal sealed class adventure
         {
             PRINT("YOU DON'T HAVE THE FAN!");
         }
-        else if (map.CurrentRoom != 13)
+        else if (map.CurrentRoom != RoomId.Boat)
         {
             PRINT("YOU FEEL A REFRESHING BREEZE!");
         }
@@ -791,7 +790,7 @@ internal sealed class adventure
 
     private VerbResult Leave(string noun)
     {
-        if (map.CurrentRoom != 13)
+        if (map.CurrentRoom != RoomId.Boat)
         {
             PRINT("PLEASE GIVE A DIRECTION!");
             return VerbResult.Idle;
@@ -818,7 +817,7 @@ internal sealed class adventure
         {
             PRINT(("") + ("YOU CAN'T FIGHT HIM!"));
         }
-        else if (map.CurrentRoom != 16)
+        else if (map.CurrentRoom != RoomId.SouthOfCastle)
         {
             PRINT("THERE'S NO GUARD HERE!");
         }
@@ -830,7 +829,7 @@ internal sealed class adventure
         {
             PRINT("THE GUARD, NOTICING YOUR SWORD,");
             PRINT("WISELY RETREATS INTO THE CASTLE.");
-            map.SetMap(16, 0, 17);
+            map.SetMap(RoomId.SouthOfCastle, 0, RoomId.NarrowHall);
             objects.Hide(ObjectId.Guard);
         }
 
