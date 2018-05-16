@@ -240,27 +240,29 @@ namespace Adventure
 
         private void InitDescriptions()
         {
-            this.roomDescriptions = new string[NumberOfRooms + 1];
-
-            this.roomDescriptions[1] = "IN YOUR LIVING ROOM.";
-            this.roomDescriptions[2] = "IN THE KITCHEN.";
-            this.roomDescriptions[3] = "IN THE LIBRARY.";
-            this.roomDescriptions[4] = "IN THE FRONT YARD.";
-            this.roomDescriptions[5] = "IN THE GARAGE.";
-            this.roomDescriptions[6] = "IN AN OPEN FIELD.";
-            this.roomDescriptions[7] = "AT THE EDGE OF A FOREST.";
-            this.roomDescriptions[8] = "ON A BRANCH OF A TREE.";
-            this.roomDescriptions[9] = "ON A LONG, WINDING ROAD.";
-            this.roomDescriptions[10] = "ON A LONG, WINDING ROAD.";
-            this.roomDescriptions[11] = "ON A LONG, WINDING ROAD.";
-            this.roomDescriptions[12] = "ON THE SOUTH BANK OF A RIVER.";
-            this.roomDescriptions[13] = "INSIDE THE WOODEN BOAT.";
-            this.roomDescriptions[14] = "ON THE NORTH BANK OF A RIVER.";
-            this.roomDescriptions[15] = "ON A WELL-TRAVELED ROAD.";
-            this.roomDescriptions[16] = "IN FRONT OF A LARGE CASTLE.";
-            this.roomDescriptions[17] = "IN A NARROW HALL.";
-            this.roomDescriptions[18] = "IN A LARGE HALL.";
-            this.roomDescriptions[19] = "ON THE TOP OF A TREE.";
+            this.roomDescriptions = new string[NumberOfRooms + 1]
+            {
+                string.Empty,
+                "IN YOUR LIVING ROOM.",
+                "IN THE KITCHEN.",
+                "IN THE LIBRARY.",
+                "IN THE FRONT YARD.",
+                "IN THE GARAGE.",
+                "IN AN OPEN FIELD.",
+                "AT THE EDGE OF A FOREST.",
+                "ON A BRANCH OF A TREE.",
+                "ON A LONG, WINDING ROAD.",
+                "ON A LONG, WINDING ROAD.",
+                "ON A LONG, WINDING ROAD.",
+                "ON THE SOUTH BANK OF A RIVER.",
+                "INSIDE THE WOODEN BOAT.",
+                "ON THE NORTH BANK OF A RIVER.",
+                "ON A WELL-TRAVELED ROAD.",
+                "IN FRONT OF A LARGE CASTLE.",
+                "IN A NARROW HALL.",
+                "IN A LARGE HALL.",
+                "ON THE TOP OF A TREE."
+            };
         }
     }
 }
