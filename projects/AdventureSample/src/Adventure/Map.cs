@@ -13,22 +13,22 @@ namespace Adventure
 
         private string[] roomDescriptions;
         private string[] directions;
-        private int[,] map;
+        private RoomId[,] map;
 
         public Map()
         {
             this.directions = new string[11];
             this.InitMap();
-            this.CurrentRoom = 1;
+            this.CurrentRoom = RoomId.LivingRoom;
         }
 
-        public int CurrentRoom { get; set; }
+        public RoomId CurrentRoom { get; set; }
 
         public IEnumerable<string> Directions()
         {
             for (int i = 0; i <= 5; ++i)
             {
-                if (this.map[this.CurrentRoom, i] > 0)
+                if (this.map[(int)this.CurrentRoom, i] > RoomId.None)
                 {
                     yield return this.directions[i];
                 }
@@ -37,23 +37,23 @@ namespace Adventure
 
         public string Describe()
         {
-            return this.roomDescriptions[this.CurrentRoom];
+            return this.roomDescriptions[(int)this.CurrentRoom];
         }
 
-        public void SetMap(int room, int dir, int next)
+        public void SetMap(RoomId room, int dir, RoomId next)
         {
-            this.map[room, dir] = next;
+            this.map[(int)room, dir] = next;
         }
 
         public MoveResult Move(int dir)
         {
-            int next = this.map[this.CurrentRoom, dir];
-            if (next == 128)
+            RoomId next = this.map[(int)this.CurrentRoom, dir];
+            if (next == RoomId.Blocked)
             {
                 return MoveResult.Blocked;
             }
 
-            if ((next <= 0) || (next > 128))
+            if ((next <= 0) || (next > RoomId.Blocked))
             {
                 return MoveResult.Invalid;
             }
@@ -64,7 +64,7 @@ namespace Adventure
 
         private void InitMap()
         {
-            this.map = new int[NumberOfRooms + 1, NumberOfDirections + 1];
+            this.map = new RoomId[NumberOfRooms + 1, NumberOfDirections + 1];
 
             this.directions[0] = "NORTH";
             this.directions[1] = "SOUTH";
@@ -73,7 +73,7 @@ namespace Adventure
             this.directions[4] = "UP";
             this.directions[5] = "DOWN";
 
-            Queue<int> data = new Queue<int>();
+            Queue<RoomId> data = new Queue<RoomId>();
 
             // LIVING ROOM
             data.Enqueue(RoomId.FrontYard);
@@ -137,7 +137,7 @@ namespace Adventure
             data.Enqueue(RoomId.None);
             data.Enqueue(RoomId.None);
             data.Enqueue(RoomId.None);
-            data.Enqueue(7);
+            data.Enqueue(RoomId.EdgeOfForest);
 
             // LONG, WINDING ROAD (1)
             data.Enqueue(RoomId.None);
@@ -231,7 +231,7 @@ namespace Adventure
             {
                 for (int j = 0; j < NumberOfDirections; ++j)
                 {
-                    this.SetMap(i, j, data.Dequeue());
+                    this.SetMap((RoomId)i, j, data.Dequeue());
                 }
             }
 

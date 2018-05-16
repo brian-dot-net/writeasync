@@ -271,7 +271,7 @@ internal sealed class adventure
         {
             dir = 5;
         }
-        else if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).RawRoom == (map.CurrentRoom + 128)))
+        else if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).RawRoom == (int)(map.CurrentRoom + 128)))
         {
             map.CurrentRoom = RoomId.Boat;
             return VerbResult.Proceed;
@@ -532,7 +532,7 @@ internal sealed class adventure
             else
             {
                 PRINT("THERE'S SOMETHING INSIDE!");
-                objects.Drop(ObjectId.Salt, 2);
+                objects.Drop(ObjectId.Salt, RoomId.Kitchen);
             }
         }
         else if (noun == "CAS")
@@ -549,7 +549,7 @@ internal sealed class adventure
             {
                 PRINT("THE GLOVES INSULATE AGAINST THE");
                 PRINT("ELECTRICITY! THE CASE OPENS!");
-                objects.Drop(ObjectId.Ruby, 18);
+                objects.Drop(ObjectId.Ruby, RoomId.LargeHall);
             }
         }
         else
@@ -726,14 +726,14 @@ internal sealed class adventure
         {
             PRINT("YOU DON'T FIND ANYTHING.");
         }
-        else if (objects.Ref(ObjectId.Sword).RawRoom != RoomId.None)
+        else if (objects.Ref(ObjectId.Sword).Room != RoomId.None)
         {
             PRINT("THERE'S NOTHING ELSE THERE!");
         }
         else
         {
             PRINT("THERE'S SOMETHING THERE!");
-            objects.Drop(ObjectId.Sword, 6);
+            objects.Drop(ObjectId.Sword, RoomId.OpenField);
         }
 
         return VerbResult.Idle;
@@ -775,13 +775,13 @@ internal sealed class adventure
         {
             PRINT("A POWERFUL BREEZE PROPELS THE BOAT");
             PRINT("TO THE OPPOSITE SHORE!");
-            if (objects.Ref(ObjectId.Boat).RawRoom == 140)
+            if (objects.Ref(ObjectId.Boat).Room == RoomId.SouthBankOfRiver)
             {
-                objects.Drop(ObjectId.Boat, 142);
+                objects.Drop(ObjectId.Boat, RoomId.NorthBankOfRiver + 128);
             }
             else
             {
-                objects.Drop(ObjectId.Boat, 140);
+                objects.Drop(ObjectId.Boat, RoomId.SouthBankOfRiver + 128);
             }
         }
 

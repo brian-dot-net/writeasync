@@ -28,7 +28,7 @@ namespace Adventure
             }
         }
 
-        public IEnumerable<string> Here(int currentRoom)
+        public IEnumerable<string> Here(RoomId currentRoom)
         {
             foreach (ObjectRef obj in this.objects)
             {
@@ -39,9 +39,9 @@ namespace Adventure
             }
         }
 
-        public bool IsHere(ObjectId id, int currentRoom)
+        public bool IsHere(ObjectId id, RoomId currentRoom)
         {
-            return (this.Ref(id).RawRoom == currentRoom) || this.Carrying(id);
+            return (this.Ref(id).RawRoom == (int)currentRoom) || this.Carrying(id);
         }
 
         public ObjectRef Find(string noun)
@@ -59,11 +59,11 @@ namespace Adventure
 
         public ObjectRef Ref(ObjectId id) => this.objects[(int)id];
 
-        public void Hide(ObjectId id) => this.Drop(id, 0);
+        public void Hide(ObjectId id) => this.Drop(id, RoomId.None);
 
-        public void Take(ObjectId id) => this.Drop(id, -1);
+        public void Take(ObjectId id) => this.Drop(id, RoomId.Inventory);
 
-        public void Drop(ObjectId id, int room) => this.Ref(id).RawRoom = room;
+        public void Drop(ObjectId id, RoomId room) => this.Ref(id).RawRoom = (int)room;
 
         private static ObjectRef[] InitObjects()
         {

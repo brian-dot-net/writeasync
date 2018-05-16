@@ -22,7 +22,7 @@ namespace Adventure
 
         public int RawRoom { get; set; }
 
-        public int Room
+        public RoomId Room
         {
             get
             {
@@ -32,10 +32,10 @@ namespace Adventure
                     r -= 128;
                 }
 
-                return r;
+                return (RoomId)r;
             }
         }
 
-        public bool Carrying => this.RawRoom == -1;
+        public bool Carrying => this.Room == RoomId.Inventory;
     }
 }
