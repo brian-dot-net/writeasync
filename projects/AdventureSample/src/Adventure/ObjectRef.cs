@@ -6,12 +6,12 @@ namespace Adventure
 {
     internal sealed class ObjectRef
     {
-        public ObjectRef(ObjectId id, string name, string tag, int room)
+        public ObjectRef(ObjectId id, string name, string tag, RoomId room, bool canGet = true)
         {
             this.Id = id;
             this.Name = name;
             this.Tag = tag;
-            this.RawRoom = room;
+            this.RawRoom = (int)(room + (canGet ? 0 : 128));
         }
 
         public ObjectId Id { get; private set; }
