@@ -38,12 +38,6 @@ internal sealed class adventure
         }
     }
 
-    private void Init()
-    {
-        inventoryItems = 0;
-        mixtureCount = 0;
-    }
-
     private void CLS()
     {
         this.output.Write('\f');
@@ -144,11 +138,10 @@ internal sealed class adventure
 
     private VerbResult Main()
     {
-        this.Init();
-        ; // ** THE QUEST **
-        ; // **
-        ; // ** An adventure game
-        ; // 
+        // ** THE QUEST **
+        // **
+        // ** An adventure game
+        //
         CLS();
 
         PRINT("Please stand by .... ");
