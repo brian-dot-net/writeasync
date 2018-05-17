@@ -558,12 +558,13 @@ internal sealed class adventure
 
     private VerbResult Pour(string noun)
     {
+        ObjectId id = objects.IdOf(noun);
         bool poured;
-        if (noun == "SAL")
+        if (id == ObjectId.Salt)
         {
             poured = PourSalt();
         }
-        else if (noun == "BOT")
+        else if (id == ObjectId.Bottle)
         {
             poured = PourFormula();
         }
