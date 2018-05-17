@@ -762,7 +762,12 @@ internal sealed class adventure
 
     private VerbResult Row(ObjectId id)
     {
-        if ((id == ObjectId.Boat) || (id == ObjectId.Blank))
+        if (id == ObjectId.Boat)
+        {
+            return RowBoat();
+        }
+
+        if (id == ObjectId.Blank)
         {
             return RowBoat();
         }
