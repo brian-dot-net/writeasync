@@ -249,7 +249,8 @@ internal sealed class adventure
         Direction dir = GetDirection(noun);
         if (dir == Direction.Invalid)
         {
-            if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).Room == map.CurrentRoom))
+            ObjectId id = objects.IdOf(noun);
+            if ((id == ObjectId.Boat) && (objects.Ref(id).Room == map.CurrentRoom))
             {
                 map.CurrentRoom = RoomId.Boat;
                 return VerbResult.Proceed;
