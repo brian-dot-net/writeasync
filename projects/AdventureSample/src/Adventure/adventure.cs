@@ -795,15 +795,19 @@ internal sealed class adventure
             PRINT("PLEASE GIVE A DIRECTION!");
             return VerbResult.Idle;
         }
-        else if ((noun != "BOA") && (noun != ""))
-        {
-            PRINT("HUH?");
-            return VerbResult.Idle;
-        }
         else
         {
-            map.CurrentRoom = objects.Ref(ObjectId.Boat).Room;
-            return VerbResult.Proceed;
+            ObjectId id = objects.IdOf(noun);
+            if ((id != ObjectId.Boat) && (noun != ""))
+            {
+                PRINT("HUH?");
+                return VerbResult.Idle;
+            }
+            else
+            {
+                map.CurrentRoom = objects.Ref(ObjectId.Boat).Room;
+                return VerbResult.Proceed;
+            }
         }
     }
 
