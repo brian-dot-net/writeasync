@@ -369,8 +369,7 @@ internal sealed class adventure
             return VerbResult.Proceed;
         }
 
-        Examine(noun);
-        return VerbResult.Idle;
+        return Examine(noun);
     }
 
     private VerbResult Examine(string noun)
@@ -378,16 +377,7 @@ internal sealed class adventure
         ObjectId id = objects.IdOf(noun);
         if (id == ObjectId.Ground)
         {
-            if (map.CurrentRoom != RoomId.OpenField)
-            {
-                PRINT("IT LOOKS LIKE GROUND!");
-            }
-            else
-            {
-                PRINT("IT LOOKS LIKE SOMETHING'S BURIED HERE.");
-            }
-
-            return VerbResult.Idle;
+            return ExamineGround();
         }
 
         if ((id == ObjectId.Invalid) || !objects.IsHere(id, map.CurrentRoom))
@@ -398,23 +388,52 @@ internal sealed class adventure
 
         if (id == ObjectId.Bottle)
         {
-            PRINT("THERE'S SOMETHING WRITTEN ON IT!");
-            return VerbResult.Idle;
+            return ExamineBottle();
         }
 
         if (id == ObjectId.Case)
         {
-            PRINT("THERE'S A JEWEL INSIDE!");
-            return VerbResult.Idle;
+            return ExamineCase();
         }
 
         if (id == ObjectId.Barrel)
         {
-            PRINT("IT'S FILLED WITH RAINWATER.");
-            return VerbResult.Idle;
+            return ExamineBarrel();
         }
 
         PRINT("YOU SEE NOTHING UNUSUAL.");
+        return VerbResult.Idle;
+    }
+
+    private VerbResult ExamineBarrel()
+    {
+        PRINT("IT'S FILLED WITH RAINWATER.");
+        return VerbResult.Idle;
+    }
+
+    private VerbResult ExamineCase()
+    {
+        PRINT("THERE'S A JEWEL INSIDE!");
+        return VerbResult.Idle;
+    }
+
+    private VerbResult ExamineBottle()
+    {
+        PRINT("THERE'S SOMETHING WRITTEN ON IT!");
+        return VerbResult.Idle;
+    }
+
+    private VerbResult ExamineGround()
+    {
+        if (map.CurrentRoom != RoomId.OpenField)
+        {
+            PRINT("IT LOOKS LIKE GROUND!");
+        }
+        else
+        {
+            PRINT("IT LOOKS LIKE SOMETHING'S BURIED HERE.");
+        }
+
         return VerbResult.Idle;
     }
 
