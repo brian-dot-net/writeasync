@@ -453,50 +453,65 @@ internal sealed class adventure
 
         if (id == ObjectId.Diary)
         {
-            if (!objects.IsHere(id, map.CurrentRoom))
-            {
-                PRINT("THERE'S NO DIARY HERE!");
-            }
-            else
-            {
-                PRINT("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE");
-                PRINT("FORMULA TO RAINWATER, TO REACH THE");
-                PRINT("OTHER WORLD.' ");
-            }
-
-            return VerbResult.Idle;
+            return ReadDiary(id);
         }
 
         if (id == ObjectId.Dictionary)
         {
-            if (!objects.IsHere(id, map.CurrentRoom))
-            {
-                PRINT("YOU DON'T SEE A DICTIONARY!");
-            }
-            else
-            {
-                PRINT("IT SAYS: SODIUM CHLORIDE IS");
-                PRINT("COMMON TABLE SALT.");
-            }
-
-            return VerbResult.Idle;
+            return ReadDictionary(id);
         }
 
         if (id == ObjectId.Bottle)
         {
-            if (!objects.IsHere(id, map.CurrentRoom))
-            {
-                PRINT("THERE'S NO BOTTLE HERE!");
-            }
-            else
-            {
-                PRINT("IT READS: 'SECRET FORMULA'.");
-            }
-
-            return VerbResult.Idle;
+            return ReadBottle(id);
         }
 
         PRINT("YOU CAN'T READ THAT!");
+        return VerbResult.Idle;
+    }
+
+    private VerbResult ReadBottle(ObjectId id)
+    {
+        if (!objects.IsHere(id, map.CurrentRoom))
+        {
+            PRINT("THERE'S NO BOTTLE HERE!");
+        }
+        else
+        {
+            PRINT("IT READS: 'SECRET FORMULA'.");
+        }
+
+        return VerbResult.Idle;
+    }
+
+    private VerbResult ReadDictionary(ObjectId id)
+    {
+        if (!objects.IsHere(id, map.CurrentRoom))
+        {
+            PRINT("YOU DON'T SEE A DICTIONARY!");
+        }
+        else
+        {
+            PRINT("IT SAYS: SODIUM CHLORIDE IS");
+            PRINT("COMMON TABLE SALT.");
+        }
+
+        return VerbResult.Idle;
+    }
+
+    private VerbResult ReadDiary(ObjectId id)
+    {
+        if (!objects.IsHere(id, map.CurrentRoom))
+        {
+            PRINT("THERE'S NO DIARY HERE!");
+        }
+        else
+        {
+            PRINT("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE");
+            PRINT("FORMULA TO RAINWATER, TO REACH THE");
+            PRINT("OTHER WORLD.' ");
+        }
+
         return VerbResult.Idle;
     }
 
@@ -505,55 +520,70 @@ internal sealed class adventure
         ObjectId id = objects.IdOf(noun);
         if (id == ObjectId.Box)
         {
-            if (!objects.IsHere(id, map.CurrentRoom))
-            {
-                PRINT("THERE'S NO BOX HERE!");
-            }
-            else
-            {
-                objects.Drop(ObjectId.Bottle, map.CurrentRoom);
-                PRINT("SOMETHING FELL OUT!");
-            }
-
-            return VerbResult.Idle;
+            return OpenBox(id);
         }
 
         if (id == ObjectId.Cabinet)
         {
-            if (map.CurrentRoom != RoomId.Kitchen)
-            {
-                PRINT("THERE'S NO CABINET HERE!");
-            }
-            else
-            {
-                PRINT("THERE'S SOMETHING INSIDE!");
-                objects.Drop(ObjectId.Salt, RoomId.Kitchen);
-            }
-
-            return VerbResult.Idle;
+            return OpenCabinet();
         }
 
         if (id == ObjectId.Case)
         {
-            if (map.CurrentRoom != RoomId.LargeHall)
-            {
-                PRINT("THERE'S NO CASE HERE!");
-            }
-            else if (!wearingGloves)
-            {
-                PRINT("THE CASE IS ELECTRIFIED!");
-            }
-            else
-            {
-                PRINT("THE GLOVES INSULATE AGAINST THE");
-                PRINT("ELECTRICITY! THE CASE OPENS!");
-                objects.Drop(ObjectId.Ruby, RoomId.LargeHall);
-            }
-
-            return VerbResult.Idle;
+            return OpenCase();
         }
 
         PRINT("YOU CAN'T OPEN THAT!");
+        return VerbResult.Idle;
+    }
+
+    private VerbResult OpenCase()
+    {
+        if (map.CurrentRoom != RoomId.LargeHall)
+        {
+            PRINT("THERE'S NO CASE HERE!");
+        }
+        else if (!wearingGloves)
+        {
+            PRINT("THE CASE IS ELECTRIFIED!");
+        }
+        else
+        {
+            PRINT("THE GLOVES INSULATE AGAINST THE");
+            PRINT("ELECTRICITY! THE CASE OPENS!");
+            objects.Drop(ObjectId.Ruby, RoomId.LargeHall);
+        }
+
+        return VerbResult.Idle;
+    }
+
+    private VerbResult OpenCabinet()
+    {
+        if (map.CurrentRoom != RoomId.Kitchen)
+        {
+            PRINT("THERE'S NO CABINET HERE!");
+        }
+        else
+        {
+            PRINT("THERE'S SOMETHING INSIDE!");
+            objects.Drop(ObjectId.Salt, RoomId.Kitchen);
+        }
+
+        return VerbResult.Idle;
+    }
+
+    private VerbResult OpenBox(ObjectId id)
+    {
+        if (!objects.IsHere(id, map.CurrentRoom))
+        {
+            PRINT("THERE'S NO BOX HERE!");
+        }
+        else
+        {
+            objects.Drop(ObjectId.Bottle, map.CurrentRoom);
+            PRINT("SOMETHING FELL OUT!");
+        }
+
         return VerbResult.Idle;
     }
 
@@ -654,39 +684,49 @@ internal sealed class adventure
         ObjectId id = objects.IdOf(noun);
         if (id == ObjectId.Tree)
         {
-            if (map.CurrentRoom != RoomId.EdgeOfForest)
-            {
-                PRINT("THERE'S NO TREE HERE!");
-            }
-            else
-            {
-                PRINT("YOU CAN'T REACH THE BRANCHES!");
-            }
-
-            return VerbResult.Idle;
+            return ClimbTree();
         }
 
         if (id == ObjectId.Ladder)
         {
-            if (!objects.IsHere(id, map.CurrentRoom))
-            {
-                PRINT("YOU DON'T HAVE THE LADDER!");
-            }
-            else if (map.CurrentRoom != RoomId.EdgeOfForest)
-            {
-                PRINT("WHATEVER FOR?");
-            }
-            else
-            {
-                PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
-                PRINT("IT DISAPPEARS INTO THE GROUND!");
-                objects.Hide(ObjectId.Ladder);
-            }
-
-            return VerbResult.Idle;
+            return ClimbLadder(id);
         }
 
         PRINT("IT WON'T DO ANY GOOD.");
+        return VerbResult.Idle;
+    }
+
+    private VerbResult ClimbLadder(ObjectId id)
+    {
+        if (!objects.IsHere(id, map.CurrentRoom))
+        {
+            PRINT("YOU DON'T HAVE THE LADDER!");
+        }
+        else if (map.CurrentRoom != RoomId.EdgeOfForest)
+        {
+            PRINT("WHATEVER FOR?");
+        }
+        else
+        {
+            PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
+            PRINT("IT DISAPPEARS INTO THE GROUND!");
+            objects.Hide(id);
+        }
+
+        return VerbResult.Idle;
+    }
+
+    private VerbResult ClimbTree()
+    {
+        if (map.CurrentRoom != RoomId.EdgeOfForest)
+        {
+            PRINT("THERE'S NO TREE HERE!");
+        }
+        else
+        {
+            PRINT("YOU CAN'T REACH THE BRANCHES!");
+        }
+
         return VerbResult.Idle;
     }
 
