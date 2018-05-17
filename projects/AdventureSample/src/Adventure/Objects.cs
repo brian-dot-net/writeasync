@@ -59,7 +59,7 @@ namespace Adventure
         {
             foreach (ObjectRef obj in this.objects)
             {
-                if (obj.Tag == noun)
+                if (obj.Matches(noun))
                 {
                     return obj;
                 }
@@ -80,24 +80,26 @@ namespace Adventure
         {
             return new ObjectRef[]
             {
-                new ObjectRef(ObjectId.Diary, "AN OLD DIARY", "DIA", RoomId.LivingRoom),
-                new ObjectRef(ObjectId.Box, "A SMALL BOX", "BOX", RoomId.LivingRoom),
-                new ObjectRef(ObjectId.Cabinet, "CABINET", "CAB", RoomId.Kitchen, false),
-                new ObjectRef(ObjectId.Salt, "A SALT SHAKER", "SAL", RoomId.None),
-                new ObjectRef(ObjectId.Dictionary, "A DICTIONARY", "DIC", RoomId.Library),
-                new ObjectRef(ObjectId.Barrel, "WOODEN BARREL", "BAR", RoomId.Garage, false),
-                new ObjectRef(ObjectId.Bottle, "A SMALL BOTTLE", "BOT", RoomId.None),
-                new ObjectRef(ObjectId.Ladder, "A LADDER", "LAD", RoomId.FrontYard),
-                new ObjectRef(ObjectId.Shovel, "A SHOVEL", "SHO", RoomId.Garage),
-                new ObjectRef(ObjectId.Tree, "A TREE", "TRE", RoomId.EdgeOfForest, false),
-                new ObjectRef(ObjectId.Sword, "A GOLDEN SWORD", "SWO", RoomId.None),
-                new ObjectRef(ObjectId.Boat, "A WOODEN BOAT", "BOA", RoomId.SouthBankOfRiver, false),
-                new ObjectRef(ObjectId.Fan, "A MAGIC FAN", "FAN", RoomId.BranchOfTree),
-                new ObjectRef(ObjectId.Guard, "A NASTY-LOOKING GUARD", "GUA", RoomId.SouthOfCastle, false),
-                new ObjectRef(ObjectId.Case, "A GLASS CASE", "CAS", RoomId.LargeHall, false),
-                new ObjectRef(ObjectId.Ruby, "A GLOWING RUBY", "RUB", RoomId.None),
-                new ObjectRef(ObjectId.Gloves, "A PAIR OF RUBBER GLOVES", "GLO", RoomId.TopOfTree)
+                new ObjectRef(ObjectId.Diary, "AN OLD DIARY", Tags("DIA"), RoomId.LivingRoom),
+                new ObjectRef(ObjectId.Box, "A SMALL BOX", Tags("BOX"), RoomId.LivingRoom),
+                new ObjectRef(ObjectId.Cabinet, "CABINET", Tags("CAB"), RoomId.Kitchen, false),
+                new ObjectRef(ObjectId.Salt, "A SALT SHAKER", Tags("SAL"), RoomId.None),
+                new ObjectRef(ObjectId.Dictionary, "A DICTIONARY", Tags("DIC"), RoomId.Library),
+                new ObjectRef(ObjectId.Barrel, "WOODEN BARREL", Tags("BAR"), RoomId.Garage, false),
+                new ObjectRef(ObjectId.Bottle, "A SMALL BOTTLE", Tags("BOT"), RoomId.None),
+                new ObjectRef(ObjectId.Ladder, "A LADDER", Tags("LAD"), RoomId.FrontYard),
+                new ObjectRef(ObjectId.Shovel, "A SHOVEL", Tags("SHO"), RoomId.Garage),
+                new ObjectRef(ObjectId.Tree, "A TREE", Tags("TRE"), RoomId.EdgeOfForest, false),
+                new ObjectRef(ObjectId.Sword, "A GOLDEN SWORD", Tags("SWO"), RoomId.None),
+                new ObjectRef(ObjectId.Boat, "A WOODEN BOAT", Tags("BOA"), RoomId.SouthBankOfRiver, false),
+                new ObjectRef(ObjectId.Fan, "A MAGIC FAN", Tags("FAN"), RoomId.BranchOfTree),
+                new ObjectRef(ObjectId.Guard, "A NASTY-LOOKING GUARD", Tags("GUA"), RoomId.SouthOfCastle, false),
+                new ObjectRef(ObjectId.Case, "A GLASS CASE", Tags("CAS"), RoomId.LargeHall, false),
+                new ObjectRef(ObjectId.Ruby, "A GLOWING RUBY", Tags("RUB"), RoomId.None),
+                new ObjectRef(ObjectId.Gloves, "A PAIR OF RUBBER GLOVES", Tags("GLO"), RoomId.TopOfTree)
             };
         }
+
+        private static IEnumerable<string> Tags(params string[] tags) => tags;
     }
 }
