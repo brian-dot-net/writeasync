@@ -739,7 +739,8 @@ internal sealed class adventure
 
     private VerbResult Row(string noun)
     {
-        if ((noun != "BOA") && (noun != ""))
+        ObjectId id = objects.IdOf(noun);
+        if ((id != ObjectId.Boat) && (noun != ""))
         {
             PRINT("HOW CAN YOU ROW THAT?");
         }
