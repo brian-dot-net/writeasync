@@ -284,12 +284,10 @@ internal sealed class adventure
         if (result == MoveResult.Blocked)
         {
             PRINT("THE GUARD WON'T LET YOU!");
-        }
-        else
-        {
-            PRINT("YOU CAN'T GO THERE!");
+            return VerbResult.Idle;
         }
 
+        PRINT("YOU CAN'T GO THERE!");
         return VerbResult.Idle;
     }
 
@@ -298,35 +296,42 @@ internal sealed class adventure
         if (obj == null)
         {
             PRINT("YOU CAN'T GET THAT!");
+            return VerbResult.Idle;
         }
-        else if (obj.Room == RoomId.Inventory)
+
+        if (obj.Room == RoomId.Inventory)
         {
             PRINT("YOU ALREADY HAVE IT!");
+            return VerbResult.Idle;
         }
-        else if (!obj.CanGet)
+
+        if (!obj.CanGet)
         {
             PRINT("YOU CAN'T GET THAT!");
+            return VerbResult.Idle;
         }
-        else if (obj.Room != map.CurrentRoom)
+
+        if (obj.Room != map.CurrentRoom)
         {
             PRINT("THAT'S NOT HERE!");
+            return VerbResult.Idle;
         }
-        else if (inventoryItems > MaxInventoryItems)
+
+        if (inventoryItems > MaxInventoryItems)
         {
             PRINT("YOU CAN'T CARRY ANY MORE.");
+            return VerbResult.Idle;
         }
-        else if ((map.CurrentRoom == RoomId.LargeHall) && (obj.Id == ObjectId.Ruby))
+
+        if ((map.CurrentRoom == RoomId.LargeHall) && (obj.Id == ObjectId.Ruby))
         {
             PRINT("CONGRATULATIONS! YOU'VE WON!");
             return PlayAgain();
         }
-        else
-        {
-            ++inventoryItems;
-            objects.Take(obj.Id);
-            PRINT("TAKEN.");
-        }
 
+        ++inventoryItems;
+        objects.Take(obj.Id);
+        PRINT("TAKEN.");
         return VerbResult.Idle;
     }
 
@@ -335,14 +340,12 @@ internal sealed class adventure
         if ((obj == null) || (obj.Room != RoomId.Inventory))
         {
             PRINT("YOU DON'T HAVE THAT!");
-        }
-        else
-        {
-            --inventoryItems;
-            objects.Drop(obj.Id, map.CurrentRoom);
-            PRINT("DROPPED.");
+            return VerbResult.Idle;
         }
 
+        --inventoryItems;
+        objects.Drop(obj.Id, map.CurrentRoom);
+        PRINT("DROPPED.");
         return VerbResult.Idle;
     }
 
@@ -434,12 +437,10 @@ internal sealed class adventure
         if (map.CurrentRoom != RoomId.OpenField)
         {
             PRINT("IT LOOKS LIKE GROUND!");
-        }
-        else
-        {
-            PRINT("IT LOOKS LIKE SOMETHING'S BURIED HERE.");
+            return VerbResult.Idle;
         }
 
+        PRINT("IT LOOKS LIKE SOMETHING'S BURIED HERE.");
         return VerbResult.Idle;
     }
 
@@ -504,12 +505,10 @@ internal sealed class adventure
         if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("THERE'S NO BOTTLE HERE!");
-        }
-        else
-        {
-            PRINT("IT READS: 'SECRET FORMULA'.");
+            return VerbResult.Idle;
         }
 
+        PRINT("IT READS: 'SECRET FORMULA'.");
         return VerbResult.Idle;
     }
 
@@ -518,13 +517,11 @@ internal sealed class adventure
         if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T SEE A DICTIONARY!");
-        }
-        else
-        {
-            PRINT("IT SAYS: SODIUM CHLORIDE IS");
-            PRINT("COMMON TABLE SALT.");
+            return VerbResult.Idle;
         }
 
+        PRINT("IT SAYS: SODIUM CHLORIDE IS");
+        PRINT("COMMON TABLE SALT.");
         return VerbResult.Idle;
     }
 
@@ -533,14 +530,12 @@ internal sealed class adventure
         if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("THERE'S NO DIARY HERE!");
-        }
-        else
-        {
-            PRINT("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE");
-            PRINT("FORMULA TO RAINWATER, TO REACH THE");
-            PRINT("OTHER WORLD.' ");
+            return VerbResult.Idle;
         }
 
+        PRINT("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE");
+        PRINT("FORMULA TO RAINWATER, TO REACH THE");
+        PRINT("OTHER WORLD.' ");
         return VerbResult.Idle;
     }
 
@@ -575,18 +570,18 @@ internal sealed class adventure
         if (map.CurrentRoom != RoomId.LargeHall)
         {
             PRINT("THERE'S NO CASE HERE!");
-        }
-        else if (!wearingGloves)
-        {
-            PRINT("THE CASE IS ELECTRIFIED!");
-        }
-        else
-        {
-            PRINT("THE GLOVES INSULATE AGAINST THE");
-            PRINT("ELECTRICITY! THE CASE OPENS!");
-            objects.Drop(ObjectId.Ruby, RoomId.LargeHall);
+            return VerbResult.Idle;
         }
 
+        if (!wearingGloves)
+        {
+            PRINT("THE CASE IS ELECTRIFIED!");
+            return VerbResult.Idle;
+        }
+
+        PRINT("THE GLOVES INSULATE AGAINST THE");
+        PRINT("ELECTRICITY! THE CASE OPENS!");
+        objects.Drop(ObjectId.Ruby, RoomId.LargeHall);
         return VerbResult.Idle;
     }
 
@@ -595,13 +590,11 @@ internal sealed class adventure
         if (map.CurrentRoom != RoomId.Kitchen)
         {
             PRINT("THERE'S NO CABINET HERE!");
-        }
-        else
-        {
-            PRINT("THERE'S SOMETHING INSIDE!");
-            objects.Drop(ObjectId.Salt, RoomId.Kitchen);
+            return VerbResult.Idle;
         }
 
+        PRINT("THERE'S SOMETHING INSIDE!");
+        objects.Drop(ObjectId.Salt, RoomId.Kitchen);
         return VerbResult.Idle;
     }
 
@@ -610,13 +603,11 @@ internal sealed class adventure
         if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("THERE'S NO BOX HERE!");
-        }
-        else
-        {
-            objects.Drop(ObjectId.Bottle, map.CurrentRoom);
-            PRINT("SOMETHING FELL OUT!");
+            return VerbResult.Idle;
         }
 
+        objects.Drop(ObjectId.Bottle, map.CurrentRoom);
+        PRINT("SOMETHING FELL OUT!");
         return VerbResult.Idle;
     }
 
@@ -726,18 +717,18 @@ internal sealed class adventure
         if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE LADDER!");
-        }
-        else if (map.CurrentRoom != RoomId.EdgeOfForest)
-        {
-            PRINT("WHATEVER FOR?");
-        }
-        else
-        {
-            PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
-            PRINT("IT DISAPPEARS INTO THE GROUND!");
-            objects.Hide(id);
+            return VerbResult.Idle;
         }
 
+        if (map.CurrentRoom != RoomId.EdgeOfForest)
+        {
+            PRINT("WHATEVER FOR?");
+            return VerbResult.Idle;
+        }
+
+        PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
+        PRINT("IT DISAPPEARS INTO THE GROUND!");
+        objects.Hide(id);
         return VerbResult.Idle;
     }
 
@@ -746,12 +737,10 @@ internal sealed class adventure
         if (map.CurrentRoom != RoomId.EdgeOfForest)
         {
             PRINT("THERE'S NO TREE HERE!");
-        }
-        else
-        {
-            PRINT("YOU CAN'T REACH THE BRANCHES!");
+            return VerbResult.Idle;
         }
 
+        PRINT("YOU CAN'T REACH THE BRANCHES!");
         return VerbResult.Idle;
     }
 
@@ -808,21 +797,23 @@ internal sealed class adventure
         if (!objects.IsHere(ObjectId.Shovel, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE A SHOVEL!");
-        }
-        else if (map.CurrentRoom != RoomId.OpenField)
-        {
-            PRINT("YOU DON'T FIND ANYTHING.");
-        }
-        else if (objects.Ref(ObjectId.Sword).Room != RoomId.None)
-        {
-            PRINT("THERE'S NOTHING ELSE THERE!");
-        }
-        else
-        {
-            PRINT("THERE'S SOMETHING THERE!");
-            objects.Drop(ObjectId.Sword, RoomId.OpenField);
+            return VerbResult.Idle;
         }
 
+        if (map.CurrentRoom != RoomId.OpenField)
+        {
+            PRINT("YOU DON'T FIND ANYTHING.");
+            return VerbResult.Idle;
+        }
+
+        if (objects.Ref(ObjectId.Sword).Room != RoomId.None)
+        {
+            PRINT("THERE'S NOTHING ELSE THERE!");
+            return VerbResult.Idle;
+        }
+
+        PRINT("THERE'S SOMETHING THERE!");
+        objects.Drop(ObjectId.Sword, RoomId.OpenField);
         return VerbResult.Idle;
     }
 
@@ -847,12 +838,10 @@ internal sealed class adventure
         if (map.CurrentRoom != RoomId.Boat)
         {
             PRINT("YOU'RE NOT IN THE BOAT!");
-        }
-        else
-        {
-            PRINT("YOU DON'T HAVE AN OAR!");
+            return VerbResult.Idle;
         }
 
+        PRINT("YOU DON'T HAVE AN OAR!");
         return VerbResult.Idle;
     }
 
@@ -877,25 +866,24 @@ internal sealed class adventure
         if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE FAN!");
-        }
-        else if (map.CurrentRoom != RoomId.Boat)
-        {
-            PRINT("YOU FEEL A REFRESHING BREEZE!");
-        }
-        else
-        {
-            PRINT("A POWERFUL BREEZE PROPELS THE BOAT");
-            PRINT("TO THE OPPOSITE SHORE!");
-            if (objects.Ref(ObjectId.Boat).Room == RoomId.SouthBankOfRiver)
-            {
-                objects.Drop(ObjectId.Boat, RoomId.NorthBankOfRiver);
-            }
-            else
-            {
-                objects.Drop(ObjectId.Boat, RoomId.SouthBankOfRiver);
-            }
+            return VerbResult.Idle;
         }
 
+        if (map.CurrentRoom != RoomId.Boat)
+        {
+            PRINT("YOU FEEL A REFRESHING BREEZE!");
+            return VerbResult.Idle;
+        }
+
+        PRINT("A POWERFUL BREEZE PROPELS THE BOAT");
+        PRINT("TO THE OPPOSITE SHORE!");
+        if (objects.Ref(ObjectId.Boat).Room == RoomId.SouthBankOfRiver)
+        {
+            objects.Drop(ObjectId.Boat, RoomId.NorthBankOfRiver);
+            return VerbResult.Idle;
+        }
+
+        objects.Drop(ObjectId.Boat, RoomId.SouthBankOfRiver);
         return VerbResult.Idle;
     }
 
@@ -944,19 +932,19 @@ internal sealed class adventure
         if (map.CurrentRoom != RoomId.SouthOfCastle)
         {
             PRINT("THERE'S NO GUARD HERE!");
-        }
-        else if (!objects.Carrying(ObjectId.Sword))
-        {
-            PRINT("YOU DON'T HAVE A WEAPON!");
-        }
-        else
-        {
-            PRINT("THE GUARD, NOTICING YOUR SWORD,");
-            PRINT("WISELY RETREATS INTO THE CASTLE.");
-            map.SetMap(RoomId.SouthOfCastle, 0, RoomId.NarrowHall);
-            objects.Hide(id);
+            return VerbResult.Idle;
         }
 
+        if (!objects.Carrying(ObjectId.Sword))
+        {
+            PRINT("YOU DON'T HAVE A WEAPON!");
+            return VerbResult.Idle;
+        }
+
+        PRINT("THE GUARD, NOTICING YOUR SWORD,");
+        PRINT("WISELY RETREATS INTO THE CASTLE.");
+        map.SetMap(RoomId.SouthOfCastle, 0, RoomId.NarrowHall);
+        objects.Hide(id);
         return VerbResult.Idle;
     }
 
@@ -981,13 +969,11 @@ internal sealed class adventure
         if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE GLOVES.");
-        }
-        else
-        {
-            PRINT("YOU ARE NOW WEARING THE GLOVES.");
-            wearingGloves = true;
+            return VerbResult.Idle;
         }
 
+        PRINT("YOU ARE NOW WEARING THE GLOVES.");
+        wearingGloves = true;
         return VerbResult.Idle;
     }
 }
