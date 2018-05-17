@@ -23,6 +23,11 @@ namespace Adventure
             this.verbRoutines.Add(verb, handler);
         }
 
+        public void Add<T>(string verb, Func<string, T> noun, Func<T, VerbResult> handler)
+        {
+            this.verbRoutines.Add(verb, s => handler(noun(s)));
+        }
+
         public VerbResult Handle(string verb, string noun)
         {
             Func<string, VerbResult> verbRoutine;

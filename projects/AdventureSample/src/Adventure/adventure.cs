@@ -202,11 +202,12 @@ internal sealed class adventure
 
     private void InitHandlers(VerbRoutines verbRoutines)
     {
+        Func<string, ObjectRef> byRef = s => objects.Find(s);
         verbRoutines.Add("GO", Go);
-        verbRoutines.Add("GET", Get);
-        verbRoutines.Add("TAK", Get);
-        verbRoutines.Add("DRO", Drop);
-        verbRoutines.Add("THR", Drop);
+        verbRoutines.Add("GET", byRef, Get);
+        verbRoutines.Add("TAK", byRef, Get);
+        verbRoutines.Add("DRO", byRef, Drop);
+        verbRoutines.Add("THR", byRef, Drop);
         verbRoutines.Add("INV", Inventory);
         verbRoutines.Add("I", Inventory);
         verbRoutines.Add("LOO", Look);
@@ -286,12 +287,6 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Get(string noun)
-    {
-        ObjectRef obj = objects.Find(noun);
-        return Get(obj);
-    }
-
     private VerbResult Get(ObjectRef obj)
     {
         if (obj == null)
@@ -327,12 +322,6 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
-    }
-
-    private VerbResult Drop(string noun)
-    {
-        ObjectRef obj = objects.Find(noun);
-        return Drop(obj);
     }
 
     private VerbResult Drop(ObjectRef obj)
