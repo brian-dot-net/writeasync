@@ -590,73 +590,57 @@ internal sealed class adventure
     private VerbResult Pour(string noun)
     {
         ObjectId id = objects.IdOf(noun);
-        bool poured;
         if (id == ObjectId.Salt)
         {
-            poured = PourSalt();
-        }
-        else if (id == ObjectId.Bottle)
-        {
-            poured = PourFormula();
-        }
-        else
-        {
-            PRINT("YOU CAN'T POUR THAT!");
-            poured = false;
+            return PourSalt();
         }
 
-        if (poured)
+        if (id == ObjectId.Bottle)
         {
-            poured = PourMixture();
+            return PourFormula();
         }
 
-        if (poured)
-        {
-            return VerbResult.Proceed;
-        }
-
+        PRINT("YOU CAN'T POUR THAT!");
         return VerbResult.Idle;
     }
 
-    private bool PourFormula()
+    private VerbResult PourFormula()
     {
         if (!objects.IsHere(ObjectId.Bottle, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE BOTTLE!");
-            return false;
+            return VerbResult.Idle;
         }
-        else if (formulaPoured)
+
+        if (formulaPoured)
         {
             PRINT("THE BOTTLE IS EMPTY!");
-            return false;
+            return VerbResult.Idle;
         }
-        else
-        {
-            formulaPoured = true;
-            return true;
-        }
+
+        formulaPoured = true;
+        return PourMixture();
     }
 
-    private bool PourSalt()
+    private VerbResult PourSalt()
     {
         if (!objects.IsHere(ObjectId.Salt, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE SALT!");
-            return false;
+            return VerbResult.Idle;
         }
-        else if (saltPoured)
+
+        if (saltPoured)
         {
             PRINT("THE SHAKER IS EMPTY!");
-            return false;
+            return VerbResult.Idle;
         }
-        else
-        {
-            saltPoured = true;
-            return true;
-        }
+
+        saltPoured = true;
+        return PourMixture();
     }
 
-    private bool PourMixture()
+    private VerbResult PourMixture()
     {
         if (map.CurrentRoom == RoomId.Garage)
         {
@@ -667,7 +651,7 @@ internal sealed class adventure
 
         if (mixtureCount < 3)
         {
-            return false;
+            return VerbResult.Idle;
         }
 
         PRINT("THERE IS AN EXPLOSION!");
@@ -676,7 +660,7 @@ internal sealed class adventure
         PRINT(" ... SOMEWHERE ELSE!");
 
         map.CurrentRoom = RoomId.OpenField;
-        return true;
+        return VerbResult.Proceed;
     }
 
     private VerbResult Climb(string noun)
