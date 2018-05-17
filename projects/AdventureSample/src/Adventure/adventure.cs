@@ -711,7 +711,17 @@ internal sealed class adventure
 
     private VerbResult Dig(ObjectId id)
     {
-        if ((id == ObjectId.Blank) || (id == ObjectId.Hole) || (id == ObjectId.Ground))
+        if (id == ObjectId.Blank)
+        {
+            return DigHole();
+        }
+
+        if (id == ObjectId.Hole)
+        {
+            return DigHole();
+        }
+
+        if (id == ObjectId.Ground)
         {
             return DigHole();
         }
