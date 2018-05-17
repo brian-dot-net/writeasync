@@ -458,9 +458,16 @@ internal sealed class adventure
 
     private VerbResult Read(string noun)
     {
-        if (noun == "DIA")
+        ObjectId id = ObjectId.Invalid;
+        ObjectRef obj = objects.Find(noun);
+        if (obj != null)
         {
-            if (!objects.IsHere(ObjectId.Diary, map.CurrentRoom))
+            id = obj.Id;
+        }
+
+        if (id == ObjectId.Diary)
+        {
+            if (!objects.IsHere(id, map.CurrentRoom))
             {
                 PRINT("THERE'S NO DIARY HERE!");
             }
@@ -471,9 +478,9 @@ internal sealed class adventure
                 PRINT("OTHER WORLD.' ");
             }
         }
-        else if (noun == "DIC")
+        else if (id == ObjectId.Dictionary)
         {
-            if (!objects.IsHere(ObjectId.Dictionary, map.CurrentRoom))
+            if (!objects.IsHere(id, map.CurrentRoom))
             {
                 PRINT("YOU DON'T SEE A DICTIONARY!");
             }
@@ -483,9 +490,9 @@ internal sealed class adventure
                 PRINT("COMMON TABLE SALT.");
             }
         }
-        else if (noun == "BOT")
+        else if (id == ObjectId.Bottle)
         {
-            if (!objects.IsHere(ObjectId.Bottle, map.CurrentRoom))
+            if (!objects.IsHere(id, map.CurrentRoom))
             {
                 PRINT("THERE'S NO BOTTLE HERE!");
             }
