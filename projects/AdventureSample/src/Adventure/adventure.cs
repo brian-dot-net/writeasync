@@ -757,8 +757,10 @@ internal sealed class adventure
         if ((noun != "HOL") && (noun != "GRO") && (noun != ""))
         {
             PRINT("YOU CAN'T DIG THAT!");
+            return VerbResult.Idle;
         }
-        else if (!objects.IsHere(ObjectId.Shovel, map.CurrentRoom))
+
+        if (!objects.IsHere(ObjectId.Shovel, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE A SHOVEL!");
         }
@@ -785,8 +787,10 @@ internal sealed class adventure
         if ((id != ObjectId.Boat) && (noun != ""))
         {
             PRINT("HOW CAN YOU ROW THAT?");
+            return VerbResult.Idle;
         }
-        else if (map.CurrentRoom != RoomId.Boat)
+
+        if (map.CurrentRoom != RoomId.Boat)
         {
             PRINT("YOU'RE NOT IN THE BOAT!");
         }
