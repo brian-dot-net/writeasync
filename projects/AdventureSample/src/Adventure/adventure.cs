@@ -754,30 +754,30 @@ internal sealed class adventure
 
     private VerbResult Dig(string noun)
     {
-        if ((noun != "HOL") && (noun != "GRO") && (noun != ""))
+        if ((noun == "HOL") || (noun == "GRO") || (noun == ""))
         {
-            PRINT("YOU CAN'T DIG THAT!");
+            if (!objects.IsHere(ObjectId.Shovel, map.CurrentRoom))
+            {
+                PRINT("YOU DON'T HAVE A SHOVEL!");
+            }
+            else if (map.CurrentRoom != RoomId.OpenField)
+            {
+                PRINT("YOU DON'T FIND ANYTHING.");
+            }
+            else if (objects.Ref(ObjectId.Sword).Room != RoomId.None)
+            {
+                PRINT("THERE'S NOTHING ELSE THERE!");
+            }
+            else
+            {
+                PRINT("THERE'S SOMETHING THERE!");
+                objects.Drop(ObjectId.Sword, RoomId.OpenField);
+            }
+
             return VerbResult.Idle;
         }
 
-        if (!objects.IsHere(ObjectId.Shovel, map.CurrentRoom))
-        {
-            PRINT("YOU DON'T HAVE A SHOVEL!");
-        }
-        else if (map.CurrentRoom != RoomId.OpenField)
-        {
-            PRINT("YOU DON'T FIND ANYTHING.");
-        }
-        else if (objects.Ref(ObjectId.Sword).Room != RoomId.None)
-        {
-            PRINT("THERE'S NOTHING ELSE THERE!");
-        }
-        else
-        {
-            PRINT("THERE'S SOMETHING THERE!");
-            objects.Drop(ObjectId.Sword, RoomId.OpenField);
-        }
-
+        PRINT("YOU CAN'T DIG THAT!");
         return VerbResult.Idle;
     }
 
