@@ -246,6 +246,26 @@ internal sealed class adventure
 
     private VerbResult Go(string noun)
     {
+        int dir = GetDirection(noun);
+        if (dir == Direction.Invalid)
+        {
+            if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).Room == map.CurrentRoom))
+            {
+                map.CurrentRoom = RoomId.Boat;
+                return VerbResult.Proceed;
+            }
+            else
+            {
+                PRINT("YOU CAN'T GO THERE!");
+                return VerbResult.Idle;
+            }
+        }
+
+        return Go(dir);
+    }
+
+    private static int GetDirection(string noun)
+    {
         int dir = Direction.Invalid;
         if (noun == "NOR")
         {
@@ -272,21 +292,7 @@ internal sealed class adventure
             dir = Direction.Down;
         }
 
-        if (dir == Direction.Invalid)
-        {
-            if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).Room == map.CurrentRoom))
-            {
-                map.CurrentRoom = RoomId.Boat;
-                return VerbResult.Proceed;
-            }
-            else
-            {
-                PRINT("YOU CAN'T GO THERE!");
-                return VerbResult.Idle;
-            }
-        }
-
-        return Go(dir);
+        return dir;
     }
 
     private VerbResult Go(int dir)
