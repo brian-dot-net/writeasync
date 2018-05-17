@@ -650,7 +650,8 @@ internal sealed class adventure
 
     private VerbResult Climb(string noun)
     {
-        if (noun == "TRE")
+        ObjectId id = objects.IdOf(noun);
+        if (id == ObjectId.Tree)
         {
             if (map.CurrentRoom != RoomId.EdgeOfForest)
             {
@@ -661,9 +662,9 @@ internal sealed class adventure
                 PRINT("YOU CAN'T REACH THE BRANCHES!");
             }
         }
-        else if (noun == "LAD")
+        else if (id == ObjectId.Ladder)
         {
-            if (!objects.IsHere(ObjectId.Ladder, map.CurrentRoom))
+            if (!objects.IsHere(id, map.CurrentRoom))
             {
                 PRINT("YOU DON'T HAVE THE LADDER!");
             }
