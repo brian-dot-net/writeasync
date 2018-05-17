@@ -228,7 +228,7 @@ internal sealed class adventure
         verbRoutines.Add("WEA", Wear);
     }
 
-    private VerbResult UnknownVerb(string noun)
+    private VerbResult UnknownVerb()
     {
         PRINT("I DON'T KNOW HOW TO DO THAT");
         return VerbResult.Idle;
@@ -340,7 +340,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Inventory(string noun)
+    private VerbResult Inventory()
     {
         bool atLeastOne = false;
         PRINT("YOU ARE CARRYING:");
@@ -439,7 +439,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Quit(string noun)
+    private VerbResult Quit()
     {
         PRINT_n("ARE YOU SURE YOU WANT TO QUIT (Y/N)");
         string quit = INPUT_s("");
@@ -755,7 +755,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Jump(string noun)
+    private VerbResult Jump()
     {
         if ((map.CurrentRoom == RoomId.EdgeOfForest) || (map.CurrentRoom == RoomId.BranchOfTree))
         {

@@ -12,10 +12,10 @@ namespace Adventure
         private readonly Dictionary<string, Func<string, VerbResult>> verbRoutines;
         private readonly Func<string, VerbResult> unknown;
 
-        public VerbRoutines(Func<string, VerbResult> unknown)
+        public VerbRoutines(Func<VerbResult> unknown)
         {
             this.verbRoutines = new Dictionary<string, Func<string, VerbResult>>();
-            this.unknown = unknown;
+            this.unknown = _ => unknown();
         }
 
         public void Add(string verb, Func<string, VerbResult> handler)
@@ -23,9 +23,14 @@ namespace Adventure
             this.verbRoutines.Add(verb, handler);
         }
 
+        public void Add(string verb, Func<VerbResult> handler)
+        {
+            this.Add(verb, s => handler());
+        }
+
         public void Add<T>(string verb, Func<string, T> noun, Func<T, VerbResult> handler)
         {
-            this.verbRoutines.Add(verb, s => handler(noun(s)));
+            this.Add(verb, s => handler(noun(s)));
         }
 
         public VerbResult Handle(string verb, string noun)
