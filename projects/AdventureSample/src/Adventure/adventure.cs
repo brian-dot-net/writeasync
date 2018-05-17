@@ -266,33 +266,16 @@ internal sealed class adventure
 
     private static int GetDirection(string noun)
     {
-        int dir = Direction.Invalid;
-        if (noun == "NOR")
+        switch (noun)
         {
-            dir = Direction.North;
+            case "NOR": return Direction.North;
+            case "SOU": return Direction.South;
+            case "EAS": return Direction.East;
+            case "WES": return Direction.West;
+            case "UP": return Direction.Up;
+            case "DOW": return Direction.Down;
+            default: return Direction.Invalid;
         }
-        else if (noun == "SOU")
-        {
-            dir = Direction.South;
-        }
-        else if (noun == "EAS")
-        {
-            dir = Direction.East;
-        }
-        else if (noun == "WES")
-        {
-            dir = Direction.West;
-        }
-        else if (noun == "UP")
-        {
-            dir = Direction.Up;
-        }
-        else if (noun == "DOW")
-        {
-            dir = Direction.Down;
-        }
-
-        return dir;
     }
 
     private VerbResult Go(int dir)
