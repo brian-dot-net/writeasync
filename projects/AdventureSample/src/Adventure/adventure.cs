@@ -183,18 +183,7 @@ internal sealed class adventure
 
                 Command command = Command.Parse(cmd);
 
-                string noun = command.Noun;
-                if (noun == "SHA")
-                {
-                    noun = "SAL";
-                }
-
-                if (noun == "FOR")
-                {
-                    noun = "BOT";
-                }
-
-                VerbResult ret = verbRoutines.Handle(command.Verb, noun);
+                VerbResult ret = verbRoutines.Handle(command.Verb, command.Noun);
                 if (ret == VerbResult.Idle)
                 {
                     // NO-OP
