@@ -289,7 +289,11 @@ internal sealed class adventure
     private VerbResult Get(string noun)
     {
         ObjectRef obj = objects.Find(noun);
+        return Get(obj);
+    }
 
+    private VerbResult Get(ObjectRef obj)
+    {
         if (obj == null)
         {
             PRINT("YOU CAN'T GET THAT!");
@@ -328,7 +332,11 @@ internal sealed class adventure
     private VerbResult Drop(string noun)
     {
         ObjectRef obj = objects.Find(noun);
+        return Drop(obj);
+    }
 
+    private VerbResult Drop(ObjectRef obj)
+    {
         if ((obj == null) || (obj.Room != RoomId.Inventory))
         {
             PRINT("YOU DON'T HAVE THAT!");
@@ -369,12 +377,17 @@ internal sealed class adventure
             return VerbResult.Proceed;
         }
 
-        return Examine(noun);
+        return Examine(id);
     }
 
     private VerbResult Examine(string noun)
     {
         ObjectId id = objects.IdOf(noun);
+        return Examine(id);
+    }
+
+    private VerbResult Examine(ObjectId id)
+    {
         if (id == ObjectId.Ground)
         {
             return ExamineGround();
@@ -470,7 +483,11 @@ internal sealed class adventure
     private VerbResult Read(string noun)
     {
         ObjectId id = objects.IdOf(noun);
+        return Read(id);
+    }
 
+    private VerbResult Read(ObjectId id)
+    {
         if (id == ObjectId.Diary)
         {
             return ReadDiary(id);
@@ -538,6 +555,11 @@ internal sealed class adventure
     private VerbResult Open(string noun)
     {
         ObjectId id = objects.IdOf(noun);
+        return Open(id);
+    }
+
+    private VerbResult Open(ObjectId id)
+    {
         if (id == ObjectId.Box)
         {
             return OpenBox(id);
@@ -610,6 +632,11 @@ internal sealed class adventure
     private VerbResult Pour(string noun)
     {
         ObjectId id = objects.IdOf(noun);
+        return Pour(id);
+    }
+
+    private VerbResult Pour(ObjectId id)
+    {
         if (id == ObjectId.Salt)
         {
             return PourSalt();
@@ -686,6 +713,11 @@ internal sealed class adventure
     private VerbResult Climb(string noun)
     {
         ObjectId id = objects.IdOf(noun);
+        return Climb(id);
+    }
+
+    private VerbResult Climb(ObjectId id)
+    {
         if (id == ObjectId.Tree)
         {
             return ClimbTree();
@@ -764,6 +796,11 @@ internal sealed class adventure
     private VerbResult Dig(string noun)
     {
         ObjectId id = objects.IdOf(noun);
+        return Dig(id);
+    }
+
+    private VerbResult Dig(ObjectId id)
+    {
         if ((id == ObjectId.Blank) || (id == ObjectId.Hole) || (id == ObjectId.Ground))
         {
             return DigHole();
@@ -820,6 +857,11 @@ internal sealed class adventure
     private VerbResult Wave(string noun)
     {
         ObjectId id = objects.IdOf(noun);
+        return Wave(id);
+    }
+
+    private VerbResult Wave(ObjectId id)
+    {
         if (id == ObjectId.Fan)
         {
             return WaveFan(id);
@@ -880,6 +922,11 @@ internal sealed class adventure
     private VerbResult Fight(string noun)
     {
         ObjectId id = objects.IdOf(noun);
+        return Fight(id);
+    }
+
+    private VerbResult Fight(ObjectId id)
+    {
         if (id == ObjectId.Blank)
         {
             PRINT("WHOM DO YOU WANT TO FIGHT?");
@@ -919,6 +966,11 @@ internal sealed class adventure
     private VerbResult Wear(string noun)
     {
         ObjectId id = objects.IdOf(noun);
+        return Wear(id);
+    }
+
+    private VerbResult Wear(ObjectId id)
+    {
         if (id == ObjectId.Gloves)
         {
             return WearGloves(id);
