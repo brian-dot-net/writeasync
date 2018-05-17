@@ -846,11 +846,12 @@ internal sealed class adventure
 
     private VerbResult Wear(string noun)
     {
-        if (noun != "GLO")
+        ObjectId id = objects.IdOf(noun);
+        if (id != ObjectId.Gloves)
         {
             PRINT("YOU CAN'T WEAR THAT!");
         }
-        else if (!objects.IsHere(ObjectId.Gloves, map.CurrentRoom))
+        else if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE GLOVES.");
         }
