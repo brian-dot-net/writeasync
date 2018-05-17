@@ -458,12 +458,7 @@ internal sealed class adventure
 
     private VerbResult Read(string noun)
     {
-        ObjectId id = ObjectId.Invalid;
-        ObjectRef obj = objects.Find(noun);
-        if (obj != null)
-        {
-            id = obj.Id;
-        }
+        ObjectId id = objects.IdOf(noun);
 
         if (id == ObjectId.Diary)
         {

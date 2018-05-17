@@ -44,6 +44,17 @@ namespace Adventure
             return (this.Ref(id).Room == currentRoom) || this.Carrying(id);
         }
 
+        public ObjectId IdOf(string noun)
+        {
+            ObjectRef obj = this.Find(noun);
+            if (obj == null)
+            {
+                return ObjectId.Invalid;
+            }
+
+            return obj.Id;
+        }
+
         public ObjectRef Find(string noun)
         {
             foreach (ObjectRef obj in this.objects)
