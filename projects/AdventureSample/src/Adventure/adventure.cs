@@ -817,24 +817,28 @@ internal sealed class adventure
         {
             PRINT("WHOM DO YOU WANT TO FIGHT?");
         }
-        else if (noun != "GUA")
-        {
-            PRINT(("") + ("YOU CAN'T FIGHT HIM!"));
-        }
-        else if (map.CurrentRoom != RoomId.SouthOfCastle)
-        {
-            PRINT("THERE'S NO GUARD HERE!");
-        }
-        else if (!objects.Carrying(ObjectId.Sword))
-        {
-            PRINT("YOU DON'T HAVE A WEAPON!");
-        }
         else
         {
-            PRINT("THE GUARD, NOTICING YOUR SWORD,");
-            PRINT("WISELY RETREATS INTO THE CASTLE.");
-            map.SetMap(RoomId.SouthOfCastle, 0, RoomId.NarrowHall);
-            objects.Hide(ObjectId.Guard);
+            ObjectId id = objects.IdOf(noun);
+            if (id != ObjectId.Guard)
+            {
+                PRINT(("") + ("YOU CAN'T FIGHT HIM!"));
+            }
+            else if (map.CurrentRoom != RoomId.SouthOfCastle)
+            {
+                PRINT("THERE'S NO GUARD HERE!");
+            }
+            else if (!objects.Carrying(ObjectId.Sword))
+            {
+                PRINT("YOU DON'T HAVE A WEAPON!");
+            }
+            else
+            {
+                PRINT("THE GUARD, NOTICING YOUR SWORD,");
+                PRINT("WISELY RETREATS INTO THE CASTLE.");
+                map.SetMap(RoomId.SouthOfCastle, 0, RoomId.NarrowHall);
+                objects.Hide(id);
+            }
         }
 
         return VerbResult.Idle;
