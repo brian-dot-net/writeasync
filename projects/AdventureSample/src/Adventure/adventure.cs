@@ -221,18 +221,39 @@ internal sealed class adventure
         verbRoutines.Add("POU", byId, Eq(ObjectId.Salt, PourSalt), Eq(ObjectId.Bottle, PourFormula), Else<ObjectId>(PourUnknown));
         verbRoutines.Add("CLI", byId, Eq(ObjectId.Tree, ClimbTree), Eq(ObjectId.Ladder, ClimbLadder), Else<ObjectId>(ClimbUnknown));
         verbRoutines.Add("JUM", Jump);
-        verbRoutines.Add("DIG", byId, Dig);
-        verbRoutines.Add("ROW", byId, Row);
-        verbRoutines.Add("WAV", byId, Wave);
+        verbRoutines.Add("DIG", byId, Eq(Any(ObjectId.Blank, ObjectId.Hole, ObjectId.Ground), DigHole), Else<ObjectId>(DigUnknown));
+        verbRoutines.Add("ROW", byId, Eq(Any(ObjectId.Boat, ObjectId.Blank), RowBoat), Else<ObjectId>(RowUnknown));
+        verbRoutines.Add("WAV", byId, Eq(ObjectId.Fan, WaveFan), Else<ObjectId>(WaveUnknown));
         verbRoutines.Add("LEA", byId, Leave);
         verbRoutines.Add("EXI", byId, Leave);
-        verbRoutines.Add("FIG", byId, Fight);
-        verbRoutines.Add("WEA", byId, Wear);
+        verbRoutines.Add("FIG", byId, Eq(ObjectId.Blank, FightBlank), Eq(ObjectId.Guard, FightGuard), Else<ObjectId>(FightUnknown));
+        verbRoutines.Add("WEA", byId, Eq(ObjectId.Gloves, WearGloves), Else<ObjectId>(WearUnknown));
+    }
+
+    private static Predicate<T> Any<T>(params T[] vals) where T : struct
+    {
+        return t =>
+        {
+            foreach (T val in vals)
+            {
+                if (Comparer<T>.Default.Compare(t, val) == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+    }
+
+    private static Tuple<Predicate<T>, Func<T, VerbResult>> Eq<T>(Predicate<T> pred, Func<T, VerbResult> func) where T : struct
+    {
+        return Tuple.Create<Predicate<T>, Func<T, VerbResult>>(pred, func);
     }
 
     private static Tuple<Predicate<T>, Func<T, VerbResult>> Eq<T>(T val, Func<T, VerbResult> func) where T : struct
     {
-        return Tuple.Create<Predicate<T>, Func<T, VerbResult>>(t => Comparer<T>.Default.Compare(t, val) == 0, func);
+        return Eq(Any(val), func);
     }
 
     private static Tuple<Predicate<T>, Func<T, VerbResult>> Else<T>(Func<T, VerbResult> func) where T : struct
@@ -709,33 +730,13 @@ internal sealed class adventure
         return VerbResult.Proceed;
     }
 
-    private VerbResult Dig(ObjectId id)
-    {
-        if (id == ObjectId.Blank)
-        {
-            return DigHole();
-        }
-
-        if (id == ObjectId.Hole)
-        {
-            return DigHole();
-        }
-
-        if (id == ObjectId.Ground)
-        {
-            return DigHole();
-        }
-
-        return DigUnknown();
-    }
-
-    private VerbResult DigUnknown()
+    private VerbResult DigUnknown(ObjectId id)
     {
         PRINT("YOU CAN'T DIG THAT!");
         return VerbResult.Idle;
     }
 
-    private VerbResult DigHole()
+    private VerbResult DigHole(ObjectId id)
     {
         if (!objects.IsHere(ObjectId.Shovel, map.CurrentRoom))
         {
@@ -760,28 +761,13 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Row(ObjectId id)
-    {
-        if (id == ObjectId.Boat)
-        {
-            return RowBoat();
-        }
-
-        if (id == ObjectId.Blank)
-        {
-            return RowBoat();
-        }
-
-        return RowUnknown();
-    }
-
-    private VerbResult RowUnknown()
+    private VerbResult RowUnknown(ObjectId id)
     {
         PRINT("HOW CAN YOU ROW THAT?");
         return VerbResult.Idle;
     }
 
-    private VerbResult RowBoat()
+    private VerbResult RowBoat(ObjectId id)
     {
         if (map.CurrentRoom != RoomId.Boat)
         {
@@ -793,17 +779,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Wave(ObjectId id)
-    {
-        if (id == ObjectId.Fan)
-        {
-            return WaveFan(id);
-        }
-
-        return WaveUnknown();
-    }
-
-    private VerbResult WaveUnknown()
+    private VerbResult WaveUnknown(ObjectId id)
     {
         PRINT("YOU CAN'T WAVE THAT!");
         return VerbResult.Idle;
@@ -853,23 +829,13 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Fight(ObjectId id)
+    private VerbResult FightBlank(ObjectId id)
     {
-        if (id == ObjectId.Blank)
-        {
-            PRINT("WHOM DO YOU WANT TO FIGHT?");
-            return VerbResult.Idle;
-        }
-
-        if (id == ObjectId.Guard)
-        {
-            return FightGuard(id);
-        }
-
-        return FightUnknown();
+        PRINT("WHOM DO YOU WANT TO FIGHT?");
+        return VerbResult.Idle;
     }
 
-    private VerbResult FightUnknown()
+    private VerbResult FightUnknown(ObjectId id)
     {
         PRINT("YOU CAN'T FIGHT HIM!");
         return VerbResult.Idle;
@@ -896,17 +862,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Wear(ObjectId id)
-    {
-        if (id == ObjectId.Gloves)
-        {
-            return WearGloves(id);
-        }
-
-        return WearUnknown();
-    }
-
-    private VerbResult WearUnknown()
+    private VerbResult WearUnknown(ObjectId id)
     {
         PRINT("YOU CAN'T WEAR THAT!");
         return VerbResult.Idle;
