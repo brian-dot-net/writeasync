@@ -17,7 +17,7 @@ namespace Adventure
 
         public Map()
         {
-            this.directions = new string[11];
+            this.directions = new string[NumberOfDirections];
             this.InitMap();
             this.CurrentRoom = RoomId.LivingRoom;
         }
@@ -26,7 +26,7 @@ namespace Adventure
 
         public IEnumerable<string> Directions()
         {
-            for (int i = 0; i <= 5; ++i)
+            for (int i = 0; i < NumberOfDirections; ++i)
             {
                 if (this.map[(int)this.CurrentRoom, i] > RoomId.None)
                 {
