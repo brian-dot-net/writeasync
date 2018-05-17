@@ -401,7 +401,7 @@ internal sealed class adventure
         {
             ObjectRef obj = objects.Find(noun);
 
-            if ((obj.Room != map.CurrentRoom) && (obj.Room != RoomId.Inventory))
+            if ((obj == null) || ((obj.Room != map.CurrentRoom) && (obj.Room != RoomId.Inventory)))
             {
                 PRINT("IT'S NOT HERE!");
             }
