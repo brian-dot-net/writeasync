@@ -246,40 +246,44 @@ internal sealed class adventure
 
     private VerbResult Go(string noun)
     {
-        int dir;
+        int dir = Direction.Invalid;
         if (noun == "NOR")
         {
-            dir = 0;
+            dir = Direction.North;
         }
         else if (noun == "SOU")
         {
-            dir = 1;
+            dir = Direction.South;
         }
         else if (noun == "EAS")
         {
-            dir = 2;
+            dir = Direction.East;
         }
         else if (noun == "WES")
         {
-            dir = 3;
+            dir = Direction.West;
         }
         else if (noun == "UP")
         {
-            dir = 4;
+            dir = Direction.Up;
         }
         else if (noun == "DOW")
         {
-            dir = 5;
+            dir = Direction.Down;
         }
-        else if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).Room == map.CurrentRoom))
+
+        if (dir == Direction.Invalid)
         {
-            map.CurrentRoom = RoomId.Boat;
-            return VerbResult.Proceed;
-        }
-        else
-        {
-            PRINT("YOU CAN'T GO THERE!");
-            return VerbResult.Idle;
+            if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).Room == map.CurrentRoom))
+            {
+                map.CurrentRoom = RoomId.Boat;
+                return VerbResult.Proceed;
+            }
+            else
+            {
+                PRINT("YOU CAN'T GO THERE!");
+                return VerbResult.Idle;
+            }
         }
 
         return Go(dir);
