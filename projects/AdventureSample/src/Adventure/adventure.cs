@@ -758,11 +758,12 @@ internal sealed class adventure
 
     private VerbResult Wave(string noun)
     {
-        if (noun != "FAN")
+        ObjectId id = objects.IdOf(noun);
+        if (id != ObjectId.Fan)
         {
             PRINT("YOU CAN'T WAVE THAT!");
         }
-        else if (!objects.IsHere(ObjectId.Fan, map.CurrentRoom))
+        else if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE FAN!");
         }
