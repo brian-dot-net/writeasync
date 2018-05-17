@@ -732,24 +732,24 @@ internal sealed class adventure
 
     private VerbResult Jump(string noun)
     {
-        if ((map.CurrentRoom != RoomId.EdgeOfForest) && (map.CurrentRoom != RoomId.BranchOfTree))
+        if ((map.CurrentRoom == RoomId.EdgeOfForest) || (map.CurrentRoom == RoomId.BranchOfTree))
         {
-            PRINT("WHEE! THAT WAS FUN!");
-            return VerbResult.Idle;
-        }
+            if (map.CurrentRoom == RoomId.BranchOfTree)
+            {
+                PRINT("YOU GRAB A HIGHER BRANCH ON THE");
+                PRINT("TREE AND PULL YOURSELF UP....");
+                map.CurrentRoom = RoomId.TopOfTree;
+                return VerbResult.Proceed;
+            }
 
-        if (map.CurrentRoom == RoomId.BranchOfTree)
-        {
-            PRINT("YOU GRAB A HIGHER BRANCH ON THE");
+            PRINT("YOU GRAB THE LOWEST BRANCH OF THE");
             PRINT("TREE AND PULL YOURSELF UP....");
-            map.CurrentRoom = RoomId.TopOfTree;
+            map.CurrentRoom = RoomId.BranchOfTree;
             return VerbResult.Proceed;
         }
 
-        PRINT("YOU GRAB THE LOWEST BRANCH OF THE");
-        PRINT("TREE AND PULL YOURSELF UP....");
-        map.CurrentRoom = RoomId.BranchOfTree;
-        return VerbResult.Proceed;
+        PRINT("WHEE! THAT WAS FUN!");
+        return VerbResult.Idle;
     }
 
     private VerbResult Dig(string noun)
