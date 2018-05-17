@@ -46,6 +46,11 @@ namespace Adventure
 
         public ObjectId IdOf(string noun)
         {
+            if (noun == string.Empty)
+            {
+                return ObjectId.Blank;
+            }
+
             ObjectRef obj = this.Find(noun);
             if (obj == null)
             {

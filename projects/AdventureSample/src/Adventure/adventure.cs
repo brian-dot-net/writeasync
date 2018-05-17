@@ -363,7 +363,8 @@ internal sealed class adventure
 
     private VerbResult Look(string noun)
     {
-        if (noun == "")
+        ObjectId id = objects.IdOf(noun);
+        if (id == ObjectId.Blank)
         {
             return VerbResult.Proceed;
         }
@@ -743,7 +744,8 @@ internal sealed class adventure
 
     private VerbResult Dig(string noun)
     {
-        if ((noun == "HOL") || (noun == "GRO") || (noun == ""))
+        ObjectId id = objects.IdOf(noun);
+        if ((id == ObjectId.Blank) || (noun == "HOL") || (noun == "GRO"))
         {
             return DigHole();
         }
@@ -778,7 +780,7 @@ internal sealed class adventure
     private VerbResult Row(string noun)
     {
         ObjectId id = objects.IdOf(noun);
-        if ((id != ObjectId.Boat) && (noun != ""))
+        if ((id != ObjectId.Boat) && (id != ObjectId.Blank))
         {
             PRINT("HOW CAN YOU ROW THAT?");
             return VerbResult.Idle;
@@ -840,7 +842,7 @@ internal sealed class adventure
         if (map.CurrentRoom == RoomId.Boat)
         {
             ObjectId id = objects.IdOf(noun);
-            if ((id != ObjectId.Boat) && (noun != ""))
+            if ((id != ObjectId.Boat) && (id != ObjectId.Blank))
             {
                 PRINT("HUH?");
                 return VerbResult.Idle;
@@ -858,13 +860,13 @@ internal sealed class adventure
 
     private VerbResult Fight(string noun)
     {
-        if (noun == "")
+        ObjectId id = objects.IdOf(noun);
+        if (id == ObjectId.Blank)
         {
             PRINT("WHOM DO YOU WANT TO FIGHT?");
             return VerbResult.Idle;
         }
 
-        ObjectId id = objects.IdOf(noun);
         if (id == ObjectId.Guard)
         {
             return FightGuard(id);

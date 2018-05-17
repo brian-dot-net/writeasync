@@ -6,6 +6,7 @@ namespace Adventure
 {
     internal enum ObjectId
     {
+        Blank = -2,
         Invalid = -1,
         Diary,
         Box,
