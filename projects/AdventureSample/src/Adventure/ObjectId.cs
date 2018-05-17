@@ -24,6 +24,7 @@ namespace Adventure
         Guard,
         Case,
         Ruby,
-        Gloves
+        Gloves,
+        Ground
     }
 }

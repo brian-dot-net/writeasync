@@ -375,7 +375,8 @@ internal sealed class adventure
 
     private VerbResult Examine(string noun)
     {
-        if (noun == "GRO")
+        ObjectId id = objects.IdOf(noun);
+        if (id == ObjectId.Ground)
         {
             if (map.CurrentRoom != RoomId.OpenField)
             {
@@ -389,26 +390,25 @@ internal sealed class adventure
             return VerbResult.Idle;
         }
 
-        ObjectRef obj = objects.Find(noun);
-        if ((obj == null) || ((obj.Room != map.CurrentRoom) && (obj.Room != RoomId.Inventory)))
+        if ((id == ObjectId.Invalid) || !objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("IT'S NOT HERE!");
             return VerbResult.Idle;
         }
 
-        if (obj.Id == ObjectId.Bottle)
+        if (id == ObjectId.Bottle)
         {
             PRINT("THERE'S SOMETHING WRITTEN ON IT!");
             return VerbResult.Idle;
         }
 
-        if (obj.Id == ObjectId.Case)
+        if (id == ObjectId.Case)
         {
             PRINT("THERE'S A JEWEL INSIDE!");
             return VerbResult.Idle;
         }
 
-        if (obj.Id == ObjectId.Barrel)
+        if (id == ObjectId.Barrel)
         {
             PRINT("IT'S FILLED WITH RAINWATER.");
             return VerbResult.Idle;
