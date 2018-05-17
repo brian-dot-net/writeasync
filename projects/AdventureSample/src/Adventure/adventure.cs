@@ -900,9 +900,14 @@ internal sealed class adventure
 
     private VerbResult Leave(string noun)
     {
+        ObjectId id = objects.IdOf(noun);
+        return Leave(id);
+    }
+
+    private VerbResult Leave(ObjectId id)
+    {
         if (map.CurrentRoom == RoomId.Boat)
         {
-            ObjectId id = objects.IdOf(noun);
             if ((id == ObjectId.Boat) || (id == ObjectId.Blank))
             {
                 map.CurrentRoom = objects.Ref(ObjectId.Boat).Room;
