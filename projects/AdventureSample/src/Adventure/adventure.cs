@@ -836,21 +836,21 @@ internal sealed class adventure
     private VerbResult Row(string noun)
     {
         ObjectId id = objects.IdOf(noun);
-        if ((id != ObjectId.Boat) && (id != ObjectId.Blank))
+        if ((id == ObjectId.Boat) || (id == ObjectId.Blank))
         {
-            PRINT("HOW CAN YOU ROW THAT?");
+            if (map.CurrentRoom != RoomId.Boat)
+            {
+                PRINT("YOU'RE NOT IN THE BOAT!");
+            }
+            else
+            {
+                PRINT("YOU DON'T HAVE AN OAR!");
+            }
+
             return VerbResult.Idle;
         }
 
-        if (map.CurrentRoom != RoomId.Boat)
-        {
-            PRINT("YOU'RE NOT IN THE BOAT!");
-        }
-        else
-        {
-            PRINT("YOU DON'T HAVE AN OAR!");
-        }
-
+        PRINT("HOW CAN YOU ROW THAT?");
         return VerbResult.Idle;
     }
 
