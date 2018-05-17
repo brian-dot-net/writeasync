@@ -402,6 +402,11 @@ internal sealed class adventure
             return ExamineBarrel();
         }
 
+        return ExamineUnknown();
+    }
+
+    private VerbResult ExamineUnknown()
+    {
         PRINT("YOU SEE NOTHING UNUSUAL.");
         return VerbResult.Idle;
     }
@@ -485,6 +490,11 @@ internal sealed class adventure
             return ReadBottle(id);
         }
 
+        return ReadUnknown();
+    }
+
+    private VerbResult ReadUnknown()
+    {
         PRINT("YOU CAN'T READ THAT!");
         return VerbResult.Idle;
     }
@@ -551,6 +561,11 @@ internal sealed class adventure
             return OpenCase();
         }
 
+        return OpenUnknown();
+    }
+
+    private VerbResult OpenUnknown()
+    {
         PRINT("YOU CAN'T OPEN THAT!");
         return VerbResult.Idle;
     }
@@ -617,6 +632,11 @@ internal sealed class adventure
             return PourFormula();
         }
 
+        return PourUnknown();
+    }
+
+    private VerbResult PourUnknown()
+    {
         PRINT("YOU CAN'T POUR THAT!");
         return VerbResult.Idle;
     }
@@ -692,6 +712,11 @@ internal sealed class adventure
             return ClimbLadder(id);
         }
 
+        return ClimbUnknown();
+    }
+
+    private VerbResult ClimbUnknown()
+    {
         PRINT("IT WON'T DO ANY GOOD.");
         return VerbResult.Idle;
     }
@@ -737,6 +762,11 @@ internal sealed class adventure
             return JumpTree();
         }
 
+        return JumpUnknown();
+    }
+
+    private VerbResult JumpUnknown()
+    {
         PRINT("WHEE! THAT WAS FUN!");
         return VerbResult.Idle;
     }
@@ -764,6 +794,11 @@ internal sealed class adventure
             return DigHole();
         }
 
+        return DigUnknown();
+    }
+
+    private VerbResult DigUnknown()
+    {
         PRINT("YOU CAN'T DIG THAT!");
         return VerbResult.Idle;
     }
@@ -795,19 +830,29 @@ internal sealed class adventure
     {
         if ((id == ObjectId.Boat) || (id == ObjectId.Blank))
         {
-            if (map.CurrentRoom != RoomId.Boat)
-            {
-                PRINT("YOU'RE NOT IN THE BOAT!");
-            }
-            else
-            {
-                PRINT("YOU DON'T HAVE AN OAR!");
-            }
-
-            return VerbResult.Idle;
+            return RowBoat();
         }
 
+        return RowUnknown();
+    }
+
+    private VerbResult RowUnknown()
+    {
         PRINT("HOW CAN YOU ROW THAT?");
+        return VerbResult.Idle;
+    }
+
+    private VerbResult RowBoat()
+    {
+        if (map.CurrentRoom != RoomId.Boat)
+        {
+            PRINT("YOU'RE NOT IN THE BOAT!");
+        }
+        else
+        {
+            PRINT("YOU DON'T HAVE AN OAR!");
+        }
+
         return VerbResult.Idle;
     }
 
@@ -818,6 +863,11 @@ internal sealed class adventure
             return WaveFan(id);
         }
 
+        return WaveUnknown();
+    }
+
+    private VerbResult WaveUnknown()
+    {
         PRINT("YOU CAN'T WAVE THAT!");
         return VerbResult.Idle;
     }
@@ -880,6 +930,11 @@ internal sealed class adventure
             return FightGuard(id);
         }
 
+        return FightUnknown();
+    }
+
+    private VerbResult FightUnknown()
+    {
         PRINT("YOU CAN'T FIGHT HIM!");
         return VerbResult.Idle;
     }
@@ -912,6 +967,11 @@ internal sealed class adventure
             return WearGloves(id);
         }
 
+        return WearUnknown();
+    }
+
+    private VerbResult WearUnknown()
+    {
         PRINT("YOU CAN'T WEAR THAT!");
         return VerbResult.Idle;
     }
