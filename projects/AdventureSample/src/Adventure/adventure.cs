@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Adventure;
 
@@ -211,14 +212,14 @@ internal sealed class adventure
         verbRoutines.Add("THR", byRef, Drop);
         verbRoutines.Add("INV", Inventory);
         verbRoutines.Add("I", Inventory);
-        verbRoutines.Add("LOO", byId, Look);
-        verbRoutines.Add("L", byId, Look);
+        verbRoutines.Add("LOO", byId, Eq(ObjectId.Blank, LookBlank), Else<ObjectId>(Examine));
+        verbRoutines.Add("L", byId, Eq(ObjectId.Blank, LookBlank), Else<ObjectId>(Examine));
         verbRoutines.Add("EXA", byId, Examine);
         verbRoutines.Add("QUI", Quit);
-        verbRoutines.Add("REA", byId, Read);
-        verbRoutines.Add("OPE", byId, Open);
-        verbRoutines.Add("POU", byId, Pour);
-        verbRoutines.Add("CLI", byId, Climb);
+        verbRoutines.Add("REA", byId, Eq(ObjectId.Diary, ReadDiary), Eq(ObjectId.Dictionary, ReadDictionary), Eq(ObjectId.Bottle, ReadBottle), Else<ObjectId>(ReadUnknown));
+        verbRoutines.Add("OPE", byId, Eq(ObjectId.Box, OpenBox), Eq(ObjectId.Cabinet, OpenCabinet), Eq(ObjectId.Case, OpenCase), Else<ObjectId>(OpenUnknown));
+        verbRoutines.Add("POU", byId, Eq(ObjectId.Salt, PourSalt), Eq(ObjectId.Bottle, PourFormula), Else<ObjectId>(PourUnknown));
+        verbRoutines.Add("CLI", byId, Eq(ObjectId.Tree, ClimbTree), Eq(ObjectId.Ladder, ClimbLadder), Else<ObjectId>(ClimbUnknown));
         verbRoutines.Add("JUM", Jump);
         verbRoutines.Add("DIG", byId, Dig);
         verbRoutines.Add("ROW", byId, Row);
@@ -227,6 +228,16 @@ internal sealed class adventure
         verbRoutines.Add("EXI", byId, Leave);
         verbRoutines.Add("FIG", byId, Fight);
         verbRoutines.Add("WEA", byId, Wear);
+    }
+
+    private static Tuple<Predicate<T>, Func<T, VerbResult>> Eq<T>(T val, Func<T, VerbResult> func) where T : struct
+    {
+        return Tuple.Create<Predicate<T>, Func<T, VerbResult>>(t => Comparer<T>.Default.Compare(t, val) == 0, func);
+    }
+
+    private static Tuple<Predicate<T>, Func<T, VerbResult>> Else<T>(Func<T, VerbResult> func) where T : struct
+    {
+        return Tuple.Create<Predicate<T>, Func<T, VerbResult>>(t => true, func);
     }
 
     private VerbResult UnknownVerb()
@@ -367,15 +378,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Look(ObjectId id)
-    {
-        if (id == ObjectId.Blank)
-        {
-            return VerbResult.Proceed;
-        }
-
-        return Examine(id);
-    }
+    private VerbResult LookBlank(ObjectId id) => VerbResult.Proceed;
 
     private VerbResult Examine(ObjectId id)
     {
@@ -474,27 +477,7 @@ internal sealed class adventure
         }
     }
 
-    private VerbResult Read(ObjectId id)
-    {
-        if (id == ObjectId.Diary)
-        {
-            return ReadDiary(id);
-        }
-
-        if (id == ObjectId.Dictionary)
-        {
-            return ReadDictionary(id);
-        }
-
-        if (id == ObjectId.Bottle)
-        {
-            return ReadBottle(id);
-        }
-
-        return ReadUnknown();
-    }
-
-    private VerbResult ReadUnknown()
+    private VerbResult ReadUnknown(ObjectId id)
     {
         PRINT("YOU CAN'T READ THAT!");
         return VerbResult.Idle;
@@ -539,33 +522,13 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Open(ObjectId id)
-    {
-        if (id == ObjectId.Box)
-        {
-            return OpenBox(id);
-        }
-
-        if (id == ObjectId.Cabinet)
-        {
-            return OpenCabinet();
-        }
-
-        if (id == ObjectId.Case)
-        {
-            return OpenCase();
-        }
-
-        return OpenUnknown();
-    }
-
-    private VerbResult OpenUnknown()
+    private VerbResult OpenUnknown(ObjectId id)
     {
         PRINT("YOU CAN'T OPEN THAT!");
         return VerbResult.Idle;
     }
 
-    private VerbResult OpenCase()
+    private VerbResult OpenCase(ObjectId id)
     {
         if (map.CurrentRoom != RoomId.LargeHall)
         {
@@ -585,7 +548,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult OpenCabinet()
+    private VerbResult OpenCabinet(ObjectId id)
     {
         if (map.CurrentRoom != RoomId.Kitchen)
         {
@@ -611,30 +574,15 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Pour(ObjectId id)
-    {
-        if (id == ObjectId.Salt)
-        {
-            return PourSalt();
-        }
-
-        if (id == ObjectId.Bottle)
-        {
-            return PourFormula();
-        }
-
-        return PourUnknown();
-    }
-
-    private VerbResult PourUnknown()
+    private VerbResult PourUnknown(ObjectId id)
     {
         PRINT("YOU CAN'T POUR THAT!");
         return VerbResult.Idle;
     }
 
-    private VerbResult PourFormula()
+    private VerbResult PourFormula(ObjectId id)
     {
-        if (!objects.IsHere(ObjectId.Bottle, map.CurrentRoom))
+        if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE BOTTLE!");
             return VerbResult.Idle;
@@ -650,9 +598,9 @@ internal sealed class adventure
         return PourMixture();
     }
 
-    private VerbResult PourSalt()
+    private VerbResult PourSalt(ObjectId id)
     {
-        if (!objects.IsHere(ObjectId.Salt, map.CurrentRoom))
+        if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE SALT!");
             return VerbResult.Idle;
@@ -691,22 +639,7 @@ internal sealed class adventure
         return VerbResult.Proceed;
     }
 
-    private VerbResult Climb(ObjectId id)
-    {
-        if (id == ObjectId.Tree)
-        {
-            return ClimbTree();
-        }
-
-        if (id == ObjectId.Ladder)
-        {
-            return ClimbLadder(id);
-        }
-
-        return ClimbUnknown();
-    }
-
-    private VerbResult ClimbUnknown()
+    private VerbResult ClimbUnknown(ObjectId id)
     {
         PRINT("IT WON'T DO ANY GOOD.");
         return VerbResult.Idle;
@@ -732,7 +665,7 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult ClimbTree()
+    private VerbResult ClimbTree(ObjectId id)
     {
         if (map.CurrentRoom != RoomId.EdgeOfForest)
         {

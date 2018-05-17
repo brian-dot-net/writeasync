@@ -33,6 +33,24 @@ namespace Adventure
             this.Add(verb, s => handler(noun(s)));
         }
 
+        public void Add<T>(string verb, Func<string, T> noun, params Tuple<Predicate<T>, Func<T, VerbResult>>[] handlers)
+        {
+            Func<T, VerbResult> handler = t =>
+            {
+                foreach (Tuple<Predicate<T>, Func<T, VerbResult>> h in handlers)
+                {
+                    if (h.Item1(t))
+                    {
+                        return h.Item2(t);
+                    }
+                }
+
+                return VerbResult.Idle;
+            };
+
+            this.Add(verb, noun, handler);
+        }
+
         public VerbResult Handle(string verb, string noun)
         {
             Func<string, VerbResult> verbRoutine;
