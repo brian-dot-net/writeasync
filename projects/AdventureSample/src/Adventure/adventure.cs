@@ -904,13 +904,13 @@ internal sealed class adventure
     private VerbResult Wear(string noun)
     {
         ObjectId id = objects.IdOf(noun);
-        if (id != ObjectId.Gloves)
+        if (id == ObjectId.Gloves)
         {
-            PRINT("YOU CAN'T WEAR THAT!");
-            return VerbResult.Idle;
+            return WearGloves(id);
         }
 
-        return WearGloves(id);
+        PRINT("YOU CAN'T WEAR THAT!");
+        return VerbResult.Idle;
     }
 
     private VerbResult WearGloves(ObjectId id)
