@@ -203,6 +203,7 @@ internal sealed class adventure
     private void InitHandlers(VerbRoutines verbRoutines)
     {
         Func<string, ObjectRef> byRef = s => objects.Find(s);
+        Func<string, ObjectId> byId = s => objects.IdOf(s);
         verbRoutines.Add("GO", Go);
         verbRoutines.Add("GET", byRef, Get);
         verbRoutines.Add("TAK", byRef, Get);
@@ -210,22 +211,22 @@ internal sealed class adventure
         verbRoutines.Add("THR", byRef, Drop);
         verbRoutines.Add("INV", Inventory);
         verbRoutines.Add("I", Inventory);
-        verbRoutines.Add("LOO", Look);
-        verbRoutines.Add("L", Look);
-        verbRoutines.Add("EXA", Examine);
+        verbRoutines.Add("LOO", byId, Look);
+        verbRoutines.Add("L", byId, Look);
+        verbRoutines.Add("EXA", byId, Examine);
         verbRoutines.Add("QUI", Quit);
-        verbRoutines.Add("REA", Read);
-        verbRoutines.Add("OPE", Open);
-        verbRoutines.Add("POU", Pour);
-        verbRoutines.Add("CLI", Climb);
+        verbRoutines.Add("REA", byId, Read);
+        verbRoutines.Add("OPE", byId, Open);
+        verbRoutines.Add("POU", byId, Pour);
+        verbRoutines.Add("CLI", byId, Climb);
         verbRoutines.Add("JUM", Jump);
-        verbRoutines.Add("DIG", Dig);
-        verbRoutines.Add("ROW", Row);
-        verbRoutines.Add("WAV", Wave);
-        verbRoutines.Add("LEA", Leave);
-        verbRoutines.Add("EXI", Leave);
-        verbRoutines.Add("FIG", Fight);
-        verbRoutines.Add("WEA", Wear);
+        verbRoutines.Add("DIG", byId, Dig);
+        verbRoutines.Add("ROW", byId, Row);
+        verbRoutines.Add("WAV", byId, Wave);
+        verbRoutines.Add("LEA", byId, Leave);
+        verbRoutines.Add("EXI", byId, Leave);
+        verbRoutines.Add("FIG", byId, Fight);
+        verbRoutines.Add("WEA", byId, Wear);
     }
 
     private VerbResult UnknownVerb()
@@ -358,20 +359,13 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Look(string noun)
+    private VerbResult Look(ObjectId id)
     {
-        ObjectId id = objects.IdOf(noun);
         if (id == ObjectId.Blank)
         {
             return VerbResult.Proceed;
         }
 
-        return Examine(id);
-    }
-
-    private VerbResult Examine(string noun)
-    {
-        ObjectId id = objects.IdOf(noun);
         return Examine(id);
     }
 
@@ -469,12 +463,6 @@ internal sealed class adventure
         }
     }
 
-    private VerbResult Read(string noun)
-    {
-        ObjectId id = objects.IdOf(noun);
-        return Read(id);
-    }
-
     private VerbResult Read(ObjectId id)
     {
         if (id == ObjectId.Diary)
@@ -539,12 +527,6 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
-    }
-
-    private VerbResult Open(string noun)
-    {
-        ObjectId id = objects.IdOf(noun);
-        return Open(id);
     }
 
     private VerbResult Open(ObjectId id)
@@ -616,12 +598,6 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
-    }
-
-    private VerbResult Pour(string noun)
-    {
-        ObjectId id = objects.IdOf(noun);
-        return Pour(id);
     }
 
     private VerbResult Pour(ObjectId id)
@@ -697,12 +673,6 @@ internal sealed class adventure
 
         map.CurrentRoom = RoomId.OpenField;
         return VerbResult.Proceed;
-    }
-
-    private VerbResult Climb(string noun)
-    {
-        ObjectId id = objects.IdOf(noun);
-        return Climb(id);
     }
 
     private VerbResult Climb(ObjectId id)
@@ -782,12 +752,6 @@ internal sealed class adventure
         return VerbResult.Proceed;
     }
 
-    private VerbResult Dig(string noun)
-    {
-        ObjectId id = objects.IdOf(noun);
-        return Dig(id);
-    }
-
     private VerbResult Dig(ObjectId id)
     {
         if ((id == ObjectId.Blank) || (id == ObjectId.Hole) || (id == ObjectId.Ground))
@@ -822,9 +786,8 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Row(string noun)
+    private VerbResult Row(ObjectId id)
     {
-        ObjectId id = objects.IdOf(noun);
         if ((id == ObjectId.Boat) || (id == ObjectId.Blank))
         {
             if (map.CurrentRoom != RoomId.Boat)
@@ -841,12 +804,6 @@ internal sealed class adventure
 
         PRINT("HOW CAN YOU ROW THAT?");
         return VerbResult.Idle;
-    }
-
-    private VerbResult Wave(string noun)
-    {
-        ObjectId id = objects.IdOf(noun);
-        return Wave(id);
     }
 
     private VerbResult Wave(ObjectId id)
@@ -887,12 +844,6 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Leave(string noun)
-    {
-        ObjectId id = objects.IdOf(noun);
-        return Leave(id);
-    }
-
     private VerbResult Leave(ObjectId id)
     {
         if (map.CurrentRoom == RoomId.Boat)
@@ -909,12 +860,6 @@ internal sealed class adventure
 
         PRINT("PLEASE GIVE A DIRECTION!");
         return VerbResult.Idle;
-    }
-
-    private VerbResult Fight(string noun)
-    {
-        ObjectId id = objects.IdOf(noun);
-        return Fight(id);
     }
 
     private VerbResult Fight(ObjectId id)
@@ -953,12 +898,6 @@ internal sealed class adventure
         }
 
         return VerbResult.Idle;
-    }
-
-    private VerbResult Wear(string noun)
-    {
-        ObjectId id = objects.IdOf(noun);
-        return Wear(id);
     }
 
     private VerbResult Wear(ObjectId id)
