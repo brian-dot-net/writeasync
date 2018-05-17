@@ -804,8 +804,10 @@ internal sealed class adventure
         if (id != ObjectId.Fan)
         {
             PRINT("YOU CAN'T WAVE THAT!");
+            return VerbResult.Idle;
         }
-        else if (!objects.IsHere(id, map.CurrentRoom))
+
+        if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE FAN!");
         }
@@ -863,8 +865,10 @@ internal sealed class adventure
         if (id != ObjectId.Guard)
         {
             PRINT(("") + ("YOU CAN'T FIGHT HIM!"));
+            return VerbResult.Idle;
         }
-        else if (map.CurrentRoom != RoomId.SouthOfCastle)
+
+        if (map.CurrentRoom != RoomId.SouthOfCastle)
         {
             PRINT("THERE'S NO GUARD HERE!");
         }
@@ -889,8 +893,10 @@ internal sealed class adventure
         if (id != ObjectId.Gloves)
         {
             PRINT("YOU CAN'T WEAR THAT!");
+            return VerbResult.Idle;
         }
-        else if (!objects.IsHere(id, map.CurrentRoom))
+
+        if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE GLOVES.");
         }
