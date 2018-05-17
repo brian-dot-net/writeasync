@@ -807,6 +807,11 @@ internal sealed class adventure
             return VerbResult.Idle;
         }
 
+        return WaveFan(id);
+    }
+
+    private VerbResult WaveFan(ObjectId id)
+    {
         if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE FAN!");
@@ -868,6 +873,11 @@ internal sealed class adventure
             return VerbResult.Idle;
         }
 
+        return FightGuard(id);
+    }
+
+    private VerbResult FightGuard(ObjectId id)
+    {
         if (map.CurrentRoom != RoomId.SouthOfCastle)
         {
             PRINT("THERE'S NO GUARD HERE!");
@@ -896,6 +906,11 @@ internal sealed class adventure
             return VerbResult.Idle;
         }
 
+        return WearGloves(id);
+    }
+
+    private VerbResult WearGloves(ObjectId id)
+    {
         if (!objects.IsHere(id, map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE GLOVES.");
