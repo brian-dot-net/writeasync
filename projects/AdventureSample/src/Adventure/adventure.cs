@@ -506,9 +506,10 @@ internal sealed class adventure
 
     private VerbResult Open(string noun)
     {
-        if (noun == "BOX")
+        ObjectId id = objects.IdOf(noun);
+        if (id == ObjectId.Box)
         {
-            if (!objects.IsHere(ObjectId.Box, map.CurrentRoom))
+            if (!objects.IsHere(id, map.CurrentRoom))
             {
                 PRINT("THERE'S NO BOX HERE!");
             }
@@ -518,7 +519,7 @@ internal sealed class adventure
                 PRINT("SOMETHING FELL OUT!");
             }
         }
-        else if (noun == "CAB")
+        else if (id == ObjectId.Cabinet)
         {
             if (map.CurrentRoom != RoomId.Kitchen)
             {
@@ -530,7 +531,7 @@ internal sealed class adventure
                 objects.Drop(ObjectId.Salt, RoomId.Kitchen);
             }
         }
-        else if (noun == "CAS")
+        else if (id == ObjectId.Case)
         {
             if (map.CurrentRoom != RoomId.LargeHall)
             {
