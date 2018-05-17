@@ -801,13 +801,13 @@ internal sealed class adventure
     private VerbResult Wave(string noun)
     {
         ObjectId id = objects.IdOf(noun);
-        if (id != ObjectId.Fan)
+        if (id == ObjectId.Fan)
         {
-            PRINT("YOU CAN'T WAVE THAT!");
-            return VerbResult.Idle;
+            return WaveFan(id);
         }
 
-        return WaveFan(id);
+        PRINT("YOU CAN'T WAVE THAT!");
+        return VerbResult.Idle;
     }
 
     private VerbResult WaveFan(ObjectId id)
@@ -867,13 +867,13 @@ internal sealed class adventure
         }
 
         ObjectId id = objects.IdOf(noun);
-        if (id != ObjectId.Guard)
+        if (id == ObjectId.Guard)
         {
-            PRINT(("") + ("YOU CAN'T FIGHT HIM!"));
-            return VerbResult.Idle;
+            return FightGuard(id);
         }
 
-        return FightGuard(id);
+        PRINT("YOU CAN'T FIGHT HIM!");
+        return VerbResult.Idle;
     }
 
     private VerbResult FightGuard(ObjectId id)
