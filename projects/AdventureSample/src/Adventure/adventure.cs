@@ -718,50 +718,60 @@ internal sealed class adventure
     {
         if ((map.CurrentRoom == RoomId.EdgeOfForest) || (map.CurrentRoom == RoomId.BranchOfTree))
         {
-            if (map.CurrentRoom == RoomId.BranchOfTree)
-            {
-                PRINT("YOU GRAB A HIGHER BRANCH ON THE");
-                PRINT("TREE AND PULL YOURSELF UP....");
-                map.CurrentRoom = RoomId.TopOfTree;
-                return VerbResult.Proceed;
-            }
-
-            PRINT("YOU GRAB THE LOWEST BRANCH OF THE");
-            PRINT("TREE AND PULL YOURSELF UP....");
-            map.CurrentRoom = RoomId.BranchOfTree;
-            return VerbResult.Proceed;
+            return JumpTree();
         }
 
         PRINT("WHEE! THAT WAS FUN!");
         return VerbResult.Idle;
     }
 
+    private VerbResult JumpTree()
+    {
+        if (map.CurrentRoom == RoomId.BranchOfTree)
+        {
+            PRINT("YOU GRAB A HIGHER BRANCH ON THE");
+            PRINT("TREE AND PULL YOURSELF UP....");
+            map.CurrentRoom = RoomId.TopOfTree;
+            return VerbResult.Proceed;
+        }
+
+        PRINT("YOU GRAB THE LOWEST BRANCH OF THE");
+        PRINT("TREE AND PULL YOURSELF UP....");
+        map.CurrentRoom = RoomId.BranchOfTree;
+        return VerbResult.Proceed;
+    }
+
     private VerbResult Dig(string noun)
     {
         if ((noun == "HOL") || (noun == "GRO") || (noun == ""))
         {
-            if (!objects.IsHere(ObjectId.Shovel, map.CurrentRoom))
-            {
-                PRINT("YOU DON'T HAVE A SHOVEL!");
-            }
-            else if (map.CurrentRoom != RoomId.OpenField)
-            {
-                PRINT("YOU DON'T FIND ANYTHING.");
-            }
-            else if (objects.Ref(ObjectId.Sword).Room != RoomId.None)
-            {
-                PRINT("THERE'S NOTHING ELSE THERE!");
-            }
-            else
-            {
-                PRINT("THERE'S SOMETHING THERE!");
-                objects.Drop(ObjectId.Sword, RoomId.OpenField);
-            }
-
-            return VerbResult.Idle;
+            return DigHole();
         }
 
         PRINT("YOU CAN'T DIG THAT!");
+        return VerbResult.Idle;
+    }
+
+    private VerbResult DigHole()
+    {
+        if (!objects.IsHere(ObjectId.Shovel, map.CurrentRoom))
+        {
+            PRINT("YOU DON'T HAVE A SHOVEL!");
+        }
+        else if (map.CurrentRoom != RoomId.OpenField)
+        {
+            PRINT("YOU DON'T FIND ANYTHING.");
+        }
+        else if (objects.Ref(ObjectId.Sword).Room != RoomId.None)
+        {
+            PRINT("THERE'S NOTHING ELSE THERE!");
+        }
+        else
+        {
+            PRINT("THERE'S SOMETHING THERE!");
+            objects.Drop(ObjectId.Sword, RoomId.OpenField);
+        }
+
         return VerbResult.Idle;
     }
 
