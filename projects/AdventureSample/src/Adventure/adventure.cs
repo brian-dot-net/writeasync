@@ -745,7 +745,7 @@ internal sealed class adventure
     private VerbResult Dig(string noun)
     {
         ObjectId id = objects.IdOf(noun);
-        if ((id == ObjectId.Blank) || (noun == "HOL") || (noun == "GRO"))
+        if ((id == ObjectId.Blank) || (id == ObjectId.Hole) || (id == ObjectId.Ground))
         {
             return DigHole();
         }

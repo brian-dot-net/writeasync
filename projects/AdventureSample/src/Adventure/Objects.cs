@@ -102,7 +102,8 @@ namespace Adventure
                 new ObjectRef(ObjectId.Case, "A GLASS CASE", Tags("CAS"), RoomId.LargeHall, false),
                 new ObjectRef(ObjectId.Ruby, "A GLOWING RUBY", Tags("RUB"), RoomId.None),
                 new ObjectRef(ObjectId.Gloves, "A PAIR OF RUBBER GLOVES", Tags("GLO"), RoomId.TopOfTree),
-                new ObjectRef(ObjectId.Ground, string.Empty, Tags("GRO"), RoomId.None, false)
+                new ObjectRef(ObjectId.Ground, string.Empty, Tags("GRO"), RoomId.None, false),
+                new ObjectRef(ObjectId.Hole, string.Empty, Tags("HOL"), RoomId.None, false)
             };
         }
 

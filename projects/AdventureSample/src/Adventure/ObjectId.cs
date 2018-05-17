@@ -25,6 +25,7 @@ namespace Adventure
         Case,
         Ruby,
         Gloves,
-        Ground
+        Ground,
+        Hole
     }
 }
