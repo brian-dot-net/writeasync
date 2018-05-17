@@ -903,16 +903,14 @@ internal sealed class adventure
         if (map.CurrentRoom == RoomId.Boat)
         {
             ObjectId id = objects.IdOf(noun);
-            if ((id != ObjectId.Boat) && (id != ObjectId.Blank))
-            {
-                PRINT("HUH?");
-                return VerbResult.Idle;
-            }
-            else
+            if ((id == ObjectId.Boat) || (id == ObjectId.Blank))
             {
                 map.CurrentRoom = objects.Ref(ObjectId.Boat).Room;
                 return VerbResult.Proceed;
             }
+
+            PRINT("HUH?");
+            return VerbResult.Idle;
         }
 
         PRINT("PLEASE GIVE A DIRECTION!");
