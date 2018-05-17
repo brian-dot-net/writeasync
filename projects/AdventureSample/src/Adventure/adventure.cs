@@ -837,23 +837,23 @@ internal sealed class adventure
 
     private VerbResult Leave(string noun)
     {
-        if (map.CurrentRoom != RoomId.Boat)
+        if (map.CurrentRoom == RoomId.Boat)
         {
-            PRINT("PLEASE GIVE A DIRECTION!");
-            return VerbResult.Idle;
+            ObjectId id = objects.IdOf(noun);
+            if ((id != ObjectId.Boat) && (noun != ""))
+            {
+                PRINT("HUH?");
+                return VerbResult.Idle;
+            }
+            else
+            {
+                map.CurrentRoom = objects.Ref(ObjectId.Boat).Room;
+                return VerbResult.Proceed;
+            }
         }
 
-        ObjectId id = objects.IdOf(noun);
-        if ((id != ObjectId.Boat) && (noun != ""))
-        {
-            PRINT("HUH?");
-            return VerbResult.Idle;
-        }
-        else
-        {
-            map.CurrentRoom = objects.Ref(ObjectId.Boat).Room;
-            return VerbResult.Proceed;
-        }
+        PRINT("PLEASE GIVE A DIRECTION!");
+        return VerbResult.Idle;
     }
 
     private VerbResult Fight(string noun)
