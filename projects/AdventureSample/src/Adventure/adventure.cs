@@ -246,7 +246,7 @@ internal sealed class adventure
 
     private VerbResult Go(string noun)
     {
-        int dir = GetDirection(noun);
+        Direction dir = GetDirection(noun);
         if (dir == Direction.Invalid)
         {
             if ((noun == "BOA") && (objects.Ref(ObjectId.Boat).Room == map.CurrentRoom))
@@ -264,7 +264,7 @@ internal sealed class adventure
         return Go(dir);
     }
 
-    private static int GetDirection(string noun)
+    private static Direction GetDirection(string noun)
     {
         switch (noun)
         {
@@ -278,7 +278,7 @@ internal sealed class adventure
         }
     }
 
-    private VerbResult Go(int dir)
+    private VerbResult Go(Direction dir)
     {
         MoveResult result = map.Move(dir);
         if (result == MoveResult.OK)

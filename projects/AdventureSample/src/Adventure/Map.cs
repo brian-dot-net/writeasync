@@ -45,9 +45,9 @@ namespace Adventure
             this.map[(int)room, dir] = next;
         }
 
-        public MoveResult Move(int dir)
+        public MoveResult Move(Direction dir)
         {
-            RoomId next = this.map[(int)this.CurrentRoom, dir];
+            RoomId next = this.map[(int)this.CurrentRoom, (int)dir];
             if (next == RoomId.Blocked)
             {
                 return MoveResult.Blocked;

@@ -4,14 +4,14 @@
 
 namespace Adventure
 {
-    internal static class Direction
+    internal enum Direction
     {
-        public const int Invalid = -1;
-        public const int North = 0;
-        public const int South = 1;
-        public const int East = 2;
-        public const int West = 3;
-        public const int Up = 4;
-        public const int Down = 5;
+        Invalid = -1,
+        North = 0,
+        South = 1,
+        East = 2,
+        West = 3,
+        Up = 4,
+        Down = 5
     }
 }
