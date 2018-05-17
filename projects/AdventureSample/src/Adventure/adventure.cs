@@ -241,17 +241,22 @@ internal sealed class adventure
         if (dir == Direction.Invalid)
         {
             ObjectId id = objects.IdOf(noun);
-            if ((id == ObjectId.Boat) && (objects.Ref(id).Room == map.CurrentRoom))
-            {
-                map.CurrentRoom = RoomId.Boat;
-                return VerbResult.Proceed;
-            }
-
-            PRINT("YOU CAN'T GO THERE!");
-            return VerbResult.Idle;
+            return Go(id);
         }
 
         return Go(dir);
+    }
+
+    private VerbResult Go(ObjectId id)
+    {
+        if ((id == ObjectId.Boat) && (objects.Ref(id).Room == map.CurrentRoom))
+        {
+            map.CurrentRoom = RoomId.Boat;
+            return VerbResult.Proceed;
+        }
+
+        PRINT("YOU CAN'T GO THERE!");
+        return VerbResult.Idle;
     }
 
     private static Direction GetDirection(string noun)
