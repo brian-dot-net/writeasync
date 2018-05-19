@@ -206,7 +206,9 @@ internal sealed class adventure
         verbRoutines.Add("REA", byId, Eq(ObjectId.Diary, ReadDiary), Eq(ObjectId.Dictionary, ReadDictionary), Eq(ObjectId.Bottle, ReadBottle), Else<ObjectId>(ReadUnknown));
         verbRoutines.Add("OPE", byId, Eq(ObjectId.Box, OpenBox), Eq(ObjectId.Cabinet, OpenCabinet), Eq(ObjectId.Case, OpenCase), Else<ObjectId>(OpenUnknown));
         verbRoutines.Add("POU", byId, Eq(ObjectId.Salt, PourSalt), Eq(ObjectId.Bottle, PourFormula), Else<ObjectId>(PourUnknown));
-        verbRoutines.Add("CLI", byId, Eq(ObjectId.Tree, ClimbTree), Eq(ObjectId.Ladder, ClimbLadder), Else<ObjectId>(ClimbUnknown));
+
+        Climb climb = new Climb(state, PRINT);
+        verbRoutines.Add("CLI", byId, Eq(ObjectId.Tree, climb.Tree), Eq(ObjectId.Ladder, climb.Ladder), Else<ObjectId>(climb.Unknown));
 
         Jump jump = new Jump(state, PRINT);
         verbRoutines.Add("JUM", jump.Any);
@@ -661,41 +663,49 @@ internal sealed class adventure
         return VerbResult.Proceed;
     }
 
-    private VerbResult ClimbUnknown(ObjectId id)
+    internal sealed class Climb : Verb
     {
-        PRINT("IT WON'T DO ANY GOOD.");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult ClimbLadder(ObjectId id)
-    {
-        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
+        public Climb(GameState state, Action<string> print)
+            : base(state, print)
         {
-            PRINT("YOU DON'T HAVE THE LADDER!");
+        }
+
+        public VerbResult Unknown(ObjectId id)
+        {
+            this.Print("IT WON'T DO ANY GOOD.");
             return VerbResult.Idle;
         }
 
-        if (state.Map.CurrentRoom != RoomId.EdgeOfForest)
+        public VerbResult Ladder(ObjectId id)
         {
-            PRINT("WHATEVER FOR?");
+            if (!this.State.Objects.IsHere(id, this.State.Map.CurrentRoom))
+            {
+                this.Print("YOU DON'T HAVE THE LADDER!");
+                return VerbResult.Idle;
+            }
+
+            if (this.State.Map.CurrentRoom != RoomId.EdgeOfForest)
+            {
+                this.Print("WHATEVER FOR?");
+                return VerbResult.Idle;
+            }
+
+            this.Print("THE LADDER SINKS UNDER YOUR WEIGHT!");
+            this.Print("IT DISAPPEARS INTO THE GROUND!");
+            this.State.Objects.Hide(id);
             return VerbResult.Idle;
         }
 
-        PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
-        PRINT("IT DISAPPEARS INTO THE GROUND!");
-        state.Objects.Hide(id);
-        return VerbResult.Idle;
-    }
-
-    private VerbResult ClimbTree(ObjectId id)
-    {
-        if (state.Map.CurrentRoom != RoomId.EdgeOfForest)
+        public VerbResult Tree(ObjectId id)
         {
-            PRINT("THERE'S NO TREE HERE!");
+            if (this.State.Map.CurrentRoom != RoomId.EdgeOfForest)
+            {
+                this.Print("THERE'S NO TREE HERE!");
+                return VerbResult.Idle;
+            }
+
+            this.Print("YOU CAN'T REACH THE BRANCHES!");
             return VerbResult.Idle;
         }
-
-        PRINT("YOU CAN'T REACH THE BRANCHES!");
-        return VerbResult.Idle;
     }
 }
