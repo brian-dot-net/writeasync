@@ -203,7 +203,9 @@ internal sealed class adventure
         verbRoutines.Add("L", byId, Eq(ObjectId.Blank, LookBlank), Else<ObjectId>(Examine));
         verbRoutines.Add("EXA", byId, Examine);
         verbRoutines.Add("QUI", Quit);
-        verbRoutines.Add("REA", byId, Eq(ObjectId.Diary, ReadDiary), Eq(ObjectId.Dictionary, ReadDictionary), Eq(ObjectId.Bottle, ReadBottle), Else<ObjectId>(ReadUnknown));
+
+        Read read = new Read(state, PRINT);
+        verbRoutines.Add("REA", byId, Eq(ObjectId.Diary, read.Diary), Eq(ObjectId.Dictionary, read.Dictionary), Eq(ObjectId.Bottle, read.Bottle), Else<ObjectId>(read.Unknown));
 
         Open open = new Open(state, PRINT);
         verbRoutines.Add("OPE", byId, Eq(ObjectId.Box, open.Box), Eq(ObjectId.Cabinet, open.Cabinet), Eq(ObjectId.Case, open.Case), Else<ObjectId>(open.Unknown));
@@ -505,48 +507,56 @@ internal sealed class adventure
         }
     }
 
-    private VerbResult ReadUnknown(ObjectId id)
+    internal sealed class Read : Verb
     {
-        PRINT("YOU CAN'T READ THAT!");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult ReadBottle(ObjectId id)
-    {
-        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
+        public Read(GameState state, Action<string> print)
+            : base(state, print)
         {
-            PRINT("THERE'S NO BOTTLE HERE!");
+        }
+
+        public VerbResult Unknown(ObjectId id)
+        {
+            this.Print("YOU CAN'T READ THAT!");
             return VerbResult.Idle;
         }
 
-        PRINT("IT READS: 'SECRET FORMULA'.");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult ReadDictionary(ObjectId id)
-    {
-        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
+        public VerbResult Bottle(ObjectId id)
         {
-            PRINT("YOU DON'T SEE A DICTIONARY!");
+            if (!this.State.Objects.IsHere(id, this.State.Map.CurrentRoom))
+            {
+                this.Print("THERE'S NO BOTTLE HERE!");
+                return VerbResult.Idle;
+            }
+
+            this.Print("IT READS: 'SECRET FORMULA'.");
             return VerbResult.Idle;
         }
 
-        PRINT("IT SAYS: SODIUM CHLORIDE IS");
-        PRINT("COMMON TABLE SALT.");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult ReadDiary(ObjectId id)
-    {
-        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
+        public VerbResult Dictionary(ObjectId id)
         {
-            PRINT("THERE'S NO DIARY HERE!");
+            if (!this.State.Objects.IsHere(id, this.State.Map.CurrentRoom))
+            {
+                this.Print("YOU DON'T SEE A DICTIONARY!");
+                return VerbResult.Idle;
+            }
+
+            this.Print("IT SAYS: SODIUM CHLORIDE IS");
+            this.Print("COMMON TABLE SALT.");
             return VerbResult.Idle;
         }
 
-        PRINT("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE");
-        PRINT("FORMULA TO RAINWATER, TO REACH THE");
-        PRINT("OTHER WORLD.' ");
-        return VerbResult.Idle;
+        public VerbResult Diary(ObjectId id)
+        {
+            if (!this.State.Objects.IsHere(id, this.State.Map.CurrentRoom))
+            {
+                this.Print("THERE'S NO DIARY HERE!");
+                return VerbResult.Idle;
+            }
+
+            this.Print("IT SAYS: 'ADD SODIUM CHLORIDE PLUS THE");
+            this.Print("FORMULA TO RAINWATER, TO REACH THE");
+            this.Print("OTHER WORLD.' ");
+            return VerbResult.Idle;
+        }
     }
 }
