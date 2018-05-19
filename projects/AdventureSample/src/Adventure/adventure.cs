@@ -190,8 +190,6 @@ internal sealed class adventure
     private void InitState()
     {
         state = new GameState();
-
-        state.MixtureCount = 1;
     }
 
     private void InitHandlers(VerbRoutines verbRoutines)
@@ -639,7 +637,7 @@ internal sealed class adventure
 
         PRINT("POURED!");
 
-        if (state.MixtureCount < 3)
+        if (state.MixtureCount < 2)
         {
             return VerbResult.Idle;
         }
