@@ -199,10 +199,11 @@ internal sealed class adventure
         verbRoutines.Add("THR", byRef, Drop);
         verbRoutines.Add("INV", Inventory);
         verbRoutines.Add("I", Inventory);
+        verbRoutines.Add("QUI", Quit);
+
         verbRoutines.Add("LOO", byId, Eq(ObjectId.Blank, LookBlank), Else<ObjectId>(Examine));
         verbRoutines.Add("L", byId, Eq(ObjectId.Blank, LookBlank), Else<ObjectId>(Examine));
         verbRoutines.Add("EXA", byId, Examine);
-        verbRoutines.Add("QUI", Quit);
 
         Read read = new Read(state, PRINT);
         verbRoutines.Add("REA", byId, Eq(ObjectId.Diary, read.Diary), Eq(ObjectId.Dictionary, read.Dictionary), Eq(ObjectId.Bottle, read.Bottle), Else<ObjectId>(read.Unknown));
