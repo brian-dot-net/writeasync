@@ -802,30 +802,4 @@ internal sealed class adventure
         state.Objects.Drop(ObjectId.Boat, RoomId.SouthBankOfRiver);
         return VerbResult.Idle;
     }
-
-    internal sealed class Leave : Verb
-    {
-        public Leave(GameState state, Action<string> print)
-            : base(state, print)
-        {
-        }
-
-        public VerbResult Any(ObjectId id)
-        {
-            if (this.State.Map.CurrentRoom == RoomId.Boat)
-            {
-                if ((id == ObjectId.Boat) || (id == ObjectId.Blank))
-                {
-                    this.State.Map.CurrentRoom = this.State.Objects.Ref(ObjectId.Boat).Room;
-                    return VerbResult.Proceed;
-                }
-
-                this.Print("HUH?");
-                return VerbResult.Idle;
-            }
-
-            this.Print("PLEASE GIVE A DIRECTION!");
-            return VerbResult.Idle;
-        }
-    }
 }
