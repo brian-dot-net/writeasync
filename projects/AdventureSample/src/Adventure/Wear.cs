@@ -6,33 +6,29 @@ namespace Adventure
 {
     using System;
 
-    internal sealed class Wear
+    internal sealed class Wear : Verb
     {
-        private readonly GameState state;
-        private readonly Action<string> print;
-
         public Wear(GameState state, Action<string> print)
+            : base(state, print)
         {
-            this.state = state;
-            this.print = print;
         }
 
         public VerbResult Unknown(ObjectId id)
         {
-            this.print("YOU CAN'T WEAR THAT!");
+            this.Print("YOU CAN'T WEAR THAT!");
             return VerbResult.Idle;
         }
 
         public VerbResult Gloves(ObjectId id)
         {
-            if (!this.state.Objects.IsHere(id, this.state.Map.CurrentRoom))
+            if (!this.State.Objects.IsHere(id, this.State.Map.CurrentRoom))
             {
-                this.print("YOU DON'T HAVE THE GLOVES.");
+                this.Print("YOU DON'T HAVE THE GLOVES.");
                 return VerbResult.Idle;
             }
 
-            this.print("YOU ARE NOW WEARING THE GLOVES.");
-            this.state.WearingGloves = true;
+            this.Print("YOU ARE NOW WEARING THE GLOVES.");
+            this.State.WearingGloves = true;
             return VerbResult.Idle;
         }
     }
