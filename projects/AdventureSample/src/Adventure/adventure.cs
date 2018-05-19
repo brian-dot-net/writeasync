@@ -201,9 +201,10 @@ internal sealed class adventure
         verbRoutines.Add("I", Inventory);
         verbRoutines.Add("QUI", Quit);
 
-        verbRoutines.Add("LOO", byId, Eq(ObjectId.Blank, LookBlank), Else<ObjectId>(Examine));
-        verbRoutines.Add("L", byId, Eq(ObjectId.Blank, LookBlank), Else<ObjectId>(Examine));
-        verbRoutines.Add("EXA", byId, Examine);
+        Look look = new Look(state, PRINT);
+        verbRoutines.Add("LOO", byId, Eq(ObjectId.Blank, look.Blank), Else<ObjectId>(look.Any));
+        verbRoutines.Add("L", byId, Eq(ObjectId.Blank, look.Blank), Else<ObjectId>(look.Any));
+        verbRoutines.Add("EXA", byId, look.Any);
 
         Read read = new Read(state, PRINT);
         verbRoutines.Add("REA", byId, Eq(ObjectId.Diary, read.Diary), Eq(ObjectId.Dictionary, read.Dictionary), Eq(ObjectId.Bottle, read.Bottle), Else<ObjectId>(read.Unknown));
@@ -409,73 +410,81 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult LookBlank(ObjectId id) => VerbResult.Proceed;
-
-    private VerbResult Examine(ObjectId id)
+    internal sealed class Look : Verb
     {
-        if (id == ObjectId.Ground)
+        public Look(GameState state, Action<string> print)
+            : base(state, print)
         {
-            return ExamineGround();
         }
 
-        if ((id == ObjectId.Invalid) || !state.Objects.IsHere(id, state.Map.CurrentRoom))
+        public VerbResult Blank(ObjectId id) => VerbResult.Proceed;
+
+        public VerbResult Any(ObjectId id)
         {
-            PRINT("IT'S NOT HERE!");
+            if (id == ObjectId.Ground)
+            {
+                return Ground();
+            }
+
+            if ((id == ObjectId.Invalid) || !this.State.Objects.IsHere(id, this.State.Map.CurrentRoom))
+            {
+                this.Print("IT'S NOT HERE!");
+                return VerbResult.Idle;
+            }
+
+            if (id == ObjectId.Bottle)
+            {
+                return Bottle();
+            }
+
+            if (id == ObjectId.Case)
+            {
+                return Case();
+            }
+
+            if (id == ObjectId.Barrel)
+            {
+                return Barrel();
+            }
+
+            return Unknown();
+        }
+
+        private VerbResult Unknown()
+        {
+            this.Print("YOU SEE NOTHING UNUSUAL.");
             return VerbResult.Idle;
         }
 
-        if (id == ObjectId.Bottle)
+        private VerbResult Barrel()
         {
-            return ExamineBottle();
-        }
-
-        if (id == ObjectId.Case)
-        {
-            return ExamineCase();
-        }
-
-        if (id == ObjectId.Barrel)
-        {
-            return ExamineBarrel();
-        }
-
-        return ExamineUnknown();
-    }
-
-    private VerbResult ExamineUnknown()
-    {
-        PRINT("YOU SEE NOTHING UNUSUAL.");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult ExamineBarrel()
-    {
-        PRINT("IT'S FILLED WITH RAINWATER.");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult ExamineCase()
-    {
-        PRINT("THERE'S A JEWEL INSIDE!");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult ExamineBottle()
-    {
-        PRINT("THERE'S SOMETHING WRITTEN ON IT!");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult ExamineGround()
-    {
-        if (state.Map.CurrentRoom != RoomId.OpenField)
-        {
-            PRINT("IT LOOKS LIKE GROUND!");
+            this.Print("IT'S FILLED WITH RAINWATER.");
             return VerbResult.Idle;
         }
 
-        PRINT("IT LOOKS LIKE SOMETHING'S BURIED HERE.");
-        return VerbResult.Idle;
+        private VerbResult Case()
+        {
+            this.Print("THERE'S A JEWEL INSIDE!");
+            return VerbResult.Idle;
+        }
+
+        private VerbResult Bottle()
+        {
+            this.Print("THERE'S SOMETHING WRITTEN ON IT!");
+            return VerbResult.Idle;
+        }
+
+        private VerbResult Ground()
+        {
+            if (this.State.Map.CurrentRoom != RoomId.OpenField)
+            {
+                this.Print("IT LOOKS LIKE GROUND!");
+                return VerbResult.Idle;
+            }
+
+            this.Print("IT LOOKS LIKE SOMETHING'S BURIED HERE.");
+            return VerbResult.Idle;
+        }
     }
 
     private VerbResult Quit()
