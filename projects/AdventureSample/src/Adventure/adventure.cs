@@ -79,7 +79,7 @@ internal sealed class adventure
     private void PrintDirections()
     {
         PRINT_n("YOU CAN GO: ");
-        foreach (string dir in state.map.Directions())
+        foreach (string dir in state.Map.Directions())
         {
             PRINT_n(dir + " ");
         }
@@ -91,7 +91,7 @@ internal sealed class adventure
     {
         PRINT("YOU CAN SEE: ");
         bool atLeastOne = false;
-        foreach (string name in state.objects.Here(state.map.CurrentRoom))
+        foreach (string name in state.Objects.Here(state.Map.CurrentRoom))
         {
             PRINT(" " + name);
             atLeastOne = true;
@@ -106,7 +106,7 @@ internal sealed class adventure
     private void PrintDescription()
     {
         PRINT("");
-        PRINT("YOU ARE " + state.map.Describe());
+        PRINT("YOU ARE " + state.Map.Describe());
     }
 
     private void PrintIntro()
@@ -190,20 +190,14 @@ internal sealed class adventure
     private void InitState()
     {
         state = new GameState();
-        state.objects = new Objects();
-        state.map = new Map();
 
-        state.inventoryItems = 0;
-        state.saltPoured = false;
-        state.formulaPoured = false;
-        state.mixtureCount = 1;
-        state.wearingGloves = false;
+        state.MixtureCount = 1;
     }
 
     private void InitHandlers(VerbRoutines verbRoutines)
     {
-        Func<string, ObjectRef> byRef = s => state.objects.Find(s);
-        Func<string, ObjectId> byId = s => state.objects.IdOf(s);
+        Func<string, ObjectRef> byRef = s => state.Objects.Find(s);
+        Func<string, ObjectId> byId = s => state.Objects.IdOf(s);
         verbRoutines.Add("GO", Go);
         verbRoutines.Add("GET", byRef, Get);
         verbRoutines.Add("TAK", byRef, Get);
@@ -271,7 +265,7 @@ internal sealed class adventure
         Direction dir = GetDirection(noun);
         if (dir == Direction.Invalid)
         {
-            ObjectId id = state.objects.IdOf(noun);
+            ObjectId id = state.Objects.IdOf(noun);
             return Go(id);
         }
 
@@ -280,9 +274,9 @@ internal sealed class adventure
 
     private VerbResult Go(ObjectId id)
     {
-        if ((id == ObjectId.Boat) && (state.objects.Ref(id).Room == state.map.CurrentRoom))
+        if ((id == ObjectId.Boat) && (state.Objects.Ref(id).Room == state.Map.CurrentRoom))
         {
-            state.map.CurrentRoom = RoomId.Boat;
+            state.Map.CurrentRoom = RoomId.Boat;
             return VerbResult.Proceed;
         }
 
@@ -306,7 +300,7 @@ internal sealed class adventure
 
     private VerbResult Go(Direction dir)
     {
-        MoveResult result = state.map.Move(dir);
+        MoveResult result = state.Map.Move(dir);
         if (result == MoveResult.OK)
         {
             return VerbResult.Proceed;
@@ -342,26 +336,26 @@ internal sealed class adventure
             return VerbResult.Idle;
         }
 
-        if (obj.Room != state.map.CurrentRoom)
+        if (obj.Room != state.Map.CurrentRoom)
         {
             PRINT("THAT'S NOT HERE!");
             return VerbResult.Idle;
         }
 
-        if (state.inventoryItems > MaxInventoryItems)
+        if (state.InventoryItems > MaxInventoryItems)
         {
             PRINT("YOU CAN'T CARRY ANY MORE.");
             return VerbResult.Idle;
         }
 
-        if ((state.map.CurrentRoom == RoomId.LargeHall) && (obj.Id == ObjectId.Ruby))
+        if ((state.Map.CurrentRoom == RoomId.LargeHall) && (obj.Id == ObjectId.Ruby))
         {
             PRINT("CONGRATULATIONS! YOU'VE WON!");
             return PlayAgain();
         }
 
-        ++state.inventoryItems;
-        state.objects.Take(obj.Id);
+        ++state.InventoryItems;
+        state.Objects.Take(obj.Id);
         PRINT("TAKEN.");
         return VerbResult.Idle;
     }
@@ -374,8 +368,8 @@ internal sealed class adventure
             return VerbResult.Idle;
         }
 
-        --state.inventoryItems;
-        state.objects.Drop(obj.Id, state.map.CurrentRoom);
+        --state.InventoryItems;
+        state.Objects.Drop(obj.Id, state.Map.CurrentRoom);
         PRINT("DROPPED.");
         return VerbResult.Idle;
     }
@@ -384,7 +378,7 @@ internal sealed class adventure
     {
         bool atLeastOne = false;
         PRINT("YOU ARE CARRYING:");
-        foreach (string name in state.objects.Carrying())
+        foreach (string name in state.Objects.Carrying())
         {
             PRINT(" " + name);
             atLeastOne = true;
@@ -407,7 +401,7 @@ internal sealed class adventure
             return ExamineGround();
         }
 
-        if ((id == ObjectId.Invalid) || !state.objects.IsHere(id, state.map.CurrentRoom))
+        if ((id == ObjectId.Invalid) || !state.Objects.IsHere(id, state.Map.CurrentRoom))
         {
             PRINT("IT'S NOT HERE!");
             return VerbResult.Idle;
@@ -457,7 +451,7 @@ internal sealed class adventure
 
     private VerbResult ExamineGround()
     {
-        if (state.map.CurrentRoom != RoomId.OpenField)
+        if (state.Map.CurrentRoom != RoomId.OpenField)
         {
             PRINT("IT LOOKS LIKE GROUND!");
             return VerbResult.Idle;
@@ -505,7 +499,7 @@ internal sealed class adventure
 
     private VerbResult ReadBottle(ObjectId id)
     {
-        if (!state.objects.IsHere(id, state.map.CurrentRoom))
+        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
         {
             PRINT("THERE'S NO BOTTLE HERE!");
             return VerbResult.Idle;
@@ -517,7 +511,7 @@ internal sealed class adventure
 
     private VerbResult ReadDictionary(ObjectId id)
     {
-        if (!state.objects.IsHere(id, state.map.CurrentRoom))
+        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
         {
             PRINT("YOU DON'T SEE A DICTIONARY!");
             return VerbResult.Idle;
@@ -530,7 +524,7 @@ internal sealed class adventure
 
     private VerbResult ReadDiary(ObjectId id)
     {
-        if (!state.objects.IsHere(id, state.map.CurrentRoom))
+        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
         {
             PRINT("THERE'S NO DIARY HERE!");
             return VerbResult.Idle;
@@ -550,13 +544,13 @@ internal sealed class adventure
 
     private VerbResult OpenCase(ObjectId id)
     {
-        if (state.map.CurrentRoom != RoomId.LargeHall)
+        if (state.Map.CurrentRoom != RoomId.LargeHall)
         {
             PRINT("THERE'S NO CASE HERE!");
             return VerbResult.Idle;
         }
 
-        if (!state.wearingGloves)
+        if (!state.WearingGloves)
         {
             PRINT("THE CASE IS ELECTRIFIED!");
             return VerbResult.Idle;
@@ -564,32 +558,32 @@ internal sealed class adventure
 
         PRINT("THE GLOVES INSULATE AGAINST THE");
         PRINT("ELECTRICITY! THE CASE OPENS!");
-        state.objects.Drop(ObjectId.Ruby, RoomId.LargeHall);
+        state.Objects.Drop(ObjectId.Ruby, RoomId.LargeHall);
         return VerbResult.Idle;
     }
 
     private VerbResult OpenCabinet(ObjectId id)
     {
-        if (state.map.CurrentRoom != RoomId.Kitchen)
+        if (state.Map.CurrentRoom != RoomId.Kitchen)
         {
             PRINT("THERE'S NO CABINET HERE!");
             return VerbResult.Idle;
         }
 
         PRINT("THERE'S SOMETHING INSIDE!");
-        state.objects.Drop(ObjectId.Salt, RoomId.Kitchen);
+        state.Objects.Drop(ObjectId.Salt, RoomId.Kitchen);
         return VerbResult.Idle;
     }
 
     private VerbResult OpenBox(ObjectId id)
     {
-        if (!state.objects.IsHere(id, state.map.CurrentRoom))
+        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
         {
             PRINT("THERE'S NO BOX HERE!");
             return VerbResult.Idle;
         }
 
-        state.objects.Drop(ObjectId.Bottle, state.map.CurrentRoom);
+        state.Objects.Drop(ObjectId.Bottle, state.Map.CurrentRoom);
         PRINT("SOMETHING FELL OUT!");
         return VerbResult.Idle;
     }
@@ -602,50 +596,50 @@ internal sealed class adventure
 
     private VerbResult PourFormula(ObjectId id)
     {
-        if (!state.objects.IsHere(id, state.map.CurrentRoom))
+        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE BOTTLE!");
             return VerbResult.Idle;
         }
 
-        if (state.formulaPoured)
+        if (state.FormulaPoured)
         {
             PRINT("THE BOTTLE IS EMPTY!");
             return VerbResult.Idle;
         }
 
-        state.formulaPoured = true;
+        state.FormulaPoured = true;
         return PourMixture();
     }
 
     private VerbResult PourSalt(ObjectId id)
     {
-        if (!state.objects.IsHere(id, state.map.CurrentRoom))
+        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE SALT!");
             return VerbResult.Idle;
         }
 
-        if (state.saltPoured)
+        if (state.SaltPoured)
         {
             PRINT("THE SHAKER IS EMPTY!");
             return VerbResult.Idle;
         }
 
-        state.saltPoured = true;
+        state.SaltPoured = true;
         return PourMixture();
     }
 
     private VerbResult PourMixture()
     {
-        if (state.map.CurrentRoom == RoomId.Garage)
+        if (state.Map.CurrentRoom == RoomId.Garage)
         {
-            ++state.mixtureCount;
+            ++state.MixtureCount;
         }
 
         PRINT("POURED!");
 
-        if (state.mixtureCount < 3)
+        if (state.MixtureCount < 3)
         {
             return VerbResult.Idle;
         }
@@ -655,7 +649,7 @@ internal sealed class adventure
         PRINT("SUDDENLY YOU ARE ... ");
         PRINT(" ... SOMEWHERE ELSE!");
 
-        state.map.CurrentRoom = RoomId.OpenField;
+        state.Map.CurrentRoom = RoomId.OpenField;
         return VerbResult.Proceed;
     }
 
@@ -667,13 +661,13 @@ internal sealed class adventure
 
     private VerbResult ClimbLadder(ObjectId id)
     {
-        if (!state.objects.IsHere(id, state.map.CurrentRoom))
+        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE LADDER!");
             return VerbResult.Idle;
         }
 
-        if (state.map.CurrentRoom != RoomId.EdgeOfForest)
+        if (state.Map.CurrentRoom != RoomId.EdgeOfForest)
         {
             PRINT("WHATEVER FOR?");
             return VerbResult.Idle;
@@ -681,13 +675,13 @@ internal sealed class adventure
 
         PRINT("THE LADDER SINKS UNDER YOUR WEIGHT!");
         PRINT("IT DISAPPEARS INTO THE GROUND!");
-        state.objects.Hide(id);
+        state.Objects.Hide(id);
         return VerbResult.Idle;
     }
 
     private VerbResult ClimbTree(ObjectId id)
     {
-        if (state.map.CurrentRoom != RoomId.EdgeOfForest)
+        if (state.Map.CurrentRoom != RoomId.EdgeOfForest)
         {
             PRINT("THERE'S NO TREE HERE!");
             return VerbResult.Idle;
@@ -699,7 +693,7 @@ internal sealed class adventure
 
     private VerbResult Jump()
     {
-        if ((state.map.CurrentRoom == RoomId.EdgeOfForest) || (state.map.CurrentRoom == RoomId.BranchOfTree))
+        if ((state.Map.CurrentRoom == RoomId.EdgeOfForest) || (state.Map.CurrentRoom == RoomId.BranchOfTree))
         {
             return JumpTree();
         }
@@ -715,17 +709,17 @@ internal sealed class adventure
 
     private VerbResult JumpTree()
     {
-        if (state.map.CurrentRoom == RoomId.BranchOfTree)
+        if (state.Map.CurrentRoom == RoomId.BranchOfTree)
         {
             PRINT("YOU GRAB A HIGHER BRANCH ON THE");
             PRINT("TREE AND PULL YOURSELF UP....");
-            state.map.CurrentRoom = RoomId.TopOfTree;
+            state.Map.CurrentRoom = RoomId.TopOfTree;
             return VerbResult.Proceed;
         }
 
         PRINT("YOU GRAB THE LOWEST BRANCH OF THE");
         PRINT("TREE AND PULL YOURSELF UP....");
-        state.map.CurrentRoom = RoomId.BranchOfTree;
+        state.Map.CurrentRoom = RoomId.BranchOfTree;
         return VerbResult.Proceed;
     }
 
@@ -737,26 +731,26 @@ internal sealed class adventure
 
     private VerbResult DigHole(ObjectId id)
     {
-        if (!state.objects.IsHere(ObjectId.Shovel, state.map.CurrentRoom))
+        if (!state.Objects.IsHere(ObjectId.Shovel, state.Map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE A SHOVEL!");
             return VerbResult.Idle;
         }
 
-        if (state.map.CurrentRoom != RoomId.OpenField)
+        if (state.Map.CurrentRoom != RoomId.OpenField)
         {
             PRINT("YOU DON'T FIND ANYTHING.");
             return VerbResult.Idle;
         }
 
-        if (state.objects.Ref(ObjectId.Sword).Room != RoomId.None)
+        if (state.Objects.Ref(ObjectId.Sword).Room != RoomId.None)
         {
             PRINT("THERE'S NOTHING ELSE THERE!");
             return VerbResult.Idle;
         }
 
         PRINT("THERE'S SOMETHING THERE!");
-        state.objects.Drop(ObjectId.Sword, RoomId.OpenField);
+        state.Objects.Drop(ObjectId.Sword, RoomId.OpenField);
         return VerbResult.Idle;
     }
 
@@ -768,7 +762,7 @@ internal sealed class adventure
 
     private VerbResult RowBoat(ObjectId id)
     {
-        if (state.map.CurrentRoom != RoomId.Boat)
+        if (state.Map.CurrentRoom != RoomId.Boat)
         {
             PRINT("YOU'RE NOT IN THE BOAT!");
             return VerbResult.Idle;
@@ -786,13 +780,13 @@ internal sealed class adventure
 
     private VerbResult WaveFan(ObjectId id)
     {
-        if (!state.objects.IsHere(id, state.map.CurrentRoom))
+        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
         {
             PRINT("YOU DON'T HAVE THE FAN!");
             return VerbResult.Idle;
         }
 
-        if (state.map.CurrentRoom != RoomId.Boat)
+        if (state.Map.CurrentRoom != RoomId.Boat)
         {
             PRINT("YOU FEEL A REFRESHING BREEZE!");
             return VerbResult.Idle;
@@ -800,23 +794,23 @@ internal sealed class adventure
 
         PRINT("A POWERFUL BREEZE PROPELS THE BOAT");
         PRINT("TO THE OPPOSITE SHORE!");
-        if (state.objects.Ref(ObjectId.Boat).Room == RoomId.SouthBankOfRiver)
+        if (state.Objects.Ref(ObjectId.Boat).Room == RoomId.SouthBankOfRiver)
         {
-            state.objects.Drop(ObjectId.Boat, RoomId.NorthBankOfRiver);
+            state.Objects.Drop(ObjectId.Boat, RoomId.NorthBankOfRiver);
             return VerbResult.Idle;
         }
 
-        state.objects.Drop(ObjectId.Boat, RoomId.SouthBankOfRiver);
+        state.Objects.Drop(ObjectId.Boat, RoomId.SouthBankOfRiver);
         return VerbResult.Idle;
     }
 
     private VerbResult Leave(ObjectId id)
     {
-        if (state.map.CurrentRoom == RoomId.Boat)
+        if (state.Map.CurrentRoom == RoomId.Boat)
         {
             if ((id == ObjectId.Boat) || (id == ObjectId.Blank))
             {
-                state.map.CurrentRoom = state.objects.Ref(ObjectId.Boat).Room;
+                state.Map.CurrentRoom = state.Objects.Ref(ObjectId.Boat).Room;
                 return VerbResult.Proceed;
             }
 
@@ -842,13 +836,13 @@ internal sealed class adventure
 
     private VerbResult FightGuard(ObjectId id)
     {
-        if (state.map.CurrentRoom != RoomId.SouthOfCastle)
+        if (state.Map.CurrentRoom != RoomId.SouthOfCastle)
         {
             PRINT("THERE'S NO GUARD HERE!");
             return VerbResult.Idle;
         }
 
-        if (!state.objects.Carrying(ObjectId.Sword))
+        if (!state.Objects.Carrying(ObjectId.Sword))
         {
             PRINT("YOU DON'T HAVE A WEAPON!");
             return VerbResult.Idle;
@@ -856,8 +850,8 @@ internal sealed class adventure
 
         PRINT("THE GUARD, NOTICING YOUR SWORD,");
         PRINT("WISELY RETREATS INTO THE CASTLE.");
-        state.map.SetMap(RoomId.SouthOfCastle, 0, RoomId.NarrowHall);
-        state.objects.Hide(id);
+        state.Map.SetMap(RoomId.SouthOfCastle, 0, RoomId.NarrowHall);
+        state.Objects.Hide(id);
         return VerbResult.Idle;
     }
 
@@ -869,26 +863,37 @@ internal sealed class adventure
 
     private static VerbResult WearGloves(ObjectId id, Action<string> print, GameState state)
     {
-        if (!state.objects.IsHere(id, state.map.CurrentRoom))
+        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
         {
             print("YOU DON'T HAVE THE GLOVES.");
             return VerbResult.Idle;
         }
 
         print("YOU ARE NOW WEARING THE GLOVES.");
-        state.wearingGloves = true;
+        state.WearingGloves = true;
         return VerbResult.Idle;
     }
 
     private sealed class GameState
     {
-        public int inventoryItems;
-        public bool saltPoured;
-        public bool formulaPoured;
-        public int mixtureCount;
-        public bool wearingGloves;
+        public GameState()
+        {
+            this.Objects = new Objects();
+            this.Map = new Map();
+        }
 
-        public Objects objects;
-        public Map map;
+        public int InventoryItems { get; set; }
+
+        public bool SaltPoured { get; set; }
+
+        public bool FormulaPoured { get; set; }
+
+        public int MixtureCount { get; set; }
+
+        public bool WearingGloves { get; set; }
+
+        public Objects Objects { get; private set; }
+
+        public Map Map { get; private set; }
     }
 }
