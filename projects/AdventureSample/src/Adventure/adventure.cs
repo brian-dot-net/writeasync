@@ -205,7 +205,9 @@ internal sealed class adventure
         verbRoutines.Add("QUI", Quit);
         verbRoutines.Add("REA", byId, Eq(ObjectId.Diary, ReadDiary), Eq(ObjectId.Dictionary, ReadDictionary), Eq(ObjectId.Bottle, ReadBottle), Else<ObjectId>(ReadUnknown));
         verbRoutines.Add("OPE", byId, Eq(ObjectId.Box, OpenBox), Eq(ObjectId.Cabinet, OpenCabinet), Eq(ObjectId.Case, OpenCase), Else<ObjectId>(OpenUnknown));
-        verbRoutines.Add("POU", byId, Eq(ObjectId.Salt, PourSalt), Eq(ObjectId.Bottle, PourFormula), Else<ObjectId>(PourUnknown));
+
+        Pour pour = new Pour(state, PRINT);
+        verbRoutines.Add("POU", byId, Eq(ObjectId.Salt, pour.Salt), Eq(ObjectId.Bottle, pour.Formula), Else<ObjectId>(pour.Unknown));
 
         Climb climb = new Climb(state, PRINT);
         verbRoutines.Add("CLI", byId, Eq(ObjectId.Tree, climb.Tree), Eq(ObjectId.Ladder, climb.Ladder), Else<ObjectId>(climb.Unknown));
@@ -598,68 +600,76 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult PourUnknown(ObjectId id)
+    internal sealed class Pour : Verb
     {
-        PRINT("YOU CAN'T POUR THAT!");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult PourFormula(ObjectId id)
-    {
-        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
+        public Pour(GameState state, Action<string> print)
+            : base(state, print)
         {
-            PRINT("YOU DON'T HAVE THE BOTTLE!");
+        }
+
+        public VerbResult Unknown(ObjectId id)
+        {
+            this.Print("YOU CAN'T POUR THAT!");
             return VerbResult.Idle;
         }
 
-        if (state.FormulaPoured)
+        public VerbResult Formula(ObjectId id)
         {
-            PRINT("THE BOTTLE IS EMPTY!");
-            return VerbResult.Idle;
+            if (!this.State.Objects.IsHere(id, this.State.Map.CurrentRoom))
+            {
+                this.Print("YOU DON'T HAVE THE BOTTLE!");
+                return VerbResult.Idle;
+            }
+
+            if (this.State.FormulaPoured)
+            {
+                this.Print("THE BOTTLE IS EMPTY!");
+                return VerbResult.Idle;
+            }
+
+            this.State.FormulaPoured = true;
+            return this.Mixture();
         }
 
-        state.FormulaPoured = true;
-        return PourMixture();
-    }
-
-    private VerbResult PourSalt(ObjectId id)
-    {
-        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
+        public VerbResult Salt(ObjectId id)
         {
-            PRINT("YOU DON'T HAVE THE SALT!");
-            return VerbResult.Idle;
+            if (!this.State.Objects.IsHere(id, this.State.Map.CurrentRoom))
+            {
+                this.Print("YOU DON'T HAVE THE SALT!");
+                return VerbResult.Idle;
+            }
+
+            if (this.State.SaltPoured)
+            {
+                this.Print("THE SHAKER IS EMPTY!");
+                return VerbResult.Idle;
+            }
+
+            this.State.SaltPoured = true;
+            return this.Mixture();
         }
 
-        if (state.SaltPoured)
+        private VerbResult Mixture()
         {
-            PRINT("THE SHAKER IS EMPTY!");
-            return VerbResult.Idle;
+            if (this.State.Map.CurrentRoom == RoomId.Garage)
+            {
+                ++this.State.MixtureCount;
+            }
+
+            this.Print("POURED!");
+
+            if (this.State.MixtureCount < 2)
+            {
+                return VerbResult.Idle;
+            }
+
+            this.Print("THERE IS AN EXPLOSION!");
+            this.Print("EVERYTHING GOES BLACK!");
+            this.Print("SUDDENLY YOU ARE ... ");
+            this.Print(" ... SOMEWHERE ELSE!");
+
+            this.State.Map.CurrentRoom = RoomId.OpenField;
+            return VerbResult.Proceed;
         }
-
-        state.SaltPoured = true;
-        return PourMixture();
-    }
-
-    private VerbResult PourMixture()
-    {
-        if (state.Map.CurrentRoom == RoomId.Garage)
-        {
-            ++state.MixtureCount;
-        }
-
-        PRINT("POURED!");
-
-        if (state.MixtureCount < 2)
-        {
-            return VerbResult.Idle;
-        }
-
-        PRINT("THERE IS AN EXPLOSION!");
-        PRINT("EVERYTHING GOES BLACK!");
-        PRINT("SUDDENLY YOU ARE ... ");
-        PRINT(" ... SOMEWHERE ELSE!");
-
-        state.Map.CurrentRoom = RoomId.OpenField;
-        return VerbResult.Proceed;
     }
 }
