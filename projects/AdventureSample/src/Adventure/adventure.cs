@@ -698,44 +698,4 @@ internal sealed class adventure
         PRINT("YOU CAN'T REACH THE BRANCHES!");
         return VerbResult.Idle;
     }
-
-    private sealed class Jump : Verb
-    {
-        public Jump(GameState state, Action<string> print)
-            : base(state, print)
-        {
-        }
-
-        public VerbResult Any()
-        {
-            if ((this.State.Map.CurrentRoom == RoomId.EdgeOfForest) || (this.State.Map.CurrentRoom == RoomId.BranchOfTree))
-            {
-                return Tree();
-            }
-
-            return Unknown();
-        }
-
-        private VerbResult Unknown()
-        {
-            this.Print("WHEE! THAT WAS FUN!");
-            return VerbResult.Idle;
-        }
-
-        private VerbResult Tree()
-        {
-            if (this.State.Map.CurrentRoom == RoomId.BranchOfTree)
-            {
-                this.Print("YOU GRAB A HIGHER BRANCH ON THE");
-                this.Print("TREE AND PULL YOURSELF UP....");
-                this.State.Map.CurrentRoom = RoomId.TopOfTree;
-                return VerbResult.Proceed;
-            }
-
-            this.Print("YOU GRAB THE LOWEST BRANCH OF THE");
-            this.Print("TREE AND PULL YOURSELF UP....");
-            this.State.Map.CurrentRoom = RoomId.BranchOfTree;
-            return VerbResult.Proceed;
-        }
-    }
 }
