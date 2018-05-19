@@ -209,7 +209,9 @@ internal sealed class adventure
         verbRoutines.Add("JUM", Jump);
         verbRoutines.Add("DIG", byId, Eq(Any(ObjectId.Blank, ObjectId.Hole, ObjectId.Ground), DigHole), Else<ObjectId>(DigUnknown));
         verbRoutines.Add("ROW", byId, Eq(Any(ObjectId.Boat, ObjectId.Blank), RowBoat), Else<ObjectId>(RowUnknown));
-        verbRoutines.Add("WAV", byId, Eq(ObjectId.Fan, WaveFan), Else<ObjectId>(WaveUnknown));
+
+        Wave wave = new Wave(state, PRINT);
+        verbRoutines.Add("WAV", byId, Eq(ObjectId.Fan, wave.Fan), Else<ObjectId>(wave.Unknown));
 
         Leave leave = new Leave(state, PRINT);
         verbRoutines.Add("LEA", byId, leave.Any);
@@ -771,35 +773,43 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult WaveUnknown(ObjectId id)
+    internal sealed class Wave : Verb
     {
-        PRINT("YOU CAN'T WAVE THAT!");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult WaveFan(ObjectId id)
-    {
-        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
+        public Wave(GameState state, Action<string> print)
+            : base(state, print)
         {
-            PRINT("YOU DON'T HAVE THE FAN!");
+        }
+
+        public VerbResult Unknown(ObjectId id)
+        {
+            this.Print("YOU CAN'T WAVE THAT!");
             return VerbResult.Idle;
         }
 
-        if (state.Map.CurrentRoom != RoomId.Boat)
+        public VerbResult Fan(ObjectId id)
         {
-            PRINT("YOU FEEL A REFRESHING BREEZE!");
+            if (!this.State.Objects.IsHere(id, this.State.Map.CurrentRoom))
+            {
+                this.Print("YOU DON'T HAVE THE FAN!");
+                return VerbResult.Idle;
+            }
+
+            if (this.State.Map.CurrentRoom != RoomId.Boat)
+            {
+                this.Print("YOU FEEL A REFRESHING BREEZE!");
+                return VerbResult.Idle;
+            }
+
+            this.Print("A POWERFUL BREEZE PROPELS THE BOAT");
+            this.Print("TO THE OPPOSITE SHORE!");
+            if (this.State.Objects.Ref(ObjectId.Boat).Room == RoomId.SouthBankOfRiver)
+            {
+                this.State.Objects.Drop(ObjectId.Boat, RoomId.NorthBankOfRiver);
+                return VerbResult.Idle;
+            }
+
+            this.State.Objects.Drop(ObjectId.Boat, RoomId.SouthBankOfRiver);
             return VerbResult.Idle;
         }
-
-        PRINT("A POWERFUL BREEZE PROPELS THE BOAT");
-        PRINT("TO THE OPPOSITE SHORE!");
-        if (state.Objects.Ref(ObjectId.Boat).Room == RoomId.SouthBankOfRiver)
-        {
-            state.Objects.Drop(ObjectId.Boat, RoomId.NorthBankOfRiver);
-            return VerbResult.Idle;
-        }
-
-        state.Objects.Drop(ObjectId.Boat, RoomId.SouthBankOfRiver);
-        return VerbResult.Idle;
     }
 }
