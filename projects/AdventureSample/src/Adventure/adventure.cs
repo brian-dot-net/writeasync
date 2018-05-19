@@ -27,8 +27,8 @@ internal sealed class adventure
 
     public adventure(TextReader input, TextWriter output)
     {
-        this.input = (input);
-        this.output = (output);
+        this.input = input;
+        this.output = output;
     }
 
     public void Run()
@@ -148,14 +148,7 @@ internal sealed class adventure
         PRINT("");
         PRINT("");
 
-        objects = new Objects();
-        map = new Map();
-
-        inventoryItems = 0;
-        saltPoured = false;
-        formulaPoured = false;
-        mixtureCount = 1;
-        wearingGloves = false;
+        InitState();
 
         PrintIntro();
 
@@ -199,6 +192,18 @@ internal sealed class adventure
                 }
             }
         }
+    }
+
+    private void InitState()
+    {
+        objects = new Objects();
+        map = new Map();
+
+        inventoryItems = 0;
+        saltPoured = false;
+        formulaPoured = false;
+        mixtureCount = 1;
+        wearingGloves = false;
     }
 
     private void InitHandlers(VerbRoutines verbRoutines)
