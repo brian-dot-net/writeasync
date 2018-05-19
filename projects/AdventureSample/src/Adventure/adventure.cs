@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Adventure;
+using Adventure.Verbs;
 
 internal sealed class adventure
 {
