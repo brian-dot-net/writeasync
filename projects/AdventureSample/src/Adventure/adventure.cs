@@ -208,7 +208,9 @@ internal sealed class adventure
         verbRoutines.Add("POU", byId, Eq(ObjectId.Salt, PourSalt), Eq(ObjectId.Bottle, PourFormula), Else<ObjectId>(PourUnknown));
         verbRoutines.Add("CLI", byId, Eq(ObjectId.Tree, ClimbTree), Eq(ObjectId.Ladder, ClimbLadder), Else<ObjectId>(ClimbUnknown));
         verbRoutines.Add("JUM", Jump);
-        verbRoutines.Add("DIG", byId, Eq(Any(ObjectId.Blank, ObjectId.Hole, ObjectId.Ground), DigHole), Else<ObjectId>(DigUnknown));
+
+        Dig dig = new Dig(state, PRINT);
+        verbRoutines.Add("DIG", byId, Eq(Any(ObjectId.Blank, ObjectId.Hole, ObjectId.Ground), dig.Hole), Else<ObjectId>(dig.Unknown));
 
         Row row = new Row(state, PRINT);
         verbRoutines.Add("ROW", byId, Eq(Any(ObjectId.Boat, ObjectId.Blank), row.Boat), Else<ObjectId>(row.Unknown));
@@ -727,34 +729,42 @@ internal sealed class adventure
         return VerbResult.Proceed;
     }
 
-    private VerbResult DigUnknown(ObjectId id)
+    internal sealed class Dig : Verb
     {
-        PRINT("YOU CAN'T DIG THAT!");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult DigHole(ObjectId id)
-    {
-        if (!state.Objects.IsHere(ObjectId.Shovel, state.Map.CurrentRoom))
+        public Dig(GameState state, Action<string> print)
+            : base(state, print)
         {
-            PRINT("YOU DON'T HAVE A SHOVEL!");
+        }
+
+        public VerbResult Unknown(ObjectId id)
+        {
+            this.Print("YOU CAN'T DIG THAT!");
             return VerbResult.Idle;
         }
 
-        if (state.Map.CurrentRoom != RoomId.OpenField)
+        public VerbResult Hole(ObjectId id)
         {
-            PRINT("YOU DON'T FIND ANYTHING.");
+            if (!this.State.Objects.IsHere(ObjectId.Shovel, this.State.Map.CurrentRoom))
+            {
+                this.Print("YOU DON'T HAVE A SHOVEL!");
+                return VerbResult.Idle;
+            }
+
+            if (this.State.Map.CurrentRoom != RoomId.OpenField)
+            {
+                this.Print("YOU DON'T FIND ANYTHING.");
+                return VerbResult.Idle;
+            }
+
+            if (this.State.Objects.Ref(ObjectId.Sword).Room != RoomId.None)
+            {
+                this.Print("THERE'S NOTHING ELSE THERE!");
+                return VerbResult.Idle;
+            }
+
+            this.Print("THERE'S SOMETHING THERE!");
+            this.State.Objects.Drop(ObjectId.Sword, RoomId.OpenField);
             return VerbResult.Idle;
         }
-
-        if (state.Objects.Ref(ObjectId.Sword).Room != RoomId.None)
-        {
-            PRINT("THERE'S NOTHING ELSE THERE!");
-            return VerbResult.Idle;
-        }
-
-        PRINT("THERE'S SOMETHING THERE!");
-        state.Objects.Drop(ObjectId.Sword, RoomId.OpenField);
-        return VerbResult.Idle;
     }
 }
