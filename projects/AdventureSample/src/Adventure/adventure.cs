@@ -207,7 +207,9 @@ internal sealed class adventure
         verbRoutines.Add("OPE", byId, Eq(ObjectId.Box, OpenBox), Eq(ObjectId.Cabinet, OpenCabinet), Eq(ObjectId.Case, OpenCase), Else<ObjectId>(OpenUnknown));
         verbRoutines.Add("POU", byId, Eq(ObjectId.Salt, PourSalt), Eq(ObjectId.Bottle, PourFormula), Else<ObjectId>(PourUnknown));
         verbRoutines.Add("CLI", byId, Eq(ObjectId.Tree, ClimbTree), Eq(ObjectId.Ladder, ClimbLadder), Else<ObjectId>(ClimbUnknown));
-        verbRoutines.Add("JUM", Jump);
+
+        Jump jump = new Jump(state, PRINT);
+        verbRoutines.Add("JUM", jump.Any);
 
         Dig dig = new Dig(state, PRINT);
         verbRoutines.Add("DIG", byId, Eq(Any(ObjectId.Blank, ObjectId.Hole, ObjectId.Ground), dig.Hole), Else<ObjectId>(dig.Unknown));
@@ -697,35 +699,43 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Jump()
+    private sealed class Jump : Verb
     {
-        if ((state.Map.CurrentRoom == RoomId.EdgeOfForest) || (state.Map.CurrentRoom == RoomId.BranchOfTree))
+        public Jump(GameState state, Action<string> print)
+            : base(state, print)
         {
-            return JumpTree();
         }
 
-        return JumpUnknown();
-    }
-
-    private VerbResult JumpUnknown()
-    {
-        PRINT("WHEE! THAT WAS FUN!");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult JumpTree()
-    {
-        if (state.Map.CurrentRoom == RoomId.BranchOfTree)
+        public VerbResult Any()
         {
-            PRINT("YOU GRAB A HIGHER BRANCH ON THE");
-            PRINT("TREE AND PULL YOURSELF UP....");
-            state.Map.CurrentRoom = RoomId.TopOfTree;
+            if ((this.State.Map.CurrentRoom == RoomId.EdgeOfForest) || (this.State.Map.CurrentRoom == RoomId.BranchOfTree))
+            {
+                return Tree();
+            }
+
+            return Unknown();
+        }
+
+        private VerbResult Unknown()
+        {
+            this.Print("WHEE! THAT WAS FUN!");
+            return VerbResult.Idle;
+        }
+
+        private VerbResult Tree()
+        {
+            if (this.State.Map.CurrentRoom == RoomId.BranchOfTree)
+            {
+                this.Print("YOU GRAB A HIGHER BRANCH ON THE");
+                this.Print("TREE AND PULL YOURSELF UP....");
+                this.State.Map.CurrentRoom = RoomId.TopOfTree;
+                return VerbResult.Proceed;
+            }
+
+            this.Print("YOU GRAB THE LOWEST BRANCH OF THE");
+            this.Print("TREE AND PULL YOURSELF UP....");
+            this.State.Map.CurrentRoom = RoomId.BranchOfTree;
             return VerbResult.Proceed;
         }
-
-        PRINT("YOU GRAB THE LOWEST BRANCH OF THE");
-        PRINT("TREE AND PULL YOURSELF UP....");
-        state.Map.CurrentRoom = RoomId.BranchOfTree;
-        return VerbResult.Proceed;
     }
 }
