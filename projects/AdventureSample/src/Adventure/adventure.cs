@@ -213,8 +213,8 @@ internal sealed class adventure
         verbRoutines.Add("LEA", byId, Leave);
         verbRoutines.Add("EXI", byId, Leave);
         verbRoutines.Add("FIG", byId, Eq(ObjectId.Blank, FightBlank), Eq(ObjectId.Guard, FightGuard), Else<ObjectId>(FightUnknown));
-        Wear wear = new Wear(PRINT);
-        verbRoutines.Add("WEA", byId, Eq(ObjectId.Gloves, i => wear.Gloves(i, state)), Else<ObjectId>(wear.Unknown));
+        Wear wear = new Wear(state, PRINT);
+        verbRoutines.Add("WEA", byId, Eq(ObjectId.Gloves, wear.Gloves), Else<ObjectId>(wear.Unknown));
     }
 
     private static Predicate<T> Any<T>(params T[] vals) where T : struct
@@ -851,10 +851,12 @@ internal sealed class adventure
 
     private sealed class Wear
     {
+        private readonly GameState state;
         private readonly Action<string> print;
 
-        public Wear(Action<string> print)
+        public Wear(GameState state, Action<string> print)
         {
+            this.state = state;
             this.print = print;
         }
 
@@ -864,16 +866,16 @@ internal sealed class adventure
             return VerbResult.Idle;
         }
 
-        public VerbResult Gloves(ObjectId id, GameState state)
+        public VerbResult Gloves(ObjectId id)
         {
-            if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
+            if (!this.state.Objects.IsHere(id, state.Map.CurrentRoom))
             {
-                print("YOU DON'T HAVE THE GLOVES.");
+                this.print("YOU DON'T HAVE THE GLOVES.");
                 return VerbResult.Idle;
             }
 
             this.print("YOU ARE NOW WEARING THE GLOVES.");
-            state.WearingGloves = true;
+            this.state.WearingGloves = true;
             return VerbResult.Idle;
         }
     }
