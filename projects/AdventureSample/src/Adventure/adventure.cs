@@ -204,7 +204,9 @@ internal sealed class adventure
         verbRoutines.Add("EXA", byId, Examine);
         verbRoutines.Add("QUI", Quit);
         verbRoutines.Add("REA", byId, Eq(ObjectId.Diary, ReadDiary), Eq(ObjectId.Dictionary, ReadDictionary), Eq(ObjectId.Bottle, ReadBottle), Else<ObjectId>(ReadUnknown));
-        verbRoutines.Add("OPE", byId, Eq(ObjectId.Box, OpenBox), Eq(ObjectId.Cabinet, OpenCabinet), Eq(ObjectId.Case, OpenCase), Else<ObjectId>(OpenUnknown));
+
+        Open open = new Open(state, PRINT);
+        verbRoutines.Add("OPE", byId, Eq(ObjectId.Box, open.Box), Eq(ObjectId.Cabinet, open.Cabinet), Eq(ObjectId.Case, open.Case), Else<ObjectId>(open.Unknown));
 
         Pour pour = new Pour(state, PRINT);
         verbRoutines.Add("POU", byId, Eq(ObjectId.Salt, pour.Salt), Eq(ObjectId.Bottle, pour.Formula), Else<ObjectId>(pour.Unknown));
@@ -548,55 +550,63 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult OpenUnknown(ObjectId id)
+    internal sealed class Open : Verb
     {
-        PRINT("YOU CAN'T OPEN THAT!");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult OpenCase(ObjectId id)
-    {
-        if (state.Map.CurrentRoom != RoomId.LargeHall)
+        public Open(GameState state, Action<string> print)
+            : base(state, print)
         {
-            PRINT("THERE'S NO CASE HERE!");
+        }
+
+        public VerbResult Unknown(ObjectId id)
+        {
+            this.Print("YOU CAN'T OPEN THAT!");
             return VerbResult.Idle;
         }
 
-        if (!state.WearingGloves)
+        public VerbResult Case(ObjectId id)
         {
-            PRINT("THE CASE IS ELECTRIFIED!");
+            if (this.State.Map.CurrentRoom != RoomId.LargeHall)
+            {
+                this.Print("THERE'S NO CASE HERE!");
+                return VerbResult.Idle;
+            }
+
+            if (!this.State.WearingGloves)
+            {
+                this.Print("THE CASE IS ELECTRIFIED!");
+                return VerbResult.Idle;
+            }
+
+            this.Print("THE GLOVES INSULATE AGAINST THE");
+            this.Print("ELECTRICITY! THE CASE OPENS!");
+            this.State.Objects.Drop(ObjectId.Ruby, RoomId.LargeHall);
             return VerbResult.Idle;
         }
 
-        PRINT("THE GLOVES INSULATE AGAINST THE");
-        PRINT("ELECTRICITY! THE CASE OPENS!");
-        state.Objects.Drop(ObjectId.Ruby, RoomId.LargeHall);
-        return VerbResult.Idle;
-    }
-
-    private VerbResult OpenCabinet(ObjectId id)
-    {
-        if (state.Map.CurrentRoom != RoomId.Kitchen)
+        public VerbResult Cabinet(ObjectId id)
         {
-            PRINT("THERE'S NO CABINET HERE!");
+            if (this.State.Map.CurrentRoom != RoomId.Kitchen)
+            {
+                this.Print("THERE'S NO CABINET HERE!");
+                return VerbResult.Idle;
+            }
+
+            this.Print("THERE'S SOMETHING INSIDE!");
+            this.State.Objects.Drop(ObjectId.Salt, RoomId.Kitchen);
             return VerbResult.Idle;
         }
 
-        PRINT("THERE'S SOMETHING INSIDE!");
-        state.Objects.Drop(ObjectId.Salt, RoomId.Kitchen);
-        return VerbResult.Idle;
-    }
-
-    private VerbResult OpenBox(ObjectId id)
-    {
-        if (!state.Objects.IsHere(id, state.Map.CurrentRoom))
+        public VerbResult Box(ObjectId id)
         {
-            PRINT("THERE'S NO BOX HERE!");
+            if (!this.State.Objects.IsHere(id, this.State.Map.CurrentRoom))
+            {
+                this.Print("THERE'S NO BOX HERE!");
+                return VerbResult.Idle;
+            }
+
+            this.State.Objects.Drop(ObjectId.Bottle, this.State.Map.CurrentRoom);
+            this.Print("SOMETHING FELL OUT!");
             return VerbResult.Idle;
         }
-
-        state.Objects.Drop(ObjectId.Bottle, state.Map.CurrentRoom);
-        PRINT("SOMETHING FELL OUT!");
-        return VerbResult.Idle;
     }
 }
