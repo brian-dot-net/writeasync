@@ -209,7 +209,9 @@ internal sealed class adventure
         verbRoutines.Add("CLI", byId, Eq(ObjectId.Tree, ClimbTree), Eq(ObjectId.Ladder, ClimbLadder), Else<ObjectId>(ClimbUnknown));
         verbRoutines.Add("JUM", Jump);
         verbRoutines.Add("DIG", byId, Eq(Any(ObjectId.Blank, ObjectId.Hole, ObjectId.Ground), DigHole), Else<ObjectId>(DigUnknown));
-        verbRoutines.Add("ROW", byId, Eq(Any(ObjectId.Boat, ObjectId.Blank), RowBoat), Else<ObjectId>(RowUnknown));
+
+        Row row = new Row(state, PRINT);
+        verbRoutines.Add("ROW", byId, Eq(Any(ObjectId.Boat, ObjectId.Blank), row.Boat), Else<ObjectId>(row.Unknown));
 
         Wave wave = new Wave(state, PRINT);
         verbRoutines.Add("WAV", byId, Eq(ObjectId.Fan, wave.Fan), Else<ObjectId>(wave.Unknown));
@@ -756,21 +758,29 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult RowUnknown(ObjectId id)
+    internal sealed class Row : Verb
     {
-        PRINT("HOW CAN YOU ROW THAT?");
-        return VerbResult.Idle;
-    }
-
-    private VerbResult RowBoat(ObjectId id)
-    {
-        if (state.Map.CurrentRoom != RoomId.Boat)
+        public Row(GameState state, Action<string> print)
+            : base(state, print)
         {
-            PRINT("YOU'RE NOT IN THE BOAT!");
+        }
+
+        public VerbResult Unknown(ObjectId id)
+        {
+            this.Print("HOW CAN YOU ROW THAT?");
             return VerbResult.Idle;
         }
 
-        PRINT("YOU DON'T HAVE AN OAR!");
-        return VerbResult.Idle;
+        public VerbResult Boat(ObjectId id)
+        {
+            if (this.State.Map.CurrentRoom != RoomId.Boat)
+            {
+                this.Print("YOU'RE NOT IN THE BOAT!");
+                return VerbResult.Idle;
+            }
+
+            this.Print("YOU DON'T HAVE AN OAR!");
+            return VerbResult.Idle;
+        }
     }
 }
