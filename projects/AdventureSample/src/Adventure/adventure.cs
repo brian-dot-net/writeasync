@@ -141,7 +141,7 @@ internal sealed class adventure
         PRINT("");
         PRINT("");
 
-        InitState();
+        state = new GameState();
 
         PrintIntro();
 
@@ -185,11 +185,6 @@ internal sealed class adventure
                 }
             }
         }
-    }
-
-    private void InitState()
-    {
-        state = new GameState();
     }
 
     private void InitHandlers(VerbRoutines verbRoutines)
@@ -870,28 +865,5 @@ internal sealed class adventure
         print("YOU ARE NOW WEARING THE GLOVES.");
         state.WearingGloves = true;
         return VerbResult.Idle;
-    }
-
-    private sealed class GameState
-    {
-        public GameState()
-        {
-            this.Objects = new Objects();
-            this.Map = new Map();
-        }
-
-        public int InventoryItems { get; set; }
-
-        public bool SaltPoured { get; set; }
-
-        public bool FormulaPoured { get; set; }
-
-        public int MixtureCount { get; set; }
-
-        public bool WearingGloves { get; set; }
-
-        public Objects Objects { get; private set; }
-
-        public Map Map { get; private set; }
     }
 }
