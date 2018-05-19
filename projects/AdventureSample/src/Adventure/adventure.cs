@@ -226,7 +226,7 @@ internal sealed class adventure
         verbRoutines.Add("LEA", byId, Leave);
         verbRoutines.Add("EXI", byId, Leave);
         verbRoutines.Add("FIG", byId, Eq(ObjectId.Blank, FightBlank), Eq(ObjectId.Guard, FightGuard), Else<ObjectId>(FightUnknown));
-        verbRoutines.Add("WEA", byId, Eq(ObjectId.Gloves, i => WearGloves(i, PRINT)), Else<ObjectId>(i => WearUnknown(i, PRINT)));
+        verbRoutines.Add("WEA", byId, Eq(ObjectId.Gloves, i => WearGloves(i, PRINT, state)), Else<ObjectId>(i => WearUnknown(i, PRINT)));
     }
 
     private static Predicate<T> Any<T>(params T[] vals) where T : struct
@@ -861,13 +861,13 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult WearUnknown(ObjectId id, Action<string> print)
+    private static VerbResult WearUnknown(ObjectId id, Action<string> print)
     {
         print("YOU CAN'T WEAR THAT!");
         return VerbResult.Idle;
     }
 
-    private VerbResult WearGloves(ObjectId id, Action<string> print)
+    private static VerbResult WearGloves(ObjectId id, Action<string> print, GameState state)
     {
         if (!state.objects.IsHere(id, state.map.CurrentRoom))
         {
