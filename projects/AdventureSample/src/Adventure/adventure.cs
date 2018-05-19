@@ -210,10 +210,14 @@ internal sealed class adventure
         verbRoutines.Add("DIG", byId, Eq(Any(ObjectId.Blank, ObjectId.Hole, ObjectId.Ground), DigHole), Else<ObjectId>(DigUnknown));
         verbRoutines.Add("ROW", byId, Eq(Any(ObjectId.Boat, ObjectId.Blank), RowBoat), Else<ObjectId>(RowUnknown));
         verbRoutines.Add("WAV", byId, Eq(ObjectId.Fan, WaveFan), Else<ObjectId>(WaveUnknown));
-        verbRoutines.Add("LEA", byId, Leave);
-        verbRoutines.Add("EXI", byId, Leave);
+
+        Leave leave = new Leave(state, PRINT);
+        verbRoutines.Add("LEA", byId, leave.Any);
+        verbRoutines.Add("EXI", byId, leave.Any);
+
         Fight fight = new Fight(state, PRINT);
         verbRoutines.Add("FIG", byId, Eq(ObjectId.Blank, fight.Blank), Eq(ObjectId.Guard, fight.Guard), Else<ObjectId>(fight.Unknown));
+
         Wear wear = new Wear(state, PRINT);
         verbRoutines.Add("WEA", byId, Eq(ObjectId.Gloves, wear.Gloves), Else<ObjectId>(wear.Unknown));
     }
@@ -799,21 +803,29 @@ internal sealed class adventure
         return VerbResult.Idle;
     }
 
-    private VerbResult Leave(ObjectId id)
+    internal sealed class Leave : Verb
     {
-        if (state.Map.CurrentRoom == RoomId.Boat)
+        public Leave(GameState state, Action<string> print)
+            : base(state, print)
         {
-            if ((id == ObjectId.Boat) || (id == ObjectId.Blank))
-            {
-                state.Map.CurrentRoom = state.Objects.Ref(ObjectId.Boat).Room;
-                return VerbResult.Proceed;
-            }
-
-            PRINT("HUH?");
-            return VerbResult.Idle;
         }
 
-        PRINT("PLEASE GIVE A DIRECTION!");
-        return VerbResult.Idle;
+        public VerbResult Any(ObjectId id)
+        {
+            if (this.State.Map.CurrentRoom == RoomId.Boat)
+            {
+                if ((id == ObjectId.Boat) || (id == ObjectId.Blank))
+                {
+                    this.State.Map.CurrentRoom = this.State.Objects.Ref(ObjectId.Boat).Room;
+                    return VerbResult.Proceed;
+                }
+
+                this.Print("HUH?");
+                return VerbResult.Idle;
+            }
+
+            this.Print("PLEASE GIVE A DIRECTION!");
+            return VerbResult.Idle;
+        }
     }
 }
