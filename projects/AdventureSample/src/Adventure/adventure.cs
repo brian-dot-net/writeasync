@@ -757,30 +757,4 @@ internal sealed class adventure
         state.Objects.Drop(ObjectId.Sword, RoomId.OpenField);
         return VerbResult.Idle;
     }
-
-    internal sealed class Row : Verb
-    {
-        public Row(GameState state, Action<string> print)
-            : base(state, print)
-        {
-        }
-
-        public VerbResult Unknown(ObjectId id)
-        {
-            this.Print("HOW CAN YOU ROW THAT?");
-            return VerbResult.Idle;
-        }
-
-        public VerbResult Boat(ObjectId id)
-        {
-            if (this.State.Map.CurrentRoom != RoomId.Boat)
-            {
-                this.Print("YOU'RE NOT IN THE BOAT!");
-                return VerbResult.Idle;
-            }
-
-            this.Print("YOU DON'T HAVE AN OAR!");
-            return VerbResult.Idle;
-        }
-    }
 }
