@@ -13,7 +13,7 @@ namespace TaskSample.Extensions
     {
         public static async Task<T> FirstAsync<T>(this IEnumerable<Func<CancellationToken, Task<T>>> funcs, Predicate<T> pred)
         {
-            var tasks = new List<Task<T>>();
+            var tasks = new List<Task>();
             using (MatchFunc<T> match = new MatchFunc<T>(pred))
             {
                 foreach (Func<CancellationToken, Task<T>> func in funcs)
@@ -23,7 +23,7 @@ namespace TaskSample.Extensions
                         break;
                     }
 
-                    Task<T> task = match.RunAsync(func);
+                    Task task = match.RunAsync(func);
                     tasks.Add(task);
                 }
 
@@ -60,12 +60,11 @@ namespace TaskSample.Extensions
                 }
             }
 
-            public async Task<T> RunAsync(Func<CancellationToken, Task<T>> func)
+            public async Task RunAsync(Func<CancellationToken, Task<T>> func)
             {
-                T result = default(T);
                 try
                 {
-                    result = await func(this.cts.Token);
+                    T result = await func(this.cts.Token);
                     if (this.pred(result))
                     {
                         this.firstResult = Tuple.Create(result);
@@ -75,8 +74,6 @@ namespace TaskSample.Extensions
                 catch (Exception)
                 {
                 }
-
-                return result;
             }
 
             public void Dispose()
