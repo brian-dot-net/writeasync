@@ -6,7 +6,6 @@ namespace TaskSample.Extensions
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -14,16 +13,36 @@ namespace TaskSample.Extensions
     {
         public static async Task<T> FirstAsync<T>(this IEnumerable<Func<CancellationToken, Task<T>>> funcs, Predicate<T> pred)
         {
-            foreach (Func<CancellationToken, Task<T>> func in funcs)
+            var tasks = new List<Task<T>>();
+            T firstResult = default(T);
+            using (CancellationTokenSource cts = new CancellationTokenSource())
             {
-                T result = await func(CancellationToken.None);
-                if (pred(result))
+                foreach (Func<CancellationToken, Task<T>> func in funcs)
                 {
-                    return result;
-                }
-            }
+                    if (cts.IsCancellationRequested)
+                    {
+                        break;
+                    }
 
-            return default(T);
+                    Func<CancellationToken, Task<T>> match = async t =>
+                    {
+                        T result = await func(t);
+                        if (pred(result))
+                        {
+                            firstResult = result;
+                            cts.Cancel();
+                        }
+
+                        return result;
+                    };
+
+                    Task<T> task = match(CancellationToken.None);
+                    tasks.Add(task);
+                }
+
+                await Task.WhenAny(tasks);
+                return firstResult;
+            }
         }
     }
 }
