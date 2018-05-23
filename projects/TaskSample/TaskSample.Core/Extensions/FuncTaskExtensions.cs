@@ -37,7 +37,7 @@ namespace TaskSample.Extensions
             private readonly CancellationTokenSource cts;
             private readonly Predicate<T> pred;
 
-            private volatile Tuple<T> firstResult;
+            private Tuple<T> firstResult;
 
             public MatchFunc(Predicate<T> pred)
             {
@@ -67,8 +67,7 @@ namespace TaskSample.Extensions
                     T result = await func(this.cts.Token);
                     if (this.pred(result))
                     {
-                        this.firstResult = Tuple.Create(result);
-                        this.cts.Cancel();
+                        this.Complete(result);
                     }
                 }
                 catch (Exception)
@@ -79,6 +78,14 @@ namespace TaskSample.Extensions
             public void Dispose()
             {
                 this.cts.Dispose();
+            }
+
+            private void Complete(T result)
+            {
+                if (Interlocked.CompareExchange(ref this.firstResult, Tuple.Create(result), null) == null)
+                {
+                    this.cts.Cancel();
+                }
             }
         }
     }
