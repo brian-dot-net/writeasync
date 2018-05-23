@@ -29,6 +29,25 @@ namespace TaskSample.Test
         }
 
         [Fact]
+        public void OneItemMatchesAsyncReturns()
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+            IEnumerable<Func<CancellationToken, Task<string>>> funcs = new Func<CancellationToken, Task<string>>[]
+            {
+                t => tcs.Task
+            };
+
+            Task<string> task = funcs.FirstAsync(r => true);
+
+            task.IsCompleted.Should().BeFalse();
+
+            tcs.SetResult("good");
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("good");
+        }
+
+        [Fact]
         public void TwoItemsFirstMatchesSyncReturns()
         {
             IEnumerable<Func<CancellationToken, Task<string>>> funcs = new Func<CancellationToken, Task<string>>[]
