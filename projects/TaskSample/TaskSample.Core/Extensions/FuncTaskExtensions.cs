@@ -14,7 +14,7 @@ namespace TaskSample.Extensions
         public static async Task<T> FirstAsync<T>(this IEnumerable<Func<CancellationToken, Task<T>>> funcs, Predicate<T> pred)
         {
             var tasks = new List<Task<T>>();
-            T firstResult = default(T);
+            Tuple<T> firstResult = null;
             using (CancellationTokenSource cts = new CancellationTokenSource())
             {
                 foreach (Func<CancellationToken, Task<T>> func in funcs)
@@ -29,7 +29,7 @@ namespace TaskSample.Extensions
                         T result = await func(t);
                         if (pred(result))
                         {
-                            firstResult = result;
+                            firstResult = Tuple.Create(result);
                             cts.Cancel();
                         }
 
@@ -41,7 +41,12 @@ namespace TaskSample.Extensions
                 }
 
                 await Task.WhenAny(tasks);
-                return firstResult;
+                if (firstResult == null)
+                {
+                    throw new InvalidOperationException("No matching result.");
+                }
+
+                return firstResult.Item1;
             }
         }
     }
