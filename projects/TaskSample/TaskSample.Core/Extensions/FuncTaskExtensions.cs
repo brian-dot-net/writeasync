@@ -12,9 +12,18 @@ namespace TaskSample.Extensions
 
     public static class FuncTaskExtensions
     {
-        public static Task<T> FirstAsync<T>(this IEnumerable<Func<CancellationToken, Task<T>>> funcs, Predicate<T> pred)
+        public static async Task<T> FirstAsync<T>(this IEnumerable<Func<CancellationToken, Task<T>>> funcs, Predicate<T> pred)
         {
-            return funcs.First()(CancellationToken.None);
+            foreach (Func<CancellationToken, Task<T>> func in funcs)
+            {
+                T result = await func(CancellationToken.None);
+                if (pred(result))
+                {
+                    return result;
+                }
+            }
+
+            return default(T);
         }
     }
 }

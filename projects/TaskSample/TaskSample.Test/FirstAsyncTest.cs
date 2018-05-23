@@ -42,5 +42,20 @@ namespace TaskSample.Test
             task.IsCompletedSuccessfully.Should().BeTrue();
             task.Result.Should().Be("good 1");
         }
+
+        [Fact]
+        public void TwoItemsSecondMatchesSyncReturns()
+        {
+            IEnumerable<Func<CancellationToken, Task<string>>> funcs = new Func<CancellationToken, Task<string>>[]
+            {
+                t => Task.FromResult("not good"),
+                t => Task.FromResult("good 2")
+            };
+
+            Task<string> task = funcs.FirstAsync(r => r.StartsWith("good", StringComparison.Ordinal));
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("good 2");
+        }
     }
 }
