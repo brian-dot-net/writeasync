@@ -177,6 +177,39 @@ namespace TaskSample.Test
             task.Result.Should().Be("good 3");
         }
 
+        [Fact]
+        public void FiveItemsAllHangExceptLastWhichMatchesAsyncReturns()
+        {
+            List<Task> canceledTasks = new List<Task>();
+            Func<CancellationToken, Task<string>> hang = t =>
+            {
+                var current = new TaskCompletionSource<string>();
+                t.Register(() => current.SetCanceled());
+                Task<string> ct = current.Task;
+                canceledTasks.Add(ct);
+                return ct;
+            };
+            TaskCompletionSource<string> delayed = new TaskCompletionSource<string>();
+            IEnumerable<Func<CancellationToken, Task<string>>> funcs = new Func<CancellationToken, Task<string>>[]
+            {
+                hang,
+                hang,
+                hang,
+                hang,
+                t => delayed.Task
+            };
+
+            Task<string> task = funcs.FirstAsync(r => r.StartsWith("good", StringComparison.Ordinal));
+
+            task.IsCompleted.Should().BeFalse();
+
+            delayed.SetResult("good 1");
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("good 1");
+            canceledTasks.Should().OnlyContain(t => t.IsCanceled);
+        }
+
         private static void ShouldBeFaulted(Task task)
         {
             task.IsCompleted.Should().BeTrue();
