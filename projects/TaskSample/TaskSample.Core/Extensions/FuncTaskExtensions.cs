@@ -26,21 +26,28 @@ namespace TaskSample.Extensions
 
                     Func<CancellationToken, Task<T>> match = async t =>
                     {
-                        T result = await func(t);
-                        if (pred(result))
+                        T result = default(T);
+                        try
                         {
-                            firstResult = Tuple.Create(result);
-                            cts.Cancel();
+                            result = await func(t);
+                            if (pred(result))
+                            {
+                                firstResult = Tuple.Create(result);
+                                cts.Cancel();
+                            }
+                        }
+                        catch (Exception)
+                        {
                         }
 
                         return result;
                     };
 
-                    Task<T> task = match(CancellationToken.None);
+                    Task<T> task = match(cts.Token);
                     tasks.Add(task);
                 }
 
-                await Task.WhenAny(tasks);
+                await Task.WhenAll(tasks);
                 if (firstResult == null)
                 {
                     throw new InvalidOperationException("No matching result.");

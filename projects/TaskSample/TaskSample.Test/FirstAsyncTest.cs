@@ -129,11 +129,11 @@ namespace TaskSample.Test
         [Fact]
         public void TwoItemsFirstHangsUntilCancelSecondMatchesSyncReturns()
         {
-            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
             IEnumerable<Func<CancellationToken, Task<string>>> funcs = new Func<CancellationToken, Task<string>>[]
             {
                 t =>
                 {
+                    TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
                     t.Register(() => tcs.SetCanceled());
                     return tcs.Task;
                 },
@@ -144,6 +144,37 @@ namespace TaskSample.Test
 
             task.IsCompletedSuccessfully.Should().BeTrue();
             task.Result.Should().Be("good 2");
+        }
+
+        [Fact]
+        public void ThreeItemsNoMatchExceptLastAsyncReturns()
+        {
+            TaskCompletionSource<string> tcs1 = new TaskCompletionSource<string>();
+            TaskCompletionSource<string> tcs2 = new TaskCompletionSource<string>();
+            TaskCompletionSource<string> tcs3 = new TaskCompletionSource<string>();
+            IEnumerable<Func<CancellationToken, Task<string>>> funcs = new Func<CancellationToken, Task<string>>[]
+            {
+                t => tcs1.Task,
+                t => tcs2.Task,
+                t => tcs3.Task
+            };
+
+            Task<string> task = funcs.FirstAsync(r => r.StartsWith("good", StringComparison.Ordinal));
+
+            task.IsCompleted.Should().BeFalse();
+
+            tcs1.SetResult("bad 1");
+
+            task.IsCompleted.Should().BeFalse();
+
+            tcs2.SetResult("bad 2");
+
+            task.IsCompleted.Should().BeFalse();
+
+            tcs3.SetResult("good 3");
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("good 3");
         }
 
         private static void ShouldBeFaulted(Task task)
