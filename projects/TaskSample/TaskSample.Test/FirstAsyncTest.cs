@@ -57,11 +57,7 @@ namespace TaskSample.Test
 
             Task<string> task = funcs.FirstAsync(r => true);
 
-            task.IsCompleted.Should().BeTrue();
-            task.Exception.Should().NotBeNull();
-            task.Exception.InnerException.Should()
-                .BeOfType<InvalidOperationException>().Which
-                .Message.Should().Be("No matching result.");
+            ShouldBeFaulted(task);
         }
 
         [Fact]
@@ -127,11 +123,7 @@ namespace TaskSample.Test
 
             Task<string> task = funcs.FirstAsync(r => r.StartsWith("good", StringComparison.Ordinal));
 
-            task.IsCompleted.Should().BeTrue();
-            task.Exception.Should().NotBeNull();
-            task.Exception.InnerException.Should()
-                .BeOfType<InvalidOperationException>().Which
-                .Message.Should().Be("No matching result.");
+            ShouldBeFaulted(task);
         }
 
         [Fact]
@@ -152,6 +144,15 @@ namespace TaskSample.Test
 
             task.IsCompletedSuccessfully.Should().BeTrue();
             task.Result.Should().Be("good 2");
+        }
+
+        private static void ShouldBeFaulted(Task task)
+        {
+            task.IsCompleted.Should().BeTrue();
+            task.Exception.Should().NotBeNull();
+            task.Exception.InnerException.Should()
+                .BeOfType<InvalidOperationException>().Which
+                .Message.Should().Be("No matching result.");
         }
     }
 }
