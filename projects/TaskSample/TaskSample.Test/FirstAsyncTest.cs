@@ -117,6 +117,24 @@ namespace TaskSample.Test
         }
 
         [Fact]
+        public void TwoItemsSyncNoMatchesThrowsInvalidOperation()
+        {
+            IEnumerable<Func<CancellationToken, Task<string>>> funcs = new Func<CancellationToken, Task<string>>[]
+            {
+                t => Task.FromResult("bad 1"),
+                t => Task.FromResult("bad 2")
+            };
+
+            Task<string> task = funcs.FirstAsync(r => r.StartsWith("good", StringComparison.Ordinal));
+
+            task.IsCompleted.Should().BeTrue();
+            task.Exception.Should().NotBeNull();
+            task.Exception.InnerException.Should()
+                .BeOfType<InvalidOperationException>().Which
+                .Message.Should().Be("No matching result.");
+        }
+
+        [Fact]
         public void TwoItemsFirstHangsUntilCancelSecondMatchesSyncReturns()
         {
             TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
