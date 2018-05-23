@@ -65,6 +65,28 @@ namespace TaskSample.Test
         }
 
         [Fact]
+        public void OneItemThrowsAsyncThrowsInvalidOperation()
+        {
+            TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
+            IEnumerable<Func<CancellationToken, Task<string>>> funcs = new Func<CancellationToken, Task<string>>[]
+            {
+                t => tcs.Task
+            };
+
+            Task<string> task = funcs.FirstAsync(r => true);
+
+            task.IsCompleted.Should().BeFalse();
+
+            tcs.SetException(new BadImageFormatException("!!!"));
+
+            task.IsCompleted.Should().BeTrue();
+            task.Exception.Should().NotBeNull();
+            task.Exception.InnerException.Should()
+                .BeOfType<InvalidOperationException>().Which
+                .Message.Should().Be("No matching result.");
+        }
+
+        [Fact]
         public void TwoItemsFirstMatchesSyncReturns()
         {
             IEnumerable<Func<CancellationToken, Task<string>>> funcs = new Func<CancellationToken, Task<string>>[]
