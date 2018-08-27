@@ -60,5 +60,15 @@ namespace RootSample.Test
         {
             new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
         }
+
+        [Theory]
+        [InlineData(2, "sqrt(2)")]
+        [InlineData(3, "sqrt(3)")]
+        [InlineData(65521, "sqrt(65521)")]
+        [InlineData(2147483647, "sqrt(2147483647)")]
+        public void IrreduciblePrime(int n, string expected)
+        {
+            new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
+        }
     }
 }
