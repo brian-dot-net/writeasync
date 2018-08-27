@@ -61,7 +61,7 @@ namespace RootSample.Test
 
         private static void Test(int n, string expected)
         {
-            new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
+            RootTerm.Sqrt(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
         }
     }
 }

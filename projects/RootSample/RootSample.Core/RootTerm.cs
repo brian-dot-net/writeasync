@@ -15,7 +15,7 @@ namespace RootSample
         private readonly int c;
         private readonly int x;
 
-        public RootTerm(int n)
+        private RootTerm(int n)
         {
             if (n == 0)
             {
@@ -56,6 +56,8 @@ namespace RootSample
 
             this.x = n;
         }
+
+        public static RootTerm Sqrt(int n) => new RootTerm(n);
 
         public override string ToString()
         {
