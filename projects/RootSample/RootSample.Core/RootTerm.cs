@@ -35,6 +35,11 @@ namespace RootSample
             this.c = 1;
             foreach (ushort p in Primes)
             {
+                if (n < p)
+                {
+                    break;
+                }
+
                 int r;
                 while (true)
                 {
