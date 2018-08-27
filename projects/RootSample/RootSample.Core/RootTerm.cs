@@ -62,7 +62,11 @@ namespace RootSample
 
             if (this.x > 1)
             {
-                sb.Append('*');
+                if (sb.Length != 0)
+                {
+                    sb.Append('*');
+                }
+
                 sb.Append("sqrt(");
                 sb.Append(this.x);
                 sb.Append(')');

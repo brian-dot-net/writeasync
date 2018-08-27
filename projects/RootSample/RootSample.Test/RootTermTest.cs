@@ -49,5 +49,16 @@ namespace RootSample.Test
         {
             new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
         }
+
+        [Theory]
+        [InlineData(6, "sqrt(6)")]
+        [InlineData(15, "sqrt(15)")]
+        [InlineData(10002, "sqrt(10002)")]
+        [InlineData(223092870, "sqrt(223092870)")]
+        [InlineData(2147483642, "sqrt(2147483642)")]
+        public void IrreducibleComposite(int n, string expected)
+        {
+            new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
+        }
     }
 }
