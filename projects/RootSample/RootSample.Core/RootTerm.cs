@@ -24,6 +24,14 @@ namespace RootSample
                 return;
             }
 
+            int s = (int)Math.Sqrt(n);
+            if (s * s == n)
+            {
+                this.x = 1;
+                this.c = s;
+                return;
+            }
+
             this.c = 1;
             foreach (ushort p in Primes)
             {
@@ -41,16 +49,7 @@ namespace RootSample
                 }
             }
 
-            int s = (int)Math.Sqrt(n);
-            if (s * s == n)
-            {
-                this.x = 1;
-                this.c *= s;
-            }
-            else
-            {
-                this.x = n;
-            }
+            this.x = n;
         }
 
         public override string ToString()
