@@ -70,5 +70,14 @@ namespace RootSample.Test
         {
             new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
         }
+
+        [Theory]
+        [InlineData(1536192006, "16001*sqrt(6)")]
+        [InlineData(2144601507, "26737*sqrt(3)")]
+        [InlineData(2144994002, "32749*sqrt(2)")]
+        public void LargePrimeSquareFactors(int n, string expected)
+        {
+            new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
+        }
     }
 }
