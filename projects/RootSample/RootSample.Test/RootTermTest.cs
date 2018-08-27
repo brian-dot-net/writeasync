@@ -31,5 +31,14 @@ namespace RootSample.Test
         {
             new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
         }
+
+        [Theory]
+        [InlineData(18, "3*sqrt(2)")]
+        [InlineData(243, "9*sqrt(3)")]
+        [InlineData(2147483646, "3*sqrt(238609294)")]
+        public void FactorsOfNine(int n, string expected)
+        {
+            new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
+        }
     }
 }

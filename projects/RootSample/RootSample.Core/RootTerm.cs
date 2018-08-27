@@ -5,10 +5,13 @@
 namespace RootSample
 {
     using System;
+    using System.Collections.Generic;
     using System.Text;
 
     public struct RootTerm
     {
+        private static readonly List<ushort> Primes = new List<ushort>() { 2, 3 };
+
         private readonly int c;
         private readonly int x;
 
@@ -18,33 +21,35 @@ namespace RootSample
             {
                 this.c = 0;
                 this.x = 0;
+                return;
             }
-            else
+
+            this.c = 1;
+            foreach (ushort p in Primes)
             {
-                this.c = 1;
+                int r;
                 while (true)
                 {
-                    int r;
-                    int m = Math.DivRem(n, 4, out r);
+                    int m = Math.DivRem(n, p * p, out r);
                     if (r != 0)
                     {
                         break;
                     }
 
                     n = m;
-                    this.c *= 2;
+                    this.c *= p;
                 }
+            }
 
-                int s = (int)Math.Sqrt(n);
-                if (s * s == n)
-                {
-                    this.x = 1;
-                    this.c *= s;
-                }
-                else
-                {
-                    this.x = n;
-                }
+            int s = (int)Math.Sqrt(n);
+            if (s * s == n)
+            {
+                this.x = 1;
+                this.c *= s;
+            }
+            else
+            {
+                this.x = n;
             }
         }
 
