@@ -40,5 +40,14 @@ namespace RootSample.Test
         {
             new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
         }
+
+        [Theory]
+        [InlineData(50, "5*sqrt(2)")]
+        [InlineData(1220703125, "15625*sqrt(5)")]
+        [InlineData(2147483625, "5*sqrt(85899345)")]
+        public void FactorsOfTwentyFive(int n, string expected)
+        {
+            new RootTerm(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
+        }
     }
 }

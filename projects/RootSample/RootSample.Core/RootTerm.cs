@@ -10,7 +10,7 @@ namespace RootSample
 
     public struct RootTerm
     {
-        private static readonly List<ushort> Primes = new List<ushort>() { 2, 3 };
+        private static readonly List<ushort> Primes = new List<ushort>() { 2, 3, 5 };
 
         private readonly int c;
         private readonly int x;
