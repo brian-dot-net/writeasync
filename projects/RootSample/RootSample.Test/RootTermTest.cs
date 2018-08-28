@@ -49,6 +49,12 @@ namespace RootSample.Test
         public void FactorsOfNine(int n, string expected) => Test(n, expected);
 
         [Theory]
+        [InlineData(-18, "3*sqrt(2)*i")]
+        [InlineData(-243, "9*sqrt(3)*i")]
+        [InlineData(-2147483646, "3*sqrt(238609294)*i")]
+        public void FactorsOfNineNeg(int n, string expected) => Test(n, expected);
+
+        [Theory]
         [InlineData(50, "5*sqrt(2)")]
         [InlineData(1220703125, "15625*sqrt(5)")]
         [InlineData(2147483625, "5*sqrt(85899345)")]
