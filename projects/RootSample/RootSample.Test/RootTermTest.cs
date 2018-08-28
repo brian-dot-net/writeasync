@@ -75,6 +75,14 @@ namespace RootSample.Test
         public void IrreducibleComposite(int n, string expected) => Test(n, expected);
 
         [Theory]
+        [InlineData(-6, "sqrt(6)*i")]
+        [InlineData(-15, "sqrt(15)*i")]
+        [InlineData(-10002, "sqrt(10002)*i")]
+        [InlineData(-223092870, "sqrt(223092870)*i")]
+        [InlineData(-2147483642, "sqrt(2147483642)*i")]
+        public void IrreducibleCompositeNeg(int n, string expected) => Test(n, expected);
+
+        [Theory]
         [InlineData(2, "sqrt(2)")]
         [InlineData(3, "sqrt(3)")]
         [InlineData(65521, "sqrt(65521)")]
