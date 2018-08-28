@@ -24,10 +24,16 @@ namespace RootSample
                 return;
             }
 
+            bool imag = n < 0;
+            if (imag)
+            {
+                n = -n;
+            }
+
             int s = (int)Math.Sqrt(n);
             if (s * s == n)
             {
-                this.x = 1;
+                this.x = imag ? -1 : 1;
                 this.c = s;
                 return;
             }
@@ -54,13 +60,18 @@ namespace RootSample
                 }
             }
 
-            this.x = n;
+            this.x = imag ? -n : n;
         }
 
         public static RootTerm Sqrt(int n) => new RootTerm(n);
 
         public override string ToString()
         {
+            if (this.c == 0)
+            {
+                return "0";
+            }
+
             StringBuilder sb = new StringBuilder();
             if (this.c != 1)
             {
@@ -77,6 +88,15 @@ namespace RootSample
                 sb.Append("sqrt(");
                 sb.Append(this.x);
                 sb.Append(')');
+            }
+            else if (this.x == -1)
+            {
+                if (sb.Length != 0)
+                {
+                    sb.Append('*');
+                }
+
+                sb.Append("i");
             }
 
             if (sb.Length == 0)

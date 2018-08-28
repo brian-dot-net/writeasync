@@ -20,6 +20,15 @@ namespace RootSample.Test
         public void PerfectSquares(int n, string expected) => Test(n, expected);
 
         [Theory]
+        [InlineData(-1, "i")]
+        [InlineData(-4, "2*i")]
+        [InlineData(-9, "3*i")]
+        [InlineData(-65536, "256*i")]
+        [InlineData(-1073741824, "32768*i")]
+        [InlineData(-2147395600, "46340*i")]
+        public void PerfectSquaresNeg(int n, string expected) => Test(n, expected);
+
+        [Theory]
         [InlineData(8, "2*sqrt(2)")]
         [InlineData(24, "2*sqrt(6)")]
         [InlineData(262084, "2*sqrt(65521)")]
