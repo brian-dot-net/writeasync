@@ -15,19 +15,23 @@ namespace RootSample
         private readonly int c;
         private readonly int x;
 
+        private RootTerm(int c, int x)
+        {
+            this.c = c;
+            this.x = x;
+        }
+
         private RootTerm(int n)
         {
             if (n == 0)
             {
-                this.c = 0;
-                this.x = 0;
+                this = new RootTerm(0, 0);
                 return;
             }
 
             if (n == int.MinValue)
             {
-                this.c = 32768;
-                this.x = -2;
+                this = new RootTerm(32768, -2);
                 return;
             }
 
@@ -40,8 +44,7 @@ namespace RootSample
             int s = (int)Math.Sqrt(n);
             if (s * s == n)
             {
-                this.x = imag ? -1 : 1;
-                this.c = s;
+                this = new RootTerm(s, imag ? -1 : 1);
                 return;
             }
 
