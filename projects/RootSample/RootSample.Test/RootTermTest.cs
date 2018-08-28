@@ -42,6 +42,9 @@ namespace RootSample.Test
         [InlineData(-2147483644, "2*sqrt(536870911)*i")]
         public void FactorsOfFourNeg(int n, string expected) => Test(n, expected);
 
+        [Fact]
+        public void MinValueNeg() => Test(-2147483648, "32768*sqrt(2)*i");
+
         [Theory]
         [InlineData(18, "3*sqrt(2)")]
         [InlineData(243, "9*sqrt(3)")]

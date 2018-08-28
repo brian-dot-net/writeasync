@@ -24,6 +24,13 @@ namespace RootSample
                 return;
             }
 
+            if (n == int.MinValue)
+            {
+                this.c = 32768;
+                this.x = -2;
+                return;
+            }
+
             bool imag = n < 0;
             if (imag)
             {
