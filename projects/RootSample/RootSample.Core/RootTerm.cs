@@ -88,7 +88,8 @@ namespace RootSample
                 sb.Append(this.c);
             }
 
-            if (this.x > 1)
+            int val = Math.Abs(this.x);
+            if (val != 1)
             {
                 if (sb.Length != 0)
                 {
@@ -96,25 +97,18 @@ namespace RootSample
                 }
 
                 sb.Append("sqrt(");
-                sb.Append(this.x);
+                sb.Append(val);
                 sb.Append(')');
             }
-            else if (this.x < 0)
+
+            if (this.x < 0)
             {
                 if (sb.Length != 0)
                 {
                     sb.Append('*');
                 }
 
-                if (this.x != -1)
-                {
-                    sb.Append("sqrt(");
-                    sb.Append(-this.x);
-                    sb.Append(')');
-                    sb.Append('*');
-                }
-
-                sb.Append("i");
+                sb.Append('i');
             }
 
             if (sb.Length == 0)
