@@ -90,6 +90,13 @@ namespace RootSample.Test
         public void IrreduciblePrime(int n, string expected) => Test(n, expected);
 
         [Theory]
+        [InlineData(-2, "sqrt(2)*i")]
+        [InlineData(-3, "sqrt(3)*i")]
+        [InlineData(-65521, "sqrt(65521)*i")]
+        [InlineData(-2147483647, "sqrt(2147483647)*i")]
+        public void IrreduciblePrimeNeg(int n, string expected) => Test(n, expected);
+
+        [Theory]
         [InlineData(1536192006, "16001*sqrt(6)")]
         [InlineData(2144601507, "26737*sqrt(3)")]
         [InlineData(2144994002, "32749*sqrt(2)")]
