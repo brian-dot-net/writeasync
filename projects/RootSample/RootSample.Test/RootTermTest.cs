@@ -102,6 +102,12 @@ namespace RootSample.Test
         [InlineData(2144994002, "32749*sqrt(2)")]
         public void LargePrimeSquareFactors(int n, string expected) => Test(n, expected);
 
+        [Theory]
+        [InlineData(-1536192006, "16001*sqrt(6)*i")]
+        [InlineData(-2144601507, "26737*sqrt(3)*i")]
+        [InlineData(-2144994002, "32749*sqrt(2)*i")]
+        public void LargePrimeSquareFactorsNeg(int n, string expected) => Test(n, expected);
+
         private static void Test(int n, string expected)
         {
             RootTerm.Sqrt(n).ToString().Should().Be(expected, "sqrt({0}) is {1}", n, expected);
