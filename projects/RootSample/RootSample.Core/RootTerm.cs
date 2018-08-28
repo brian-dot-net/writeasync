@@ -89,10 +89,18 @@ namespace RootSample
                 sb.Append(this.x);
                 sb.Append(')');
             }
-            else if (this.x == -1)
+            else if (this.x < 0)
             {
                 if (sb.Length != 0)
                 {
+                    sb.Append('*');
+                }
+
+                if (this.x != -1)
+                {
+                    sb.Append("sqrt(");
+                    sb.Append(-this.x);
+                    sb.Append(')');
                     sb.Append('*');
                 }
 
