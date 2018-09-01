@@ -90,7 +90,7 @@ namespace RootSample
             }
 
             StringBuilder sb = new StringBuilder();
-            if (this.c != 1)
+            if (Math.Abs(this.c) != 1)
             {
                 sb.Append(this.c);
             }
@@ -101,6 +101,10 @@ namespace RootSample
                 if (sb.Length != 0)
                 {
                     sb.Append('*');
+                }
+                else if (this.c == -1)
+                {
+                    sb.Append('-');
                 }
 
                 sb.Append("sqrt(");
