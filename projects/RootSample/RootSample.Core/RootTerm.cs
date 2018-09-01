@@ -77,8 +77,9 @@ namespace RootSample
 
         public RootTerm Multiply(RootTerm other)
         {
+            int m = ((this.x < 0) && (other.x < 0)) ? -1 : 1;
             RootTerm r = Sqrt(this.x * other.x);
-            return new RootTerm(this.c * other.c * r.c, r.x);
+            return new RootTerm(m * this.c * other.c * r.c, r.x);
         }
 
         public override string ToString()
