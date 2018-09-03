@@ -44,6 +44,13 @@ namespace RootSample.Test
         public void PrimesNeg(int a, int b, string expected) => Test(a, b, expected);
 
         [Theory]
+        [InlineData(-2, 3, "sqrt(6)*i")]
+        [InlineData(7, -11, "sqrt(77)*i")]
+        [InlineData(32749, -32771, "sqrt(1073217479)*i")]
+        [InlineData(-1, 2147483647, "sqrt(2147483647)*i")]
+        public void PrimesImag(int a, int b, string expected) => Test(a, b, expected);
+
+        [Theory]
         [InlineData(3, 27, "9")]
         [InlineData(15, 15, "15")]
         [InlineData(5, 125, "25")]
