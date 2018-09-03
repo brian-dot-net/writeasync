@@ -49,6 +49,12 @@ namespace RootSample.Test
         [InlineData(-5, -125, "-25")]
         public void PerfectSquaresAfterReduceNeg(int a, int b, string expected) => Test(a, b, expected);
 
+        [Theory]
+        [InlineData(6, 15, "3*sqrt(10)")]
+        [InlineData(2, 3858, "2*sqrt(1929)")]
+        [InlineData(1667, 10002, "1667*sqrt(6)")]
+        public void CompositeAfterReduce(int a, int b, string expected) => Test(a, b, expected);
+
         private static void Test(int a, int b, string expected)
         {
             Test(RootTerm.Sqrt(a), RootTerm.Sqrt(b), expected);
