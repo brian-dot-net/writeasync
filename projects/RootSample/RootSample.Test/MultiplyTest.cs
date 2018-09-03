@@ -43,6 +43,12 @@ namespace RootSample.Test
         [InlineData(5, 125, "25")]
         public void PerfectSquaresAfterReduce(int a, int b, string expected) => Test(a, b, expected);
 
+        [Theory]
+        [InlineData(-3, -27, "-9")]
+        [InlineData(-15, -15, "-15")]
+        [InlineData(-5, -125, "-25")]
+        public void PerfectSquaresAfterReduceNeg(int a, int b, string expected) => Test(a, b, expected);
+
         private static void Test(int a, int b, string expected)
         {
             Test(RootTerm.Sqrt(a), RootTerm.Sqrt(b), expected);
