@@ -63,6 +63,12 @@ namespace RootSample.Test
         public void PerfectSquaresAfterReduceNeg(int a, int b, string expected) => Test(a, b, expected);
 
         [Theory]
+        [InlineData(-3, 27, "9*i")]
+        [InlineData(15, -15, "15*i")]
+        [InlineData(-5, 125, "25*i")]
+        public void PerfectSquaresAfterReduceImag(int a, int b, string expected) => Test(a, b, expected);
+
+        [Theory]
         [InlineData(6, 15, "3*sqrt(10)")]
         [InlineData(2, 3858, "2*sqrt(1929)")]
         [InlineData(1667, 10002, "1667*sqrt(6)")]
