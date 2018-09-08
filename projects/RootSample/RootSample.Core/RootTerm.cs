@@ -73,6 +73,8 @@ namespace RootSample
             this.x = imag ? -n : n;
         }
 
+        public static RootTerm operator *(RootTerm a, RootTerm b) => a.Multiply(b);
+
         public static RootTerm Sqrt(int n) => new RootTerm(n);
 
         public RootTerm Multiply(RootTerm other)

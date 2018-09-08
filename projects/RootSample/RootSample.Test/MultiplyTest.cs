@@ -95,6 +95,7 @@ namespace RootSample.Test
         private static void Test(RootTerm a, RootTerm b, string expected)
         {
             a.Multiply(b).ToString().Should().Be(expected, "{0} * {1} = {2}", a, b, expected);
+            (a * b).ToString().Should().Be(expected, "{0} * {1} = {2}", a, b, expected);
         }
     }
 }
