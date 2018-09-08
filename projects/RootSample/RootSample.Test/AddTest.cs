@@ -23,6 +23,12 @@ namespace RootSample.Test
         [InlineData(-1, -1073741824, "32769*i")]
         public void PerfectSquaresNeg(int a, int b, string expected) => Test(a, b, expected);
 
+        [Theory]
+        [InlineData(-1, 4, "2+i")]
+        [InlineData(-4, 9, "3+2*i")]
+        [InlineData(1, -1073741824, "1+32768*i")]
+        public void PerfectSquaresImag(int a, int b, string expected) => Test(a, b, expected);
+
         private static void Test(int a, int b, string expected)
         {
             Test(RootTerm.Sqrt(a), RootTerm.Sqrt(b), expected);

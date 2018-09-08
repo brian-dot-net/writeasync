@@ -83,12 +83,27 @@ namespace RootSample
 
         public RootSum Add(RootTerm other)
         {
-            if (this.c == 0)
+            if (this.IsZero)
             {
                 return new RootSum(other, Zero);
             }
 
-            return new RootSum(new RootTerm(this.c + other.c, this.x), Zero);
+            if (other.IsZero)
+            {
+                return new RootSum(this, Zero);
+            }
+
+            if (this.x == other.x)
+            {
+                return new RootSum(new RootTerm(this.c + other.c, this.x), Zero);
+            }
+
+            if (this.x > other.x)
+            {
+                return new RootSum(this, other);
+            }
+
+            return new RootSum(other, this);
         }
 
         public RootTerm Multiply(RootTerm other)
