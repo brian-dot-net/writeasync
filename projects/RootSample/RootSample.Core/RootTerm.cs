@@ -77,6 +77,16 @@ namespace RootSample
 
         public static RootTerm Sqrt(int n) => new RootTerm(n);
 
+        public RootTerm Add(RootTerm other)
+        {
+            if (this.c == 0)
+            {
+                return other;
+            }
+
+            return new RootTerm(this.c + other.c, this.x);
+        }
+
         public RootTerm Multiply(RootTerm other)
         {
             int m = ((this.x < 0) && (other.x < 0)) ? -1 : 1;
