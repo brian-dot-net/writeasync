@@ -36,6 +36,13 @@ namespace RootSample.Test
         [InlineData(1, 2147483647, "1+sqrt(2147483647)")]
         public void Primes(int a, int b, string expected) => Test(a, b, expected);
 
+        [Theory]
+        [InlineData(-2, -3, "sqrt(2)*i+sqrt(3)*i")]
+        [InlineData(-7, -11, "sqrt(7)*i+sqrt(11)*i")]
+        [InlineData(-32749, -32771, "sqrt(32749)*i+sqrt(32771)*i")]
+        [InlineData(-1, -2147483647, "i+sqrt(2147483647)*i")]
+        public void PrimesNeg(int a, int b, string expected) => Test(a, b, expected);
+
         private static void Test(int a, int b, string expected)
         {
             Test(RootTerm.Sqrt(a), RootTerm.Sqrt(b), expected);

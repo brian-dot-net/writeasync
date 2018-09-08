@@ -34,17 +34,27 @@ namespace RootSample
                 return new RootSum(new RootTerm(x.C + y.C, x.X), RootTerm.Zero);
             }
 
-            if (x.IsReal && !y.IsReal)
+            if (x.IsReal && y.IsReal)
+            {
+                if (x.X < y.X)
+                {
+                    return new RootSum(x, y);
+                }
+
+                return new RootSum(y, x);
+            }
+
+            if (x.IsReal)
             {
                 return new RootSum(x, y);
             }
 
-            if (y.IsReal && !x.IsReal)
+            if (y.IsReal)
             {
                 return new RootSum(y, x);
             }
 
-            if (x.X < y.X)
+            if (x.X > y.X)
             {
                 return new RootSum(x, y);
             }
