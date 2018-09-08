@@ -29,6 +29,13 @@ namespace RootSample.Test
         [InlineData(1, -1073741824, "1+32768*i")]
         public void PerfectSquaresImag(int a, int b, string expected) => Test(a, b, expected);
 
+        [Theory]
+        [InlineData(2, 3, "sqrt(2)+sqrt(3)")]
+        [InlineData(7, 11, "sqrt(7)+sqrt(11)")]
+        [InlineData(32749, 32771, "sqrt(32749)+sqrt(32771)")]
+        [InlineData(1, 2147483647, "1+sqrt(2147483647)")]
+        public void Primes(int a, int b, string expected) => Test(a, b, expected);
+
         private static void Test(int a, int b, string expected)
         {
             Test(RootTerm.Sqrt(a), RootTerm.Sqrt(b), expected);

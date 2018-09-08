@@ -81,6 +81,8 @@ namespace RootSample
 
         public bool IsZero => this.c == 0;
 
+        public bool IsReal => this.x >= 0;
+
         public static RootTerm operator *(RootTerm a, RootTerm b) => a.Multiply(b);
 
         public static RootTerm Sqrt(int n) => new RootTerm(n);
