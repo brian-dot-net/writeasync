@@ -50,6 +50,12 @@ namespace RootSample.Test
         [InlineData(-1, 2147483647, "sqrt(2147483647)+i")]
         public void PrimesImag(int a, int b, string expected) => Test(a, b, expected);
 
+        [Theory]
+        [InlineData(3, 27, "4*sqrt(3)")]
+        [InlineData(15, 15, "2*sqrt(15)")]
+        [InlineData(5, 125, "6*sqrt(5)")]
+        public void MultiplesAfterReduce(int a, int b, string expected) => Test(a, b, expected);
+
         private static void Test(int a, int b, string expected)
         {
             Test(RootTerm.Sqrt(a), RootTerm.Sqrt(b), expected);
