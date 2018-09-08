@@ -80,6 +80,12 @@ namespace RootSample.Test
         [InlineData(-1667, -10002, "sqrt(1667)*i+sqrt(10002)*i")]
         public void CompositesNeg(int a, int b, string expected) => Test(a, b, expected);
 
+        [Theory]
+        [InlineData(-6, 15, "sqrt(15)+sqrt(6)*i")]
+        [InlineData(-2, 3858, "sqrt(3858)+sqrt(2)*i")]
+        [InlineData(1667, -10002, "sqrt(1667)+sqrt(10002)*i")]
+        public void CompositesImag(int a, int b, string expected) => Test(a, b, expected);
+
         private static void Test(int a, int b, string expected)
         {
             Test(RootTerm.Sqrt(a), RootTerm.Sqrt(b), expected);
