@@ -11,10 +11,35 @@ namespace RootSample
         private readonly RootTerm a;
         private readonly RootTerm b;
 
-        public RootSum(RootTerm a, RootTerm b)
+        private RootSum(RootTerm a, RootTerm b)
         {
             this.a = a;
             this.b = b;
+        }
+
+        public static RootSum Add(RootTerm x, RootTerm y)
+        {
+            if (x.IsZero)
+            {
+                return new RootSum(y, RootTerm.Zero);
+            }
+
+            if (y.IsZero)
+            {
+                return new RootSum(x, RootTerm.Zero);
+            }
+
+            if (x.X == y.X)
+            {
+                return new RootSum(new RootTerm(x.C + y.C, x.X), RootTerm.Zero);
+            }
+
+            if (x.X > y.X)
+            {
+                return new RootSum(x, y);
+            }
+
+            return new RootSum(y, x);
         }
 
         public override string ToString()
