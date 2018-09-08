@@ -62,6 +62,12 @@ namespace RootSample.Test
         [InlineData(-5, -125, "6*sqrt(5)*i")]
         public void MultiplesAfterReduceNeg(int a, int b, string expected) => Test(a, b, expected);
 
+        [Theory]
+        [InlineData(-3, 27, "3*sqrt(3)+sqrt(3)*i")]
+        [InlineData(15, -15, "sqrt(15)+sqrt(15)*i")]
+        [InlineData(-5, 125, "5*sqrt(5)+sqrt(5)*i")]
+        public void MultiplesAfterReduceImag(int a, int b, string expected) => Test(a, b, expected);
+
         private static void Test(int a, int b, string expected)
         {
             Test(RootTerm.Sqrt(a), RootTerm.Sqrt(b), expected);
