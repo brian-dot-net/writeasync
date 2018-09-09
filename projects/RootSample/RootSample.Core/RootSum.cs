@@ -31,7 +31,7 @@ namespace RootSample
 
             if (x.X == y.X)
             {
-                return new RootSum(new RootTerm(x.C + y.C, x.X), RootTerm.Zero);
+                return new RootSum((x.C + y.C) * RootTerm.Sqrt(x.X), RootTerm.Zero);
             }
 
             if (x.IsReal && y.IsReal)

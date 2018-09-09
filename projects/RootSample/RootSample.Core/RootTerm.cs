@@ -17,7 +17,7 @@ namespace RootSample
         private readonly int c;
         private readonly int x;
 
-        public RootTerm(int c, int x)
+        private RootTerm(int c, int x)
         {
             this.c = c;
             this.x = x;
@@ -85,11 +85,15 @@ namespace RootSample
 
         public static RootTerm operator *(RootTerm a, RootTerm b) => a.Multiply(b);
 
+        public static RootTerm operator *(int c, RootTerm a) => a.Multiply(c);
+
         public static RootSum operator +(RootTerm a, RootTerm b) => a.Add(b);
 
         public static RootTerm Sqrt(int n) => new RootTerm(n);
 
         public RootSum Add(RootTerm other) => RootSum.Add(this, other);
+
+        public RootTerm Multiply(int c) => new RootTerm(this.c * c, this.x);
 
         public RootTerm Multiply(RootTerm other)
         {
