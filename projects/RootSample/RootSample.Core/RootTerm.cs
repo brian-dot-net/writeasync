@@ -85,6 +85,8 @@ namespace RootSample
 
         public static RootTerm operator *(RootTerm a, RootTerm b) => a.Multiply(b);
 
+        public static RootSum operator +(RootTerm a, RootTerm b) => a.Add(b);
+
         public static RootTerm Sqrt(int n) => new RootTerm(n);
 
         public RootSum Add(RootTerm other) => RootSum.Add(this, other);
