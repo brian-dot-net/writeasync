@@ -177,6 +177,18 @@ namespace DirectoryWatcherSample.Test
                 .WithMessage(@"A subscription for 'X:\root\FILE1.txt' already exists.");
         }
 
+        [TestMethod]
+        public void SubscribeNullFile()
+        {
+            DirectoryWatcherBase watcherBase = new FakeDirectoryWatcher(new DirectoryInfo(@"X:\root"));
+            Action<FileInfo> onUpdate = f => { };
+            string file = null;
+
+            Action act = () => watcherBase.Subscribe(file, onUpdate);
+
+            act.Should().Throw<ArgumentNullException>().Which.ParamName.Should().Be("file");
+        }
+
         private sealed class FakeDirectoryWatcher : DirectoryWatcherBase
         {
             public FakeDirectoryWatcher(DirectoryInfo path)

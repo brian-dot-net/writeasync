@@ -26,6 +26,11 @@ namespace DirectoryWatcherSample
 
         public IDisposable Subscribe(string file, Action<FileInfo> onUpdate)
         {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             string key = fullPath.FullName;
             Action onDispose = () => this.subscriptions.TryRemove(key, out _);
