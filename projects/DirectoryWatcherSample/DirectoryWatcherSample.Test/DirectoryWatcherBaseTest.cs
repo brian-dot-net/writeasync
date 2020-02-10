@@ -99,6 +99,21 @@ namespace DirectoryWatcherSample.Test
                 @"X:\root\file1.txt");
         }
 
+        [TestMethod]
+        public void UpdateAfterDispose()
+        {
+            List<string> updates = new List<string>();
+            FakeDirectoryWatcher watcher = new FakeDirectoryWatcher(new DirectoryInfo(@"X:\root"));
+            using (DirectoryWatcherBase watcherBase = watcher)
+            {
+                watcherBase.Subscribe("file1.txt", f => updates.Add(f.FullName));
+            }
+
+            watcher.Update(@"X:\root\file1.txt");
+
+            updates.Should().BeEmpty();
+        }
+
         private sealed class FakeDirectoryWatcher : DirectoryWatcherBase
         {
             public FakeDirectoryWatcher(DirectoryInfo path)
@@ -106,7 +121,17 @@ namespace DirectoryWatcherSample.Test
             {
             }
 
-            public void Update(string fullPath) => this.OnUpdated(fullPath);
+            public bool Disposed { get; private set; }
+
+            public void Update(string fullPath)
+            {
+                if (!this.Disposed)
+                {
+                    this.OnUpdated(fullPath);
+                }
+            }
+
+            protected override void Dispose(bool disposing) => this.Disposed = true;
         }
     }
 }
