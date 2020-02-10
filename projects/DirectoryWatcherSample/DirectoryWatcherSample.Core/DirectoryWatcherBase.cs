@@ -36,6 +36,11 @@ namespace DirectoryWatcherSample
                 throw new ArgumentNullException(nameof(onUpdate));
             }
 
+            if (file.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                throw new ArgumentException($"Invalid file name '{file}'.", nameof(file));
+            }
+
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             string key = fullPath.FullName;
             Action onDispose = () => this.subscriptions.TryRemove(key, out _);
