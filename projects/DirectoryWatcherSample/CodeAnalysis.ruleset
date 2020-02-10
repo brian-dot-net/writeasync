@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Code Analysis Rules" Description="Code Analysis Rules" ToolsVersion="10.0">
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <!-- Suppress 'XML comment analysis disabled' -->
+    <Rule Id="SA0001" Action="None" />
+    <!-- Suppress 'Elements should be documented' -->
+    <Rule Id="SA1600" Action="None" />
+    <!-- Suppress 'Enumeration items should be documented' -->
+    <Rule Id="SA1602" Action="None" />
+  </Rules>
+</RuleSet>
