@@ -22,14 +22,21 @@ namespace DirectoryWatcherSample.Test
             act.Should().Throw<ArgumentNullException>().Which.ParamName.Should().Be("path");
         }
 
-        private sealed class FakeDirectoryWatcher
+        [TestMethod]
+        public void CreateAndDispose()
+        {
+            DirectoryWatcherBase watcher = new FakeDirectoryWatcher(new DirectoryInfo(@"X:\root"));
+
+            Action act = () => watcher.Dispose();
+
+            act.Should().NotThrow();
+        }
+
+        private sealed class FakeDirectoryWatcher : DirectoryWatcherBase
         {
             public FakeDirectoryWatcher(DirectoryInfo path)
+                : base(path)
             {
-                if (path == null)
-                {
-                    throw new ArgumentNullException(nameof(path));
-                }
             }
         }
     }
