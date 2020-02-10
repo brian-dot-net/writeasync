@@ -151,6 +151,19 @@ namespace DirectoryWatcherSample.Test
                 @"X:\root\file2.txt");
         }
 
+        [TestMethod]
+        public void SubscribeSameFileTwice()
+        {
+            DirectoryWatcherBase watcherBase = new FakeDirectoryWatcher(new DirectoryInfo(@"X:\root"));
+            Action<FileInfo> onUpdate = f => { };
+            watcherBase.Subscribe("file1.txt", onUpdate);
+
+            Action act = () => watcherBase.Subscribe("file1.txt", onUpdate);
+
+            act.Should().Throw<InvalidOperationException>()
+                .WithMessage(@"A subscription for 'X:\root\file1.txt' already exists.");
+        }
+
         private sealed class FakeDirectoryWatcher : DirectoryWatcherBase
         {
             public FakeDirectoryWatcher(DirectoryInfo path)

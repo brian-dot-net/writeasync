@@ -29,7 +29,13 @@ namespace DirectoryWatcherSample
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             string key = fullPath.FullName;
             Action onDispose = () => this.subscriptions.TryRemove(key, out _);
-            return this.subscriptions.GetOrAdd(key, k => new Subscription(fullPath, onUpdate, onDispose));
+            Subscription subscription = this.subscriptions.GetOrAdd(key, k => new Subscription(fullPath, onUpdate, onDispose));
+            if (subscription.FullPath != fullPath)
+            {
+                throw new InvalidOperationException($"A subscription for '{key}' already exists.");
+            }
+
+            return subscription;
         }
 
         public void Dispose()
@@ -52,18 +58,19 @@ namespace DirectoryWatcherSample
 
         private sealed class Subscription : IDisposable
         {
-            private readonly FileInfo fullPath;
             private readonly Action<FileInfo> callback;
             private readonly Action onDispose;
 
             public Subscription(FileInfo fullPath, Action<FileInfo> callback, Action onDispose)
             {
-                this.fullPath = fullPath;
+                this.FullPath = fullPath;
                 this.callback = callback;
                 this.onDispose = onDispose;
             }
 
-            public void Invoke() => this.callback(this.fullPath);
+            public FileInfo FullPath { get; }
+
+            public void Invoke() => this.callback(this.FullPath);
 
             public void Dispose() => this.onDispose();
         }
