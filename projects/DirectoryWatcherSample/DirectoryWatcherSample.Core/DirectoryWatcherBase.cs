@@ -42,9 +42,9 @@ namespace DirectoryWatcherSample
 
         protected void OnUpdated(string fullPath)
         {
-            if (this.file == fullPath)
+            if (string.Equals(this.file, fullPath, StringComparison.OrdinalIgnoreCase))
             {
-                this.onUpdate(new FileInfo(fullPath));
+                this.onUpdate(new FileInfo(this.file));
             }
         }
     }
