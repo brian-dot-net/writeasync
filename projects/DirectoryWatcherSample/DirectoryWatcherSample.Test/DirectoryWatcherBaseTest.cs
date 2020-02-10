@@ -5,6 +5,7 @@
 namespace DirectoryWatcherSample.Test
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -40,6 +41,19 @@ namespace DirectoryWatcherSample.Test
             Action act = () => watcher.Update(@"X:\root\file1.txt");
 
             act.Should().NotThrow();
+        }
+
+        [TestMethod]
+        public void UpdateIrrelevantFileOneSubscription()
+        {
+            List<string> updates = new List<string>();
+            FakeDirectoryWatcher watcher = new FakeDirectoryWatcher(new DirectoryInfo(@"X:\root"));
+            DirectoryWatcherBase watcherBase = watcher;
+            watcherBase.Subscribe("file1.txt", f => updates.Add(f.FullName));
+
+            watcher.Update(@"X:\root\not-relevant.txt");
+
+            updates.Should().BeEmpty();
         }
 
         private sealed class FakeDirectoryWatcher : DirectoryWatcherBase

@@ -17,6 +17,10 @@ namespace DirectoryWatcherSample
             }
         }
 
+        public void Subscribe(string file, Action<FileInfo> onUpdate)
+        {
+        }
+
         public void Dispose()
         {
             this.Dispose(true);
