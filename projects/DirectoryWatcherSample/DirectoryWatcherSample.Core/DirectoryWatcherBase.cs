@@ -9,16 +9,25 @@ namespace DirectoryWatcherSample
 
     public abstract class DirectoryWatcherBase : IDisposable
     {
+        private readonly string path;
+
+        private string file;
+        private Action<FileInfo> onUpdate;
+
         protected DirectoryWatcherBase(DirectoryInfo path)
         {
             if (path == null)
             {
                 throw new ArgumentNullException(nameof(path));
             }
+
+            this.path = path.FullName;
         }
 
         public void Subscribe(string file, Action<FileInfo> onUpdate)
         {
+            this.file = Path.Combine(this.path, file);
+            this.onUpdate = onUpdate;
         }
 
         public void Dispose()
@@ -29,6 +38,14 @@ namespace DirectoryWatcherSample
 
         protected virtual void Dispose(bool disposing)
         {
+        }
+
+        protected void OnUpdated(string fullPath)
+        {
+            if (this.file == fullPath)
+            {
+                this.onUpdate(new FileInfo(fullPath));
+            }
         }
     }
 }
