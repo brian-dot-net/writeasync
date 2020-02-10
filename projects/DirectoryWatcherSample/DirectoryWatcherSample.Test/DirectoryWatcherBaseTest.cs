@@ -252,6 +252,19 @@ namespace DirectoryWatcherSample.Test
             ae.ParamName.Should().Be("file");
         }
 
+        [TestMethod]
+        public void SubscribeFileRelativeOutsideDir()
+        {
+            DirectoryWatcherBase watcherBase = new FakeDirectoryWatcher(new DirectoryInfo(@"X:\root"));
+            Action<FileInfo> onUpdate = f => { };
+
+            Action act = () => watcherBase.Subscribe(@"..\file1.txt", onUpdate);
+
+            ArgumentException ae = act.Should().Throw<ArgumentException>().Which;
+            ae.Message.Should().Contain(@"Invalid file name '..\file1.txt'");
+            ae.ParamName.Should().Be("file");
+        }
+
         private sealed class FakeDirectoryWatcher : DirectoryWatcherBase
         {
             public FakeDirectoryWatcher(DirectoryInfo path)
