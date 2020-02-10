@@ -24,10 +24,12 @@ namespace DirectoryWatcherSample
             this.subscriptions = new ConcurrentDictionary<string, Subscription>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public void Subscribe(string file, Action<FileInfo> onUpdate)
+        public IDisposable Subscribe(string file, Action<FileInfo> onUpdate)
         {
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
-            this.subscriptions[fullPath.FullName] = new Subscription(fullPath, onUpdate);
+            string key = fullPath.FullName;
+            Action onDispose = () => this.subscriptions.TryRemove(key, out _);
+            return this.subscriptions.GetOrAdd(key, k => new Subscription(fullPath, onUpdate, onDispose));
         }
 
         public void Dispose()
@@ -48,18 +50,22 @@ namespace DirectoryWatcherSample
             }
         }
 
-        private struct Subscription
+        private sealed class Subscription : IDisposable
         {
             private readonly FileInfo fullPath;
             private readonly Action<FileInfo> callback;
+            private readonly Action onDispose;
 
-            public Subscription(FileInfo fullPath, Action<FileInfo> callback)
+            public Subscription(FileInfo fullPath, Action<FileInfo> callback, Action onDispose)
             {
                 this.fullPath = fullPath;
                 this.callback = callback;
+                this.onDispose = onDispose;
             }
 
             public void Invoke() => this.callback(this.fullPath);
+
+            public void Dispose() => this.onDispose();
         }
     }
 }
