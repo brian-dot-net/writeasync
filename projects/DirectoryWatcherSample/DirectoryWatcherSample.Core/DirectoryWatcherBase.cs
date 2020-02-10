@@ -31,6 +31,11 @@ namespace DirectoryWatcherSample
                 throw new ArgumentNullException(nameof(file));
             }
 
+            if (onUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(onUpdate));
+            }
+
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             string key = fullPath.FullName;
             Action onDispose = () => this.subscriptions.TryRemove(key, out _);
