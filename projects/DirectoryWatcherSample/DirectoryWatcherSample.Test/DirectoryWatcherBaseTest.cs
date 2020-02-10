@@ -213,6 +213,19 @@ namespace DirectoryWatcherSample.Test
             ae.ParamName.Should().Be("file");
         }
 
+        [TestMethod]
+        public void SubscribeEmptyFileName()
+        {
+            DirectoryWatcherBase watcherBase = new FakeDirectoryWatcher(new DirectoryInfo(@"X:\root"));
+            Action<FileInfo> onUpdate = f => { };
+
+            Action act = () => watcherBase.Subscribe(string.Empty, onUpdate);
+
+            ArgumentException ae = act.Should().Throw<ArgumentException>().Which;
+            ae.Message.Should().Contain("File name cannot be empty");
+            ae.ParamName.Should().Be("file");
+        }
+
         private sealed class FakeDirectoryWatcher : DirectoryWatcherBase
         {
             public FakeDirectoryWatcher(DirectoryInfo path)

@@ -36,6 +36,11 @@ namespace DirectoryWatcherSample
                 throw new ArgumentNullException(nameof(onUpdate));
             }
 
+            if (file.Length == 0)
+            {
+                throw new ArgumentException("File name cannot be empty.", nameof(file));
+            }
+
             if (file.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
             {
                 throw new ArgumentException($"Invalid file name '{file}'.", nameof(file));
