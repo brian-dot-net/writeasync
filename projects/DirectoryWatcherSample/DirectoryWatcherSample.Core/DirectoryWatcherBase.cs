@@ -48,6 +48,13 @@ namespace DirectoryWatcherSample
 
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             string key = fullPath.FullName;
+            if (!key.StartsWith(this.path + Path.DirectorySeparatorChar))
+            {
+                throw new ArgumentException(
+                    $"The file '{file}' is not directly within directory '{this.path}'.",
+                    nameof(file));
+            }
+
             Action onDispose = () => this.subscriptions.TryRemove(key, out _);
             Subscription subscription = this.subscriptions.GetOrAdd(key, k => new Subscription(fullPath, onUpdate, onDispose));
             if (subscription.FullPath != fullPath)
