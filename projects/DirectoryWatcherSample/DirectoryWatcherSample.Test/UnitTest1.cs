@@ -13,9 +13,7 @@ namespace DirectoryWatcherSample.Test
         [TestMethod]
         public void TestMethod1()
         {
-            Class1 c = new Class1("test");
-
-            c.ToString().Should().Be("test");
+            typeof(DirectoryWatcher).Name.Should().Be("DirectoryWatcher");
         }
     }
 }
