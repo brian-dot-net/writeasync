@@ -26,6 +26,11 @@ namespace DirectoryWatcherSample
 
         public IDisposable Subscribe(string file, Action<FileInfo> onUpdate)
         {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             DirectoryInfo dir = fullPath.Directory;
             DirectoryWatcherBase watcher = this.watchers.GetOrAdd(dir.FullName, k => this.Create(dir));
