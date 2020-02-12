@@ -16,8 +16,12 @@ namespace DirectoryWatcherSample
 
         private static void Main()
         {
+            Directory.CreateDirectory("inner1");
+            Directory.CreateDirectory("inner2");
+
             using CancellationTokenSource cts = new CancellationTokenSource();
-            string[] files = new string[] { "file1.txt", "file2.txt" };
+            string[] files = new string[] { @"inner1\file1.txt", @"inner2\file2.txt" };
+
             Task task = UpdateFilesAsync(files, cts.Token);
 
             RunWatcher(files);
@@ -31,7 +35,7 @@ namespace DirectoryWatcherSample
 
         private static void RunWatcher(string[] files)
         {
-            using DirectoryWatcher watcher = new DirectoryWatcher(new DirectoryInfo("."));
+            using DirectoryTreeWatcher watcher = new DirectoryTreeWatcher(new DirectoryInfo("."));
 
             Action<FileInfo> onUpdated = f => Log($"Got an update for '{f.Name}'");
 

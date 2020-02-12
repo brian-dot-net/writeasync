@@ -11,7 +11,7 @@ namespace DirectoryWatcherSample
     public abstract class DirectoryTreeWatcherBase : IDisposable
     {
         private readonly string path;
-        private readonly ConcurrentDictionary<string, DirectoryWatcherBase> watchers;
+        private readonly ConcurrentDictionary<string, Watcher> watchers;
 
         protected DirectoryTreeWatcherBase(DirectoryInfo path)
         {
@@ -21,7 +21,7 @@ namespace DirectoryWatcherSample
             }
 
             this.path = path.FullName + "\\";
-            this.watchers = new ConcurrentDictionary<string, DirectoryWatcherBase>(StringComparer.OrdinalIgnoreCase);
+            this.watchers = new ConcurrentDictionary<string, Watcher>(StringComparer.OrdinalIgnoreCase);
         }
 
         public IDisposable Subscribe(string file, Action<FileInfo> onUpdate)
@@ -46,14 +46,14 @@ namespace DirectoryWatcherSample
                     nameof(file));
             }
 
-            DirectoryWatcherBase watcher = this.watchers.GetOrAdd(key, k => this.Create(dir));
+            Watcher watcher = this.watchers.GetOrAdd(key, k => new Watcher(() => this.Create(dir)));
             return watcher.Subscribe(fullPath.Name, onUpdate);
         }
 
         public void Dispose()
         {
             this.Dispose(true);
-            foreach (DirectoryWatcherBase watcher in this.watchers.Values)
+            foreach (Watcher watcher in this.watchers.Values)
             {
                 watcher.Dispose();
             }
@@ -65,6 +65,23 @@ namespace DirectoryWatcherSample
 
         protected virtual void Dispose(bool disposing)
         {
+        }
+
+        private readonly struct Watcher : IDisposable
+        {
+            private readonly Lazy<DirectoryWatcherBase> inner;
+
+            public Watcher(Func<DirectoryWatcherBase> create)
+            {
+                this.inner = new Lazy<DirectoryWatcherBase>(create);
+            }
+
+            public void Dispose() => this.inner.Value.Dispose();
+
+            public IDisposable Subscribe(string name, Action<FileInfo> onUpdate)
+            {
+                return this.inner.Value.Subscribe(name, onUpdate);
+            }
         }
     }
 }
