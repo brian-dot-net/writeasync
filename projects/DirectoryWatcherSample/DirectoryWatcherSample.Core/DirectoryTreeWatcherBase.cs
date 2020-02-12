@@ -35,6 +35,11 @@ namespace DirectoryWatcherSample
         public void Dispose()
         {
             this.Dispose(true);
+            foreach (DirectoryWatcherBase watcher in this.watchers.Values)
+            {
+                watcher.Dispose();
+            }
+
             GC.SuppressFinalize(this);
         }
 

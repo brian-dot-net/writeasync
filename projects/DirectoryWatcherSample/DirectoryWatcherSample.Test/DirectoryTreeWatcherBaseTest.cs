@@ -111,6 +111,22 @@ namespace DirectoryWatcherSample.Test
                 @"X:\root\inner1\file1.txt");
         }
 
+        [TestMethod]
+        public void UpdateAfterDispose()
+        {
+            List<string> updates = new List<string>();
+            FakeDirectoryTreeWatcher watcher = new FakeDirectoryTreeWatcher(new DirectoryInfo(@"X:\root"));
+            using (DirectoryTreeWatcherBase watcherBase = watcher)
+            {
+                watcherBase.Subscribe("file1.txt", f => updates.Add(f.FullName));
+            }
+
+            FakeDirectoryWatcher innerWatcher = watcher.Watchers.Should().ContainSingle().Which;
+            innerWatcher.Update(@"X:\root\file1.txt");
+
+            updates.Should().BeEmpty();
+        }
+
         private sealed class FakeDirectoryTreeWatcher : DirectoryTreeWatcherBase
         {
             public FakeDirectoryTreeWatcher(DirectoryInfo path)
