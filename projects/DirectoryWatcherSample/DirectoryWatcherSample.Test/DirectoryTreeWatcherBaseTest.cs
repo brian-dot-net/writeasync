@@ -32,10 +32,24 @@ namespace DirectoryWatcherSample.Test
             act.Should().NotThrow();
         }
 
+        [TestMethod]
+        public void UpdateZeroSubscriptions()
+        {
+            FakeDirectoryTreeWatcher watcher = new FakeDirectoryTreeWatcher(new DirectoryInfo(@"X:\root"));
+
+            Action act = () => watcher.Update(@"X:\root\file1.txt");
+
+            act.Should().NotThrow();
+        }
+
         private sealed class FakeDirectoryTreeWatcher : DirectoryTreeWatcherBase
         {
             public FakeDirectoryTreeWatcher(DirectoryInfo path)
                 : base(path)
+            {
+            }
+
+            public void Update(string fullPath)
             {
             }
 
