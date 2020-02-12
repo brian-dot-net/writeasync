@@ -215,6 +215,19 @@ namespace DirectoryWatcherSample.Test
             act.Should().Throw<ArgumentNullException>().Which.ParamName.Should().Be("onUpdate");
         }
 
+        [TestMethod]
+        public void SubscribeBadFileName()
+        {
+            DirectoryTreeWatcherBase watcherBase = new FakeDirectoryTreeWatcher(new DirectoryInfo(@"X:\root"));
+            Action<FileInfo> onUpdate = f => { };
+
+            Action act = () => watcherBase.Subscribe("**BADNAME??", onUpdate);
+
+            ArgumentException ae = act.Should().Throw<ArgumentException>().Which;
+            ae.Message.Should().Contain("Invalid file name '**BADNAME??'");
+            ae.ParamName.Should().Be("file");
+        }
+
         private sealed class FakeDirectoryTreeWatcher : DirectoryTreeWatcherBase
         {
             public FakeDirectoryTreeWatcher(DirectoryInfo path)
