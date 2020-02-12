@@ -21,7 +21,7 @@ namespace DirectoryWatcherSample
             }
 
             this.path = path.FullName + "\\";
-            this.watchers = new ConcurrentDictionary<string, DirectoryWatcherBase>();
+            this.watchers = new ConcurrentDictionary<string, DirectoryWatcherBase>(StringComparer.OrdinalIgnoreCase);
         }
 
         public IDisposable Subscribe(string file, Action<FileInfo> onUpdate)

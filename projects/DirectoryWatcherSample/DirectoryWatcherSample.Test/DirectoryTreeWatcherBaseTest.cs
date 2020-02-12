@@ -94,6 +94,24 @@ namespace DirectoryWatcherSample.Test
         }
 
         [TestMethod]
+        public void UpdateTwoFilesTwoSubscriptionsSameDirDifferentCase()
+        {
+            List<string> updates = new List<string>();
+            FakeDirectoryTreeWatcher watcher = new FakeDirectoryTreeWatcher(new DirectoryInfo(@"X:\root"));
+            DirectoryTreeWatcherBase watcherBase = watcher;
+            watcherBase.Subscribe(@"inner\file1.txt", f => updates.Add(f.FullName));
+            watcherBase.Subscribe(@"INNER\file2.txt", f => updates.Add(f.FullName));
+
+            FakeDirectoryWatcher innerWatcher = watcher.Watchers.Should().ContainSingle().Which;
+            innerWatcher.Update(@"X:\root\inner\file2.txt");
+            innerWatcher.Update(@"X:\root\inner\file1.txt");
+
+            updates.Should().HaveCount(2).And.ContainInOrder(
+                @"X:\root\inner\file2.txt",
+                @"X:\root\inner\file1.txt");
+        }
+
+        [TestMethod]
         public void UpdateTwoFilesTwoSubscriptionsDifferentDir()
         {
             List<string> updates = new List<string>();
