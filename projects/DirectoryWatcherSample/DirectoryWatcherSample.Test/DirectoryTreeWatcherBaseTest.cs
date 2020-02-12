@@ -250,7 +250,20 @@ namespace DirectoryWatcherSample.Test
             Action act = () => watcherBase.Subscribe(".", onUpdate);
 
             ArgumentException ae = act.Should().Throw<ArgumentException>().Which;
-            ae.Message.Should().Contain(@"The file '.' is not directly within directory 'X:\root'");
+            ae.Message.Should().Contain(@"The file '.' is not within directory 'X:\root\'");
+            ae.ParamName.Should().Be("file");
+        }
+
+        [TestMethod]
+        public void SubscribeFileRelativeOutsideDir()
+        {
+            DirectoryTreeWatcherBase watcherBase = new FakeDirectoryTreeWatcher(new DirectoryInfo(@"X:\root"));
+            Action<FileInfo> onUpdate = f => { };
+
+            Action act = () => watcherBase.Subscribe(@"..\root2\file1.txt", onUpdate);
+
+            ArgumentException ae = act.Should().Throw<ArgumentException>().Which;
+            ae.Message.Should().Contain(@"The file '..\root2\file1.txt' is not within directory 'X:\root\'");
             ae.ParamName.Should().Be("file");
         }
 

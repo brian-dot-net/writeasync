@@ -20,7 +20,7 @@ namespace DirectoryWatcherSample
                 throw new ArgumentNullException(nameof(path));
             }
 
-            this.path = path.FullName;
+            this.path = path.FullName + "\\";
             this.watchers = new ConcurrentDictionary<string, DirectoryWatcherBase>();
         }
 
@@ -38,11 +38,11 @@ namespace DirectoryWatcherSample
 
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             DirectoryInfo dir = fullPath.Directory;
-            string key = dir.FullName;
+            string key = dir.FullName + "\\";
             if (!key.StartsWith(this.path))
             {
                 throw new ArgumentException(
-                    $"The file '{file}' is not directly within directory '{this.path}'.",
+                    $"The file '{file}' is not within directory '{this.path}'.",
                     nameof(file));
             }
 
