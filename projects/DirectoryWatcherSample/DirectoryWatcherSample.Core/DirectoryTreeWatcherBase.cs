@@ -31,6 +31,11 @@ namespace DirectoryWatcherSample
                 throw new ArgumentNullException(nameof(file));
             }
 
+            if (file.Length == 0)
+            {
+                throw new ArgumentException("File name cannot be empty.", nameof(file));
+            }
+
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             DirectoryInfo dir = fullPath.Directory;
             DirectoryWatcherBase watcher = this.watchers.GetOrAdd(dir.FullName, k => this.Create(dir));
