@@ -39,7 +39,7 @@ namespace DirectoryWatcherSample
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             DirectoryInfo dir = fullPath.Directory;
             string key = dir.FullName + "\\";
-            if (!key.StartsWith(this.path))
+            if (!key.StartsWith(this.path, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException(
                     $"The file '{file}' is not within directory '{this.path}'.",
