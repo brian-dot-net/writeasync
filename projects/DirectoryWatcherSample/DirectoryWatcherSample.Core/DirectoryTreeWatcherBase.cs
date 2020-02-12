@@ -38,7 +38,15 @@ namespace DirectoryWatcherSample
 
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             DirectoryInfo dir = fullPath.Directory;
-            DirectoryWatcherBase watcher = this.watchers.GetOrAdd(dir.FullName, k => this.Create(dir));
+            string key = dir.FullName;
+            if (!key.StartsWith(this.path))
+            {
+                throw new ArgumentException(
+                    $"The file '{file}' is not directly within directory '{this.path}'.",
+                    nameof(file));
+            }
+
+            DirectoryWatcherBase watcher = this.watchers.GetOrAdd(key, k => this.Create(dir));
             return watcher.Subscribe(fullPath.Name, onUpdate);
         }
 
