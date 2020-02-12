@@ -204,6 +204,17 @@ namespace DirectoryWatcherSample.Test
             act.Should().Throw<ArgumentNullException>().Which.ParamName.Should().Be("file");
         }
 
+        [TestMethod]
+        public void SubscribeNullCallback()
+        {
+            DirectoryTreeWatcherBase watcherBase = new FakeDirectoryTreeWatcher(new DirectoryInfo(@"X:\root"));
+            Action<FileInfo> onUpdate = null;
+
+            Action act = () => watcherBase.Subscribe("file1.txt", onUpdate);
+
+            act.Should().Throw<ArgumentNullException>().Which.ParamName.Should().Be("onUpdate");
+        }
+
         private sealed class FakeDirectoryTreeWatcher : DirectoryTreeWatcherBase
         {
             public FakeDirectoryTreeWatcher(DirectoryInfo path)
