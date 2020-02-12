@@ -61,6 +61,20 @@ namespace DirectoryWatcherSample.Test
             updates.Should().ContainSingle().Which.Should().Be(@"X:\root\file1.txt");
         }
 
+        [TestMethod]
+        public void UpdateRelevantFileOneSubscriptionDifferentCase()
+        {
+            List<string> updates = new List<string>();
+            FakeDirectoryTreeWatcher watcher = new FakeDirectoryTreeWatcher(new DirectoryInfo(@"X:\root"));
+            DirectoryTreeWatcherBase watcherBase = watcher;
+            watcherBase.Subscribe("file1.txt", f => updates.Add(f.FullName));
+
+            FakeDirectoryWatcher innerWatcher = watcher.Watchers.Should().ContainSingle().Which;
+            innerWatcher.Update(@"X:\root\FILE1.txt");
+
+            updates.Should().ContainSingle().Which.Should().Be(@"X:\root\file1.txt");
+        }
+
         private sealed class FakeDirectoryTreeWatcher : DirectoryTreeWatcherBase
         {
             public FakeDirectoryTreeWatcher(DirectoryInfo path)
