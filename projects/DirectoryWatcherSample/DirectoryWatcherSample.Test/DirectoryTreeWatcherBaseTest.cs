@@ -267,6 +267,19 @@ namespace DirectoryWatcherSample.Test
             ae.ParamName.Should().Be("file");
         }
 
+        [TestMethod]
+        public void SubscribeFileRootedPath()
+        {
+            DirectoryTreeWatcherBase watcherBase = new FakeDirectoryTreeWatcher(new DirectoryInfo(@"X:\root"));
+            Action<FileInfo> onUpdate = f => { };
+
+            Action act = () => watcherBase.Subscribe(@"D:\path.txt", onUpdate);
+
+            ArgumentException ae = act.Should().Throw<ArgumentException>().Which;
+            ae.Message.Should().Contain(@"The file 'D:\path.txt' is not within directory 'X:\root\'");
+            ae.ParamName.Should().Be("file");
+        }
+
         private sealed class FakeDirectoryTreeWatcher : DirectoryTreeWatcherBase
         {
             public FakeDirectoryTreeWatcher(DirectoryInfo path)
