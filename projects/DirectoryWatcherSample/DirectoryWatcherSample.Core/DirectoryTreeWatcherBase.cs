@@ -24,12 +24,12 @@ namespace DirectoryWatcherSample
             this.watchers = new ConcurrentDictionary<string, DirectoryWatcherBase>();
         }
 
-        public void Subscribe(string file, Action<FileInfo> onUpdate)
+        public IDisposable Subscribe(string file, Action<FileInfo> onUpdate)
         {
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             DirectoryInfo dir = fullPath.Directory;
             DirectoryWatcherBase watcher = this.watchers.GetOrAdd(dir.FullName, k => this.Create(dir));
-            watcher.Subscribe(fullPath.Name, onUpdate);
+            return watcher.Subscribe(fullPath.Name, onUpdate);
         }
 
         public void Dispose()
