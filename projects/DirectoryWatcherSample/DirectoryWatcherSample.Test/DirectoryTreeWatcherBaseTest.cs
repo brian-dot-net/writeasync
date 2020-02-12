@@ -34,16 +34,6 @@ namespace DirectoryWatcherSample.Test
         }
 
         [TestMethod]
-        public void UpdateZeroSubscriptions()
-        {
-            FakeDirectoryTreeWatcher watcher = new FakeDirectoryTreeWatcher(new DirectoryInfo(@"X:\root"));
-
-            Action act = () => watcher.Update(@"X:\root\file1.txt");
-
-            act.Should().NotThrow();
-        }
-
-        [TestMethod]
         public void UpdateIrrelevantFileOneSubscription()
         {
             List<string> updates = new List<string>();
@@ -51,9 +41,24 @@ namespace DirectoryWatcherSample.Test
             DirectoryTreeWatcherBase watcherBase = watcher;
             watcherBase.Subscribe("file1.txt", f => updates.Add(f.FullName));
 
-            watcher.Update(@"X:\root\not-relevant.txt");
+            FakeDirectoryWatcher innerWatcher = watcher.Watchers.Should().ContainSingle().Which;
+            innerWatcher.Update(@"X:\root\not-relevant.txt");
 
             updates.Should().BeEmpty();
+        }
+
+        [TestMethod]
+        public void UpdateRelevantFileOneSubscription()
+        {
+            List<string> updates = new List<string>();
+            FakeDirectoryTreeWatcher watcher = new FakeDirectoryTreeWatcher(new DirectoryInfo(@"X:\root"));
+            DirectoryTreeWatcherBase watcherBase = watcher;
+            watcherBase.Subscribe("file1.txt", f => updates.Add(f.FullName));
+
+            FakeDirectoryWatcher innerWatcher = watcher.Watchers.Should().ContainSingle().Which;
+            innerWatcher.Update(@"X:\root\file1.txt");
+
+            updates.Should().ContainSingle().Which.Should().Be(@"X:\root\file1.txt");
         }
 
         private sealed class FakeDirectoryTreeWatcher : DirectoryTreeWatcherBase
@@ -61,10 +66,16 @@ namespace DirectoryWatcherSample.Test
             public FakeDirectoryTreeWatcher(DirectoryInfo path)
                 : base(path)
             {
+                this.Watchers = new List<FakeDirectoryWatcher>();
             }
 
-            public void Update(string fullPath)
+            public IList<FakeDirectoryWatcher> Watchers { get; }
+
+            protected override DirectoryWatcherBase Create(DirectoryInfo path)
             {
+                FakeDirectoryWatcher watcher = new FakeDirectoryWatcher(path);
+                this.Watchers.Add(watcher);
+                return watcher;
             }
 
             protected override void Dispose(bool disposing)
