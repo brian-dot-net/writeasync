@@ -20,7 +20,7 @@ namespace DirectoryWatcherSample
                 throw new ArgumentNullException(nameof(path));
             }
 
-            this.path = path.FullName + "\\";
+            this.path = path.FullName + Path.DirectorySeparatorChar;
             this.watchers = new ConcurrentDictionary<string, Watcher>(StringComparer.OrdinalIgnoreCase);
         }
 
@@ -38,7 +38,7 @@ namespace DirectoryWatcherSample
 
             FileInfo fullPath = new FileInfo(Path.Combine(this.path, file));
             DirectoryInfo dir = fullPath.Directory;
-            string key = dir.FullName + "\\";
+            string key = dir.FullName + Path.DirectorySeparatorChar;
             if (!key.StartsWith(this.path, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException(
