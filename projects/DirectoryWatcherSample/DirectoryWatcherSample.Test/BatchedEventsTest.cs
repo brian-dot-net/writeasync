@@ -128,5 +128,18 @@ namespace DirectoryWatcherSample.Test
 
             act.Should().NotThrow();
         }
+
+        [TestMethod]
+        public void SubscribeThenAddAndDispose()
+        {
+            TaskCompletionSource<bool> pending = new TaskCompletionSource<bool>();
+            BatchedEvents<string> events = new BatchedEvents<string>(() => pending.Task);
+
+            IDisposable sub = events.Subscribe("item1", i => { });
+            events.Add("item1", new TimePoint(1));
+            Action act = () => sub.Dispose();
+
+            act.Should().NotThrow();
+        }
     }
 }
