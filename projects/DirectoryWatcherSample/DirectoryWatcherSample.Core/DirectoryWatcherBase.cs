@@ -8,7 +8,7 @@ namespace DirectoryWatcherSample
     using System.Collections.Concurrent;
     using System.IO;
 
-    public abstract class DirectoryWatcherBase : IDisposable
+    public abstract class DirectoryWatcherBase : IDirectoryWatcher
     {
         private readonly string path;
         private readonly ConcurrentDictionary<string, Subscription> subscriptions;

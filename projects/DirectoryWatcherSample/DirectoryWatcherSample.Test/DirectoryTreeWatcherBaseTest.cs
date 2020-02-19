@@ -322,7 +322,7 @@ namespace DirectoryWatcherSample.Test
 
             public IList<FakeDirectoryWatcher> Watchers { get; }
 
-            protected override DirectoryWatcherBase Create(DirectoryInfo path)
+            protected override IDirectoryWatcher Create(DirectoryInfo path)
             {
                 FakeDirectoryWatcher watcher = new FakeDirectoryWatcher(path);
                 this.Watchers.Add(watcher);

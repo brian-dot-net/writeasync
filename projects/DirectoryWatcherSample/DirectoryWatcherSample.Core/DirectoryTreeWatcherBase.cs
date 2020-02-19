@@ -8,7 +8,7 @@ namespace DirectoryWatcherSample
     using System.Collections.Concurrent;
     using System.IO;
 
-    public abstract class DirectoryTreeWatcherBase : IDisposable
+    public abstract class DirectoryTreeWatcherBase : IDirectoryWatcher
     {
         private readonly string path;
         private readonly ConcurrentDictionary<string, Watcher> watchers;
@@ -61,7 +61,7 @@ namespace DirectoryWatcherSample
             GC.SuppressFinalize(this);
         }
 
-        protected abstract DirectoryWatcherBase Create(DirectoryInfo path);
+        protected abstract IDirectoryWatcher Create(DirectoryInfo path);
 
         protected virtual void Dispose(bool disposing)
         {
@@ -69,11 +69,11 @@ namespace DirectoryWatcherSample
 
         private readonly struct Watcher : IDisposable
         {
-            private readonly Lazy<DirectoryWatcherBase> inner;
+            private readonly Lazy<IDirectoryWatcher> inner;
 
-            public Watcher(Func<DirectoryWatcherBase> create)
+            public Watcher(Func<IDirectoryWatcher> create)
             {
-                this.inner = new Lazy<DirectoryWatcherBase>(create);
+                this.inner = new Lazy<IDirectoryWatcher>(create);
             }
 
             public void Dispose() => this.inner.Value.Dispose();

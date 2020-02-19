@@ -13,6 +13,6 @@ namespace DirectoryWatcherSample
         {
         }
 
-        protected override DirectoryWatcherBase Create(DirectoryInfo path) => new DirectoryWatcher(path);
+        protected override IDirectoryWatcher Create(DirectoryInfo path) => new DirectoryWatcher(path);
     }
 }
