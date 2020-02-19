@@ -117,5 +117,16 @@ namespace DirectoryWatcherSample.Test
 
             batches.Should().ContainSingle().Which.Should().Be("B:item2");
         }
+
+        [TestMethod]
+        public void SubscribeAndDispose()
+        {
+            BatchedEvents<string> events = new BatchedEvents<string>(() => Task.CompletedTask);
+
+            IDisposable sub = events.Subscribe("item1", i => { });
+            Action act = () => sub.Dispose();
+
+            act.Should().NotThrow();
+        }
     }
 }

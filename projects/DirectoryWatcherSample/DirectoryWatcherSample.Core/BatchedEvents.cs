@@ -21,10 +21,11 @@ namespace DirectoryWatcherSample
             this.subscriptions = new ConcurrentDictionary<T, Action<T>>();
         }
 
-        public void Subscribe(T item, Action<T> callback)
+        public IDisposable Subscribe(T item, Action<T> callback)
         {
             this.subscriptions.TryAdd(item, callback);
             this.batches.TryAdd(item, default);
+            return new Subscription();
         }
 
         public void Add(T item, TimePoint timestamp)
@@ -45,6 +46,13 @@ namespace DirectoryWatcherSample
             if (this.batches.TryUpdate(item, default, timestamp))
             {
                 this.subscriptions[item](item);
+            }
+        }
+
+        private sealed class Subscription : IDisposable
+        {
+            public void Dispose()
+            {
             }
         }
     }
