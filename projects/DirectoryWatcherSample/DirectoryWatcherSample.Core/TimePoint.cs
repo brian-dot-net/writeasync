@@ -7,7 +7,7 @@ namespace DirectoryWatcherSample
     using System;
     using System.Diagnostics;
 
-    public readonly struct TimePoint
+    public readonly struct TimePoint : IEquatable<TimePoint>
     {
         private static readonly double TicksPerTimerTick = 10000000.0 / Stopwatch.Frequency;
 
@@ -28,5 +28,7 @@ namespace DirectoryWatcherSample
         public static TimePoint Now() => new TimePoint(Stopwatch.GetTimestamp());
 
         public TimeSpan Elapsed() => Now() - this;
+
+        public bool Equals(TimePoint other) => this.timerTicks == other.timerTicks;
     }
 }

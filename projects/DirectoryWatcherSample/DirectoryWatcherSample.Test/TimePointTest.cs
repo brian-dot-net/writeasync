@@ -43,5 +43,18 @@ namespace DirectoryWatcherSample.Test
 
             elapsed.Ticks.Should().BeGreaterThan(0);
         }
+
+        [TestMethod]
+        public void Equality()
+        {
+            TimePoint zeroA = default;
+            TimePoint zeroB = new TimePoint(0);
+            TimePoint oneA = new TimePoint(1);
+            TimePoint oneB = new TimePoint(1);
+
+            zeroA.Equals(zeroB).Should().BeTrue();
+            oneA.Equals(zeroB).Should().BeFalse();
+            oneB.Equals(oneA).Should().BeTrue();
+        }
     }
 }
