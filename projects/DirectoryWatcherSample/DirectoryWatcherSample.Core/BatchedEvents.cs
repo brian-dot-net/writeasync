@@ -29,7 +29,7 @@ namespace DirectoryWatcherSample
         {
             this.subscriptions.TryAdd(item, callback);
             this.batches.TryAdd(item, default);
-            return new Subscription();
+            return new Subscription(() => this.batches.TryRemove(item, out _));
         }
 
         public void Add(T item, TimePoint timestamp)
@@ -55,9 +55,14 @@ namespace DirectoryWatcherSample
 
         private sealed class Subscription : IDisposable
         {
-            public void Dispose()
+            private readonly Action onDispose;
+
+            public Subscription(Action onDispose)
             {
+                this.onDispose = onDispose;
             }
+
+            public void Dispose() => this.onDispose();
         }
     }
 }
