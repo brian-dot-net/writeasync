@@ -12,18 +12,18 @@ namespace DirectoryWatcherSample
     {
         private readonly Func<Task> delay;
         private readonly ConcurrentDictionary<T, TimePoint> batches;
-
-        private Action<T> callback;
+        private readonly ConcurrentDictionary<T, Action<T>> subscriptions;
 
         public BatchedEvents(Func<Task> delay)
         {
             this.delay = delay;
             this.batches = new ConcurrentDictionary<T, TimePoint>();
+            this.subscriptions = new ConcurrentDictionary<T, Action<T>>();
         }
 
         public void Subscribe(T item, Action<T> callback)
         {
-            this.callback = callback;
+            this.subscriptions.TryAdd(item, callback);
             this.batches.TryAdd(item, default);
         }
 
@@ -44,7 +44,7 @@ namespace DirectoryWatcherSample
         {
             if (this.batches.TryUpdate(item, default, timestamp))
             {
-                this.callback(item);
+                this.subscriptions[item](item);
             }
         }
     }

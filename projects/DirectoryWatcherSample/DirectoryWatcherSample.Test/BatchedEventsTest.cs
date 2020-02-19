@@ -88,5 +88,34 @@ namespace DirectoryWatcherSample.Test
 
             batches.Should().ContainSingle().Which.Should().Be("item1");
         }
+
+        [TestMethod]
+        public void AddTwoDifferentBatches()
+        {
+            Queue<TaskCompletionSource<bool>> pending = new Queue<TaskCompletionSource<bool>>();
+            BatchedEvents<string> events = new BatchedEvents<string>(() => pending.Dequeue().Task);
+            List<string> batches = new List<string>();
+            TaskCompletionSource<bool> pending1 = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> pending2 = new TaskCompletionSource<bool>();
+            pending.Enqueue(pending1);
+            pending.Enqueue(pending2);
+
+            events.Subscribe("item1", i => batches.Add("A:" + i));
+            events.Subscribe("item2", i => batches.Add("B:" + i));
+
+            events.Add("item1", new TimePoint(1));
+            events.Add("item2", new TimePoint(1));
+
+            batches.Should().BeEmpty();
+
+            pending1.SetResult(true);
+
+            batches.Should().ContainSingle().Which.Should().Be("A:item1");
+            batches.Clear();
+
+            pending2.SetResult(true);
+
+            batches.Should().ContainSingle().Which.Should().Be("B:item2");
+        }
     }
 }
