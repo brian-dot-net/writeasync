@@ -31,13 +31,21 @@ namespace DirectoryWatcherSample
         {
             if (this.batches.TryUpdate(item, timestamp, default))
             {
-                this.OnBatchCreated(item);
+                this.OnBatchCreated(item, timestamp);
             }
         }
 
-        private void OnBatchCreated(T item)
+        private void OnBatchCreated(T item, TimePoint timestamp)
         {
-            this.delay().ContinueWith(t => this.callback(item), TaskContinuationOptions.ExecuteSynchronously);
+            this.delay().ContinueWith(t => this.OnBatchCompleted(item, timestamp), TaskContinuationOptions.ExecuteSynchronously);
+        }
+
+        private void OnBatchCompleted(T item, TimePoint timestamp)
+        {
+            if (this.batches.TryUpdate(item, default, timestamp))
+            {
+                this.callback(item);
+            }
         }
     }
 }
