@@ -13,7 +13,7 @@ namespace DirectoryWatcherSample
 
         private readonly long timerTicks;
 
-        private TimePoint(long timerTicks)
+        public TimePoint(long timerTicks)
         {
             this.timerTicks = timerTicks;
         }

@@ -32,5 +32,16 @@ namespace DirectoryWatcherSample.Test
 
             elapsed.TotalMilliseconds.Should().BeApproximately(3.0d, 1.0d);
         }
+
+        [TestMethod]
+        public void ExplicitCreationAndSubtraction()
+        {
+            TimePoint start = new TimePoint(1);
+            TimePoint end = new TimePoint(999999999);
+
+            TimeSpan elapsed = end - start;
+
+            elapsed.Ticks.Should().BeGreaterThan(0);
+        }
     }
 }
