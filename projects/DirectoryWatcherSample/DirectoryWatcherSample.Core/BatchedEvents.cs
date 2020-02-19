@@ -8,7 +8,7 @@ namespace DirectoryWatcherSample
     using System.Collections.Concurrent;
     using System.Threading.Tasks;
 
-    public sealed class BatchedEvents<T>
+    public sealed class BatchedEvents<T> : IDisposable
     {
         private readonly Func<Task> delay;
         private readonly ConcurrentDictionary<T, TimePoint> batches;
@@ -19,6 +19,10 @@ namespace DirectoryWatcherSample
             this.delay = delay;
             this.batches = new ConcurrentDictionary<T, TimePoint>();
             this.subscriptions = new ConcurrentDictionary<T, Action<T>>();
+        }
+
+        public void Dispose()
+        {
         }
 
         public IDisposable Subscribe(T item, Action<T> callback)

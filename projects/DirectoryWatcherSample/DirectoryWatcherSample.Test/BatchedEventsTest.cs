@@ -141,5 +141,15 @@ namespace DirectoryWatcherSample.Test
 
             act.Should().NotThrow();
         }
+
+        [TestMethod]
+        public void DisposeAfterCreate()
+        {
+            BatchedEvents<string> events = new BatchedEvents<string>(() => Task.CompletedTask);
+
+            Action act = () => events.Dispose();
+
+            act.Should().NotThrow();
+        }
     }
 }
