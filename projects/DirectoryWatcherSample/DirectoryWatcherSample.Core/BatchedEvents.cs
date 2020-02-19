@@ -5,32 +5,39 @@
 namespace DirectoryWatcherSample
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Threading.Tasks;
 
     public sealed class BatchedEvents<T>
     {
         private readonly Func<Task> delay;
+        private readonly ConcurrentDictionary<T, TimePoint> batches;
 
         private Action<T> callback;
 
         public BatchedEvents(Func<Task> delay)
         {
             this.delay = delay;
+            this.batches = new ConcurrentDictionary<T, TimePoint>();
         }
 
         public void Subscribe(T item, Action<T> callback)
         {
             this.callback = callback;
+            this.batches.TryAdd(item, default);
         }
 
         public void Add(T item, TimePoint timestamp)
         {
-            this.OnBatchCreated(item);
+            if (this.batches.TryUpdate(item, timestamp, default))
+            {
+                this.OnBatchCreated(item);
+            }
         }
 
         private void OnBatchCreated(T item)
         {
-            this.delay().ContinueWith(t => this.callback(item));
+            this.delay().ContinueWith(t => this.callback(item), TaskContinuationOptions.ExecuteSynchronously);
         }
     }
 }
