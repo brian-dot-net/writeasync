@@ -180,5 +180,35 @@ namespace DirectoryWatcherSample.Test
 
             batches.Should().ContainSingle().Which.Should().Be("B:item2");
         }
+
+        [TestMethod]
+        public void SubscribeAndAddTwoThenDisposeAllAndComplete()
+        {
+            Queue<TaskCompletionSource<bool>> pending = new Queue<TaskCompletionSource<bool>>();
+            BatchedEvents<string> events = new BatchedEvents<string>(() => pending.Dequeue().Task);
+            List<string> batches = new List<string>();
+            TaskCompletionSource<bool> pending1 = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> pending2 = new TaskCompletionSource<bool>();
+            pending.Enqueue(pending1);
+            pending.Enqueue(pending2);
+
+            IDisposable sub1 = events.Subscribe("item1", i => batches.Add("A:" + i));
+            events.Subscribe("item2", i => batches.Add("B:" + i));
+
+            events.Add("item1", new TimePoint(1));
+            events.Add("item2", new TimePoint(1));
+
+            batches.Should().BeEmpty();
+
+            events.Dispose();
+
+            pending1.SetResult(true);
+
+            batches.Should().BeEmpty();
+
+            pending2.SetResult(true);
+
+            batches.Should().BeEmpty();
+        }
     }
 }

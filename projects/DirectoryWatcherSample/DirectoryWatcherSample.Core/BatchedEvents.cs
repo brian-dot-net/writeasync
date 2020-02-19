@@ -23,6 +23,7 @@ namespace DirectoryWatcherSample
 
         public void Dispose()
         {
+            this.batches.Clear();
         }
 
         public IDisposable Subscribe(T item, Action<T> callback)
