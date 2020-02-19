@@ -23,14 +23,14 @@ namespace DirectoryWatcherSample.Test
         }
 
         [TestMethod]
-        public void ThreeMillisecondsElapsed()
+        public void FiveMillisecondsElapsed()
         {
             TimePoint start = TimePoint.Now();
 
-            Thread.Sleep(3);
+            Thread.Sleep(5);
             TimeSpan elapsed = start.Elapsed();
 
-            elapsed.TotalMilliseconds.Should().BeApproximately(3.0d, 1.0d);
+            elapsed.TotalMilliseconds.Should().BeApproximately(5.0d, 2.0d);
         }
 
         [TestMethod]
