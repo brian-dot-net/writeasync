@@ -9,6 +9,8 @@ namespace DirectoryWatcherSample
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Console;
 
     internal sealed class Program
     {
@@ -19,12 +21,16 @@ namespace DirectoryWatcherSample
             Directory.CreateDirectory("inner1");
             Directory.CreateDirectory("inner2");
 
+            using ILoggerFactory factory = LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+            });
             using CancellationTokenSource cts = new CancellationTokenSource();
             string[] files = new string[] { @"inner1\file1.txt", @"inner2\file2.txt" };
 
             Task task = UpdateFilesAsync(files, cts.Token);
 
-            RunWatcher(files);
+            RunWatcher(factory.CreateLogger<Program>(), files);
 
             Console.WriteLine("Press ENTER to quit.");
             Console.ReadLine();
@@ -33,9 +39,10 @@ namespace DirectoryWatcherSample
             task.Wait();
         }
 
-        private static void RunWatcher(string[] files)
+        private static void RunWatcher(ILogger log, string[] files)
         {
-            using DirectoryTreeWatcher watcher = new DirectoryTreeWatcher(new DirectoryInfo("."));
+            DirectoryInfo root = new DirectoryInfo(".");
+            using IDirectoryWatcher watcher = new DirectoryWatcherWithLogging(new DirectoryTreeWatcher(root), root.FullName, log);
 
             Action<FileInfo> onUpdated = f => Log($"Got an update for '{f.Name}'");
 
