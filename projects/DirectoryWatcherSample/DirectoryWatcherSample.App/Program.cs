@@ -41,7 +41,13 @@ namespace DirectoryWatcherSample
         private static void RunWatcher(ILogger log, string[] files)
         {
             DirectoryInfo root = new DirectoryInfo(".");
-            using IDirectoryWatcher watcher = new DirectoryWatcherWithLogging(new DirectoryTreeWatcher(root), root.FullName, log);
+            using IDirectoryWatcher watcher = new DirectoryWatcherWithLogging(
+                new DirectoryWatcherWithBatching(
+                    new DirectoryTreeWatcher(root),
+                    root.FullName,
+                    new BatchedEvents<FileInfo>(async () => await Task.Delay(10))),
+                root.FullName,
+                log);
 
             Action<FileInfo> onUpdated = f => Log($"Got an update for '{f.Name}'");
 
