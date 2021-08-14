@@ -4,6 +4,7 @@
 
 namespace QueueChallenge.Test
 {
+    using System;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -60,6 +61,19 @@ namespace QueueChallenge.Test
             task = queue.DequeueAsync();
             task.IsCompletedSuccessfully.Should().BeTrue();
             task.Result.Should().Be("two");
+        }
+
+        [TestMethod]
+        public void EmptyPendingDequeueAgain()
+        {
+            AsyncQueue<string> queue = new AsyncQueue<string>();
+
+            Task<string> task = queue.DequeueAsync();
+            Action act = () => queue.DequeueAsync();
+
+            act.Should().Throw<InvalidOperationException>();
+
+            task.IsCompleted.Should().BeFalse();
         }
     }
 }

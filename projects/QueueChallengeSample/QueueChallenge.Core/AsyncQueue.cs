@@ -4,6 +4,7 @@
 
 namespace QueueChallenge
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -22,6 +23,11 @@ namespace QueueChallenge
         {
             if (this.queue.Count == 0)
             {
+                if (this.pending != null)
+                {
+                    throw new InvalidOperationException("A dequeue operation is already pending.");
+                }
+
                 this.pending = new TaskCompletionSource<T>();
                 return this.pending.Task;
             }
