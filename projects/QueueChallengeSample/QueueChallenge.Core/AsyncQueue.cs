@@ -4,27 +4,28 @@
 
 namespace QueueChallenge
 {
-    using System;
     using System.Threading.Tasks;
 
     public sealed class AsyncQueue<T>
     {
-        private T item;
+        private TaskCompletionSource<T> pending;
 
         public AsyncQueue()
         {
         }
 
-        public Task<T> DequeueAsync()
+        public Task<T> DequeueAsync() => this.Next().Task;
+
+        public void EnqueueAsync(T item) => this.Next().SetResult(item);
+
+        private TaskCompletionSource<T> Next()
         {
-            if (this.item == null)
+            if (this.pending == null)
             {
-                return new TaskCompletionSource<T>().Task;
+                this.pending = new TaskCompletionSource<T>();
             }
 
-            return Task.FromResult(this.item);
+            return this.pending;
         }
-
-        public void EnqueueAsync(T item) => this.item = item;
     }
 }
