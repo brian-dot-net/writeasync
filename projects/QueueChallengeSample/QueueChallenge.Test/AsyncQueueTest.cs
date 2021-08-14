@@ -27,7 +27,7 @@ namespace QueueChallenge.Test
         {
             AsyncQueue<string> queue = new AsyncQueue<string>();
 
-            queue.EnqueueAsync("one");
+            queue.Enqueue("one");
             Task<string> task = queue.DequeueAsync();
 
             task.IsCompletedSuccessfully.Should().BeTrue();
@@ -40,7 +40,7 @@ namespace QueueChallenge.Test
             AsyncQueue<string> queue = new AsyncQueue<string>();
 
             Task<string> task = queue.DequeueAsync();
-            queue.EnqueueAsync("one");
+            queue.Enqueue("one");
 
             task.IsCompletedSuccessfully.Should().BeTrue();
             task.Result.Should().Be("one");
@@ -51,8 +51,8 @@ namespace QueueChallenge.Test
         {
             AsyncQueue<string> queue = new AsyncQueue<string>();
 
-            queue.EnqueueAsync("one");
-            queue.EnqueueAsync("two");
+            queue.Enqueue("one");
+            queue.Enqueue("two");
 
             Task<string> task = queue.DequeueAsync();
             task.IsCompletedSuccessfully.Should().BeTrue();

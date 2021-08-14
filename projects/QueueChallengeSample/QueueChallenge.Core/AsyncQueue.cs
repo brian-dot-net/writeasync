@@ -38,7 +38,7 @@ namespace QueueChallenge
             }
         }
 
-        public void EnqueueAsync(T item)
+        public void Enqueue(T item)
         {
             TaskCompletionSource<T> next = null;
             lock (this.queue)
