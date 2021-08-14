@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueChallenge.Core", "QueueChallenge.Core\QueueChallenge.Core.csproj", "{19428D69-C6C5-4493-B49A-2500FC7075AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueChallenge.Test", "QueueChallenge.Test\QueueChallenge.Test.csproj", "{B0C8EB8A-6E18-44DA-996E-F389066E6A74}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19428D69-C6C5-4493-B49A-2500FC7075AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19428D69-C6C5-4493-B49A-2500FC7075AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19428D69-C6C5-4493-B49A-2500FC7075AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19428D69-C6C5-4493-B49A-2500FC7075AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0C8EB8A-6E18-44DA-996E-F389066E6A74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0C8EB8A-6E18-44DA-996E-F389066E6A74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0C8EB8A-6E18-44DA-996E-F389066E6A74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0C8EB8A-6E18-44DA-996E-F389066E6A74}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
