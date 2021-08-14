@@ -20,5 +20,17 @@ namespace QueueChallenge.Test
 
             task.IsCompleted.Should().BeFalse();
         }
+
+        [TestMethod]
+        public void EnqueueThenDequeue()
+        {
+            AsyncQueue<string> queue = new AsyncQueue<string>();
+
+            queue.EnqueueAsync("one");
+            Task<string> task = queue.DequeueAsync();
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("one");
+        }
     }
 }
