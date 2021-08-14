@@ -21,29 +21,41 @@ namespace QueueChallenge
 
         public Task<T> DequeueAsync()
         {
-            if (this.queue.Count == 0)
+            lock (this.queue)
             {
-                if (this.pending != null)
+                if (this.queue.Count == 0)
                 {
-                    throw new InvalidOperationException("A dequeue operation is already pending.");
+                    if (this.pending != null)
+                    {
+                        throw new InvalidOperationException("A dequeue operation is already pending.");
+                    }
+
+                    this.pending = new TaskCompletionSource<T>();
+                    return this.pending.Task;
                 }
 
-                this.pending = new TaskCompletionSource<T>();
-                return this.pending.Task;
+                return Task.FromResult(this.queue.Dequeue());
             }
-
-            return Task.FromResult(this.queue.Dequeue());
         }
 
         public void EnqueueAsync(T item)
         {
-            if (this.pending != null)
+            TaskCompletionSource<T> next = null;
+            lock (this.queue)
             {
-                this.pending.SetResult(item);
+                if (this.pending == null)
+                {
+                    this.queue.Enqueue(item);
+                }
+                else
+                {
+                    next = this.pending;
+                }
             }
-            else
+
+            if (next != null)
             {
-                this.queue.Enqueue(item);
+                next.SetResult(item);
             }
         }
     }
