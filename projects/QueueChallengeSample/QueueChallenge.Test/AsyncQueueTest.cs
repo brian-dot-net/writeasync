@@ -44,5 +44,22 @@ namespace QueueChallenge.Test
             task.IsCompletedSuccessfully.Should().BeTrue();
             task.Result.Should().Be("one");
         }
+
+        [TestMethod]
+        public void EnqueueTwoThenDequeueTwo()
+        {
+            AsyncQueue<string> queue = new AsyncQueue<string>();
+
+            queue.EnqueueAsync("one");
+            queue.EnqueueAsync("two");
+
+            Task<string> task = queue.DequeueAsync();
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("one");
+
+            task = queue.DequeueAsync();
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("two");
+        }
     }
 }
