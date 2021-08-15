@@ -8,21 +8,32 @@ namespace QueueChallenge
 
     public sealed class UberQueue<T>
     {
-        private readonly AsyncQueue<T>[] queues;
+        private readonly AsyncQueue<T> output;
+        private readonly Task input;
 
         public UberQueue(AsyncQueue<T>[] queues)
         {
-            this.queues = queues;
+            this.output = new AsyncQueue<T>();
+            this.input = this.DequeueAllAsync(queues);
         }
 
-        public Task<T> DequeueAsync()
+        public Task<T> DequeueAsync() => this.output.DequeueAsync();
+
+        private Task DequeueAllAsync(AsyncQueue<T>[] queues)
         {
-            if (this.queues.Length > 0)
+            Task[] tasks = new Task[queues.Length];
+            for (int i = 0; i < tasks.Length; ++i)
             {
-                return this.queues[0].DequeueAsync();
+                tasks[i] = this.DequeueOneAsync(queues[i]);
             }
 
-            return new TaskCompletionSource<T>().Task;
+            return Task.WhenAll(tasks);
+        }
+
+        private async Task DequeueOneAsync(AsyncQueue<T> queue)
+        {
+            T next = await queue.DequeueAsync();
+            this.output.Enqueue(next);
         }
     }
 }
