@@ -6,12 +6,12 @@ namespace QueueChallenge
 {
     using System.Threading.Tasks;
 
-    public sealed class UberQueue<T>
+    public sealed class UberQueue<T> : IAsyncQueue<T>
     {
         private readonly AsyncQueue<T> output;
         private readonly Task input;
 
-        public UberQueue(AsyncQueue<T>[] queues)
+        public UberQueue(IAsyncQueue<T>[] queues)
         {
             this.output = new AsyncQueue<T>();
             this.input = this.DequeueAllAsync(queues);
@@ -19,7 +19,7 @@ namespace QueueChallenge
 
         public Task<T> DequeueAsync() => this.output.DequeueAsync();
 
-        private Task DequeueAllAsync(AsyncQueue<T>[] queues)
+        private Task DequeueAllAsync(IAsyncQueue<T>[] queues)
         {
             Task[] tasks = new Task[queues.Length];
             for (int i = 0; i < tasks.Length; ++i)
@@ -30,11 +30,11 @@ namespace QueueChallenge
             return Task.WhenAll(tasks);
         }
 
-        private async Task DequeueOneAsync(AsyncQueue<T> queue)
+        private async Task DequeueOneAsync(IAsyncQueue<T> input)
         {
             while (true)
             {
-                T next = await queue.DequeueAsync();
+                T next = await input.DequeueAsync();
                 this.output.Enqueue(next);
             }
         }

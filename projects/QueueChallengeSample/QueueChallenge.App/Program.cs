@@ -12,11 +12,18 @@ namespace QueueChallenge.App
     internal sealed class Program
     {
         private const byte N = 31;
+        private const byte Q = 10;
         private const ushort C = 50000;
 
         private static void Main()
         {
-            AsyncQueue<int> queue = new();
+            AsyncQueue<int>[] queues = new AsyncQueue<int>[Q];
+            for (int i = 0; i < Q; ++i)
+            {
+                queues[i] = new AsyncQueue<int>();
+            }
+
+            UberQueue<int> queue = new UberQueue<int>(queues);
 
             Task[] tasks = new Task[N + 1];
             Barrier barrier = new(N);
@@ -24,7 +31,7 @@ namespace QueueChallenge.App
             for (int i = 0; i < N; ++i)
             {
                 byte n = (byte)i;
-                tasks[i] = Task.Run(() => Enqueue(queue, barrier, n));
+                tasks[i] = Task.Run(() => Enqueue(queues[i % Q], barrier, n));
             }
 
             Task.WaitAll(tasks);
@@ -42,7 +49,7 @@ namespace QueueChallenge.App
             Console.WriteLine($"END . . . Enqueue[{n}]");
         }
 
-        private static async Task DequeueAsync(AsyncQueue<int> queue, int expectedCount)
+        private static async Task DequeueAsync(IAsyncQueue<int> queue, int expectedCount)
         {
             Dictionary<byte, int> lastItems = new();
             for (int i = 0; i < expectedCount; ++i)

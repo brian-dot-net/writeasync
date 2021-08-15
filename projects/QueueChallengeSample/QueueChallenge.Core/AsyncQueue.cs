@@ -8,7 +8,7 @@ namespace QueueChallenge
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public sealed class AsyncQueue<T>
+    public sealed class AsyncQueue<T> : IAsyncQueue<T>
     {
         private readonly Queue<T> queue;
 
