@@ -21,5 +21,21 @@ namespace QueueChallenge.Test
 
             task.IsCompleted.Should().BeFalse();
         }
+
+        [TestMethod]
+        public void OneQueueDequeueEnqueue()
+        {
+            AsyncQueue<string> inner0 = new AsyncQueue<string>();
+            UberQueue<string> queue = new UberQueue<string>(new AsyncQueue<string>[] { inner0 });
+
+            Task<string> task = queue.DequeueAsync();
+
+            task.IsCompleted.Should().BeFalse();
+
+            inner0.Enqueue("one");
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("one");
+        }
     }
 }

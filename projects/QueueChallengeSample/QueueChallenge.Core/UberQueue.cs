@@ -15,6 +15,14 @@ namespace QueueChallenge
             this.queues = queues;
         }
 
-        public Task<T> DequeueAsync() => new TaskCompletionSource<T>().Task;
+        public Task<T> DequeueAsync()
+        {
+            if (this.queues.Length > 0)
+            {
+                return this.queues[0].DequeueAsync();
+            }
+
+            return new TaskCompletionSource<T>().Task;
+        }
     }
 }
