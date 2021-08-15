@@ -50,6 +50,7 @@ namespace QueueChallenge
                 else
                 {
                     next = this.pending;
+                    this.pending = null;
                 }
             }
 
