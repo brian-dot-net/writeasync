@@ -32,8 +32,11 @@ namespace QueueChallenge
 
         private async Task DequeueOneAsync(AsyncQueue<T> queue)
         {
-            T next = await queue.DequeueAsync();
-            this.output.Enqueue(next);
+            while (true)
+            {
+                T next = await queue.DequeueAsync();
+                this.output.Enqueue(next);
+            }
         }
     }
 }

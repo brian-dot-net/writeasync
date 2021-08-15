@@ -61,5 +61,57 @@ namespace QueueChallenge.Test
             task.IsCompletedSuccessfully.Should().BeTrue();
             task.Result.Should().Be("two");
         }
+
+        [TestMethod]
+        public void ThreeQueuesDequeueEnqueueSixTimesAlternating()
+        {
+            AsyncQueue<string> inner0 = new AsyncQueue<string>();
+            AsyncQueue<string> inner1 = new AsyncQueue<string>();
+            AsyncQueue<string> inner2 = new AsyncQueue<string>();
+            UberQueue<string> queue = new UberQueue<string>(new AsyncQueue<string>[] { inner0, inner1, inner2 });
+
+            Task<string> task = queue.DequeueAsync();
+
+            task.IsCompleted.Should().BeFalse();
+
+            inner2.Enqueue("one");
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("one");
+
+            task = queue.DequeueAsync();
+
+            inner1.Enqueue("two");
+            inner0.Enqueue("three");
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("two");
+
+            task = queue.DequeueAsync();
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("three");
+
+            task = queue.DequeueAsync();
+
+            task.IsCompleted.Should().BeFalse();
+
+            inner2.Enqueue("four");
+            inner0.Enqueue("five");
+            inner1.Enqueue("six");
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("four");
+
+            task = queue.DequeueAsync();
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("five");
+
+            task = queue.DequeueAsync();
+
+            task.IsCompletedSuccessfully.Should().BeTrue();
+            task.Result.Should().Be("six");
+        }
     }
 }
