@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StaticAssertApp", "exe\StaticAssertApp.vcxproj", "{D51B494F-14C2-4185-8B64-E00009153BC9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StaticAssertLib", "lib\StaticAssertLib.vcxproj", "{53A7DD63-5490-4A2F-8615-6ABD66F70A94}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StaticAssertTest", "test\StaticAssertTest.vcxproj", "{075AC44B-0FB9-4BFE-AF6B-19D4FE8ADD61}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D51B494F-14C2-4185-8B64-E00009153BC9}.Debug|x64.ActiveCfg = Debug|x64
+		{D51B494F-14C2-4185-8B64-E00009153BC9}.Debug|x64.Build.0 = Debug|x64
+		{D51B494F-14C2-4185-8B64-E00009153BC9}.Release|x64.ActiveCfg = Release|x64
+		{D51B494F-14C2-4185-8B64-E00009153BC9}.Release|x64.Build.0 = Release|x64
+		{53A7DD63-5490-4A2F-8615-6ABD66F70A94}.Debug|x64.ActiveCfg = Debug|x64
+		{53A7DD63-5490-4A2F-8615-6ABD66F70A94}.Debug|x64.Build.0 = Debug|x64
+		{53A7DD63-5490-4A2F-8615-6ABD66F70A94}.Release|x64.ActiveCfg = Release|x64
+		{53A7DD63-5490-4A2F-8615-6ABD66F70A94}.Release|x64.Build.0 = Release|x64
+		{075AC44B-0FB9-4BFE-AF6B-19D4FE8ADD61}.Debug|x64.ActiveCfg = Debug|x64
+		{075AC44B-0FB9-4BFE-AF6B-19D4FE8ADD61}.Debug|x64.Build.0 = Debug|x64
+		{075AC44B-0FB9-4BFE-AF6B-19D4FE8ADD61}.Release|x64.ActiveCfg = Release|x64
+		{075AC44B-0FB9-4BFE-AF6B-19D4FE8ADD61}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8278F28F-493C-4EF7-B822-9EAAC46DAF84}
+	EndGlobalSection
+EndGlobal
