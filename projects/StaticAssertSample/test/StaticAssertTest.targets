@@ -1,0 +1,11 @@
+<Project>
+  <Target Name="StaticAssertTest" AfterTargets="ClCompile">
+    <ItemGroup>
+      <CLCommandFile Include="$(TLogLocation)CL.command.*.tlog" />
+      <StaticAssertTestCommand Include="@(StaticAssertTest)">
+        <Args>-Symbol "%(Identity)" -Pattern "%(Pattern)" -TestFile "%(TestFile)"</Args>
+      </StaticAssertTestCommand>
+    </ItemGroup>
+    <Exec Command="powershell.exe -File Test-StaticAssert.ps1 -ClExe &quot;$(ClCompilerPath)&quot; %(StaticAssertTestCommand.Args) -CommandFile &quot;@(CLCommandFile->'%(fullpath)', '&quot;,&quot;')&quot;" />
+  </Target>
+</Project>
